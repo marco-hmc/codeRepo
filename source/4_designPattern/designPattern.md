@@ -13,3 +13,8 @@
 * RAII
 * PIMPL
 * MVC
+
+### appendix
+1. https://refactoringguru.cn/design-patterns/adapter
+2. https://github.com/kamranahmedse/design-patterns-for-humans#-abstract-factory
+3. 

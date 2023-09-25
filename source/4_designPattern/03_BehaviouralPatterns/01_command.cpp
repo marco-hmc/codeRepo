@@ -1,127 +1,90 @@
-#include <string>
+#include <algorithm>
 #include <iostream>
+#include <list>
+#include <string>
 
-class AbstractProductA {
+class Command {
 public:
-    virtual ~AbstractProductA() {};
-    virtual std::string UsefulFunctionA() const = 0;
+    virtual ~Command() {
+    }
+    virtual void Execute() const = 0;
 };
+class SimpleCommand : public Command {
+private:
+    std::string pay_load_;
 
-class ConcreteProductA1 : public AbstractProductA {
 public:
-    std::string UsefulFunctionA() const override {
-        return "The result of the product A1.";
+    explicit SimpleCommand(std::string pay_load) : pay_load_(pay_load) {
+    }
+    void Execute() const override {
+        std::cout << "SimpleCommand: See, I can do simple things like printing (" << this->pay_load_ << ")\n";
     }
 };
 
-class ConcreteProductA2 : public AbstractProductA {
-    std::string UsefulFunctionA() const override {
-        return "The result of the product A2.";
-    }
-};
-
-class AbstractProductB {
+class Receiver {
 public:
-    virtual ~AbstractProductB() {};
-    virtual std::string UsefulFunctionB() const = 0;
-    virtual std::string AnotherUsefulFunctionB(const AbstractProductA& collaborator) const = 0;
+    void DoSomething(const std::string& a) {
+        std::cout << "Receiver: Working on (" << a << ".)\n";
+    }
+    void DoSomethingElse(const std::string& b) {
+        std::cout << "Receiver: Also working on (" << b << ".)\n";
+    }
 };
 
-class ConcreteProductB1 : public AbstractProductB {
+class ComplexCommand : public Command {
+private:
+    Receiver* receiver_;
+    std::string a_;
+    std::string b_;
 public:
-    std::string UsefulFunctionB() const override {
-        return "The result of the product B1.";
+    ComplexCommand(Receiver* receiver, std::string a, std::string b) : receiver_(receiver), a_(a), b_(b) {
     }
-
-    std::string AnotherUsefulFunctionB(const AbstractProductA& collaborator) const override {
-        const std::string result = collaborator.UsefulFunctionA();
-        return "The result of the B1 collaborating with ( " + result + " )";
+    void Execute() const override {
+        std::cout << "ComplexCommand: Complex stuff should be done by a receiver object.\n";
+        this->receiver_->DoSomething(this->a_);
+        this->receiver_->DoSomethingElse(this->b_);
     }
 };
 
-class ConcreteProductB2 : public AbstractProductB {
+class Invoker {
+private:
+    Command* on_start_;
+    Command* on_finish_;
 public:
-    std::string UsefulFunctionB() const override {
-        return "The result of the product B2.";
+    ~Invoker() {
+        delete on_start_;
+        delete on_finish_;
     }
-    /**
-     * The variant, Product B2, is only able to work correctly with the variant,
-     * Product A2. Nevertheless, it accepts any instance of AbstractProductA as an
-     * argument.
-     */
-    std::string AnotherUsefulFunctionB(const AbstractProductA& collaborator) const override {
-        const std::string result = collaborator.UsefulFunctionA();
-        return "The result of the B2 collaborating with ( " + result + " )";
+
+    void SetOnStart(Command* command) {
+        this->on_start_ = command;
+    }
+    void SetOnFinish(Command* command) {
+        this->on_finish_ = command;
+    }
+
+    void DoSomethingImportant() {
+        std::cout << "Invoker: Does anybody want something done before I begin?\n";
+        if (this->on_start_) {
+            this->on_start_->Execute();
+        }
+        std::cout << "Invoker: ...doing something really important...\n";
+        std::cout << "Invoker: Does anybody want something done after I finish?\n";
+        if (this->on_finish_) {
+            this->on_finish_->Execute();
+        }
     }
 };
-
-/**
- * The Abstract Factory interface declares a set of methods that return
- * different abstract products. These products are called a family and are
- * related by a high-level theme or concept. Products of one family are usually
- * able to collaborate among themselves. A family of products may have several
- * variants, but the products of one variant are incompatible with products of
- * another.
- */
-class AbstractFactory {
-public:
-    virtual AbstractProductA* CreateProductA() const = 0;
-    virtual AbstractProductB* CreateProductB() const = 0;
-};
-
-/**
- * Concrete Factories produce a family of products that belong to a single
- * variant. The factory guarantees that resulting products are compatible. Note
- * that signatures of the Concrete Factory's methods return an abstract product,
- * while inside the method a concrete product is instantiated.
- */
-class ConcreteFactory1 : public AbstractFactory {
-public:
-    AbstractProductA* CreateProductA() const override {
-        return new ConcreteProductA1();
-    }
-    AbstractProductB* CreateProductB() const override {
-        return new ConcreteProductB1();
-    }
-};
-
-/**
- * Each Concrete Factory has a corresponding product variant.
- */
-class ConcreteFactory2 : public AbstractFactory {
-public:
-    AbstractProductA* CreateProductA() const override {
-        return new ConcreteProductA2();
-    }
-    AbstractProductB* CreateProductB() const override {
-        return new ConcreteProductB2();
-    }
-};
-
-/**
- * The client code works with factories and products only through abstract
- * types: AbstractFactory and AbstractProduct. This lets you pass any factory or
- * product subclass to the client code without breaking it.
- */
-
-void ClientCode(const AbstractFactory& factory) {
-    const AbstractProductA* product_a = factory.CreateProductA();
-    const AbstractProductB* product_b = factory.CreateProductB();
-    std::cout << product_b->UsefulFunctionB() << "\n";
-    std::cout << product_b->AnotherUsefulFunctionB(*product_a) << "\n";
-    delete product_a;
-    delete product_b;
-}
 
 int main() {
-    std::cout << "Client: Testing client code with the first factory type:\n";
-    ConcreteFactory1* f1 = new ConcreteFactory1();
-    ClientCode(*f1);
-    delete f1;
-    std::cout << std::endl;
-    std::cout << "Client: Testing the same client code with the second factory type:\n";
-    ConcreteFactory2* f2 = new ConcreteFactory2();
-    ClientCode(*f2);
-    delete f2;
+    Invoker* invoker = new Invoker;
+    invoker->SetOnStart(new SimpleCommand("Say Hi!"));
+    Receiver* receiver = new Receiver;
+    invoker->SetOnFinish(new ComplexCommand(receiver, "Send email", "Save report"));
+    invoker->DoSomethingImportant();
+
+    delete invoker;
+    delete receiver;
+
     return 0;
 }
