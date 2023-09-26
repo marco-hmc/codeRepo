@@ -7,11 +7,11 @@
 // 0. Basic Form
 namespace _0
 {
-	template <typename T> // Old fasion: template <class T>
+	template <typename T> // Old fashion: template <class T>
 	class ClassA
 	{
 		T	a;
-		T*	b;
+		T* b;
 		T foo();
 		void foo2(T const&);
 	};
@@ -38,25 +38,25 @@ namespace _0
 // 1.1 Nested in Class
 namespace _1_1
 {
-	template <typename T> // Old fasion: template <class T>
+	template <typename T> // Old fashion: template <class T>
 	class ClassA
 	{
 		T	a;
-		T*	b;
+		T* b;
 		T foo();
 		template <typename U> void foo2(T const&, U const&);
 	};
 }
 
-// 1.2 Instanciating 1
+// 1.2 Instantiating 1
 namespace _1_2
 {
 	_1_1::ClassA<int>				a;
 
-	#if WRONG_CODE_ENABLED
+#if WRONG_CODE_ENABLED
 	_1_1::ClassA<WhatTheFuck>		b;	// Wrong
 	_1_1::ClassA					c;	// Wrong
-	#endif
+#endif
 }
 
 // 1.2.2
@@ -90,19 +90,19 @@ namespace _1_2_2
 #endif
 }
 
-// 1.3 Instanciating 2
+// 1.3 Instantiating 2
 namespace _1_3
 {
-	template <int i> class A 
+	template <int i> class A
 	{
-	public:
+		public:
 		void foo()
 		{
 		}
 	};
 	template <uint8_t a, typename b, void* c> class B {};
 	template <void (*a)()> class C {};
-	template <void (A<3>::*a)()> class D {};
+	template <void (A<3>::* a)()> class D {};
 
 #if WRONG_CODE_ENABLED
 	template <float a> class E {};
@@ -166,7 +166,7 @@ namespace _2_2_2
 	// 其次，我们要指定T是int时候的代码，这就是特化：
 	template <> class AddFloatOrMulInt<int>
 	{
-	public:
+		public:
 		static int Do(int a, int b)
 		{
 			return a * b;
@@ -176,7 +176,7 @@ namespace _2_2_2
 	// 再次，我们要指定T是float时候的代码：
 	template <> class AddFloatOrMulInt<float>
 	{
-	public:
+		public:
 		static float Do(float a, float b)
 		{
 			return a * b;
@@ -194,24 +194,24 @@ namespace _2_2_3
 {
 	template <typename T> class TypeToID
 	{
-	public:
+		public:
 		static int const ID = -1;
 	};
 
 	class B {};
 
-	template <> class TypeToID<void ()>;						// 函数的TypeID
+	template <> class TypeToID<void()>;						// 函数的TypeID
 	template <> class TypeToID<int[3]>;							// 数组的TypeID
-	template <> class TypeToID<int (int[3])>;					// 这是以数组为参数的函数的TypeID
-	template <> class TypeToID<int (B::*[3])(void*, float[2])>;	// 我也不知道这是什么了，自己看着办吧。
+	template <> class TypeToID<int(int[3])>;					// 这是以数组为参数的函数的TypeID
+	template <> class TypeToID<int (B::* [3])(void*, float[2])>;	// 我也不知道这是什么了，自己看着办吧。
 
-	template <> class TypeToID<int const * volatile * const volatile>;
+	template <> class TypeToID<int const* volatile* const volatile>;
 }
 
 namespace _2_2_4
 {
 	template <typename T> struct X {};
-	
+
 	template <typename T> struct Y
 	{
 		typedef X<T> ReboundType;
@@ -225,7 +225,7 @@ namespace _2_2_4
 			X<T> instance0;
 			typename X<T>::MemberType instance1;
 			WTF instance2
-			大王叫我来巡山 - + &
+				大王叫我来巡山 - +&
 		}
 	};
 
@@ -276,63 +276,63 @@ namespace _1_4
 	{
 		int b;
 	};
-	
+
 	template <> class ClassD<float>
 	{
 		int c;
 	};
-	
+
 	// Partial-Specialization: A partial pattern for matching
 	template <typename T> class ClassD<T*>	// 1. template <typename T>	2. ClassD<T*>
 	{
 		int d;
 	};
-	
+
 	template <> class ClassD<int*>			// 1. template <>			2. ClassD<T*>
 	{
 		int e;
 	};
-	
+
 	// Question:
-	
+
 	// ClassD<int>::?
 	// ClassD<float>::?
 	// ClassD<double>::?
 	// ClassD<double*>::?
 	// ClassD<int*>::?
 	// ClassD<int const*>::?
-	
+
 	// Prototype of Templates II: Multiple Parameter
 	template <typename T, typename U> class ClassE
 	{
 		int a;
 	};
-	
+
 	template <typename T, typename U> class ClassE<T, U*>
 	{
 		int b;
 	};
-	
+
 	template <typename T> class ClassE<T, int>
 	{
 		int c;
 	};
-	
+
 	template <typename T> class ClassE<T, int*>
 	{
 		int d;
 	};
-	
+
 	template <typename U> class ClassE<int, U>
 	{
 		int e;
 	};
-	
+
 	template <> class ClassE<int, int>
 	{
 		int f;
 	};
-	
+
 	// Question:
 
 	// ClassE<float, double>::?
@@ -345,7 +345,7 @@ namespace _1_4
 	template <typename T>
 	class ClassF
 	{
-	public:
+		public:
 		void foo();
 	};
 
@@ -354,7 +354,7 @@ namespace _1_4
 	{
 	}
 
-	template <> 
+	template <>
 	void ClassF<int>::foo()
 	{
 	}
@@ -401,7 +401,7 @@ namespace _2_1
 
 	void test()
 	{
-		
+
 		int x = 5;
 		float y = 10.0f;
 		foo(y);
@@ -411,8 +411,8 @@ namespace _2_1
 		foo3<int>(0.0f);	// Specialize types which is uninferable.
 
 #if WRONG_CODE_ENABLED
-		foo(3);	// Ambigous
-		foo(x); // Ambigous
+		foo(3);	// Ambiguous
+		foo(x); // Ambiguous
 #endif
 	}
 }
@@ -431,25 +431,25 @@ namespace _2_2
 	{
 		T* x;
 	};
-	
+
 	template <typename T>
-	class ClassC: public ClassB<T>
+	class ClassC : public ClassB<T>
 	{
 		T* x;
 	};
-	
+
 	ClassC<int> a;
 
 #if WRONG_CODE_ENABLED
-	class ClassC: public ClassA<ClassC>
+	class ClassC : public ClassA<ClassC>
 	{
 	};
 #endif
-	
-	class ClassD: public ClassB<ClassD>
+
+	class ClassD : public ClassB<ClassD>
 	{
 	};
-	
+
 	// ClassC =??= ClassD
 }
 
@@ -460,7 +460,7 @@ namespace _3_1
 	{
 		return a == b;
 	}
-	
+
 	// meta functions:
 	// bool equal0(TypeA, TypeB)
 	// {
@@ -471,21 +471,21 @@ namespace _3_1
 	//		return true;
 	// }
 	// equal(A, A) == equal1(A, A) == true
-	// euqla(A, B) == equal0(A, B) == false
+	// equal(A, B) == equal0(A, B) == false
 	template <typename T, typename U>
 	class Equal
 	{
-	public:
+		public:
 		static bool const value = false;
 	};
-	
+
 	template <typename T>
 	class Equal<T, T>
 	{
-	public:
+		public:
 		static bool const value = true;
 	};
-	
+
 	bool x = Equal<int, float>::value;
 	bool y = Equal<int, int>::value;
 }
@@ -517,19 +517,19 @@ namespace _3_2
 		return Mark<2>();
 	}
 
-	bool a = TestIncrementAdd( ClassA() ) ) == sizeof(Mark<1>);
+	bool a = TestIncrementAdd(ClassA()) ) == sizeof(Mark<1>);
 #endif
 
 	// Right case: From Wiki
 	class ClassB
 	{
-	public:
+		public:
 		typedef int Marker;
 	};
- 
+
 	template <typename T> void test(typename T::Marker) { }
 	template <typename T> void test(T) { }
- 
+
 	void DoTest()
 	{
 		test<ClassB>(10);	// Call #1.
@@ -541,8 +541,8 @@ namespace _3_2
 namespace _3_3
 {
 	template <typename T, typename U> class is_same;
-	
-	
+
+
 	template <typename B, typename D> class is_base_of;
 	// is_base_of
 	// 1. B is class, D is also class.
@@ -557,11 +557,11 @@ namespace _3_3
 	{
 	};
 
-	class D: public B
+	class D : public B
 	{
 	};
 
-	class D2: public D
+	class D2 : public D
 	{
 	};
 
@@ -569,13 +569,13 @@ namespace _3_3
 	template <typename T>
 	class is_class
 	{
-	private:
+		private:
 		// SFINAE
-		template <typename U> static Accepted test( int U::* );
+		template <typename U> static Accepted test(int U::*);
 		template <typename U> static Rejected test(...);
 
-	public:
-		static const bool value = sizeof( test<T>(0) ) == sizeof(Accepted);
+		public:
+		static const bool value = sizeof(test<T>(0)) == sizeof(Accepted);
 	};
 
 	bool a = is_class<int>::value;
@@ -585,12 +585,12 @@ namespace _3_3
 	template <typename Source, typename Dest>
 	class Convertible
 	{
-	private:
+		private:
 		// Not SFINAE
 		static Accepted test(Dest*);
 		static Rejected test(...);
-	public:
-		static const bool value = sizeof( test(static_cast<Source*>(NULL)) ) == sizeof(Accepted);
+		public:
+		static const bool value = sizeof(test(static_cast<Source*>(NULL))) == sizeof(Accepted);
 	};
 
 	bool c = Convertible<B, D>::value;
@@ -603,8 +603,8 @@ namespace _3_3
 	template <typename Base, typename Derived>
 	class is_base_of
 	{
-	public:
-		static bool const value = 
+		public:
+		static bool const value =
 			is_class<Base>::value &&
 			is_class<Derived>::value &&
 			Convertible<Base, Derived>::value &&
@@ -645,21 +645,21 @@ namespace _3_4
 		{
 			return b;
 		}
-		return a + recursive_algo(a+1, b);
+		return a + recursive_algo(a + 1, b);
 	}
 
 	// Translate to meta-programming
 	template <int a, int b>
 	class MetaSum
 	{
-	public:
-		static int const value = MetaSum<a+1, b>::value + a;
+		public:
+		static int const value = MetaSum<a + 1, b>::value + a;
 	};
 
 	template <int a>
 	class MetaSum<a, a>
 	{
-	public:
+		public:
 		static int const value = a;
 	};
 
@@ -672,21 +672,21 @@ namespace _3_5
 	template <int Index>
 	class Fibonacci
 	{
-	public:
+		public:
 		static int const value = Fibonacci<Index - 1>::value + Fibonacci<Index - 2>::value;
 	};
 
 	template <>
 	class Fibonacci<0>
 	{
-	public:
+		public:
 		static int const value = 0;
 	};
 
 	template <>
 	class Fibonacci<1>
 	{
-	public:
+		public:
 		static int const value = 1;
 	};
 
@@ -704,20 +704,20 @@ namespace _4
 
 	class ClassA
 	{
-	public:
+		public:
 		typedef int NestedType;
 	};
 
 	class ClassB
 	{
-	public:
+		public:
 		typedef ClassA::NestedType NestedType;
 	};
 
 	template <typename T>
 	class ClassC
 	{
-	public:
+		public:
 #if WRONG_CODE_ENABLED
 		typedef T::NestedType NestedType;
 #endif
@@ -727,14 +727,14 @@ namespace _4
 
 	class ClassD
 	{
-	public:
+		public:
 		template <typename U, typename V> class NestedType;
 	};
 
 	template <typename T>
 	class ClassE
 	{
-	public:
+		public:
 		template <typename U> class NestedType;
 	};
 
@@ -765,7 +765,7 @@ namespace _5_1
 	template <int i>
 	class int_
 	{
-	public:
+		public:
 		static int const value = i;
 	};
 
@@ -784,7 +784,7 @@ namespace _5_1
 
 	void foo()
 	{
-		Do( static_cast<int*>(nullptr), int_<1>() );
+		Do(static_cast<int*>(nullptr), int_<1>());
 	}
 
 	template <typename T, int i> void DoAnotherWay(T* obj)
@@ -795,13 +795,13 @@ namespace _5_1
 	template <bool v>
 	class bool_
 	{
-	public:
+		public:
 		static bool const value = v;
 	};
 
 	typedef bool_<true>		true_;
 	typedef bool_<false>	false_;
-	
+
 #if WRONG_CODE_ENABLED
 	// Aha, function cannot support partial specialization.
 	template <typename T> void DoAnotherWay<T, 1>(T* obj) {}
@@ -810,11 +810,11 @@ namespace _5_1
 
 	// 2. Operators:
 	// add
-	
+
 	template <typename T, typename U>
 	class add_
 	{
-	public:
+		public:
 		typedef int_<T::value + U::value> type;
 		static int const value = type::value;
 	};
@@ -824,16 +824,16 @@ namespace _5_1
 	template <int x, int y>
 	class add_
 	{
-	public:
-		typedef int_<x+y> type;
+		public:
+		typedef int_<x + y> type;
 		static int const value = type::value;
 	};
 #endif
 	template <int x, int y>
 	class add_c
 	{
-	public:
-		typedef int_<x+y> type;
+		public:
+		typedef int_<x + y> type;
 		static int const value = type::value;
 	};
 
@@ -845,7 +845,7 @@ namespace _5_1
 
 	// another solution
 	template <typename T, typename U>
-	class add2_: public int_<T::value+U::value>
+	class add2_ : public int_<T::value + U::value>
 	{
 	};
 	int d = add2_< int_<2>, int_<3> >::value;
@@ -869,7 +869,7 @@ namespace _5_2
 	};
 
 	class Nil;
-	
+
 	// Try Use It to Definition
 	typedef pair_< int, pair_<float, pair_<double, Nil> > > vector_3;
 
@@ -886,7 +886,7 @@ namespace _5_2
 	};
 
 	template <typename T0, typename T1 = Nil, typename T2 = Nil, typename T3 = Nil>
-	class vector_: public make_vector_<T0, T1, T2, T3>::type
+	class vector_ : public make_vector_<T0, T1, T2, T3>::type
 	{
 	};
 
@@ -904,7 +904,7 @@ namespace _5_2
 
 // 6.2 High order function, closure and STL allocator rebind
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, _TCHAR* argv[])
 {
 	return 0;
 }
