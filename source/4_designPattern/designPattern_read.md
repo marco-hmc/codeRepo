@@ -1670,7 +1670,6 @@ Wikipedia says
 
 **Programmatic example**
 
-Translating our example from above. First of all we have job seekers that need to be notified for a job posting
 ```php
 class JobPost
 {
@@ -1749,13 +1748,16 @@ $jobPostings->addJob(new JobPost('Software Engineer'));
 🏃 Visitor
 -------
 Real world example
-> Consider someone visiting Dubai. They just need a way (i.e. visa) to enter Dubai. After arrival, they can come and visit any place in Dubai on their own without having to ask for permission or to do some leg work in order to visit any place here; just let them know of a place and they can visit it. Visitor pattern lets you do just that, it helps you add places to visit so that they can visit as much as they can without having to do any legwork.
+> Consider someone visiting Dubai. They just need a way (i.e. visa) to enter Dubai. 
+> After arrival, they can come and visit any place in Dubai on their own without having to ask for permission or to do some leg work in order to visit any place here; just let them know of a place and they can visit it. 
+> Visitor pattern lets you do just that, it helps you add places to visit so that they can visit as much as they can without having to do any legwork.
 
 In plain words
 > Visitor pattern lets you add further operations to objects without having to modify them.
 
 Wikipedia says
-> In object-oriented programming and software engineering, the visitor design pattern is a way of separating an algorithm from an object structure on which it operates. A practical result of this separation is the ability to add new operations to existing object structures without modifying those structures. It is one way to follow the open/closed principle.
+> In object-oriented programming and software engineering, the visitor design pattern is a way of separating an algorithm from an object structure on which it operates. 
+> A practical result of this separation is the ability to add new operations to existing object structures without modifying those structures. It is one way to follow the open/closed principle.
 
 **Programmatic example**
 
@@ -2169,18 +2171,3 @@ $iosBuilder->build();
 // Assembling the ios build
 // Deploying ios build to server
 ```
-
-## 🚦 Wrap Up Folks
-
-And that about wraps it up. I will continue to improve this, so you might want to watch/star this repository to revisit. Also, I have plans on writing the same about the architectural patterns, stay tuned for it.
-
-## 👬 Contribution
-
-- Report issues
-- Open pull request with improvements
-- Spread the word
-- Reach out with any feedback [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/kamranahmedse.svg?style=social&label=Follow%20%40kamranahmedse)](https://twitter.com/kamranahmedse)
-
-## License
-
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
