@@ -1,19 +1,29 @@
-# designPattern
-
-* CRTP 
-* 为什么要禁止non moveable
+## concept(keyword)
 * RAII
-Pimpl
-CRTP
-Non-Copyable/Non-Moveable
-Erase-Remove
-Copy and Swap
-Copy on Write
+* Pimpl
+* CRTP
+* Non-Copyable/Non-Moveable
+* Erase-Remove
+* Copy and Swap
+* Copy on Write
 * ADL
+* TMP(Template Meta Programming):
+* SFINAE(Substitution Failure Is Not An Error):
+* RVO,NRVO(Return Value Optimization, Named Return Value Optimization):
+
+
+
+
+
+## resources
 * https://roadmap.sh/full-stack
-* **os**
-  https://github.com/OXygenMoon/OperatingSystemInDepth/tree/main
-  https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System/tree/master/Chapter-4
-  https://github.com/maple5233/-Computer-Organization-and-Design-Notes/tree/master
-  https://github.com/xueb96/C_O_D_5th
-  https://github.com/PKUFlyingPig/CS144-Computer-Network
+*  os
+   * https://github.com/OXygenMoon/OperatingSystemInDepth/tree/main
+   * https://github.com/SamyPesse/How-to-Make-a-Computer-Operating-System/tree/master/Chapter-4
+   * https://github.com/maple5233/-Computer-Organization-and-Design-Notes/tree/master
+   * https://github.com/xueb96/C_O_D_5th
+
+* network
+   * https://github.com/PKUFlyingPig/CS144-Computer-Network
+
+project collaborate

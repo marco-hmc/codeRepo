@@ -1,32 +1,17 @@
-#include <cassert>
-#include <cstring>
-#include <string>
-namespace jc {
+#include <iostream>
 
-    template <typename T>
-    T max(T a, T b) {
-        return a < b ? b : a;
-    }
+template<class T>
+void f(T) { std::cout << 1; }
 
-    template <typename T>
-    T* max(T* a, T* b) {
-        return *a < *b ? b : a;
-    }
+template<>
+void f<>(int*) { std::cout << 2; }
 
-    const char* max(const char* a, const char* b) {
-        return std::strcmp(a, b) < 0 ? b : a;
-    }
-
-}  // namespace jc
+template<class T>
+void f(T*) { std::cout << 3; }
 
 int main() {
-    int a = 1;
-    int b = 3;
-    assert(jc::max(a, b) == b);
-    assert(jc::max(&a, &b) == &b);
-
-    std::string s1 = "down";
-    std::string s2 = "demo";
-    assert(jc::max(s1, s2) == "down");
-    assert(std::strcmp(jc::max("down", "demo"), "down") == 0);
+    int* p = nullptr;
+    f(p);
+    int i;
+    f(&i); //
 }
