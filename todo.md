@@ -1,19 +1,8 @@
 ## concept(keyword)
-* RAII
-* Pimpl
-* CRTP
-* Non-Copyable/Non-Moveable
-* Erase-Remove
-* Copy and Swap
-* Copy on Write
 * ADL
 * TMP(Template Meta Programming):
 * SFINAE(Substitution Failure Is Not An Error):
-* RVO,NRVO(Return Value Optimization, Named Return Value Optimization):
-
-
-
-
+* RVO, NRVO(Return Value Optimization, Named Return Value Optimization):
 
 ## resources
 * https://roadmap.sh/full-stack
