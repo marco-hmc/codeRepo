@@ -1,4 +1,4 @@
-## todo
+[] todo
 * ADL
 * RVO, NRVO(Return Value Optimization, Named Return Value Optimization):
 * https://blog.csdn.net/zzxiaozhao/article/details/102527023
@@ -12,7 +12,8 @@
 * code snippets
 * wk document: 
     https://confluence.zwcad.com/pages/viewpage.action?pageId=60719484
-
+* 卫语句
+    https://blog.csdn.net/Holon_/article/details/120556167
 ## doing
 
 * OS-project
