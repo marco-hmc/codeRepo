@@ -1,4 +1,4 @@
-## todo
+[] todo
 * https://blog.csdn.net/zzxiaozhao/article/details/102527023
 * https://zhuanlan.zhihu.com/p/596288935
 * 维护几个repo
@@ -15,6 +15,9 @@
 * 整理blog
 * 整理wukong侧的东西,看看有没有用的.
 * 整理一些笔记给liujun.
+* 内存管理
+  * https://zhuanlan.zhihu.com/p/81644933
+  * https://zhuanlan.zhihu.com/p/359165294
 ## doing
 
 * OS-project
