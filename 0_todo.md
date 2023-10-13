@@ -1,11 +1,17 @@
 ##  todo
 
 ### reading
-  * refactoring2
+  * **refactoring2** 
   * Cpp-Templates-2ed-master
 
+### project
+  * **json**
+  * OS-project
+  * network-project
+
+
 ### blog
-* 维护几个repo
+* **维护几个repo**
   * readingRepo: 用于存储随想
   * resourcesRepo: 用于存放学习资料,坚果云
   * codeRepo: 用于存放学习笔记,代码
@@ -28,10 +34,5 @@
     https://blog.csdn.net/Holon_/article/details/120556167
 
 ## doing
-
-* OS-project
-  * just start
-* network-project
-  * just start
 
 ## done
