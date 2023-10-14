@@ -1,7 +1,12 @@
+## doing
+  * **refactoring2** 
+  * 内存管理
+    * https://zhuanlan.zhihu.com/p/359165294
+
 ##  todo
 
 ### reading
-  * **refactoring2** 
+
   * Cpp-Templates-2ed-master
 
 ### project
@@ -19,7 +24,6 @@
 
 ### toBeRead
 * 内存管理
-  * https://zhuanlan.zhihu.com/p/81644933
   * https://zhuanlan.zhihu.com/p/359165294
   * https://blog.csdn.net/zzxiaozhao/article/details/102527023
   * https://zhuanlan.zhihu.com/p/596288935
@@ -32,8 +36,6 @@
   * 整理一些笔记给liujun.
 * 卫语句
     https://blog.csdn.net/Holon_/article/details/120556167
-
-## doing
 
 ## done
 

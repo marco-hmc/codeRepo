@@ -1,23 +1,6 @@
 # An Introduction to JavaScript
 
-Let's see what's so special about JavaScript, what we can achieve with it, and what other technologies play well with it.
-
 ## What is JavaScript?
-
-*JavaScript* was initially created to "make web pages alive".
-
-The programs in this language are called *scripts*. They can be written right in a web page's HTML and run automatically as the page loads.
-
-Scripts are provided and executed as plain text. They don't need special preparation or compilation to run.
-
-In this aspect, JavaScript is very different from another language called [Java](https://en.wikipedia.org/wiki/Java_(programming_language)).
-
-```smart header="Why is it called <u>Java</u>Script?"
-When JavaScript was created, it initially had another name: "LiveScript". But Java was very popular at that time, so it was decided that positioning a new language as a "younger brother" of Java would help.
-
-But as it evolved, JavaScript became a fully independent language with its own specification called [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript), and now it has no relation to Java at all.
-```
-
 Today, JavaScript can execute not only in the browser, but also on the server, or actually on any device that has a special program called [the JavaScript engine](https://en.wikipedia.org/wiki/JavaScript_engine).
 
 The browser has an embedded engine sometimes called a "JavaScript virtual machine".
