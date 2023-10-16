@@ -1,48 +1,43 @@
-## doing
-  * **refactoring2** 
-  * 内存管理
+[toc]
+## 1. doing
+  1. podcast
+  2. 牙医
+  3. **refactoring2** 
+  4. Cpp-Templates-2ed-master
+  5. 内存管理
     * https://zhuanlan.zhihu.com/p/359165294
+  6. js
+    \1-js\01-getting-started\4-devtools\article.md 
+  
+##  2. todo
+  * **project**
+    * OS-project
+    * network-project
 
-##  todo
+  * **blog**
+      维护几个repo
+      * readingRepo: 用于存储随想
+      * resourcesRepo: 用于存放学习资料,坚果云
+      * codeRepo: 用于存放学习笔记,代码
+      * blogRepo: 博客
 
-### reading
+  * **内存管理**
+    * https://zhuanlan.zhihu.com/p/359165294
+    * https://blog.csdn.net/zzxiaozhao/article/details/102527023
+    * https://zhuanlan.zhihu.com/p/596288935
+    * https://www.tutorialspoint.com/operating_system/index.htm
 
-  * Cpp-Templates-2ed-master
+  * **toBeOrganized**
+    * wk document:
+      * 整理wukong侧的东西,看看有没有用的. 
+      * https://confluence.zwcad.com/pages/viewpage.action?pageId=60719484
+      * 整理一些笔记给liujun.
+    * 卫语句
+        https://blog.csdn.net/Holon_/article/details/120556167
 
-### project
-  * **json**
-  * OS-project
-  * network-project
+## 3. done
 
-
-### blog
-* **维护几个repo**
-  * readingRepo: 用于存储随想
-  * resourcesRepo: 用于存放学习资料,坚果云
-  * codeRepo: 用于存放学习笔记,代码
-  * blogRepo: 博客
-
-### toBeRead
-* 内存管理
-  * https://zhuanlan.zhihu.com/p/359165294
-  * https://blog.csdn.net/zzxiaozhao/article/details/102527023
-  * https://zhuanlan.zhihu.com/p/596288935
-  * https://www.tutorialspoint.com/operating_system/index.htm
-
-### toBeOrganized
-* wk document:
-  * 整理wukong侧的东西,看看有没有用的. 
-  * https://confluence.zwcad.com/pages/viewpage.action?pageId=60719484
-  * 整理一些笔记给liujun.
-* 卫语句
-    https://blog.csdn.net/Holon_/article/details/120556167
-
-## done
-
-![Alt text](_imgs/image.png)
-
-
-## unorganized
+## 4. unorganized
 
 * Today, JavaScript can execute not only in the browser, but also on the server, or actually on any device that has a special program called [the JavaScript engine](https://en.wikipedia.org/wiki/JavaScript_engine).
   The browser has an embedded engine sometimes called a "JavaScript virtual machine".
