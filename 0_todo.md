@@ -1,8 +1,10 @@
 [toc]
 ## 1. doing
   1. podcast
+    * 试彩排
   2. 牙医
   3. **refactoring2** 
+    * \0_codigRepo\codingRepo\notes\6_设计模式\refactroing2\ch1.md
   4. Cpp-Templates-2ed-master
   5. 内存管理
     * https://zhuanlan.zhihu.com/p/359165294
