@@ -1,20 +1,11 @@
 # Function expressions
 
-In JavaScript, a function is not a "magical language structure", but a special kind of value.
-
-The syntax that we used before is called a *Function Declaration*:
 
 ```js
 function sayHi() {
   alert( "Hello" );
 }
 ```
-
-There is another syntax for creating a function that is called a *Function Expression*.
-
-It allows us to create a new function in the middle of any expression.
-
-For example:
 
 ```js
 let sayHi = function() {
@@ -24,17 +15,9 @@ let sayHi = function() {
 
 Here we can see a variable `sayHi` getting a value, the new function, created as `function() { alert("Hello"); }`.
 
-As the function creation happens in the context of the assignment expression (to the right side of `=`), this is a *Function Expression*.
-
-Please note, there's no name after the `function` keyword. Omitting a name is allowed for Function Expressions.
-
-Here we immediately assign it to the variable, so the meaning of these code samples is the same: "create a function and put it into the variable `sayHi`".
-
 In more advanced situations, that we'll come across later, a function may be created and immediately called or scheduled for a later execution, not stored anywhere, thus remaining anonymous.
 
 ## Function is a value
-
-Let's reiterate: no matter how the function is created, a function is a value. Both examples above store a function in the `sayHi` variable.
 
 We can even print out that value using `alert`:
 
@@ -49,8 +32,6 @@ alert( sayHi ); // shows the function code
 ```
 
 Please note that the last line does not run the function, because there are no parentheses after `sayHi`. There are programming languages where any mention of a function name causes its execution, but JavaScript is not like that.
-
-In JavaScript, a function is a value, so we can deal with it as a value. The code above shows its string representation, which is the source code.
 
 Surely, a function is a special value, in the sense that we can call it like `sayHi()`.
 
@@ -86,11 +67,6 @@ let func = sayHi;
 // ...
 ```
 
-Everything would work the same.
-
-
-````smart header="Why is there a semicolon at the end?"
-You might wonder, why do Function Expressions have a semicolon `;` at the end, but Function Declarations do not:
 
 ```js
 function sayHi() {
@@ -104,8 +80,7 @@ let sayHi = function() {
 
 The answer is simple: a Function Expression is created here as `function(…) {…}` inside the assignment statement: `let sayHi = …;`. The semicolon `;` is recommended at the end of the statement, it's not a part of the function syntax.
 
-The semicolon would be there for a simpler assignment, such as `let sayHi = 5;`, and it's also there for a function assignment.
-````
+
 
 ## Callback functions
 
@@ -144,13 +119,8 @@ function showCancel() {
 ask("Do you agree?", showOk, showCancel);
 ```
 
-In practice, such functions are quite useful. The major difference between a real-life `ask` and the example above is that real-life functions use more complex ways to interact with the user than a simple `confirm`. In the browser, such functions usually draw a nice-looking question window. But that's another story.
-
 **The arguments `showOk` and `showCancel` of `ask` are called *callback functions* or just *callbacks*.**
 
-The idea is that we pass a function and expect it to be "called back" later if necessary. In our case, `showOk` becomes the callback for "yes" answer, and `showCancel` for "no" answer.
-
-We can use Function Expressions to write an equivalent, shorter function:
 
 ```js run no-beautify
 function ask(question, yes, no) {
@@ -169,47 +139,9 @@ ask(
 
 Here, functions are declared right inside the `ask(...)` call. They have no name, and so are called *anonymous*. Such functions are not accessible outside of `ask` (because they are not assigned to variables), but that's just what we want here.
 
-Such code appears in our scripts very naturally, it's in the spirit of JavaScript.
-
-```smart header="A function is a value representing an \"action\""
-Regular values like strings or numbers represent the *data*.
-
-A function can be perceived as an *action*.
-
-We can pass it between variables and run when we want.
-```
-
-
 ## Function Expression vs Function Declaration
 
-Let's formulate the key differences between Function Declarations and Expressions.
-
-First, the syntax: how to differentiate between them in the code.
-
-- *Function Declaration:* a function, declared as a separate statement, in the main code flow:
-
-    ```js
-    // Function Declaration
-    function sum(a, b) {
-      return a + b;
-    }
-    ```
-- *Function Expression:* a function, created inside an expression or inside another syntax construct. Here, the function is created on the right side of the "assignment expression" `=`:
-
-    ```js
-    // Function Expression
-    let sum = function(a, b) {
-      return a + b;
-    };
-    ```
-
-The more subtle difference is *when* a function is created by the JavaScript engine.
-
 **A Function Expression is created when the execution reaches it and is usable only from that moment.**
-
-Once the execution flow passes to the right side of the assignment `let sum = function…` -- here we go, the function is created and can be used (assigned, called, etc. ) from now on.
-
-Function Declarations are different.
 
 **A Function Declaration can be called earlier than it is defined.**
 
@@ -218,8 +150,6 @@ For example, a global Function Declaration is visible in the whole script, no ma
 That's due to internal algorithms. When JavaScript prepares to run the script, it first looks for global Function Declarations in it and creates the functions. We can think of it as an "initialization stage".
 
 And after all Function Declarations are processed, the code is executed. So it has access to these functions.
-
-For example, this works:
 
 ```js run refresh untrusted
 *!*
