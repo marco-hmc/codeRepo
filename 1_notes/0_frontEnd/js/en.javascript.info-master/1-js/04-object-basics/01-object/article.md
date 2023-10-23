@@ -1,12 +1,6 @@
 
 # Objects
 
-As we know from the chapter <info:types>, there are eight data types in JavaScript. Seven of them are called "primitive", because their values contain only a single thing (be it a string or a number or whatever).
-
-In contrast, objects are used to store keyed collections of various data and more complex entities. In JavaScript, objects penetrate almost every aspect of the language. So we must understand them first before going in-depth anywhere else.
-
-An object can be created with figure brackets `{…}` with an optional list of *properties*. A property is a "key: value" pair, where `key` is a string (also called a "property name"), and `value` can be anything.
-
 We can imagine an object as a cabinet with signed files. Every piece of data is stored in its file by the key. It's easy to find a file by its name or add/remove a file.
 
 ![](object.svg)
@@ -20,11 +14,8 @@ let user = {};  // "object literal" syntax
 
 ![](object-user-empty.svg)
 
-Usually, the figure brackets `{...}` are used. That declaration is called an *object literal*.
 
 ## Literals and properties
-
-We can immediately put some properties into `{...}` as "key: value" pairs:
 
 ```js
 let user = {     // an object
@@ -33,44 +24,14 @@ let user = {     // an object
 };
 ```
 
-A property has a key (also known as "name" or "identifier") before the colon `":"` and a value to the right of it.
-
-In the `user` object, there are two properties:
-
-1. The first property has the name `"name"` and the value `"John"`.
-2. The second one has the name `"age"` and the value `30`.
-
-The resulting `user` object can be imagined as a cabinet with two signed files labeled "name" and "age".
-
 ![user object](object-user.svg)
 
-We can add, remove and read files from it at any time.
-
-Property values are accessible using the dot notation:
 
 ```js
 // get property values of the object:
 alert( user.name ); // John
 alert( user.age ); // 30
 ```
-
-The value can be of any type. Let's add a boolean one:
-
-```js
-user.isAdmin = true;
-```
-
-![user object 2](object-user-isadmin.svg)
-
-To remove a property, we can use the `delete` operator:
-
-```js
-delete user.age;
-```
-
-![user object 3](object-user-delete.svg)
-
-We can also use multiword property names, but then they must be quoted:
 
 ```js
 let user = {
@@ -90,22 +51,15 @@ let user = {
   age: 30*!*,*/!*
 }
 ```
-That is called a "trailing" or "hanging" comma. Makes it easier to add/remove/move around properties, because all lines become alike.
 
 ## Square brackets
-
-For multiword properties, the dot access doesn't work:
 
 ```js run
 // this would give a syntax error
 user.likes birds = true
 ```
 
-JavaScript doesn't understand that. It thinks that we address `user.likes`, and then gives a syntax error when comes across unexpected `birds`.
-
 The dot requires the key to be a valid variable identifier. That implies: contains no spaces, doesn't start with a digit and doesn't include special characters (`$` and `_` are allowed).
-
-There's an alternative "square bracket notation" that works with any string:
 
 ```js run
 let user = {};
@@ -118,17 +72,6 @@ alert(user["likes birds"]); // true
 
 // delete
 delete user["likes birds"];
-```
-
-Now everything is fine. Please note that the string inside the brackets is properly quoted (any type of quotes will do).
-
-Square brackets also provide a way to obtain the property name as the result of any expression -- as opposed to a literal string -- like from a variable as follows:
-
-```js
-let key = "likes birds";
-
-// same as user["likes birds"] = true;
-user[key] = true;
 ```
 
 Here, the variable `key` may be calculated at run-time or depend on the user input. And then we use it to access the property. That gives us a great deal of flexibility.

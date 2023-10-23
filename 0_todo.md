@@ -14,13 +14,14 @@
   5. 内存管理
     * https://zhuanlan.zhihu.com/p/359165294
   6. js
-    1_notes\0_frontEnd\js\en.javascript.info-master\1-js\03-code-quality\05-testing-mocha\article.md
+    0_codigRepo\codingRepo\1_notes\0_frontEnd\js\en.javascript.info-master\1-js\04-object-basics\04-object-methods\article.md
   7. qt
-  8. 
+
 ##  2. todo
   * **project**
     * OS-project
     * network-project
+    * 自己做一个vs code插件,可以实现将词汇自动粘贴到某个给定路径,自己用来背单词用.
 
   * **blog**
       维护几个repo
@@ -47,4 +48,8 @@
 
 ## 4. unorganized
 
+
+## vocabulary
+  * cabinet
+  * inherently
 
