@@ -1,8 +1,13 @@
 [toc]
 ## 1. doing
   1. podcast
-    * 试彩排
+    * 东少
+    * 注意匿名性,注意扣题,注意背景音,
   2. 牙医
+    * 10.28天河区中医院补牙
+    * 弄医保
+  3. 去坚果云
+    * 把.pdf书籍存储到git上去
   3. **refactoring2** 
     * \0_codigRepo\codingRepo\notes\6_设计模式\refactroing2\ch1.md
   4. Cpp-Templates-2ed-master
@@ -10,7 +15,8 @@
     * https://zhuanlan.zhihu.com/p/359165294
   6. js
     1_notes\0_frontEnd\js\en.javascript.info-master\1-js\03-code-quality\05-testing-mocha\article.md
-  
+  7. qt
+  8. 
 ##  2. todo
   * **project**
     * OS-project

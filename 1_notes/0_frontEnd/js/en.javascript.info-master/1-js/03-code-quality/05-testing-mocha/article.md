@@ -1,20 +1,8 @@
 # Automated testing with Mocha
 
-Automated testing will be used in further tasks, and it's also widely used in real projects.
-
 ## Why do we need tests?
 
-When we write a function, we can usually imagine what it should do: which parameters give which results.
-
-During development, we can check the function by running it and comparing the outcome with the expected one. For instance, we can do it in the console.
-
-If something is wrong -- then we fix the code, run again, check the result -- and so on till it works.
-
-But such manual "re-runs" are imperfect.
-
 **When testing a code by manual re-runs, it's easy to miss something.**
-
-For instance, we're creating a function `f`. Wrote some code, testing: `f(1)` works, but `f(2)` doesn't work. We fix the code and now `f(2)` works. Looks complete? But we forgot to re-test `f(1)`. That may lead to an error.
 
 That's very typical. When we develop something, we keep a lot of possible use cases in mind. But it's hard to expect a programmer to check all of them manually after every change. So it becomes easy to fix one thing and break another one.
 
@@ -24,13 +12,7 @@ That's very typical. When we develop something, we keep a lot of possible use ca
 
 Let's start with a technique named [Behavior Driven Development](http://en.wikipedia.org/wiki/Behavior-driven_development) or, in short, BDD.
 
-**BDD is three things in one: tests AND documentation AND examples.**
-
-To understand BDD, we'll examine a practical case of development.
-
 ## Development of "pow": the spec
-
-Let's say we want to make a function `pow(x, n)` that raises `x` to an integer power `n`. We assume that `n≥0`.
 
 That task is just an example: there's the `**` operator in JavaScript that can do that, but here we concentrate on the development flow that can be applied to more complex tasks as well.
 
@@ -83,48 +65,18 @@ The first step is already complete: we have an initial spec for `pow`. Now, befo
 
 ## The spec in action
 
-Here in the tutorial we'll be using the following JavaScript libraries for tests:
-
 - [Mocha](https://mochajs.org/) -- the core framework: it provides common testing functions including `describe` and `it` and the main function that runs tests.
 - [Chai](https://www.chaijs.com/) -- the library with many assertions. It allows to use a lot of different assertions, for now we need only `assert.equal`.
 - [Sinon](https://sinonjs.org/) -- a library to spy over functions, emulate built-in functions and more, we'll need it much later.
 
-These libraries are suitable for both in-browser and server-side testing. Here we'll consider the browser variant.
-
-The full HTML page with these frameworks and `pow` spec:
-
 ```html src="index.html"
 ```
-
-The page can be divided into five parts:
 
 1. The `<head>` -- add third-party libraries and styles for tests.
 2. The `<script>` with the function to test, in our case -- with the code for `pow`.
 3. The tests -- in our case an external script `test.js` that has `describe("pow", ...)` from above.
 4. The HTML element `<div id="mocha">` will be used by Mocha to output results.
 5. The tests are started by the command `mocha.run()`.
-
-The result:
-
-[iframe height=250 src="pow-1" border=1 edit]
-
-As of now, the test fails, there's an error. That's logical: we have an empty function code in `pow`, so `pow(2,3)` returns `undefined` instead of `8`.
-
-For the future, let's note that there are more high-level test-runners, like [karma](https://karma-runner.github.io/) and others, that make it easy to autorun many different tests.
-
-## Initial implementation
-
-Let's make a simple implementation of `pow`, for tests to pass:
-
-```js
-function pow(x, n) {
-  return 8; // :) we cheat!
-}
-```
-
-Wow, now it works!
-
-[iframe height=250 src="pow-min" border=1 edit]
 
 ## Improving the spec
 
@@ -166,24 +118,6 @@ We can select one of two ways to organize the test here:
     });
     ```
 
-The principal difference is that when `assert` triggers an error, the `it` block immediately terminates. So, in the first variant if the first `assert` fails, then we'll never see the result of the second `assert`.
-
-Making tests separate is useful to get more information about what's going on, so the second variant is better.
-
-And besides that, there's one more rule that's good to follow.
-
-**One test checks one thing.**
-
-If we look at the test and see two independent checks in it, it's better to split it into two simpler ones.
-
-So let's continue with the second variant.
-
-The result:
-
-[iframe height=250 src="pow-2" edit border="1"]
-
-As we could expect, the second test failed. Sure, our function always returns `8`, while the `assert` expects `81`.
-
 ## Improving the implementation
 
 Let's write something more real for tests to pass:
@@ -224,90 +158,8 @@ The result:
 [iframe height=250 src="pow-3" edit border="1"]
 
 ## Nested describe
-
-We're going to add even more tests. But before that let's note that the helper function `makeTest` and `for` should be grouped together. We won't need `makeTest` in other tests, it's needed only in `for`: their common task is to check how `pow` raises into the given power.
-
-Grouping is done with a nested `describe`:
-
-```js
-describe("pow", function() {
-
-*!*
-  describe("raises x to power 3", function() {
-*/!*
-
-    function makeTest(x) {
-      let expected = x * x * x;
-      it(`${x} in the power 3 is ${expected}`, function() {
-        assert.equal(pow(x, 3), expected);
-      });
-    }
-
-    for (let x = 1; x <= 5; x++) {
-      makeTest(x);
-    }
-
-*!*
-  });
-*/!*
-
-  // ... more tests to follow here, both describe and it can be added
-});
-```
-
-The nested `describe` defines a new "subgroup" of tests. In the output we can see the titled indentation:
-
-[iframe height=250 src="pow-4" edit border="1"]
-
-In the future we can add more `it` and `describe` on the top level with helper functions of their own, they won't see `makeTest`.
-
-````smart header="`before/after` and `beforeEach/afterEach`"
-We can setup `before/after` functions that execute before/after running tests, and also `beforeEach/afterEach` functions that execute before/after *every* `it`.
-
-For instance:
-
-```js no-beautify
-describe("test", function() {
-
-  before(() => alert("Testing started – before all tests"));
-  after(() => alert("Testing finished – after all tests"));
-
-  beforeEach(() => alert("Before a test – enter a test"));
-  afterEach(() => alert("After a test – exit a test"));
-
-  it('test 1', () => alert(1));
-  it('test 2', () => alert(2));
-
-});
-```
-
-The running sequence will be:
-
-```
-Testing started – before all tests (before)
-Before a test – enter a test (beforeEach)
-1
-After a test – exit a test   (afterEach)
-Before a test – enter a test (beforeEach)
-2
-After a test – exit a test   (afterEach)
-Testing finished – after all tests (after)
-```
-
-[edit src="beforeafter" title="Open the example in the sandbox."]
-
-Usually, `beforeEach/afterEach` and `before/after` are used to perform initialization, zero out counters or do something else between the tests (or test groups).
-````
-
 ## Extending the spec
 
-The basic functionality of `pow` is complete. The first iteration of the development is done. When we're done celebrating and drinking champagne -- let's go on and improve it.
-
-As it was said, the function `pow(x, n)` is meant to work with positive integer values `n`.
-
-To indicate a mathematical error, JavaScript functions usually return `NaN`. Let's do the same for invalid values of `n`.
-
-Let's first add the behavior to the spec(!):
 
 ```js
 describe("pow", function() {
@@ -332,8 +184,6 @@ describe("pow", function() {
 The result with new tests:
 
 [iframe height=530 src="pow-nan" edit border="1"]
-
-The newly added tests fail, because our implementation does not support them. That's how BDD is done: first we write failing tests, and then make an implementation for them.
 
 ```smart header="Other assertions"
 Please note the assertion `assert.isNaN`: it checks for `NaN`.
