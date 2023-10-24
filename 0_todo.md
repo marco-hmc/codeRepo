@@ -1,25 +1,27 @@
 [toc]
 ## 1. doing
   1. podcast
-    * 东少
     * 注意匿名性,注意扣题,注意背景音,
   2. 牙医
     * 10.28天河区中医院补牙
     * 弄医保
-  3. 去坚果云
-    * 把.pdf书籍存储到git上去
-  3. **refactoring2** 
-    * \0_codigRepo\codingRepo\notes\6_设计模式\refactroing2\ch1.md
-  4. Cpp-Templates-2ed-master
-  5. 内存管理
-    * https://zhuanlan.zhihu.com/p/359165294
-  6. js
-    codingRepo\1_notes\0_frontEnd\js\en.javascript.info-master\1-js\04-object-basics\04-object-methods\article.md
-  7. qt
+  3. qt
     qt的translator是怎么用的
-  8. vs使用技巧
-  9. 现代c++ 
+  4. vs使用技巧
+  5. 现代c++ 
     https://github.com/changkun/modern-cpp-tutorial
+  6.  内存管理
+    https://zhuanlan.zhihu.com/p/359165294
+    
+  1. **refactoring2** 
+    codingRepo\notes\6_设计模式\refactoring2\ch1.md
+  2. **Cpp-Templates-2ed-master**
+    codingRepo\4_source\3_template\Cpp-Templates-2ed-master\docs\01_function_template.md
+  3. js
+    codingRepo\1_notes\0_frontEnd\js\en.javascript.info-master\1-js\04-object-basics\04-object-methods\article.md
+  
+  
+
 
 ##  2. todo
   * **project**
@@ -57,4 +59,5 @@
   * cabinet
   * inherently
   * Method shorthand
-
+****
+philosophy
