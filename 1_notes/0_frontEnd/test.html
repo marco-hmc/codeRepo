@@ -4,14 +4,20 @@
 
   <script>
     'use strict';
-    function sayHi() {   // (1) create
-      alert( "Hello" );
+    let user = {
+    name: "John",
+    age: 30,
+
+    sayHi() {
+      alert( this.name ); // leads to an error
     }
 
-    let func = sayHi();    // (2) copy
+  };
 
-    func(); // Hello     // (3) run the copy (it works)!
-    sayHi(); // Hello    //     this still works too (why wouldn't it)
+  let admin = user;
+  user = null; // overwrite to make things obvious
+
+  admin.sayHi(); // TypeError: Cannot read property 'name' of null   //     this still works too (why wouldn't it)
     
   </script>
 

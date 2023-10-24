@@ -14,8 +14,12 @@
   5. 内存管理
     * https://zhuanlan.zhihu.com/p/359165294
   6. js
-    0_codigRepo\codingRepo\1_notes\0_frontEnd\js\en.javascript.info-master\1-js\04-object-basics\04-object-methods\article.md
+    codingRepo\1_notes\0_frontEnd\js\en.javascript.info-master\1-js\04-object-basics\04-object-methods\article.md
   7. qt
+    qt的translator是怎么用的
+  8. vs使用技巧
+  9. 现代c++ 
+    https://github.com/changkun/modern-cpp-tutorial
 
 ##  2. todo
   * **project**
@@ -52,4 +56,5 @@
 ## vocabulary
   * cabinet
   * inherently
+  * Method shorthand
 
