@@ -5,10 +5,6 @@
   2. 牙医
     * 10.28天河区中医院补牙
     * 弄医保
-  3. qt
-    qt的translator是怎么用的
-    * linguist怎么用
-    * .ts文件是什么
   4. vs使用技巧
   6. 内存管理
     https://zhuanlan.zhihu.com/p/359165294
