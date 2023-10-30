@@ -1,27 +1,35 @@
-#include <vector>
 #include <iostream>
-#include <functional>
-#include <algorithm>
+#define LEN 10
 
-bool isOdd(int i) { return i & 1; }
+int len_foo() {
+    int i = 2;
+    return i;
+}
+constexpr int len_foo_constexpr() {
+    return 5;
+}
 
-void print(const std::vector<int>& vec) {
-    for (const auto& i : vec) {
-        std::cout << i << ' ';
-    }
-    std::cout << std::endl;
+constexpr int fibonacci(const int n) {
+    return n == 1 || n == 2 ? 1 : fibonacci(n - 1) + fibonacci(n - 2);
 }
 
 int main() {
-    std::vector<int> v = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    print(v);
+    char arr_1[10];                      // 合法
+    char arr_2[LEN];                     // 合法
 
-    std::remove(v.begin(), v.end(), 5);  // error
-    print(v);
+    int len = 10;
+    // char arr_3[len];                  // 非法
 
-    v.erase(std::remove(v.begin(), v.end(), 5), v.end());
-    print(v);
+    const int len_2 = len + 1;
+    constexpr int len_2_constexpr = 1 + 2 + 3;
+    // char arr_4[len_2];                // 非法
+    char arr_4[len_2_constexpr];         // 合法
 
-    v.erase(std::remove_if(v.begin(), v.end(), isOdd), v.end());
-    print(v);
+    // char arr_5[len_foo()+5];          // 非法
+    char arr_6[len_foo_constexpr() + 1]; // 合法
+
+    std::cout << fibonacci(10) << std::endl;
+    // 1, 1, 2, 3, 5, 8, 13, 21, 34, 55
+    std::cout << fibonacci(10) << std::endl;
+    return 0;
 }
