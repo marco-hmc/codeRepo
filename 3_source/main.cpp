@@ -33,3 +33,28 @@ int main() {
     std::cout << fibonacci(10) << std::endl;
     return 0;
 }
+
+// #include <iostream>
+// #include <vector>
+// #include <algorithm>
+
+// void print(const std::vector<int>& vec) {
+//     for (const auto& i : vec) {
+//         std::cout << i << ' ';
+//     }
+//     std::cout << std::endl;
+// }
+
+// int main() {
+//     std::vector<int> vec = { 1, 2, 3, 4, 5, 5, 6, 5 };
+//     print(vec);
+//     auto new_end = std::remove(vec.begin(), vec.end(), 5);
+//     print(vec);
+//     vec.erase(new_end, vec.end());
+//     print(vec);
+//     for (int i : vec) {
+//         std::cout << i << " ";
+//     }
+
+//     return 0;
+// }
