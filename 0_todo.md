@@ -3,8 +3,7 @@
   1. podcast
     * 注意匿名性,注意扣题,注意背景音,
   2. 牙医
-    * 10.28天河区中医院补牙
-    * 弄医保
+    * 医保卡补办
   4. vs使用技巧
   6. 内存管理
     https://zhuanlan.zhihu.com/p/359165294
@@ -19,9 +18,9 @@
   2. **Cpp-Templates-2ed-master**
     codingRepo\4_source\3_template\Cpp-Templates-2ed-master\docs\01_function_template.md
   3. **js**
-    codingRepo\1_notes\0_frontEnd\js\en.javascript.info-master\1-js\04-object-basics\04-object-methods\article.md
+    \en.javascript.info-master\1-js\04-object-basics\04-object-methods\article.md
   4. modern-cpp
-    \codingRepo\2_project\modern-cpp-tutorial-master\book\zh-cn\00-preface.md
+    modern-cpp-tutorial-master\book\zh-cn\00-preface.md
   
 ##  2. todo
   * **project**

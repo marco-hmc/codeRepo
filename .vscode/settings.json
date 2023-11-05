@@ -2,5 +2,9 @@
     "files.associations": {
         "type_traits": "cpp"
     },
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "cSpell.words": [
+        "ansicolor",
+        "nullmutex"
+    ]
 }
