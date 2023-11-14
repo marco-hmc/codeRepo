@@ -3,14 +3,6 @@
   1. podcast
   2. 牙医
     * 医保卡补办
-  4. vs使用技巧
-  6. 内存管理
-    https://zhuanlan.zhihu.com/p/359165294
-    ![Alt text](_imgs/image-1.png)
-  8. 条件变量
-    条件变量的使用有两大问题:信号丢失和虚假唤醒,相当重要,具体可以看我这篇文章<使用条件变量的坑你知道吗>.
-  9. 复习
-    委托构造
 
 ![Alt text](_imgs/image-2.png)  
 
@@ -32,7 +24,6 @@
     * 自己做一个vs code插件,可以实现将词汇自动粘贴到某个给定路径,自己用来背单词用.
 
   * **内存管理**
-    * https://zhuanlan.zhihu.com/p/359165294
     * https://blog.csdn.net/zzxiaozhao/article/details/102527023
     * https://zhuanlan.zhihu.com/p/596288935
     * https://www.tutorialspoint.com/operating_system/index.htm
@@ -42,8 +33,6 @@
       * 整理wukong侧的东西,看看有没有用的. 
       * https://confluence.zwcad.com/pages/viewpage.action?pageId=60719484
       * 整理一些笔记给liujun.
-    * 卫语句
-        https://blog.csdn.net/Holon_/article/details/120556167
 
 ## 3. done
 
