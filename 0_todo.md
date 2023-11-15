@@ -2,16 +2,17 @@
 ## 1. doing
   1. podcast
   2. 医保卡补办
+  3. cmake怎么用
 --------------------------------------------------------
 
   1. **refactoring2** 
-    codingRepo\notes\6_设计模式\refactoring2\ch1.md
-  2. **Cpp-Templates-2ed-master**
-    codingRepo\4_source\3_template\Cpp-Templates-2ed-master\docs\01_function_template.md
-  3. **js**
-    \en.javascript.info-master\1-js\04-object-basics\04-object-methods\article.md
+    1_notes\6_设计模式\refactoring2\ch1.md
+  2. **js**
+    1_notes\0_frontEnd\js\en.javascript.info-master\1-js\05-data-types\01-primitives-methods\article.md
+  3. **Cpp-Templates-2ed-master**
+    2_project\Cpp-Templates-2ed-master\Cpp-Templates-2ed-master\docs\01_function_template.md
   4. modern-cpp
-    modern-cpp-tutorial-master\book\zh-cn\00-preface.md
+    2_project\modern-cpp-tutorial-master\book\zh-cn\00-preface.md
   
 ##  2. todo
   * **project**

@@ -1,8 +1,6 @@
 # Constructor, operator "new"
 
-The regular `{...}` syntax allows us to create one object. But often we need to create many similar objects, like multiple users or menu items and so on.
-
-That can be done using constructor functions and the `"new"` operator.
+The regular `{...}` syntax allows us to create one object. 
 
 ## Constructor function
 
@@ -66,7 +64,6 @@ That's the main purpose of constructors -- to implement reusable object creation
 
 Let's note once again -- technically, any function (except arrow functions, as they don't have `this`) can be used as a constructor. It can be run with `new`, and it will execute the algorithm above. The "capital letter first" is a common agreement, to make it clear that a function is to be run with `new`.
 
-````smart header="new function() { ... }"
 If we have many lines of code all about creation of a single complex object, we can wrap them in an immediately called constructor function, like this:
 
 ```js
@@ -82,7 +79,6 @@ let user = new function() {
 ```
 
 This constructor can't be called again, because it is not saved anywhere, just created and called. So this trick aims to encapsulate the code that constructs the single object, without future reuse.
-````
 
 ## Constructor mode test: new.target
 
