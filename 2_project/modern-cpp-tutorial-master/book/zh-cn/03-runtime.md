@@ -30,54 +30,6 @@ Lambda 表达式的基本语法如下：
 所谓捕获列表，其实可以理解为参数的一种类型，Lambda 表达式内部函数体在默认情况下是不能够使用函数体外部的变量的，
 这时候捕获列表可以起到传递外部数据的作用。根据传递的行为，捕获列表也分为以下几种：
 
-#### 1. 值捕获
-
-与参数传值类似，值捕获的前提是变量可以拷贝，不同之处则在于，被捕获的变量在 Lambda 表达式被创建时拷贝，
-而非调用时才拷贝：
-
-```cpp
-void lambda_value_capture() {
-    int value = 1;
-    auto copy_value = [value] {
-        return value;
-    };
-    value = 100;
-    auto stored_value = copy_value();
-    std::cout << "stored_value = " << stored_value << std::endl;
-    // 这时, stored_value == 1, 而 value == 100.
-    // 因为 copy_value 在创建时就保存了一份 value 的拷贝
-}
-```
-
-#### 2. 引用捕获
-
-与引用传参类似，引用捕获保存的是引用，值会发生变化。
-
-```cpp
-void lambda_reference_capture() {
-    int value = 1;
-    auto copy_value = [&value] {
-        return value;
-    };
-    value = 100;
-    auto stored_value = copy_value();
-    std::cout << "stored_value = " << stored_value << std::endl;
-    // 这时, stored_value == 100, value == 100.
-    // 因为 copy_value 保存的是引用
-}
-```
-
-#### 3. 隐式捕获
-
-手动书写捕获列表有时候是非常复杂的，这种机械性的工作可以交给编译器来处理，这时候可以在捕获列表中写一个
-`&` 或 `=` 向编译器声明采用引用捕获或者值捕获.
-
-总结一下，捕获提供了 Lambda 表达式对外部值进行使用的功能，捕获列表的最常用的四种形式可以是：
-
-- \[\] 空捕获列表
-- \[name1, name2, ...\] 捕获一系列变量
-- \[&\] 引用捕获, 让编译器自行推导引用列表
-- \[=\] 值捕获, 让编译器自行推导值捕获列表
 
 #### 4. 表达式捕获
 
@@ -560,22 +512,6 @@ constexpr _Tp&& forward(typename std::remove_reference<_Tp>::type&& __t) noexcep
 这时我们能回答这样一个问题：为什么在使用循环语句的过程中，`auto&&` 是最安全的方式？
 因为当 `auto` 被推导为不同的左右引用时，与 `&&` 的坍缩组合是完美转发。
 
-## 总结
-
-本章介绍了现代 C++ 中最为重要的几个语言运行时的增强，其中笔者认为本节中提到的所有特性都是值得掌握的：
-
-1. Lambda 表达式
-2. 函数对象容器 std::function
-3. 右值引用
-
-[返回目录](./toc.md) | [上一章](./02-usability.md) | [下一章 容器](./04-containers.md)
-
 ## 进一步阅读的参考文献
 
 - [Bjarne Stroustrup, C++ 语言的设计与演化](https://www.amazon.cn/dp/B007JFSCPY)
-
-## 许可
-
-<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" /></a>
-
-本教程由[欧长坤](https://github.com/changkun)撰写，采用[知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议](https://creativecommons.org/licenses/by-nc-nd/4.0/)许可。项目中代码使用 MIT 协议开源，参见[许可](../../LICENSE)。

@@ -4,38 +4,61 @@
 Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
 
 C++11 includes the following new language features:
-- [move semantics](#move-semantics)
-- [variadic templates](#variadic-templates)
-- [rvalue references](#rvalue-references)
-- [forwarding references](#forwarding-references)
-- [initializer lists](#initializer-lists)
-- [static assertions](#static-assertions)
-- [auto](#auto)
-- [lambda expressions](#lambda-expressions)
-- [decltype](#decltype)
-- [type aliases](#type-aliases)
-- [nullptr](#nullptr)
-- [strongly-typed enums](#strongly-typed-enums)
-- [attributes](#attributes)
-- [constexpr](#constexpr)
-- [delegating constructors](#delegating-constructors)
-- [user-defined literals](#user-defined-literals)
-- [explicit virtual overrides](#explicit-virtual-overrides)
-- [final specifier](#final-specifier)
-- [default functions](#default-functions)
-- [deleted functions](#deleted-functions)
-- [range-based for loops](#range-based-for-loops)
-- [special member functions for move semantics](#special-member-functions-for-move-semantics)
-- [converting constructors](#converting-constructors)
-- [explicit conversion functions](#explicit-conversion-functions)
-- [inline-namespaces](#inline-namespaces)
-- [non-static data member initializers](#non-static-data-member-initializers)
-- [right angle brackets](#right-angle-brackets)
-- [ref-qualified member functions](#ref-qualified-member-functions)
-- [trailing return types](#trailing-return-types)
-- [noexcept specifier](#noexcept-specifier)
-- [char32_t and char16_t](#char32_t-and-char16_t)
-- [raw string literals](#raw-string-literals)
+- [C++11](#c11)
+  - [Overview](#overview)
+  - [C++11 Language Features](#c11-language-features)
+    - [Move semantics](#move-semantics)
+    - [Forwarding references](#forwarding-references)
+    - [Variadic templates](#variadic-templates)
+    - [Initializer lists](#initializer-lists)
+    - [Static assertions](#static-assertions)
+    - [auto](#auto)
+    - [Lambda expressions](#lambda-expressions)
+    - [decltype](#decltype)
+    - [Type aliases](#type-aliases)
+    - [nullptr](#nullptr)
+    - [Strongly-typed enums](#strongly-typed-enums)
+    - [Attributes](#attributes)
+    - [constexpr](#constexpr)
+    - [Delegating constructors](#delegating-constructors)
+    - [User-defined literals](#user-defined-literals)
+    - [Explicit virtual overrides](#explicit-virtual-overrides)
+    - [Final specifier](#final-specifier)
+    - [Default functions](#default-functions)
+    - [Deleted functions](#deleted-functions)
+    - [Range-based for loops](#range-based-for-loops)
+    - [Special member functions for move semantics](#special-member-functions-for-move-semantics)
+    - [Converting constructors](#converting-constructors)
+    - [Explicit conversion functions](#explicit-conversion-functions)
+    - [Inline namespaces](#inline-namespaces)
+    - [Non-static data member initializers](#non-static-data-member-initializers)
+    - [Right angle brackets](#right-angle-brackets)
+    - [Ref-qualified member functions](#ref-qualified-member-functions)
+    - [Trailing return types](#trailing-return-types)
+    - [Noexcept specifier](#noexcept-specifier)
+    - [char32\_t and char16\_t](#char32_t-and-char16_t)
+    - [Raw string literals](#raw-string-literals)
+  - [C++11 Library Features](#c11-library-features)
+    - [std::move](#stdmove)
+    - [std::forward](#stdforward)
+    - [std::thread](#stdthread)
+    - [std::to\_string](#stdto_string)
+    - [Type traits](#type-traits)
+    - [Smart pointers](#smart-pointers)
+    - [std::chrono](#stdchrono)
+    - [Tuples](#tuples)
+    - [std::tie](#stdtie)
+    - [std::array](#stdarray)
+    - [Unordered containers](#unordered-containers)
+    - [std::make\_shared](#stdmake_shared)
+    - [std::ref](#stdref)
+    - [Memory model](#memory-model)
+    - [std::async](#stdasync)
+    - [std::begin/end](#stdbeginend)
+  - [Acknowledgements](#acknowledgements)
+  - [Author](#author)
+  - [Content Contributors](#content-contributors)
+  - [License](#license)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -58,40 +81,12 @@ C++11 includes the following new library features:
 ## C++11 Language Features
 
 ### Move semantics
-Moving an object means to transfer ownership of some resource it manages to another object.
-
-The first benefit of move semantics is performance optimization. When an object is about to reach the end of its lifetime, either because it's a temporary or by explicitly calling `std::move`, a move is often a cheaper way to transfer resources. For example, moving a `std::vector` is just copying some pointers and internal state over to the new vector -- copying would involve having to copy every single contained element in the vector, which is expensive and unnecessary if the old vector will soon be destroyed.
-
-Moves also make it possible for non-copyable types such as `std::unique_ptr`s ([smart pointers](#smart-pointers)) to guarantee at the language level that there is only ever one instance of a resource being managed at a time, while being able to transfer an instance between scopes.
 
 See the sections on: [rvalue references](#rvalue-references), [special member functions for move semantics](#special-member-functions-for-move-semantics), [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
 
-### Rvalue references
-C++11 introduces a new reference termed the _rvalue reference_. An rvalue reference to `T`, which is a non-template type parameter (such as `int`, or a user-defined type), is created with the syntax `T&&`. Rvalue references only bind to rvalues.
-
-Type deduction with lvalues and rvalues:
-```c++
-int x = 0; // `x` is an lvalue of type `int`
-int& xl = x; // `xl` is an lvalue of type `int&`
-int&& xr = x; // compiler error -- `x` is an lvalue
-int&& xr2 = 0; // `xr2` is an lvalue of type `int&&` -- binds to the rvalue temporary, `0`
-
-void f(int& x) {}
-void f(int&& x) {}
-
-f(x);  // calls f(int&)
-f(xl); // calls f(int&)
-f(3);  // calls f(int&&)
-f(std::move(x)); // calls f(int&&)
-
-f(xr2);           // calls f(int&)
-f(std::move(xr2)); // calls f(int&& x)
-```
-
-See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
-
 ### Forwarding references
-Also known (unofficially) as _universal references_. A forwarding reference is created with the syntax `T&&` where `T` is a template type parameter, or using `auto&&`. This enables _perfect forwarding_: the ability to pass arguments while maintaining their value category (e.g. lvalues stay as lvalues, temporaries are forwarded as rvalues).
+Also known (unofficially) as _universal references_. A forwarding reference is created with the syntax `T&&` where `T` is a template type parameter, or using `auto&&`. 
+This enables _perfect forwarding_: the ability to pass arguments while maintaining their value category (e.g. lvalues stay as lvalues, temporaries are forwarded as rvalues).
 
 Forwarding references allow a reference to bind to either an lvalue or rvalue depending on the type. Forwarding references follow the rules of _reference collapsing_:
 * `T& &` becomes `T&`

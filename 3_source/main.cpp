@@ -1,60 +1,42 @@
 #include <iostream>
-#define LEN 10
+void may_throw() {
+    throw true;
+}
+auto non_block_throw = [] {
+    may_throw();
+    };
+void no_throw() noexcept {
+    return;
+}
 
-int len_foo() {
-    int i = 2;
-    return i;
-}
-constexpr int len_foo_constexpr() {
-    return 5;
-}
-
-constexpr int fibonacci(const int n) {
-    return n == 1 || n == 2 ? 1 : fibonacci(n - 1) + fibonacci(n - 2);
-}
+auto block_throw = []() noexcept {
+    may_throw();
+    };
 
 int main() {
-    char arr_1[10];                      // 合法
-    char arr_2[LEN];                     // 合法
+    std::cout << std::boolalpha
+        << "may_throw() noexcept? " << noexcept(may_throw()) << std::endl
+        << "no_throw() noexcept? " << noexcept(no_throw()) << std::endl
+        << "lmay_throw() noexcept? " << noexcept(non_block_throw()) << std::endl
+        << "lno_throw() noexcept? " << noexcept(block_throw()) << std::endl;
 
-    int len = 10;
-    // char arr_3[len];                  // 非法
-
-    const int len_2 = len + 1;
-    constexpr int len_2_constexpr = 1 + 2 + 3;
-    // char arr_4[len_2];                // 非法
-    char arr_4[len_2_constexpr];         // 合法
-
-    // char arr_5[len_foo()+5];          // 非法
-    char arr_6[len_foo_constexpr() + 1]; // 合法
-
-    std::cout << fibonacci(10) << std::endl;
-    // 1, 1, 2, 3, 5, 8, 13, 21, 34, 55
-    std::cout << fibonacci(10) << std::endl;
+    try {
+        may_throw();
+    }
+    catch (...) {
+        std::cout << "捕获异常, 来自 may_throw()" << std::endl;
+    }
+    try {
+        non_block_throw();
+    }
+    catch (...) {
+        std::cout << "捕获异常, 来自 non_block_throw()" << std::endl;
+    }
+    try {
+        block_throw();
+    }
+    catch (...) {
+        std::cout << "捕获异常, 来自 block_throw()" << std::endl;
+    }
     return 0;
 }
-
-// #include <iostream>
-// #include <vector>
-// #include <algorithm>
-
-// void print(const std::vector<int>& vec) {
-//     for (const auto& i : vec) {
-//         std::cout << i << ' ';
-//     }
-//     std::cout << std::endl;
-// }
-
-// int main() {
-//     std::vector<int> vec = { 1, 2, 3, 4, 5, 5, 6, 5 };
-//     print(vec);
-//     auto new_end = std::remove(vec.begin(), vec.end(), 5);
-//     print(vec);
-//     vec.erase(new_end, vec.end());
-//     print(vec);
-//     for (int i : vec) {
-//         std::cout << i << " ";
-//     }
-
-//     return 0;
-// }
