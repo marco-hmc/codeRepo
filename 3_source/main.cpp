@@ -1,44 +1,38 @@
-#include <iostream>
-using namespace std;
 
-void may_throw() {
-    throw true;
-}
-auto non_block_throw = [] {
-    may_throw();
-    };
-void no_throw() noexcept {
-    return;
-}
+// #include <QtCore/QString>
 
-auto block_throw = []() noexcept {
-    may_throw();
-    };
+// QString numericToString(double n, int prec, bool suppressZero) {
+//     QString result = QString::number(n, 'f', -prec); // 使用四舍五入模式
+//     if (suppressZero) {
+//         while (result.endsWith('0')) {
+//             result.chop(1);
+//         }
+//         if (result.endsWith('.')) {
+//             result.chop(1);
+//         }
+//     }
+//     return result;
+// }
+
+// int main() {
+//     double value = 10.500;
+//     bool suppress = true;
+
+//     QString result = suppressTrailZero(value, suppress);
+//     qDebug() << result;
+
+//     return 0;
+// }
+
+#include <QString>
+#include <QDebug>
+#include <cmath>
 
 int main() {
-    std::cout << std::boolalpha
-        << "may_throw() noexcept? " << noexcept(may_throw()) << std::endl
-        << "no_throw() noexcept? " << noexcept(no_throw()) << std::endl
-        << "lmay_throw() noexcept? " << noexcept(non_block_throw()) << std::endl
-        << "lno_throw() noexcept? " << noexcept(block_throw()) << std::endl;
-
-    try {
-        may_throw();
-    }
-    catch (...) {
-        std::cout << "捕获异常, 来自 may_throw()" << std::endl;
-    }
-    try {
-        non_block_throw();
-    }
-    catch (...) {
-        std::cout << "捕获异常, 来自 non_block_throw()" << std::endl;
-    }
-    try {
-        block_throw();
-    }
-    catch (...) {
-        std::cout << "捕获异常, 来自 block_throw()" << std::endl;
-    }
+    double inputValue = 100.005;
+    std::cout << inputValue << std::endl;
+    // 将数值四舍五入到两位小数
+    double roundedValue = round(inputValue * 100) / 100;
+    std::cout << roundedValue << std::endl;
     return 0;
 }
