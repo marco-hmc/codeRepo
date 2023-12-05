@@ -1,11 +1,7 @@
 [toc]
 ## 1. doing
   1. podcast
-  2. 导入和导出的问题
   3. gtest
-  4. D指针和Q指针实现
-  5. 命令工厂实现模式
-  6. guard的实现
   7. 智能指针实现
      * 为什么弃用unique_ptr
      * weak_ptr是用于解决什么问题的
@@ -23,9 +19,9 @@
   18. 写一个自动提交加班时长的
   19. gitbook
     https://ganxunzou.gitbooks.io/gitlab-doc/content/gitbook-yu-gitlab-ji-cheng/gitbook-ci-an-zhuang.html
-  20. **C++中的反射机制**
-  21. * **PLM结合电子商务技术与协同技术,将产品开发流程与SCM/CRM/ERP等系**
-  22. * **为什么要引入ObjectID,而不是用指针这种更朴素的做法?**
+  20. C++中的反射机制
+  21. PLM结合电子商务技术与协同技术,将产品开发流程与SCM/CRM/ERP等系
+  22. 为什么要引入ObjectID,而不是用指针这种更朴素的做法?
   23. event时间
   24. **红黑树**
   25. **A*寻路/霍夫曼编码**
