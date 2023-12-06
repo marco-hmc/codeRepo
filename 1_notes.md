@@ -1,3 +1,10 @@
+* git config
+    配置被写在~/.git/config
+    可以通过git config --list 查看
+
+git config --global http.proxy 'socks5://127.0.0.1:7890'
+git config --global https.proxy 'socks5://127.0.0.1:7890'
+
 在js中,所有函数都有this对象吗?
 js中,函数和类有什么区分?
 js中,new有什么用?

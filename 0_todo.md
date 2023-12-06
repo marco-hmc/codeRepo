@@ -16,8 +16,9 @@
   15. json解析
   16. chrono库
   17. 多线程
-  18. 写一个自动提交加班时长的
-  19. gitbook
+  18. cas和adl
+  19. 写一个自动提交加班时长的
+  20. gitbook
     https://ganxunzou.gitbooks.io/gitlab-doc/content/gitbook-yu-gitlab-ji-cheng/gitbook-ci-an-zhuang.html
   20. C++中的反射机制
   21. PLM结合电子商务技术与协同技术,将产品开发流程与SCM/CRM/ERP等系
@@ -27,14 +28,14 @@
   25. **A*寻路/霍夫曼编码**
   26. blog参考
     [GitHub - Veeupup/veeupup.github.io: blog... maybe writing more..](https://github.com/Veeupup/veeupup.github.io)
-  27. real-time rendering
-  28. 可以参考modern-cpp-tutorial-master组织书
-  29. 
+  28. real-time rendering
+  29. 可以参考modern-cpp-tutorial-master组织书
+  30. 
      - [Ulrich Drepper. 每位程序员都需要知道的内存知识. 2007](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf)
-  30. [<Effective Modern C++>](https://www.amazon.cn/dp/B016OFO492/ref=sr_1_3?ie=UTF8&qid=1525613457&sr=8-3&keywords=Effective+C%2B%2B)和 [<C++ 风格指南>](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/).
-  31. notes
-  32. [<Effective Modern C++>](https://www.amazon.cn/dp/B016OFO492/ref=sr_1_3?ie=UTF8&qid=1525613457&sr=8-3&keywords=Effective+C%2B%2B)和 [<C++ 风格指南>](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/).
-  33. notes
+  31. [<Effective Modern C++>](https://www.amazon.cn/dp/B016OFO492/ref=sr_1_3?ie=UTF8&qid=1525613457&sr=8-3&keywords=Effective+C%2B%2B)和 [<C++ 风格指南>](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/).
+  32. notes
+  33. [<Effective Modern C++>](https://www.amazon.cn/dp/B016OFO492/ref=sr_1_3?ie=UTF8&qid=1525613457&sr=8-3&keywords=Effective+C%2B%2B)和 [<C++ 风格指南>](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/).
+  34. notes
    * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
    * [C++ Rvalue References Explained](http://thbecker.net/articles/rvalue_references/section_01.html) - a great introduction I used to understand rvalue references, perfect forwarding, and move semantics.
    * [clang](http://clang.llvm.org/cxx_status.html) and [gcc](https://gcc.gnu.org/projects/cxx-status.html)'s standards support pages. Also included here are the proposals for language/library features that I used to help find a description of, what it's meant to fix, and some examples.
