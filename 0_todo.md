@@ -43,6 +43,8 @@
    * [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended series of books!
    * [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
    * [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
+   * [语法层面](https://blog.csdn.net/neverever01/article/details/108237531)
+   * [参考资料](https://mp.weixin.qq.com/s?__biz=MzU4ODI1MjA3NQ==&mid=2247490061&idx=2&sn=12149cbf01c461cb6e7193c87f86947b&chksm=fddeccc9caa945dfd40e5b721d3de6c072e6c63090d517c2abd7cdbad03913ffe1894ecf515e&scene=126&sessionid=1598581626&key=327ff69e53d289e265ba4be42c78ab289d247b013a397b5e56a76f8e15d507e2b246f5f8e182aea30e297541e608b44b6afc4aef2a158685ddc7b89ac3819a93af1a874e7eb8032ca33fcbfdc490c6d80ff937238fae8bf025d4df48edd109b337fce874a51bcfd3c4d6c73519144f1d2bb2d2642e053526abb49c65f1ad7a7a&ascene=1&uin=MTY3MDE4MjUzNw%3D%3D&devicetype=Windows+10+x64&version=62090529&lang=zh_CN&exportkey=Ae7A2lvgN6N2S9zIIGtxrwk%3D&pass_ticket=IxOgoA0uCVNmIWk3JlME4s%2BV8YtCCJRms%2FWOtZaGjo%2F4rRk9WXulOQCMRIzciJYH)
 
 --------------------------------------------------------
 
