@@ -1,62 +1,65 @@
 [toc]
 ## 1. doing
+### 1.1 trivals
   1. podcast
-  3. gtest
-  7. 智能指针实现
-     * 为什么弃用unique_ptr
+  2. 医保卡补办
+  3. blog
+    * [GitHub - Veeupup/veeupup.github.io: blog... maybe writing more..](https://github.com/Veeupup/veeupup.github.io)
+
+### 1.2 questions 
+  1. 智能指针实现
      * weak_ptr是用于解决什么问题的
      * 智能指针的实际使用放啊
-  8. 医保卡补办
-  9. cmake,qt5怎么用
-  10. \2_project\modern-cpp-tutorial-master\book\zh-cn\01-intro.md
-  11. C++基于流的undoController
-  12. C++的transactionManager
-  13. C++的commandDispatcher
-  14. 日志库
-  15. json解析
-  16. chrono库
-  17. 多线程
-  18. cas和adl
-  19. 写一个自动提交加班时长的
-  20. gitbook
-    https://ganxunzou.gitbooks.io/gitlab-doc/content/gitbook-yu-gitlab-ji-cheng/gitbook-ci-an-zhuang.html
-  20. C++中的反射机制
-  21. PLM结合电子商务技术与协同技术,将产品开发流程与SCM/CRM/ERP等系
-  22. 为什么要引入ObjectID,而不是用指针这种更朴素的做法?
-  23. event时间
-  24. **红黑树**
-  25. **A*寻路/霍夫曼编码**
-  26. blog参考
-    [GitHub - Veeupup/veeupup.github.io: blog... maybe writing more..](https://github.com/Veeupup/veeupup.github.io)
-  28. real-time rendering
-  29. 可以参考modern-cpp-tutorial-master组织书
-  30. 
-     - [Ulrich Drepper. 每位程序员都需要知道的内存知识. 2007](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf)
-  31. [<Effective Modern C++>](https://www.amazon.cn/dp/B016OFO492/ref=sr_1_3?ie=UTF8&qid=1525613457&sr=8-3&keywords=Effective+C%2B%2B)和 [<C++ 风格指南>](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/).
-  32. notes
-  33. [<Effective Modern C++>](https://www.amazon.cn/dp/B016OFO492/ref=sr_1_3?ie=UTF8&qid=1525613457&sr=8-3&keywords=Effective+C%2B%2B)和 [<C++ 风格指南>](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/).
-  34. notes
-   * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
-   * [C++ Rvalue References Explained](http://thbecker.net/articles/rvalue_references/section_01.html) - a great introduction I used to understand rvalue references, perfect forwarding, and move semantics.
-   * [clang](http://clang.llvm.org/cxx_status.html) and [gcc](https://gcc.gnu.org/projects/cxx-status.html)'s standards support pages. Also included here are the proposals for language/library features that I used to help find a description of, what it's meant to fix, and some examples.
-   * [Compiler explorer](https://godbolt.org/)
-   * [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended series of books!
-   * [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
-   * [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
-   * [语法层面](https://blog.csdn.net/neverever01/article/details/108237531)
-   * [参考资料](https://mp.weixin.qq.com/s?__biz=MzU4ODI1MjA3NQ==&mid=2247490061&idx=2&sn=12149cbf01c461cb6e7193c87f86947b&chksm=fddeccc9caa945dfd40e5b721d3de6c072e6c63090d517c2abd7cdbad03913ffe1894ecf515e&scene=126&sessionid=1598581626&key=327ff69e53d289e265ba4be42c78ab289d247b013a397b5e56a76f8e15d507e2b246f5f8e182aea30e297541e608b44b6afc4aef2a158685ddc7b89ac3819a93af1a874e7eb8032ca33fcbfdc490c6d80ff937238fae8bf025d4df48edd109b337fce874a51bcfd3c4d6c73519144f1d2bb2d2642e053526abb49c65f1ad7a7a&ascene=1&uin=MTY3MDE4MjUzNw%3D%3D&devicetype=Windows+10+x64&version=62090529&lang=zh_CN&exportkey=Ae7A2lvgN6N2S9zIIGtxrwk%3D&pass_ticket=IxOgoA0uCVNmIWk3JlME4s%2BV8YtCCJRms%2FWOtZaGjo%2F4rRk9WXulOQCMRIzciJYH)
+  2. cas和adl
+  3. 虚函数表
+  4. C++中的反射机制
+  5. event事件
+  6. PLM结合电子商务技术与协同技术,将产品开发流程与SCM/CRM/ERP等系
+  7. 为什么要引入ObjectID,而不是用指针这种更朴素的做法?
+
+### 1.4 utils 
+  1. gtest
+  2. chrono库
+  3. 多线程
+  4. coredump怎么用
+  5. 内存泄露检测怎么用?  
+  6.  gitbook
+    * https://ganxunzou.gitbooks.io/gitlab-doc/content/gitbook-yu-gitlab-ji-cheng/gitbook-ci-an-zhuang.html
+    * 可以参考modern-cpp-tutorial-master组织书
+
+### 1.3 projects
+  1. 日志库
+  2. json解析
+  3. 写一个自动提交加班时长的
+
+### 1.5 readings
+  1. **cpp**
+    2_project\modern-cpp-tutorial-master\book\zh-cn\01-intro.md
+    2_project\modern-cpp-tutorial-master\book\zh-cn\00-preface.md
+  2. **refactor**
+    1_notes\6_设计模式\refactoring2\ch1.md
+  3. **js**
+    1_notes\0_frontEnd\js\en.javascript.info-master\1-js\05-data-types\01-primitives-methods\article.md
+  4. **template**
+    2_project\Cpp-Templates-2ed-master\Cpp-Templates-2ed-master\docs\01_function_template.md
+  5. real-time rendering
+  6. [Ulrich Drepper. 每位程序员都需要知道的内存知识. 2007](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf)
+  7. [<Effective Modern C++>](https://www.amazon.cn/dp/B016OFO492/ref=sr_1_3?ie=UTF8&qid=1525613457&sr=8-3&keywords=Effective+C%2B%2B)和 [<C++ 风格指南>](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/).
+  8. [<Effective Modern C++>](https://www.amazon.cn/dp/B016OFO492/ref=sr_1_3?ie=UTF8&qid=1525613457&sr=8-3&keywords=Effective+C%2B%2B)和 [<C++ 风格指南>](http://zh-google-styleguide.readthedocs.io/en/latest/google-cpp-styleguide/contents/).
+  9. [C++ Rvalue References Explained](http://thbecker.net/articles/rvalue_references/section_01.html) - a great introduction I used to understand rvalue references, perfect forwarding, and move semantics.
+  10. [clang](http://clang.llvm.org/cxx_status.html) and [gcc](https://gcc.gnu.org/projects/cxx-status.html)'s standards support pages. Also included here are the proposals for language/library features that I used to help find a description of, what it's meant to fix, and some examples.
+  11. [Compiler explorer](https://godbolt.org/)
+  12. [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended series of books!
+  13. [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
+  14. [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
+  15. [语法层面](https://blog.csdn.net/neverever01/article/details/108237531)
+  16. [参考资料](https://mp.weixin.qq.com/s?__biz=MzU4ODI1MjA3NQ==&mid=2247490061&idx=2&sn=12149cbf01c461cb6e7193c87f86947b&chksm=fddeccc9caa945dfd40e5b721d3de6c072e6c63090d517c2abd7cdbad03913ffe1894ecf515e&scene=126&sessionid=1598581626&key=327ff69e53d289e265ba4be42c78ab289d247b013a397b5e56a76f8e15d507e2b246f5f8e182aea30e297541e608b44b6afc4aef2a158685ddc7b89ac3819a93af1a874e7eb8032ca33fcbfdc490c6d80ff937238fae8bf025d4df48edd109b337fce874a51bcfd3c4d6c73519144f1d2bb2d2642e053526abb49c65f1ad7a7a&ascene=1&uin=MTY3MDE4MjUzNw%3D%3D&devicetype=Windows+10+x64&version=62090529&lang=zh_CN&exportkey=Ae7A2lvgN6N2S9zIIGtxrwk%3D&pass_ticket=IxOgoA0uCVNmIWk3JlME4s%2BV8YtCCJRms%2FWOtZaGjo%2F4rRk9WXulOQCMRIzciJYH)
+  17. [C++ 语言导学. Bjarne Stroustrup](https://www.amazon.cn/dp/B00WUBYBYS/ref=sr_1_1?ie=UTF8&qid=1522400738&sr=8-1&keywords=C%2B%2B+%E8%AF%AD%E8%A8%80%E5%AF%BC%E5%AD%A6)
+  18. [C++ 特性在 GCC/Clang 等编译器中的支持情况](https://en.cppreference.com/w/cpp/compiler_support)
 
 --------------------------------------------------------
 
-  1. **refactoring2** 
-    1_notes\6_设计模式\refactoring2\ch1.md
-  2. **js**
-    1_notes\0_frontEnd\js\en.javascript.info-master\1-js\05-data-types\01-primitives-methods\article.md
-  3. **Cpp-Templates-2ed-master**
-    2_project\Cpp-Templates-2ed-master\Cpp-Templates-2ed-master\docs\01_function_template.md
-  4. modern-cpp
-    2_project\modern-cpp-tutorial-master\book\zh-cn\00-preface.md
-  
+ 
 ##  2. todo
   * **project**
     * OS-project
@@ -72,33 +75,6 @@
       * 整理wukong侧的东西,看看有没有用的. 
       * https://confluence.zwcad.com/pages/viewpage.action?pageId=60719484
       * 整理一些笔记给liujun.
-
-* * **一/多机数据处理**.
-
-  有 10 台机器,每台机器上保存着 10 亿个 64-bit 整数(不一定刚好 10 亿个,可能有上下几千万的浮动),一共约 100 亿个整数(其实一共也就 80GB 数据,不算大,选这个量级是考虑了 VPS 虚拟机的容量,便于实验).编程求出:
-
-  \1. 这些数的平均数.
-
-  \2. 这些数的中位数.
-
-  \3. 出现次数最多的 100 万个数.
-
-  *4. (附加题)对这 100 亿个整数排序,结果顺序存放到这 10 台机器上.
-
-  *5. (附加健壮性要求)你的程序应该能正确应对输入数据的各种分布(均匀/正态/Zipf).
-
-  *6. (附加伸缩性要求)你的程序应该能平滑扩展到更多的机器,支持更大的数据量.比如 20 台机器/一共 200 亿个整数,或者 50 台机器/一共 500 亿个整数.
-
-* **二/N-皇后问题的多机并行求解**.利用多台机器求出 N-皇后问题有多少个解.(注意目前的世界纪录是 N = 26,[A000170 - OEIS](https://link.zhihu.com/?target=http%3A//oeis.org/A000170) )
-
-  \1. 8 皇后问题在单机上的运算时间是毫秒级,有 92 个解,编程实现之.
-
-  \2. 研究 N-皇后问题的并行算法,写一个单机多线程程序,争取达到线性加速比(以 CPU 核数计).再设法将算法扩展到多机并行.
-
-  \3. 用 10 台 8 核的机器(一共 80 个 CPU cores),求解 19-皇后和 20-皇后问题,看看分别需要多少运行时间.你的方案能否平滑扩展到更多的机器?
-
-  *4. (附加题)如果这 10 台机器的型号不一,有 8 核也有 16 核,有旧 CPU 也有更快的新 CPU,你该采用何种负载均衡策略,以求缩短求解问题的时间(至少比 plain round-robin 算法要好)?
-
 
 
 
@@ -120,7 +96,4 @@
 
    [[新手]基于C++Qt5通过调用百度翻译API制作简易翻译工具_qt+百度api实现翻译_无机无机无忌的博客-CSDN博客](https://blog.csdn.net/yyy90/article/details/113762827)
 
-
-
 ### 2. 闹钟+todo
-

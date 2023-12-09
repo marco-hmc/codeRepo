@@ -1,39 +1,114 @@
+#include <cassert>
+#include <exception>
 
-#include <iostream>
-#include <memory>
+template <typename T>
+class SmartPtr {
+private:
+    T* ptr; // 指向被管理的资源
+    int* count; // 引用计数器
 
-class MyClass {
 public:
-    MyClass() {
-        std::cout << "MyClass constructor" << std::endl;
+    SmartPtr(T* p) : ptr(p), count(new int(1)) {}
+
+    SmartPtr(const SmartPtr& other) : ptr(other.ptr), count(other.count) {
+        (*count)++;
     }
-    ~MyClass() {
-        std::cout << "MyClass destructor" << std::endl;
+
+    ~SmartPtr() {
+        (*count)--;
+        if (*count == 0) {
+            delete ptr;
+            delete count;
+        }
+    }
+
+    SmartPtr& operator=(const SmartPtr& other) {
+        if (this != &other) {
+            (*count)--;
+            if (*count == 0) {
+                delete ptr;
+                delete count;
+            }
+            ptr = other.ptr;
+            count = other.count;
+            (*count)++;
+        }
+        return *this;
+    }
+
+    T& operator*() const {
+        return *ptr;
+    }
+
+    T* operator->() const {
+        return ptr;
     }
 };
 
 int main() {
-    // 使用weak_ptr的场景
-    std::shared_ptr<MyClass> sharedPtr = std::make_shared<MyClass>();
-    std::weak_ptr<MyClass> weakPtr = sharedPtr;
+    // Test the SmartPtr class
+    int* num = new int(42);
+    SmartPtr<int> ptr1(num);
+    SmartPtr<int> ptr2 = ptr1;
 
-    if (auto sharedPtr2 = weakPtr.lock()) {
-        std::cout << "Using weak_ptr: " << sharedPtr2 << std::endl;
+    // Test dereferencing operator *
+    assert(*ptr1 == 42);
+    assert(*ptr2 == 42);
+
+    // Test arrow operator ->
+    assert(ptr1.operator->() == num);
+    assert(ptr2.operator->() == num);
+
+
+    // Test assignment operator =
+    int* num2 = new int(99);
+    SmartPtr<int> ptr3(num2);
+    ptr3 = ptr1;
+    assert(*ptr3 == 42);
+
+    // Test destruction of SmartPtr objects
+    {
+        SmartPtr<int> ptr4 = ptr1;
+        SmartPtr<int> ptr5 = ptr1;
+        assert(*ptr4 == 42);
+        assert(*ptr5 == 42);
     }
-    else {
-        std::cout << "weak_ptr is expired" << std::endl;
+
+    // Test self-assignment
+    ptr1 = ptr1;
+    assert(*ptr1 == 42);
+
+    // Test destruction of last SmartPtr object
+    {
+        SmartPtr<int> ptr6 = ptr1;
+        assert(*ptr6 == 42);
     }
 
-    // 不使用weak_ptr导致抛出异常的代码例子
-    std::shared_ptr<MyClass> sharedPtr3 = std::make_shared<MyClass>();
-    std::shared_ptr<MyClass> sharedPtr4 = sharedPtr3;
+    // Test destruction of SmartPtr object with nullptr
+    SmartPtr<int> ptr7(nullptr);
 
+    // Test dereferencing nullptr
     try {
-        std::shared_ptr<MyClass> sharedPtr5 = sharedPtr3;
+        int value = *ptr7;
+        // The above line should throw an exception, so the following line should not be executed
+        assert(false);
     }
-    catch (const std::bad_weak_ptr& e) {
-        std::cout << "Exception caught: " << e.what() << std::endl;
+    catch (const std::exception& e) {
+     // Expected exception
     }
+
+    // Test arrow operator with nullptr
+    try {
+        int* value = ptr7.operator->();
+        // The above line should throw an exception, so the following line should not be executed
+        assert(false);
+    }
+    catch (const std::exception& e) {
+     // Expected exception
+    }
+
+    delete num;
+    delete num2;
 
     return 0;
 }

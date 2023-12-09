@@ -37,40 +37,17 @@ public:
     }
 };
 
-#include <iostream>
-#include <cstring>
+int main() {
+    const char* str = "Hello, World!";
+    StringWithoutCopyAndSwap s(str);
+    std::cout << "s.c_str(): " << s.c_str() << std::endl;
 
-class StringWithCopyAndSwap {
-private:
-    char* data;
+    const char* str1 = "Hello";
+    const char* str2 = "World";
+    StringWithoutCopyAndSwap s1(str1);
+    StringWithoutCopyAndSwap s2(str2);
+    s2 = s1;
+    std::cout << "s2.c_str(): " << s2.c_str() << std::endl;
 
-public:
-    StringWithCopyAndSwap(const char* str = "") : data(new char[strlen(str) + 1]) {
-        strcpy(data, str);
-    }
-
-    // 实现拷贝构造函数
-    StringWithCopyAndSwap(const StringWithCopyAndSwap& other) : data(new char[strlen(other.data) + 1]) {
-        strcpy(data, other.data);
-    }
-
-    // 实现析构函数
-    ~StringWithCopyAndSwap() {
-        delete[] data;
-    }
-
-    // 实现 swap 函数
-    void swap(StringWithCopyAndSwap& other) {
-        std::swap(data, other.data);
-    }
-
-    // 实现赋值运算符
-    StringWithCopyAndSwap& operator=(StringWithCopyAndSwap other) {
-        swap(other);
-        return *this;
-    }
-
-    const char* c_str() const {
-        return data;
-    }
-};
+    return 0;
+}
