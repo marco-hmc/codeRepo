@@ -12,14 +12,10 @@
      * 智能指针的实际使用放啊
   2. cas和adl
   3. 虚函数表
-  4. C++中的反射机制
   5. event事件
-  6. PLM结合电子商务技术与协同技术,将产品开发流程与SCM/CRM/ERP等系
-  7. 为什么要引入ObjectID,而不是用指针这种更朴素的做法?
 
 ### 1.4 utils 
   1. gtest
-  2. chrono库
   3. 多线程
   4. coredump怎么用
   5. 内存泄露检测怎么用?  
@@ -34,8 +30,7 @@
 
 ### 1.5 readings
   1. **cpp**
-    2_project\modern-cpp-tutorial-master\book\zh-cn\01-intro.md
-    2_project\modern-cpp-tutorial-master\book\zh-cn\00-preface.md
+    2_project\modern-cpp-tutorial-master\book\zh-cn\
   2. **refactor**
     1_notes\6_设计模式\refactoring2\ch1.md
   3. **js**
@@ -51,11 +46,10 @@
   11. [Compiler explorer](https://godbolt.org/)
   12. [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended series of books!
   13. [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
-  14. [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
   15. [语法层面](https://blog.csdn.net/neverever01/article/details/108237531)
   16. [参考资料](https://mp.weixin.qq.com/s?__biz=MzU4ODI1MjA3NQ==&mid=2247490061&idx=2&sn=12149cbf01c461cb6e7193c87f86947b&chksm=fddeccc9caa945dfd40e5b721d3de6c072e6c63090d517c2abd7cdbad03913ffe1894ecf515e&scene=126&sessionid=1598581626&key=327ff69e53d289e265ba4be42c78ab289d247b013a397b5e56a76f8e15d507e2b246f5f8e182aea30e297541e608b44b6afc4aef2a158685ddc7b89ac3819a93af1a874e7eb8032ca33fcbfdc490c6d80ff937238fae8bf025d4df48edd109b337fce874a51bcfd3c4d6c73519144f1d2bb2d2642e053526abb49c65f1ad7a7a&ascene=1&uin=MTY3MDE4MjUzNw%3D%3D&devicetype=Windows+10+x64&version=62090529&lang=zh_CN&exportkey=Ae7A2lvgN6N2S9zIIGtxrwk%3D&pass_ticket=IxOgoA0uCVNmIWk3JlME4s%2BV8YtCCJRms%2FWOtZaGjo%2F4rRk9WXulOQCMRIzciJYH)
   17. [C++ 语言导学. Bjarne Stroustrup](https://www.amazon.cn/dp/B00WUBYBYS/ref=sr_1_1?ie=UTF8&qid=1522400738&sr=8-1&keywords=C%2B%2B+%E8%AF%AD%E8%A8%80%E5%AF%BC%E5%AD%A6)
-  18. [C++ 特性在 GCC/Clang 等编译器中的支持情况](https://en.cppreference.com/w/cpp/compiler_support)
+  
 
 --------------------------------------------------------
 
@@ -75,8 +69,6 @@
       * 整理wukong侧的东西,看看有没有用的. 
       * https://confluence.zwcad.com/pages/viewpage.action?pageId=60719484
       * 整理一些笔记给liujun.
-
-
 
 ## 3. done
 

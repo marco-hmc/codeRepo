@@ -46,15 +46,11 @@ C++11 includes the following new language features:
     - [Type traits](#type-traits)
     - [Smart pointers](#smart-pointers)
     - [std::chrono](#stdchrono)
-    - [Tuples](#tuples)
-    - [std::tie](#stdtie)
-    - [std::array](#stdarray)
     - [Unordered containers](#unordered-containers)
     - [std::make\_shared](#stdmake_shared)
     - [std::ref](#stdref)
     - [Memory model](#memory-model)
     - [std::async](#stdasync)
-    - [std::begin/end](#stdbeginend)
   - [Acknowledgements](#acknowledgements)
   - [Author](#author)
   - [Content Contributors](#content-contributors)
@@ -854,36 +850,6 @@ std::chrono::duration<double> elapsed_seconds = end - start;
 double t = elapsed_seconds.count(); // t number of seconds, represented as a `double`
 ```
 
-### Tuples
-Tuples are a fixed-size collection of heterogeneous values. Access the elements of a `std::tuple` by unpacking using [`std::tie`](#stdtie), or using `std::get`.
-```c++
-// `playerProfile` has type `std::tuple<int, const char*, const char*>`.
-auto playerProfile = std::make_tuple(51, "Frans Nielsen", "NYI");
-std::get<0>(playerProfile); // 51
-std::get<1>(playerProfile); // "Frans Nielsen"
-std::get<2>(playerProfile); // "NYI"
-```
-
-### std::tie
-Creates a tuple of lvalue references. Useful for unpacking `std::pair` and `std::tuple` objects. Use `std::ignore` as a placeholder for ignored values. In C++17, structured bindings should be used instead.
-```c++
-// With tuples...
-std::string playerName;
-std::tie(std::ignore, playerName, std::ignore) = std::make_tuple(91, "John Tavares", "NYI");
-
-// With pairs...
-std::string yes, no;
-std::tie(yes, no) = std::make_pair("yes", "no");
-```
-
-### std::array
-`std::array` is a container built on top of a C-style array. Supports common container operations such as sorting.
-```c++
-std::array<int, 3> a = {2, 1, 3};
-std::sort(a.begin(), a.end()); // a == { 1, 2, 3 }
-for (int& x : a) x *= 2; // a == { 2, 4, 6 }
-```
-
 ### Unordered containers
 These containers maintain average constant-time complexity for search, insert, and remove operations. In order to achieve constant-time complexity, sacrifices order for speed by hashing elements into buckets. There are four unordered containers:
 * `unordered_set`
@@ -945,23 +911,6 @@ int foo() {
 
 auto handle = std::async(std::launch::async, foo);  // create an async task
 auto result = handle.get();  // wait for the result
-```
-
-### std::begin/end
-`std::begin` and `std::end` free functions were added to return begin and end iterators of a container generically. These functions also work with raw arrays which do not have `begin` and `end` member functions.
-
-```c++
-template <typename T>
-int CountTwos(const T& container) {
-  return std::count_if(std::begin(container), std::end(container), [](int item) {
-    return item == 2;
-  });
-}
-
-std::vector<int> vec = {2, 2, 43, 435, 4543, 534};
-int arr[8] = {2, 43, 45, 435, 32, 32, 32, 32};
-auto a = CountTwos(vec); // 2
-auto b = CountTwos(arr);  // 1
 ```
 
 ## Acknowledgements

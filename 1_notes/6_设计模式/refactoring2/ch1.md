@@ -99,27 +99,12 @@ Amount owed is $1,730.00
 You earned 47 credits
 ```
 
-## 1.2 对此起始程序的评价
-
-你觉得这个程序设计得怎么样？我的第一感觉是，代码组织不甚清晰，但这还在可忍受的限度内。这样小的程序，不做任何深入的设计，也不会太难理解。但我前面讲过，这是因为要保证例子足够小的缘故。如果这段代码身处于一个更大规模——也许是几百行——的程序中，把所有代码放到一个函数里就很难理解了。
-
-尽管如此，这个程序还是能正常工作。那么是不是说，对其结构“不甚清晰”的评价只是美学意义上的判断，只是对所谓丑陋代码的反感呢？毕竟编译器也不会在乎代码好不好看。但是，当我们需要修改系统时，就涉及了人，而人在乎这些。差劲的系统是很难修改的，因为很难找到修改点，难以了解做出的修改与现有代码如何协作实现我想要的行为。如果很难找到修改点，我就很有可能犯错，从而引入 bug。
-
-因此，如果我需要修改一个有几百行代码的程序，我会期望它有良好的结构，并且已经被分解成一系列函数和其他程序要素，这能帮我更易于清楚地了解这段代码在做什么。如果程序杂乱无章，先为它整理出结构来，再做需要的修改，通常来说更加简单。
-
-> **Tip**    
-> 如果你要给程序添加一个特性，但发现代码因缺乏良好的结构而不易于进行更改，那就先重构那个程序，使其比较容易添加该特性，然后再添加该特性。
-
 ## 1.3 重构的第一步
 
 statement 函数的返回值是一个字符串，我做的就是创建几张新的账单（invoice），假设每张账单收取了几出戏剧的费用，然后使用这几张账单作为输入调用 statement 函数，生成对应的对账单（statement）字符串。我会拿生成的字符串与我已经手工检查过的字符串做比对。我会借助一个测试框架来配置好这些测试，只要在开发环境中输入一行命令就可以把它们运行起来。运行这些测试只需几秒钟，所以你会看到我经常运行它们。
 
-> **Tip**  
-重构前，先检查自己是否有一套可靠的测试集。这些测试必须有自我检验能力。
-
 ## 1.4 分解 statement 函数
 
-每当看到这样长长的函数，我便下意识地想从整个函数中分离出不同的关注点。第一个引起我注意的就是中间那段 switch 语句。
 
 ```js
 function statement (invoice, plays) {
@@ -196,10 +181,6 @@ function amountFor(perf, play) {
 }
 ```
 
-当我在代码块上方使用了斜体（中文对应为楷体）标记的题头“ function xxx ”时，表明该代码块位于题头所在函数、文件或类的作用域内。通常该作用域内还有其他的代码，但由于不是讨论重点，因此把它们隐去不展示。
-
-现在原 statement 函数可以直接调用这个新函数来初始化 thisAmount。
-
 #### 顶层作用域...
 
 ```js
@@ -227,16 +208,6 @@ function statement (invoice, plays) {
   result += `You earned ${volumeCredits} credits\n`;
   return result;
 ```
-
-> **Tip**  
-这里我使用的“编译”一词，指的是将 JavaScript 变为可执行代码之前的所有步骤。虽然 JavaScript 可以直接执行，有时可能不需任何步骤，但有时可能需要将代码移动到一个输出目录，或使用 Babel 这样的代码处理器等。
-
-因为是 JavaScript，我可以直接将 amountFor 提炼成为 statement 的一个内嵌函数。这个特性十分有用，因为我就不需要再把外部作用域中的数据传给新提炼的函数。这个示例中可能区别不大，但也是少了一件要操心的事。
-
-> **Tip**  
-重构技术就是以微小的步伐修改程序。如果你犯下错误，很容易便可发现它。
-
-完成提炼函数（106）手法后，我会看看提炼出来的函数，看是否能进一步提升其表达能力。一般我做的第一件事就是给一些变量改名，使它们更简洁，比如将 thisAmount 重命名为 result。
 
 #### function statement...
 
@@ -293,18 +264,6 @@ function amountFor(aPerformance, play) {
 > **Tip**  
 
 ### 移除 play 变量
-
-观察 amountFor 函数时，我会看看它的参数都从哪里来。aPerformance 是从循环变量中来，所以自然每次循环都会改变，但 play 变量是由 performance 变量计算得到的，因此根本没必要将它作为参数传入，我可以在 amountFor 函数中重新计算得到它。当我分解一个长函数时，我喜欢将 play 这样的变量移除掉，因为它们创建了很多具有局部作用域的临时变量，这会使提炼函数更加复杂。这里我要使用的重构手法是以查询取代临时变量（178）。
-
-我先从赋值表达式的右边部分提炼出一个函数来。
-
-#### function statement...
-
-```js
-function playFor(aPerformance) {
-  return plays[aPerformance.playID];
-}
-```
 
 #### 顶层作用域...
 
@@ -364,34 +323,6 @@ function statement (invoice, plays) {
 ```
 
 编译、测试、提交。完成变量内联后，我可以对 amountFor 函数应用改变函数声明（124），移除 play 参数。我会分两步走。首先在 amountFor 函数内部使用新提炼的函数。
-
-#### function statement...
-
-```js
-function amountFor(aPerformance, play) {
-  let result = 0;
-  switch (playFor(aPerformance).type) {
-  case "tragedy":
-    result = 40000;
-    if (aPerformance.audience > 30) {
-      result += 1000 * (aPerformance.audience - 30);
-    }
-    break;
-  case "comedy":
-    result = 30000;
-    if (aPerformance.audience > 20) {
-      result += 10000 + 500 * (aPerformance.audience - 20);
-    }
-    result += 300 * aPerformance.audience;
-    break;
-  default:
-      throw new Error(`unknown type: ${playFor(aPerformance).type}`);
-  }
-  return result;
-}
-```
-
-编译、测试、提交，最后将参数删除。
 
 #### 顶层作用域...
 
