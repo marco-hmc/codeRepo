@@ -19,7 +19,7 @@
   3. 多线程
   4. coredump怎么用
   5. 内存泄露检测怎么用?  
-  6.  gitbook
+  6. gitbook
     * https://ganxunzou.gitbooks.io/gitlab-doc/content/gitbook-yu-gitlab-ji-cheng/gitbook-ci-an-zhuang.html
     * 可以参考modern-cpp-tutorial-master组织书
 
