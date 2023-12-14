@@ -1,16 +1,12 @@
-template<typename T>
-class SmartPtr {
-private:
-    T* ptr;
-    int* count;
-public:
-    SmartPtr(/* args */);
-    ~SmartPtr();
-};
+#include <iostream>
+using namespace std;
 
-template<typename T>
-SmartPtr<T>::SmartPtr(/* args */) {
-}
-template<typename T>
-SmartPtr<T>::~SmartPtr() {
+int main() {
+    bool a = true;
+    if (a) {
+        cout << "a is true" << endl;
+    } else {
+        cout << "a is false" << endl;
+    }
+    return 0;
 }

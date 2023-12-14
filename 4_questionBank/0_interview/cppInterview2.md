@@ -1,106 +1,5 @@
 ### static和const分别怎么用，类里面的static和const可以同时修饰成员函数吗？
-上次讲完了struct和union，了解了内存补齐，以及总结了union是一种特殊的struct，struct也是一种特殊class。<br>
-接下来我们来了解一下static和const，这两个比较要命的关键字。<br>
-其实看到static我会想到静态内存、栈内存以及分配的内存池。
-* 静态内存(这是一个静态存储区域)，作用是什么呢？<br>
-静态存储其实是用来存储全局变量以及类static数据成员，局部的static对象。怎么理解这句话呢？先来看一段代码<br>
-```cpp
-#include <iostream>
 
-using namespace std;
-
-int i = 42; // 全局变量
-static char ctr = 'c'; // static静态存储区的全局变量
-```
-上面这一段是告诉编译器，声明了两个变量，一个是全局，一个static数据对象，这两个都存储在静态内存中。<br>
-那么怎么来看局部的static对象呢？<br>
-要看局部的static对象，我们先来理解一下栈内存<br>
-* 栈内存是一个函数的运行时，用来保存定义在函数内的非static对象<br>
-也就是说，static对象声明了，就会存储在静态内存区，而其他非static对象就会被栈内存保存。而栈内存里面的对象，一旦离开了该函数就会自动销毁，但是static却不是，static需要等到整个程序结束了才会销毁，我们来看一段经典的代码
-```cpp
-int func(){
-    static int ifunc = 44;
-    return ifunc++; 
-}
-
-int funcc(){
-    int ifunc = 44;
-    return ifunc++;
-}
-int main(){
-   for(int i = 0;i<10;i++){
-       cout <<"func:" << func() << endl;
-       cout << "funcc:" << funcc() << endl;
-   }
-    return 0;
-}
-```
-这一段代码输出什么呢？在funcc中，输出的永远都是44，而funcc中就会将ifunc不停地累加输出。这里说明了，static的对象是存储在静态存储区，而不是栈存储区，那么，如果继续在funcc函数里定义同一个static对象是可以的嘛？
-```cpp
-int func(){
-    static int ifunc = 44;
-    return ifunc++; 
-}
-
-int funcc(){
-    static int ifunc = 44;
-    return ifunc++;
-}
-```
-这段代码输出什么呢？输出的是两个数值都是同时递增输出的。这里说明了，两个函数里面的static对象虽然名字一样，但是两个的地址是不一样的，也就是说，每个局部的函数里的static对象，是不一样的。<br>
-接下来，来看看用static作为类型定义一个函数
-```cpp
-static int funcs(){
-    int ifuncc = 42;
-    return ifuncc;
-}
-```
-这个给了他一个定义，这个函数确实也是可以运行的，但是就是在静态存储区运行。<br>
-讲完函数，我们升级一下，讲一下类<br>
-```cpp
-class Node{
-    static int node_count; // 这个就是静态分配的类成员
-    int num;
-};
-
-int Node::node_count = 0;
-```
-上面这段代码说明了一个static类成员是静态分配的，而不是每个类对象的一部分。这里⚠️ static类成员并不是每个类对象的一部分。static是与类关联，但是独立于类对象存在<br>
-我们继续看以下的代码，来看一下static是怎样独立于对象而存在的<br>
-```cpp
-class TestStatic{
-    public:
-        static int inum;
-};
-
-int TestStatic::inum = 42;
-int main(){
-    TestStatic t1;
-    TestStatic t2;
-    t1.inum = 100;
-    cout << t2.inum << endl;
-   return 0;
-}
-```
-这里输出多少？没错就是100，为什么呢？因为一句话，static类成员独立于对象而存在，是所有对象共享的成员。静态存储区对这个帮了很大忙<br>
-那如果是static成员函数呢？我们来看下一个🌰<br>
-```cpp
-class TestStatic{
-    public:
-        static int func(){
-            return num; // 我们看到num是报错了❌
-        }
-    private:
-        static int count;
-        int num; 
-};
-
-int main(){
-    TestStatic t1;
-    TestStatic t2;
-   return 0;
-}
-```
 那这个成员函数我们可以看到，static是访问不了num，因为始终记得，这个static成员是独立于对象而存在的，所以，并没有this指针，也就是当前的类成员是没有办法访问的，也只有static成员，例如例中的count是可以访问。<br>
 我们继续来看这个🌰
 ```cpp
@@ -115,7 +14,9 @@ class TestStatic{
         int num;
         static TestStatic teststat;
 };
+
 TestStatic TestStatic::teststat(1);
+
 void TestStatic::set_default(){
     teststat = {2};
     cout << teststat.num << endl;
@@ -140,26 +41,20 @@ class Curious{
         static constexpr float c5 = 7.0; // 类内初始化成员不是整型，要用constexpr
 };
 ```
-所以这里我们用static和const声明了类内成员，反倒可以实现类内赋值。那么这样也不算是类对象的一部分。而且这个类内初始化的条件是static成员 **必须是整型或枚举类型的const**，或字面值类型constexpr，且初始化器必须是一个常量表达式。<br>
-为什么上面的声明并初始化在类内是可行的呢？带着这个问题，我们来看一下const和constexpr<br>
-首先我们看一下定义const<br>
-* const,我承诺不改变这个值。主要用于说明接口，这样在把变量传入函数时就不必担心变量会在函数内被改变了。编译器负责确认并执行const的承诺。(c++eff 尽可能使用const)<br>
-* constexpr,在编译时求值。主要用于说明常量，作用是允许将数据置于只读内存中（不太可能被破坏）以及提升性能<br>
-先来看一下const<br>
+
 ```cpp
-const int i = 8;// 声明了i是不能改变
-const int *p = &i; //  声明了p指针指向的变量是const，不改变
-int const*p = &i; // 声明了p指针不能改变所指的方向或地址
-int *const p = &i; // 效果同上
-// 所以看来const的承诺的变量必须是有初始化的
-int ii = 49;
-cptr = &ii; // 允许指向非常量的指针转换成指向常量类型的指针 引用也是
-const int &cii = ii;
-const int *const ccptr = &i; // 指向常量的常量指针（不能修改指针）
+    const int i = 8;// 声明了i是不能改变
+    const int *p = &i; //  声明了p指针指向的变量是const，不改变
+    int const*p = &i; // 声明了p指针不能改变所指的方向或地址
+    int *const p = &i; // 效果同上
+    // 所以看来const的承诺的变量必须是有初始化的
+    int ii = 49;
+    cptr = &ii; // 允许指向非常量的指针转换成指向常量类型的指针 引用也是
+    const int &cii = ii;
+    const int *const ccptr = &i; // 指向常量的常量指针（不能修改指针）
 ```
+
 好了const的时候，大概是这样了，在cpp primer中，可以这样地去定义，顶层const就是原本就是一个常量，底层const就是指向的是一个const常量。<br>
-所以说，const，只是告知编译器做了一些承诺。那么在类成员函数里面呢？<br>
-例如
 ```cpp
 class Quote{
     public:
