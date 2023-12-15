@@ -5,6 +5,7 @@
   2. 医保卡补办
   3. blog
     * [GitHub - Veeupup/veeupup.github.io: blog... maybe writing more..](https://github.com/Veeupup/veeupup.github.io)
+  4. 家里的电脑也弄一个vs+cmake的方案
 
 ### 1.2 questions 
   1. 智能指针实现
