@@ -2,15 +2,88 @@
 ## 1. doing
 
 ### 1.0 un-organzied
-* 怎么理解所有存储在图形系统中的几何数据都已节点的形式存储?上下的背景信息都可以介绍一下
+marco-hmc: Help me write the program for submitting information to one website which need to be login in first. Do it and explain it step by step.
 
-  在计算机图形学中,场景通常被组织为一种称为"场景图"(Scene Graph)的数据结构.场景图是一种树形结构,其中每个节点代表场景中的一个对象或一组对象.这些对象可以是几何形状(如三角形/立方体等)/光源/摄像机或者其他的图形实体.
+GitHub Copilot: Sure, here are the steps to write a Python program to submit information to a website that requires login:
 
-  场景图的一个关键特性是,每个节点的变换(位置/旋转和缩放)是相对于其父节点的.这意味着,如果你移动一个节点,那么所有的子节点也会跟着移动.这使得一些操作变得非常方便,例如旋转一个节点以及其所有的子节点,或者在不改变相对位置的情况下移动一组节点.
+1. Import the necessary libraries. We will use `requests` for making HTTP requests and `BeautifulSoup` for parsing HTML.
 
-  在这种结构中,几何数据(即模型的顶点/边和面)通常存储在叶子节点中,而变换/材质和其他属性则存储在内部节点中.当渲染场景时,图形系统会遍历场景图,并将每个节点的变换应用到其几何数据上,然后将结果发送到图形硬件进行渲染.
+```python
+import requests
+from BeautifulSoup4 import BeautifulSoup
+```
 
-  这种方式的优点是可以方便地组织和管理复杂的场景,以及方便地实现一些复杂的效果,例如层级动画/物体的相对运动等.缺点是需要更多的内存来存储场景图,以及更多的计算资源来处理场景图的遍历和变换的应用.
+2. Define the URLs for the login page and the form submission page. Also, define your login credentials.
+
+```python
+login_url = 'https://www.example.com/login'
+form_url = 'https://www.example.com/form'
+credentials = {
+    'username': 'your_username',
+    'password': 'your_password'
+}
+```
+
+3. Start a new session and get the login page.
+
+```python
+session = requests.Session()
+response = session.get(login_url)
+```
+
+4. Parse the login page, find the login form and extract all the input fields. Then, update the credentials dictionary with these fields.
+
+```python
+soup = BeautifulSoup(response.text, 'html.parser')
+form = soup.find('form')
+fields = form.findAll('input')
+
+formdata = {}
+for field in fields:
+    if 'name' in field.attrs:
+        formdata[field.attrs['name']] = field.attrs['value'] if 'value' in field.attrs else ''
+
+# Update the formdata with our credentials
+formdata.update(credentials)
+```
+
+5. Submit the login form with our credentials.
+
+```python
+response = session.post(login_url, data=formdata)
+```
+
+6. Check if login was successful. This will depend on how the website indicates a successful login. In this example, we'll just print the status code and the first 500 characters of the response text.
+
+```python
+print(response.status_code)
+print(response.text[:500])
+```
+
+7. If login was successful, you can now submit information to the website. Let's say we want to submit a form with the following information:
+
+```python
+formdata = {
+    'field1': 'value1',
+    'field2': 'value2',
+    'field3': 'value3'
+}
+```
+
+8. Submit the form.
+
+```python
+response = session.post(form_url, data=formdata)
+```
+
+9. Check if form submission was successful.
+
+```python
+print(response.status_code)
+print(response.text[:500])
+```
+
+Please note that this is a basic example and the actual code may need to be adjusted depending on the specific structure of the target website.
 
 ### 1.1 trivals
   1. podcast
@@ -26,8 +99,9 @@
   3. 虚函数表
   4. network/ os
   5. event事件
-  6. debug的控制台,支持print,header-only,支持switcher功能
-  7. .rc文件是什么?.rcc文件是什么?.rc.in文件是什么?
+  6. ftp软件
+  7. debug的控制台,支持print,header-only,支持switcher功能
+  8. .rc文件是什么?.rcc文件是什么?.rc.in文件是什么?
      1. `.rc` 文件:在 Windows 环境中,`.rc` 文件通常是资源脚本文件,用于在编译时包含在应用程序中的资源,如图标/菜单和其他界面元素.在 Unix-like 系统中,`.rc` 文件通常是 shell 或其他程序的配置文件,如 `bashrc`/`vimrc` 等.在 Qt/C++ 程序中,`.rc` 文件可能是 Qt 资源文件,用于在编译时将资源(如图像/翻译文件等)嵌入到可执行文件中.
 
      2. `.rcc` 文件:在 Qt 环境中,`.rcc` 文件是一个二进制资源文件,它包含了在编译时嵌入到 Qt 应用程序中的资源.你可以使用 Qt 的 `rcc` 工具从 `.qrc` 资源文件生成 `.rcc` 文件.
@@ -36,7 +110,7 @@
 
     一般通过CONFIGURE_FILE(template.rc.in, target.rc.in)方式拷贝.
 
-  8. .rc文件由什么去解析?.rcc文件由什么去解析?具体是怎么使用的
+  9. .rc文件由什么去解析?.rcc文件由什么去解析?具体是怎么使用的
 
 ### 1.4 utils 
   1. gtest
