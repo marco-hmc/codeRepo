@@ -15,28 +15,6 @@
 
 ![](./figures/image00284.jpeg)
 
-```js
-function printOwing(invoice) {
-  printBanner();
-  let outstanding = calculateOutstanding();
-
-  //print details
-  console.log(`name: ${invoice.customer}`);
-  console.log(`amount: ${outstanding}`);
-}
-
-function printOwing(invoice) {
-  printBanner();
-  let outstanding = calculateOutstanding();
-  printDetails(outstanding);
-
-  function printDetails(outstanding) {
-    console.log(`name: ${invoice.customer}`);
-    console.log(`amount: ${outstanding}`);
-  }
-}
-```
-
 ### 动机
 
 有的观点从代码的长度考虑，认为一个函数应该能在一屏中显示。
@@ -44,12 +22,9 @@ function printOwing(invoice) {
 但我认为最合理的观点是“将意图与实现分开”：如果你需要花时间浏览一段代码才能弄清它到底在干什么，那么就应该将其提炼到一个函数中，并根据它所做的事为其命名。
 
 ### 做法
-
 - 创造一个新函数，根据这个函数的意图来对它命名（以它“做什么”来命名，而不是以它“怎样做”命名）。
 
 > **Tip**  
-不过，我不一定非得马上想出最好的名字，有时在提炼的过程中好的名字才会出现。有时我会提炼一个函数，尝试使用它，然后发现不太合适，再把它内联回去，这完全没问题。只要在这个过程中学到了东西，我的时间就没有白费。
-
 如果编程语言支持嵌套函数，就把新函数嵌套在源函数里，这能减少后面需要处理的超出作用域的变量个数。我可以稍后再使用搬移函数（198）把它从源函数中搬移出去。
 
 > **Tip**  
@@ -63,201 +38,14 @@ function printOwing(invoice) {
 
 但有时在提炼部分被赋值的局部变量太多，这时最好是先放弃提炼。这种情况下，我会考虑先使用别的重构手法，例如拆分变量（240）或者以查询取代临时变量（178），来简化变量的使用情况，然后再考虑提炼函数。
 
-
 - 所有变量都处理完之后，编译。
-
-> **Tip**  
-如果编程语言支持编译期检查的话，在处理完所有变量之后做一次编译是很有用的，编译器经常会帮你找到没有被恰当处理的变量。
-
-
-- 在源函数中，将被提炼代码段替换为对目标函数的调用。
-- 测试。
-- 查看其他代码是否有与被提炼的代码段相同或相似之处。如果有，考虑使用以函数调用取代内联代码（222）令其调用提炼出的新函数。
 
 > **Tip**  
 有些重构工具直接支持这一步。如果工具不支持，可以快速搜索一下，看看别处是否还有重复代码。
 
-
-### 范例：无局部变量
-
-在最简单的情况下，提炼函数易如反掌。请看下列函数：
-
-```js
-function printOwing(invoice) {
-  let outstanding = 0;
-
-  console.log("***********************");
-  console.log("**** Customer Owes ****");
-  console.log("***********************");
-
-  // calculate outstanding
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-
-  // record due date
-  const today = Clock.today;
-  invoice.dueDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() + 30
-  );
-
-  //print details
-  console.log(`name: ${invoice.customer}`);
-  console.log(`amount: ${outstanding}`);
-  console.log(`due: ${invoice.dueDate.toLocaleDateString()}`);
-}
-```
-
-你可能会好奇 Clock.today 是干什么的。这是一个 Clock Wrapper[mf-cw]，也就是封装系统时钟调用的对象。我尽量避免在代码中直接调用 Date.now()这样的函数，因为这会导致测试行为不可预测，以及在诊断故障时难以复制出错时的情况。
-
-```js
-function printOwing(invoice) {
-  let outstanding = 0;
-
-  printBanner();
-
-  // calculate outstanding
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-
-  // record due date
-  const today = Clock.today;
-  invoice.dueDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() + 30
-  );
-
-  //print details
-  console.log(`name: ${invoice.customer}`);
-  console.log(`amount: ${outstanding}`);
-  console.log(`due: ${invoice.dueDate.toLocaleDateString()}`);
-}
-function printBanner() {
-  console.log("***********************");
-  console.log("**** Customer Owes ****");
-  console.log("***********************");
-}
-```
-
-同样，我还可以把“打印详细信息”部分也提炼出来：
-
-```js
-function printOwing(invoice) {
- let outstanding = 0;
-
- printBanner();
-
- // calculate outstanding
- for (const o of invoice.orders) {
-  outstanding += o.amount;
- }
-
- // record due date
- const today = Clock.today;
- invoice.dueDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
-
- printDetails();
-
- function printDetails() {
-  console.log(`name: ${invoice.customer}`);
-  console.log(`amount: ${outstanding}`);
-  console.log(`due: ${invoice.dueDate.toLocaleDateString()}`);
-}
-}
-```
-
-看起来提炼函数是一个极其简单的重构。但很多时候，情况会变得比较复杂。
-
-在上面的例子中，我把 printDetails 函数嵌套在 printOwing 函数内部，这样前者就能访问到 printOwing 内部定义的所有变量。如果我使用的编程语言不支持嵌套函数，就没法这样操作了，那么我就要面对“提炼出一个顶层函数”的问题。此时我必须细心处理“只存在于源函数作用域”的变量，包括源函数的参数以及源函数内部定义的临时变量。
-
-### 范例：有局部变量
-
-局部变量最简单的情况是：被提炼代码段只是读取这些变量的值，并不修改它们。这种情况下我可以简单地将它们当作参数传给目标函数。所以，如果我面对下列函数：
-
-```js
-function printOwing(invoice) {
- let outstanding = 0;
-
- printBanner();
-
- // calculate outstanding
- for (const o of invoice.orders) {
-  outstanding += o.amount;
- }
-
- // record due date
- const today = Clock.today;
- invoice.dueDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
-
- //print details
- console.log(`name: ${invoice.customer}`);
- console.log(`amount: ${outstanding}`);
- console.log(`due: ${invoice.dueDate.toLocaleDateString()}`);
-```
-
-就可以将“打印详细信息”这一部分提炼为带两个参数的函数：
-
-```js
-function printOwing(invoice) {
-  let outstanding = 0;
-
-  printBanner();
-
-  // calculate outstanding
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-
-  // record due date
-  const today = Clock.today;
-  invoice.dueDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() + 30
-  );
-
-  printDetails(invoice, outstanding);
-}
-function printDetails(invoice, outstanding) {
-  console.log(`name: ${invoice.customer}`);
-  console.log(`amount: ${outstanding}`);
-  console.log(`due: ${invoice.dueDate.toLocaleDateString()}`);
-}
-```
-
-如果局部变量是一个数据结构（例如数组、记录或者对象），而被提炼代码段又修改了这个结构中的数据，也可以如法炮制。所以，“设置到期日”的逻辑也可以用同样的方式提炼出来：
-
-```js
-function printOwing(invoice) {
-  let outstanding = 0;
-
-  printBanner();
-
-  // calculate outstanding
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-
-  recordDueDate(invoice);
-  printDetails(invoice, outstanding);
-}
-function recordDueDate(invoice) {
-  const today = Clock.today;
-  invoice.dueDate = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate() + 30
-  );
-}
-```
-
 ### 范例：对局部变量再赋值
 
-如果被提炼代码段对局部变量赋值，问题就变得复杂了。这里我们只讨论临时变量的问题。如果你发现源函数的参数被赋值，应该马上使用拆分变量（240）将其变成临时变量。
+问题就变得复杂了。这里我们只讨论临时变量的问题。如果你发现源函数的参数被赋值，应该马上使用拆分变量（240）将其变成临时变量。
 
 被赋值的临时变量也分两种情况。较简单的情况是：这个变量只在被提炼代码段中使用。若果真如此，你可以将这个临时变量的声明移到被提炼代码段中，然后一起提炼出去。如果变量的初始化和使用离得有点儿远，可以用移动语句（223）把针对这个变量的操作放到一起。
 
@@ -393,11 +181,9 @@ function getRating(driver) {
 
 ### 动机
 
-本书经常以简短的函数表现动作意图，这样会使代码更清晰易读。但有时候你会遇到某些函数，其内部代码和函数名称同样清晰易读。也可能你重构了该函数的内部实现，使其内容和其名称变得同样清晰。若果真如此，你就应该去掉这个函数，直接使用其中的代码。间接性可能带来帮助，但非必要的间接性总是让人不舒服。
-
 另一种需要使用内联函数的情况是：我手上有一群组织不甚合理的函数。可以将它们都内联到一个大型函数中，再以我喜欢的方式重新提炼出小函数。
 
-如果代码中有太多间接层，使得系统中的所有函数都似乎只是对另一个函数的简单委托，造成我在这些委托动作之间晕头转向，那么我通常都会使用内联函数。当然，间接层有其价值，但不是所有间接层都有价值。通过内联手法，我可以找出那些有用的间接层，同时将无用的间接层去除。
+如果代码中有太多间接层，使得系统中的所有函数都似乎只是对另一个函数的简单委托，造成我在这些委托动作之间晕头转向，那么我通常都会使用内联函数。当然，间接层有其价值，但不是所有间接层都有价值。
 
 ### 做法
 
@@ -406,7 +192,6 @@ function getRating(driver) {
 > **Tip**  
 如果该函数属于一个类，并且有子类继承了这个函数，那么就无法内联。
 
-
 - 找出这个函数的所有调用点。
 - 将这个函数的所有调用点都替换为函数本体。
 - 每次替换之后，执行测试。
@@ -414,93 +199,9 @@ function getRating(driver) {
 > **Tip**  
 不必一次完成整个内联操作。如果某些调用点比较难以内联，可以等到时机成熟后再来处理。
 
-
 - 删除该函数的定义。
 
 被我这样一写，内联函数似乎很简单。但情况往往并非如此。对于递归调用、多返回点、内联至另一个对象中而该对象并无访问函数等复杂情况，我可以写上好几页。我之所以不写这些特殊情况，原因很简单：如果你遇到了这样的复杂情况，就不应该使用这个重构手法。
-
-### 范例
-
-在最简单的情况下，这个重构简单得不值一提。一开始的代码是这样：
-
-```js
-function rating(aDriver) {
-  return moreThanFiveLateDeliveries(aDriver) ? 2 : 1;
-}
-function moreThanFiveLateDeliveries(aDriver) {
-  return aDriver.numberOfLateDeliveries > 5;
-}
-```
-
-我只要把被调用的函数的 return 语句复制出来，粘贴到调用处，取代原本的函数调用，就行了。
-
-```js
-function rating(aDriver) {
-  return aDriver.numberOfLateDeliveries > 5 ? 2 : 1;
-}
-```
-
-不过实际情况可能不会这么简单，需要我多做一点儿工作，帮助代码融入它的新家。例如，开始时的代码与前面稍有不同：
-
-```js
-function rating(aDriver) {
-  return moreThanFiveLateDeliveries(aDriver) ? 2 : 1;
-}
-
-function moreThanFiveLateDeliveries(dvr) {
-  return dvr.numberOfLateDeliveries > 5;
-}
-```
-
-几乎是一样的代码，但 moreThanFiveLateDeliveries 函数声明的形式参数名与调用处使用的变量名不同，所以我在内联时需要对代码做些微调。
-
-```js
-function rating(aDriver) {
-  return aDriver.numberOfLateDeliveries > 5 ? 2 : 1;
-}
-```
-
-情况还可能更复杂。例如，请看下列代码：
-
-```js
-function reportLines(aCustomer) {
-  const lines = [];
-  gatherCustomerData(lines, aCustomer);
-  return lines;
-}
-function gatherCustomerData(out, aCustomer) {
-  out.push(["name", aCustomer.name]);
-  out.push(["location", aCustomer.location]);
-}
-```
-
-我要把 gatherCustomerData 内联到 reportLines 中，这时简单的剪切和粘贴就不够了。这段代码还不算很麻烦，大多数时候我还是一步到位地完成了重构，只是需要做些调整。如果想更谨慎些，也可以每次搬移一行代码：可以首先对第一行代码使用搬移语句到调用者（217）——我还是用简单的“剪切-粘贴-调整”方式进行。
-
-```js
-function reportLines(aCustomer) {
-  const lines = [];
-  lines.push(["name", aCustomer.name]);
-  gatherCustomerData(lines, aCustomer);
-  return lines;
-}
-function gatherCustomerData(out, aCustomer) {
-  out.push(["name", aCustomer.name]);
-  out.push(["location", aCustomer.location]);
-}
-```
-
-然后继续处理后面的代码行，直到完成整个重构。
-
-```js
-function reportLines(aCustomer) {
-  const lines = [];
-  lines.push(["name", aCustomer.name]);
-  lines.push(["location", aCustomer.location]);
-  return lines;
-}
-```
-
-重点在于始终小步前进。大多数时候，由于我平时写的函数都很小，内联函数可以一步完成，顶多需要一点代码调整。但如果遇到了复杂的情况，我会每次内联一行代码。哪怕只是处理一行代码，也可能遇到麻烦，那么我就会使用更精细的重构手法搬移语句到调用者（217），将步子再拆细一点。有时我会自信满满地快速完成重构，然后测试却失败了，这时我会回退到上一个能通过测试的版本，带着一点儿懊恼，以更小的步伐再次重构。
 
 ## 6.3 提炼变量（Extract Variable）
 
@@ -526,12 +227,6 @@ return basePrice - quantityDiscount + shipping;
 
 ### 动机
 
-表达式有可能非常复杂而难以阅读。这种情况下，局部变量可以帮助我们将表达式分解为比较容易管理的形式。在面对一块复杂逻辑时，局部变量使我能给其中的一部分命名，这样我就能更好地理解这部分逻辑是要干什么。
-
-这样的变量在调试时也很方便，它们给调试器和打印语句提供了便利的抓手。
-
-如果我考虑使用提炼变量，就意味着我要给代码中的一个表达式命名。一旦决定要这样做，我就得考虑这个名字所处的上下文。如果这个名字只在当前的函数中有意义，那么提炼变量是个不错的选择；但如果这个变量名在更宽的上下文中也有意义，我就会考虑将其暴露出来，通常以函数的形式。如果在更宽的范围可以访问到这个名字，就意味着其他代码也可以用到这个表达式，而不用把它重写一遍，这样能减少重复，并且能更好地表达我的意图。
-
 “将新的名字暴露得更宽”的坏处则是需要额外的工作量。如果工作量很大，我会暂时搁下这个想法，稍后再用以查询取代临时变量（178）来处理它。但如果处理其他很简单，我就会立即动手，这样马上就可以使用这个新名字。有一个好的例子：如果我处理的这段代码属于一个类，对这个新的变量使用提炼函数（106）会很容易。
 
 ### 做法
@@ -543,157 +238,6 @@ return basePrice - quantityDiscount + shipping;
 
 如果该表达式出现了多次，请用这个新变量逐一替换，每次替换之后都要执行测试。
 
-### 范例
-
-我们从一个简单计算开始：
-
-```js
-function price(order) {
-  //price is base price - quantity discount + shipping
-  return (
-    order.quantity * order.itemPrice -
-    Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 +
-    Math.min(order.quantity * order.itemPrice * 0.1, 100)
-  );
-}
-```
-
-这段代码还算简单，不过我可以让它变得更容易理解。首先，我发现，底价（base price）等于数量（quantity）乘以单价（item price）。
-
-```js
-function price(order) {
-  //price is base price - quantity discount + shipping
-  return (
-    order.quantity * order.itemPrice -
-    Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 +
-    Math.min(order.quantity * order.itemPrice * 0.1, 100)
-  );
-}
-```
-
-我把这一新学到的知识放进代码里，创建一个变量，并给它起个合适的名字：
-
-```js
-function price(order) {
-  //price is base price - quantity discount + shipping
-  const basePrice = order.quantity * order.itemPrice;
-  return (
-    order.quantity * order.itemPrice -
-    Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 +
-    Math.min(order.quantity * order.itemPrice * 0.1, 100)
-  );
-}
-```
-
-当然，仅仅声明并初始化一个变量没有任何作用，我还得使用它才行。所以，我用这个变量取代了原来的表达式：
-
-```js
-function price(order) {
-  //price is base price - quantity discount + shipping
-  const basePrice = order.quantity * order.itemPrice;
-  return (
-    basePrice -
-    Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 +
-    Math.min(order.quantity * order.itemPrice * 0.1, 100)
-  );
-}
-```
-
-稍后的代码还用到了同样的表达式，也可以用新建的变量取代之。
-
-```js
-function price(order) {
-  //price is base price - quantity discount + shipping
-  const basePrice = order.quantity * order.itemPrice;
-  return (
-    basePrice -
-    Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 +
-    Math.min(basePrice * 0.1, 100)
-  );
-}
-```
-
-下一行是计算批发折扣（quantity discount）的逻辑，我也将它提炼出来：
-
-```js
-function price(order) {
-  //price is base price - quantity discount + shipping
-  const basePrice = order.quantity * order.itemPrice;
-  const quantityDiscount =
-    Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
-  return basePrice - quantityDiscount + Math.min(basePrice * 0.1, 100);
-}
-```
-
-最后，我再把运费（shipping）计算提炼出来。同时我还可以删掉代码中的注释，因为现在代码已经可以完美表达自己的意义了：
-
-```js
-function price(order) {
-  const basePrice = order.quantity * order.itemPrice;
-  const quantityDiscount =
-    Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
-  const shipping = Math.min(basePrice * 0.1, 100);
-  return basePrice - quantityDiscount + shipping;
-}
-```
-
-### 范例：在一个类中
-
-下面是同样的代码，但这次它位于一个类中：
-
-```js
-class Order {
-  constructor(aRecord) {
-    this._data = aRecord;
-  }
-
-  get quantity() {
-    return this._data.quantity;
-  }
-  get itemPrice() {
-    return this._data.itemPrice;
-  }
-
-  get price() {
-    return (
-      this.quantity * this.itemPrice -
-      Math.max(0, this.quantity - 500) * this.itemPrice * 0.05 +
-      Math.min(this.quantity * this.itemPrice * 0.1, 100)
-    );
-  }
-}
-```
-
-我要提炼的还是同样的变量，但我意识到：这些变量名所代表的概念，适用于整个 Order 类，而不仅仅是“计算价格”的上下文。既然如此，我更愿意将它们提炼成方法，而不是变量。
-
-```js
-class Order {
-  constructor(aRecord) {
-    this._data = aRecord;
-  }
-  get quantity() {
-    return this._data.quantity;
-  }
-  get itemPrice() {
-    return this._data.itemPrice;
-  }
-
-  get price() {
-    return this.basePrice - this.quantityDiscount + this.shipping;
-  }
-  get basePrice() {
-    return this.quantity * this.itemPrice;
-  }
-  get quantityDiscount() {
-    return Math.max(0, this.quantity - 500) * this.itemPrice * 0.05;
-  }
-  get shipping() {
-    return Math.min(this.basePrice * 0.1, 100);
-  }
-}
-```
-
-这是对象带来的一大好处：它们提供了合适的上下文，方便分享相关的逻辑和数据。在如此简单的情况下，这方面的好处还不太明显；但在一个更大的类当中，如果能找出可以共用的行为，赋予它独立的概念抽象，给它起一个好名字，对于使用对象的人会很有帮助。
 
 ## 6.4 内联变量（Inline Variable）
 
@@ -754,12 +298,6 @@ function circumference(radius) {...}
 ```
 
 ### 动机
-
-函数是我们将程序拆分成小块的主要方式。函数声明则展现了如何将这些小块组合在一起工作——可以说，它们就是软件系统的关节。和任何构造体一样，系统的好坏很大程度上取决于关节。好的关节使得给系统添加新部件很容易；而糟糕的关节则不断招致麻烦，让我们难以看清软件的行为，当需求变化时难以找到合适的地方进行修改。还好，软件是软的，我可以改变这些关节，只是要小心修改。
-
-对于这些关节而言，最重要的元素当属函数的名字。一个好名字能让我一眼看出函数的用途，而不必查看其实现代码。但起一个好名字并不容易，我很少能第一次就把名字起对。“就算这个名字有点迷惑人，还是放着别管吧——说到底，不过就是一个名字而已。”邪恶的混乱魔王就是这样引诱我的。为了拯救程序的灵魂，绝不能上了他的当。如果我看到一个函数的名字不对，一旦发现了更好的名字，就得尽快给函数改名。这样，下一次再看到这段代码时，我就不用再费力搞懂其中到底在干什么。（有一个改进函数名字的好办法：先写一句注释描述这个函数的用途，再把这句注释变成函数的名字。）
-
-对于函数的参数，道理也是一样。函数的参数列表阐述了函数如何与外部世界共处。函数的参数设置了一个上下文，只有在这个上下文中，我才能使用这个函数。假如有一个函数的用途是把某人的电话号码转换成特定的格式，并且该函数的参数是一个人（person），那么我就没法用这个函数来处理公司（company）的电话号码。如果我把函数接受的参数由“人”改成“电话号码”，这段处理电话号码格式的代码就能被更广泛地使用。
 
 修改参数列表不仅能增加函数的应用范围，还能改变连接一个模块所需的条件，从而去除不必要的耦合。在前面这个例子中，修改参数列表之后，“处理电话号码格式”的逻辑所在的模块就无须了解“人”这个概念。减少模块彼此之间的信息依赖，当我要做出修改时就能减轻我大脑的负担——毕竟我的脑容量已经不如从前那么大了（跟我脑袋的大小没关系）。
 

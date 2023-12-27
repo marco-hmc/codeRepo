@@ -43,17 +43,10 @@ auto [a, b, c] = some_tuple
    #include <algorithm>
    
    using namespace std;
-   ```
-
-2. 我们对要处理的元组中的内容非常感兴趣，所以想要对其内容进行展示。因此，将实现一个非常通用的函数，能对任意具有可打印变量的元组进行打印。这个函数能接受一个输出流引用`os`和一个可变的参数列表，其中具有元组中的所有成员。为了解析这些参数，我们将一个参数放在`v`中，其余的放在参数包`vs...`中：
-
-   ```c++
    template <typename T, typename ... Ts>
    void print_args(ostream &os, const T &v, const Ts &...vs)
    {
    	os << v;
-   ```
-
 3. 然后，我们就对参数包vs进行处理，其会使用逗号将`initializer_list`中的元素进行隔开。你可以回看一下第4章的[使用同一输入调用多个函数](content/chapter4/chapter4-5-chinese.md)，了解下如何使用Lambda表达式来完成这个操作：
 
    ```c++
