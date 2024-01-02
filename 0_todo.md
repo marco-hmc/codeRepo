@@ -7,17 +7,9 @@
 * 同步/异步/阻塞/非阻塞的理解
 * 进程的调度算法
 * 什么是死锁,如何解决死锁
-* 
-我推荐使用**Netty**,它是目前最流行的NIO框架
 
-这些是一些常见操作的成本的数量级的概念:
 
-一次内存访问:通常是纳秒级别的操作,非常快速.
-一次函数调用:通常是微秒级别的操作,比内存访问慢一些.
-一次字符串比较:取决于字符串的长度和比较算法,通常是微秒级别的操作.
-一次系统调用:取决于操作系统和具体的系统调用,通常是毫秒级别的操作.
-一次磁盘访问:取决于磁盘的类型和性能,通常是毫秒级别的操作.
-一个通过网络的消息的成本:取决于网络的延迟和带宽,通常是毫秒级别的操作.
+请注意,这些都是非常粗略的估计,实际的耗时可能会有很大的差异.
 
 marco-hmc: Help me write the program for submitting information to one website which need to be login in first. Do it and explain it step by step.
 
@@ -99,8 +91,6 @@ response = session.post(form_url, data=formdata)
 print(response.status_code)
 print(response.text[:500])
 ```
-
-Please note that this is a basic example and the actual code may need to be adjusted depending on the specific structure of the target website.
 
 ### 1.1 trivals
   1. podcast
