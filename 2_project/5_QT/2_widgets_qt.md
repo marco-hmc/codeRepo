@@ -54,3 +54,5 @@
     在Qt中,MDI窗口通常由QMdiArea类实现,它提供了一个区域,可以在其中显示和管理多个子窗口.子窗口通常是QMdiSubWindow类的实例,每个QMdiSubWindow可以包含一个QWidget作为其内容.
 
     QMdiArea和QMdiSubWindow的关系是:QMdiArea是一个容器,用于存放和管理多个QMdiSubWindow;而QMdiSubWindow是QMdiArea中的一个子窗口,用于显示一个独立的文档或视图.
+
+    
