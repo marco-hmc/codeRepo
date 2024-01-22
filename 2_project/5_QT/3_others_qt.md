@@ -17,3 +17,24 @@
         在编译过程中,Qt会将这些标记的字符串提取出来,并生成一个翻译文件(通常是一个.ts文件).
         2. 翻译人员会使用Qt提供的翻译工具,如Qt Linguist,来翻译这些字符串,并将翻译结果保存在翻译文件中.
      3. 在程序运行时,Qt会根据当前的语言环境加载相应的翻译文件.
+
+
+qt这个.qss的选择器语法有哪些?
+
+Qt样式表(QSS)的选择器语法类似于HTML的CSS.以下是一些基本的选择器:
+
+1. 类型选择器:直接使用控件的类名.例如,`QPushButton { color: red; }` 将使所有的QPushButton的文字颜色变为红色.
+
+2. 类选择器:使用控件的类名和一个点(.)加上类名.例如,`QPushButton.MyButton { color: red; }` 将使类名为MyButton的QPushButton的文字颜色变为红色.
+
+3. ID选择器:使用控件的objectName属性和一个井号(#).例如,`#myButton { color: red; }` 将使objectName为myButton的控件的文字颜色变为红色.
+
+4. 子控件选择器:使用大于号(>).例如,`QDialog > QPushButton { color: red; }` 将使QDialog的直接子控件QPushButton的文字颜色变为红色.
+
+5. 后代选择器:使用空格.例如,`QDialog QPushButton { color: red; }` 将使QDialog的所有子控件(不仅仅是直接子控件)QPushButton的文字颜色变为红色.
+
+6. 伪状态选择器:例如,`:hover`,`:pressed`,`:checked`等.例如,`QPushButton:hover { color: red; }` 将使鼠标悬停在QPushButton上时,其文字颜色变为红色.
+
+7. 属性选择器:例如,`[enabled="false"]`,`[text="OK"]`等.例如,`QPushButton[enabled="false"] { color: red; }` 将使禁用的QPushButton的文字颜色变为红色.
+
+以上就是一些基本的QSS选择器语法.
