@@ -3,7 +3,18 @@
 
 ### 1.0 un-organzied
 
+#### 1. std::getenv()有什么用?
+  `std::getenv` 是一个 C++ 标准库函数,用于获取环境变量的值.它的原型如下:
 
+  ```cpp
+  char* getenv( const char* env_var );
+  ```
+
+  这个函数接受一个环境变量名(`env_var`)作为参数,返回一个指向该环境变量值的指针.如果环境变量不存在,函数返回 `nullptr`.
+
+#### 2. istringstream 怎么用?
+
+#### 3. std::string::npos怎么用?
 
 **std::weak_ptr** 是一个不控制资源生命周期的智能指针,是对对象的一种弱引用,只是提供了对其管理的资源的一个访问手段,引入它的目的为协助 **std::shared_ptr** 工作.
 
