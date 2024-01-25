@@ -1,22 +1,10 @@
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QPushbutton>
+#include <iostream>
+#include <vector>
 
-class CustomWidget : public QFrame {
-    // B: set styleSheet
-    explicit CustomWidget(QWidget* parent = nullptr) {
-        setObjectName("customObjectName");
-        QPushButton* button = new QPushButton(tr("Button"), this);
-        button->setObjectName("abc");
-    }
-
-public:
-    QLabel* label1;
-    QLabel* label2;
-};
+using namespace std;
+template <typename T> struct type_identity { using type = T; };
 
 int main() {
+    type_identity<char>::type;
     return 0;
 }
