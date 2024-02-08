@@ -47,21 +47,22 @@ public:
 };
 
 int main() {
-    // 创建一个包含6个顶点的图
-    Graph graph(6);
+  // 创建一个包含6个顶点的图
+  Graph graph(6);
 
-    // 添加边
-    graph.addEdge(0, 1);
-    graph.addEdge(0, 2);
-    graph.addEdge(1, 3);
-    graph.addEdge(1, 4);
-    graph.addEdge(2, 4);
-    graph.addEdge(3, 4);
-    graph.addEdge(3, 5);
-    graph.addEdge(4, 5);
+  // 添加边
+  graph.addEdge(0, 1);
+  graph.addEdge(0, 1);
+  graph.addEdge(0, 2);
+  graph.addEdge(1, 3);
+  graph.addEdge(1, 4);
+  graph.addEdge(2, 4);
+  graph.addEdge(3, 4);
+  graph.addEdge(3, 5);
+  graph.addEdge(4, 5);
 
-    cout << "BFS遍历结果: ";
-    graph.BFS(0);
+  cout << "BFS遍历结果: ";
+  graph.BFS(0);
 
-    return 0;
+  return 0;
 }
