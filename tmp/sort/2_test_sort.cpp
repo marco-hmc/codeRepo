@@ -13,15 +13,16 @@
 #include <random>
 #include <stdint.h>
 #include <string>
+#include <typeinfo>
 #include <vector>
 
 namespace {
-bool isChinese(wchar_t ch) {
+bool isChinese(char ch) {
   return (ch >= 0x4E00 && ch <= 0x9FFF) || (ch >= 0x3400 && ch <= 0x4DBF) ||
          (ch >= 0xF900 && ch <= 0xFAFF);
 }
 } // namespace
-int __strverscmp(const wchar_t *p1, const wchar_t *p2) {
+int __strverscmp(const char *p1, const char *p2) {
 /* states: S_N: normal, S_I: comparing integral part, S_F: comparing
            fractionnal parts, S_Z: idem but with leading Zeroes only */
 #define S_N 0x0
@@ -60,7 +61,7 @@ int __strverscmp(const wchar_t *p1, const wchar_t *p2) {
   char c1 = *p1++;
   char c2 = *p2++;
   /* Hint: '0' is a digit too.  */
-  int state = S_N + ((c1 == L'0') + (std::iswdigit(c1) != 0));
+  int state = S_N + ((c1 == L'0') + (std::isdigit(c1) != 0));
 
   int diff;
   while ((diff = c1 - c2) == 0) {
@@ -69,37 +70,37 @@ int __strverscmp(const wchar_t *p1, const wchar_t *p2) {
     state = next_state[state];
     c1 = *p1++;
     c2 = *p2++;
-    state += (c1 == L'0') + (std::iswdigit(c1) != 0); // 是数字就+1,是零就+2
+    state += (c1 == L'0') + (std::isdigit(c1) != 0); // 是数字就+1,是零就+2
   }
 
-  state = result_type[state * 3 + (((c2 == '0') + (std::iswdigit(c2) != 0)))];
+  state = result_type[state * 3 + (((c2 == '0') + (std::isdigit(c2) != 0)))];
 
   switch (state) {
   case CMP:
     return diff;
 
   case LEN:
-    while (std::iswdigit(*p1++))
-      if (!std::iswdigit(*p2++))
+    while (std::isdigit(*p1++))
+      if (!std::isdigit(*p2++))
         return 1;
 
-    return std::iswdigit(*p2) ? -1 : diff;
+    return std::isdigit(*p2) ? -1 : diff;
 
   default:
     return state;
   }
 } // namespace
 
-int stringCompare(const std::wstring &str1, const std::wstring &str2) {
+int stringCompare(const std::string &str1, const std::string &str2) {
 #ifdef WIN
   return StrCmpLogicalW(str1.c_str(), str2.c_str());
 #endif
 
-  const wchar_t *p1 = str1.c_str();
-  wchar_t c1 = *p1++;
+  const char *p1 = str1.c_str();
+  char c1 = *p1++;
 
-  const wchar_t *p2 = str2.c_str();
-  wchar_t c2 = *p2++;
+  const char *p2 = str2.c_str();
+  char c2 = *p2++;
 
   int diff;
   while ((diff = c1 - c2) == 0) {
@@ -107,9 +108,8 @@ int stringCompare(const std::wstring &str1, const std::wstring &str2) {
       return diff;
     if (isChinese(c1) || isChinese(c2)) {
       const std::locale &loc = std::locale();
-      const std::collate<wchar_t> &myCollate =
-          std::use_facet<std::collate<wchar_t>>(
-              loc); // Use std::collate<wchar_t> explicitly
+      const std::collate<char> &myCollate = std::use_facet<std::collate<char>>(
+          loc); // Use std::collate<wchar_t> explicitly
       return myCollate.compare(str1.c_str(), str1.c_str() + str1.length(),
                                str2.c_str(), str2.c_str() + str2.length());
     }
@@ -120,28 +120,28 @@ int stringCompare(const std::wstring &str1, const std::wstring &str2) {
 }
 
 int main() {
-  std::vector<std::wstring> filenames = {
-      L"(",   L"(1)", L"(5",  L"(10",  L"(10)", L"(10.)", L"(10.0)", L"A",
-      L"a",   L"A1",  L"A10", L"B",    L"b",    L"b_",    L"b_99",   L"01",
-      L"001", L"0.1", L"0.5", L"0.10", L"啊",   L"吧",    L"一"};
+  std::vector<std::string> filenames = {
+      "(",   "(1)", "(5",  "(10",  "(10)", "(10.)", "(10.0)", "A",
+      "a",   "A1",  "A10", "B",    "b",    "b_",    "b_99",   "01",
+      "001", "0.1", "0.5", "0.10", "啊",   "吧",    "一"};
   // 中文
   std::random_device rd;
   std::mt19937 g(rd());
   std::shuffle(filenames.begin(), filenames.end(), g);
 
-  std::wofstream outputFile("output.txt");
+  std::ofstream outputFile("output.txt");
   outputFile.clear();
   std::wcout << "before sort" << std::endl;
   for (const auto &filename : filenames) {
-    std::wcout << filename << std::endl;
+    std::cout << filename << std::endl;
     outputFile << filename << std::endl;
   }
-  std::wcout << "------------" << std::endl;
-  std::wcout << "after sort" << std::endl;
+  std::cout << "------------" << std::endl;
+  std::cout << "after sort" << std::endl;
   std::sort(filenames.begin(), filenames.end(),
             [](auto a, auto b) { return stringCompare(a, b) < 0; });
   for (const auto &filename : filenames) {
-    std::wcout << filename << std::endl;
+    std::cout << filename << std::endl;
     outputFile << filename << std::endl;
   }
   std::wcout << "------------" << std::endl;
