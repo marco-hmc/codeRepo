@@ -62,7 +62,6 @@
 
   * `git reset --soft [commit_id]` 强制回退历史节点及工作区代码
 
-    > 如果是soft则撤销后代码会保留,当成新的修改.如果是hard则撤销后代码消失,不被保留.
 
 * `git revert`
 
@@ -144,11 +143,21 @@
 
   是一个用于选择性地应用单个提交的命令.它可以将指定的提交复制到当前分支上,而不会复制其他提交历史.
 
-### 3. 其他操作
+### 3. config
 
-#### 3.1 版本号
+* git config
+    配置被写在~/.git/config
+    可以通过git config --list 查看
 
-#### 3.2 stash
+git config --global http.proxy 'socks5://127.0.0.1:7890'
+git config --global https.proxy 'socks5://127.0.0.1:7890'
+
+
+### 4. 其他操作
+
+#### 4.1 版本号
+
+#### 4.2 stash
 
 * `git stash save [MSG]`
 
@@ -230,7 +239,7 @@
 
   需要注意的是,使用 `squash` 会改写提交历史,因此谨慎使用,特别是在与其他人共享代码时.如果提交已经被推送(push)到远程仓库,应避免对这些提交使用 `squash`,以免导致冲突和混乱的提交历史.
 
-### 4. git问答
+### 99. git问答
 
 * **`git add`是递归的吗?**
 
