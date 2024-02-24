@@ -163,7 +163,6 @@ CAS 操作(Compare and Swap): 使用原子性的 CAS 操作来实现更新.在�
 * redis销毁方式机制
 * mq实现原理
 * C++虚函数
-* hash冲突的解决
 * memcached一致性哈希
 * socket函数select的缺陷
 * epoll模型
