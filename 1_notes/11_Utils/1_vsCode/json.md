@@ -1,0 +1,19 @@
+{
+   "version": "2.0.0",
+   "tasks": [
+      {
+         "label": "Build",
+         "type": "shell",
+         "command": "npm run build",
+         "group": {
+            "kind": "build",
+            "isDefault": true
+         }
+      },
+      {
+         "label": "Test",
+         "type": "shell",
+         "command": "npm run test"
+      }
+   ]
+}
