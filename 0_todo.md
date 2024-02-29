@@ -292,6 +292,7 @@ print(response.text[:500])
   1. podcast
   2. 医保卡补办
   3. blog
+
     * [GitHub - Veeupup/veeupup.github.io: blog... maybe writing more..](https://github.com/Veeupup/veeupup.github.io)
 
 ### 1.2 questions 
@@ -337,6 +338,7 @@ print(response.text[:500])
   3. coredump怎么用
   4. 内存泄露检测怎么用?  
   5. gitbook
+
     * https://ganxunzou.gitbooks.io/gitlab-doc/content/gitbook-yu-gitlab-ji-cheng/gitbook-ci-an-zhuang.html
     * 可以参考modern-cpp-tutorial-master组织书
 
@@ -347,12 +349,16 @@ print(response.text[:500])
 
 ### 1.5 readings
   1. **cpp**
+
     2_project\modern-cpp-tutorial-master\book\zh-cn\
   2. **refactor**
+
     1_notes\6_设计模式\refactoring2\ch1.md
   3. **js**
+
     1_notes\0_frontEnd\js\en.javascript.info-master\1-js\05-data-types\01-primitives-methods\article.md
   4. **template**
+
     2_project\Cpp-Templates-2ed-master\Cpp-Templates-2ed-master\docs\01_function_template.md
   5. real-time rendering
   6. [Ulrich Drepper. 每位程序员都需要知道的内存知识. 2007](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf)
@@ -363,7 +369,7 @@ print(response.text[:500])
 
 --------------------------------------------------------
 
- 
+
 ##  2. todo
   * **project**
     * OS-project
@@ -399,3 +405,8 @@ print(response.text[:500])
    [[新手]基于C++Qt5通过调用百度翻译API制作简易翻译工具_qt+百度api实现翻译_无机无机无忌的博客-CSDN博客](https://blog.csdn.net/yyy90/article/details/113762827)
 
 ### 2. 闹钟+todo
+
+* 有什么适合提高 C/C++ 网络编程能力的开源项目推荐？
+
+  https://www.zhihu.com/question/20124494
+
