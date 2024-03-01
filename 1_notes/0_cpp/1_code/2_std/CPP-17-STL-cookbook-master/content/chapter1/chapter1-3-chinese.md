@@ -50,8 +50,3 @@ C++17添加的条件也适用于auto(推断类型)——C++11引入，用于正�
 - `auto var_name {element1, element2, ...};`是非法的，并且无法通过编译。
 - `auto var_name = {element1, element2, ...};`将会使用`std::initializer_list<T>`进行初始化，列表中elementN变量的类型均为T。
 
-C++17加强了初始化列表的鲁棒性。
-
-> Note:
->
-> 使用C++11/C++14模式的编译器解决这个问题时，有些编译器会将`auto x{123};`的类型推导成整型，而另外一些则会推导成 `std::initializer_list<int>`。所以，这里需要特别注意，编写这样的代码，可能会导致有关可移植性的问题！

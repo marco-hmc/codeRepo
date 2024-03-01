@@ -14,76 +14,37 @@
    #include <iostream>
    #include <vector>
    #include <algorithm>
-   ```
 
-2. 定义主函数，并定义一个`vector`实例：
-
-   ```c++
    int main(){
        std::vector<int> v{123, 456, 789, 100, 200}; 
-   ```
-
-3. 下一步就要删除索引为2的元素(789)。我们所要用的来删除元素的函数在后面进行实现，我们先假设已经实现好了。执行完成后，来看下`vector`中的内容。
-
-   ```c++
        quick_remove_at(v, 2);
        for (int i : v){
            std::cout << i << ", ";
        }
        std::cout << '\n';
-   ```
-
-4. 现在，我们将删除另外一个元素。我们想删除123，但是要假装不知道其索引。因此，我们要使用`std::find`函数在vector的合法范围内查找这个值，并返回其位置信息。得到索引信息后，我们就可以用`quick_remove_at`将对应元素删除了，这里所使用到的是一个重载版本，能接受迭代器作为输入参数。
-
-   ```c++
        quick_remove_at(v, std::find(std::begin(v), std::end(v), 123));
        for (int i : v) {
       		std::cout << i << ", ";
        }
        std::cout << '\n';
-   }
-   ```
-
-5. 我们实现了两种`quick_remove_at`函数。具体实现代码中，需要注意与`main`函数的前后关系。两个函数都能接收一个`vector`实例的引用，所以这里允许用户使用各种类型的变量作为元素。对于我们来说，其类型就是`T`。第一个 `quick_remove_at`函数用来接收索引值，是一个具体的数，所以其接口如下所示：
-
-   ```c++
    template <typename T>
    void quick_remove_at(std::vector<T> &v, std::size_t idx)
    {
-   ```
-
-6. 现在来展示一下本节的重点——如何在不移动其他元素的情况下，快速删除某个元素？首先，将`vector`中最后一个元素进行重写。第二，删除`vector`中最后一个元素。就这两步。我们的代码会对输入进行检查。如果输入的索引值超出了范围，函数不会做任何事情。另外，该函数会在传入空`vector`的时候崩溃。
-
-   ```c++
        if (idx < v.size()) {
            v[idx] = std::move(v.back());
            v.pop_back();
        }
    }
-   ```
-
-7. 另一个`quick_remove_at`实现也很类似。用`std::vector<T>`的迭代器替换了具体的索引数值。因为泛型容器已经定义了这样的类型，所以获取它的类型并不复杂。
-
-   ```c++
    template <typename T>
    void quick_remove_at(std::vector<T> &v,
    				    typename std::vector<T>::iterator it)
    {
-   ```
-
-8. 现在我们来访问这些迭代器所指向的值。和另一个函数一样，我们会将最后一个元素进行重写。因为这次处理的是迭代器，所以我们要对迭代器指向的位置进行检查。如果其指向了一个错误的位置，我们就会阻止其解引用。
-
-   ```c++
    	if (it != std::end(v)) {
-   ```
-
-9. 在该代码块中，我们会做和之前一样的事情——我们要覆盖最后一个位置上的值——然后将最后一个元素从`vector`中剪掉。
-
-   ```c++
            *it = std::move(v.back());
            v.pop_back();
        }
    }
+   
    ```
 
 10. 这就完事了。让我们来编译程序，并运行：

@@ -6,11 +6,13 @@
 
 using namespace std;
 static bool odd(int n) { return n % 2; }
+
 int main() {
     vector<int> d(50000000);
     mt19937 gen;
     uniform_int_distribution<int> dis(0, 100000);
     auto rand_num([=]() mutable { return dis(gen); });
+    
     generate(execution::par, begin(d), end(d), rand_num);
     sort(execution::par, begin(d), end(d));
     reverse(execution::par, begin(d), end(d));

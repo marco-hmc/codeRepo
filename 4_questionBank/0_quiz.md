@@ -1,3 +1,75 @@
+* ***无符号整数的错误使用***
+    ```c++
+    for (unsigned int i = 10; i >= 0; --i) { ... }
+    ```
+
+* ***容器的size()返回类型是无符号整数***
+    ```c++
+    std::vector<int> vec;
+    vec.push_back(1);
+    for (auto idx = vec.size(); idx >= 0; idx--) {
+        cout << "===== \n";
+    }
+    ```
+
+* ***STL遍历删除时注意迭代器失效问题***
+    ```c++
+    void erase(std::vector<int> &vec, int a) {
+        for (auto iter = vec.begin(); iter != vec.end();) { // 这个正确
+            if (*iter == a) {
+                iter = vec.erase(iter);
+            } else {
+                ++iter;
+            }
+        }
+
+        for (auto iter = vec.begin(); iter != vec.end(); ++iter) {  // error
+            if (*iter == a) {
+                vec.erase(iter); // error
+            }
+        }
+    }
+    ```
+
+* ***基类析构函数要是虚函数***
+    如果不是虚函数的话,可能会有内存泄漏的问题
+    如果你有一个基类指针指向一个派生类对象:
+    ```c++
+    Copy code
+    Base* ptr = new Derived();
+    delete ptr; // 这里会首先调用Derived的析构函数,然后调用Base的析构函数
+    ```
+    如果基类的析构函数不是虚函数,那么只会调用基类的析构函数,而Derived的析构函数将不会被调用,可能导致资源泄漏.
+
+* ***vector问题***
+    尽量不要在vector中存放bool类型,vector为了做优化,它的内部存放的其实不是bool.
+
+* ***vector删除***
+```c++
+    std::vector<int> vec(1000000, 42);  // 创建一个包含1000000个元素的vector,并初始化为42
+    vec.clear();  // 使用clear方法清空vector,但容量仍然是1000000
+    // 在这之后,vec仍然占用着大量内存,即使已经没有实际的元素
+
+    std::vector<int>().swap(vec);  // 使用swap方法将一个新的空vector与vec交换
+```
+
+* ***std::remove的使用***
+这个remove其实并没有真正的删除元素,需要和erase配合使用
+
+***std::thread的使用***
+一定要记得join或这detach,否则会crash.
+```c++
+void func() {}
+int main() {
+    std::thread t(func);
+    if (t.joinable()) {
+        t.join(); // 或者t.detach(); 
+    }
+    return 0;
+}
+```
+
+
 * 为什么右值可以被常量左值引用 引用?
    ```cpp
    const std::string& lv2 = lv1 + lv1; // 合法, 常量左值引用能够延长临时变量的生命周期

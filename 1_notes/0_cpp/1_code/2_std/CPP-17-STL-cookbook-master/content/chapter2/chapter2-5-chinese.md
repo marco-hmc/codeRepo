@@ -22,21 +22,13 @@ C++17中，添加了`try_emplace`函数，其只有在满足条件的情况下�
    #include <map>
 
    using namespace std;
-   ```
 
-2. 定义一个结构器，代表对应的富翁。
-
-   ```c++
    struct billionaire {
        string name;
        double dollars;
        string country;
    };
-   ```
 
-3. 主函数中，我们定义了一个百万富翁的列表。世界上有很多百万富翁，所以我们创建一个有限列表来存储这些富翁的信息。这个列表是已排序的。2017年福布斯富豪名单，世界百万富翁排行榜可以在  https://www.forbes.com/billionaires/list 查到。
-
-   ```c++
    int main()
    {
        list<billionaire> billionaires {
@@ -55,33 +47,13 @@ C++17中，添加了`try_emplace`函数，其只有在满足条件的情况下�
            {"Li Ka-shing", 31.2, "Hong Kong"}
            // ...
        };
-   ```
-
-4. 现在让我们定义一个表。这个表由表示国家名的字符串和一个组对构成。组对中会具有上面列表的一个(const)副本。这也就是每个国家最富有的人。组对中另一个变量是一个计数器，其会统计某国的富豪人数。
-
-   ```c++
    	map<string, pair<const billionaire, size_t>> m;	
-   ```
-
-5. 现在，让我们将列表中的数据尝试插入到组对中。每个组对中都包含了对应国家的百万富翁，并将计数器的值置成1。
-
-   ```c++
    	for (const auto &b : billionaires) {
    		auto [iterator, success] = m.try_emplace(b.country, b, 1);
-   ```
-
-6. 如果这一步成功，那就不用再做其他事了。我们使用b和1创建的组对已经插入到表中。如果因为键已存在而插入失败，那么组对就不会构建。当我们百万富翁结构体非常大时，我们需要将运行时拷贝的时间节省下来。不过，在不成功的情况下，我们还是要对计数器进行增加1的操作。
-
-   ```c++
        if (!success) {
            iterator->second.second += 1;
            }
        }
-   ```
-
-7. 现在，我们来打印一下每个国家百万富翁的数量，以及各个国家中最富有的人。
-
-   ```c++
        for (const auto & [key, value] : m) {
            const auto &[b, count] = value;
            cout << b.country << " : " << count

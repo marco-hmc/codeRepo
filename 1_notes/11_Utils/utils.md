@@ -1,3 +1,16 @@
+gprof:GNU gprof 是一个性能分析工具,它可以给出程序中各个函数的执行统计信息,包括函数调用次数,函数自身的执行时间以及累积执行时间等.
+
+Valgrind:Valgrind 是一个开源的内存检查工具,其中的 Callgrind 和 Cachegrind 组件可以用于性能分析.
+
+Perf:Perf 是 Linux 内核提供的一个强大的性能分析工具,它可以分析 CPU 性能计数器,跟踪特定的系统调用,分析内核和用户空间的代码等.
+
+Intel VTune Profiler:Intel VTune Profiler 是一个商业的性能分析工具,它提供了丰富的功能,包括 CPU 和 GPU 的性能分析,内存分析,能耗分析等.
+
+Google's CPU Profiler:Google 的 CPU Profiler 是一个开源的性能分析工具,它可以提供 CPU 的使用情况,包括每个函数的 CPU 使用时间和调用次数等.
+
+Visual Studio Profiler:如果你在 Windows 平台上使用 Visual Studio,那么你可以使用 Visual Studio 自带的性能分析工具.
+
+
 ## readme
 [toc]
 
@@ -13,7 +26,7 @@
     4. **版本控制**:PDB 文件与特定版本的二进制文件相关联.通过保留与特定版本的程序一起的 PDB 文件,可以在需要时快速地还原和调试该版本的代码.
     5. **逆向工程**:虽然 PDB 文件不是源代码,但它包含了与源代码高度相关的信息,这使得逆向工程者可以更容易地理解和分析程序的工作原理.
 
-    需要注意的是,PDB 文件通常只在 Windows 平台上使用,并且它们是编译器(如 Visual Studio)和调试器(如 WinDbg)之间共享的一种标准格式.在其他平台上,如 Linux 或 macOS,通常会使用不同的调试信息格式,如 DWARF.要注意的是，PDB 文件通常只在 Windows 平台上使用，并且它们是编译器（如 Visual Studio）和调试器（如 WinDbg）之间共享的一种标准格式。在其他平台上，如 Linux 或 macOS，通常会使用不同的调试信息格式，如 DWARF。
+    需要注意的是,PDB 文件通常只在 Windows 平台上使用,并且它们是编译器(如 Visual Studio)和调试器(如 WinDbg)之间共享的一种标准格式.在其他平台上,如 Linux 或 macOS,通常会使用不同的调试信息格式,如 DWARF.要注意的是,PDB 文件通常只在 Windows 平台上使用,并且它们是编译器(如 Visual Studio)和调试器(如 WinDbg)之间共享的一种标准格式.在其他平台上,如 Linux 或 macOS,通常会使用不同的调试信息格式,如 DWARF.
 
     每个模块被载入的时候,其相同名字的PDB文件同时被载入.所以Debug模式下,不仅因为代码没有优化,同时因为要载入PDB文件,所以Debug模式下的程序执行速度非常慢.
 
