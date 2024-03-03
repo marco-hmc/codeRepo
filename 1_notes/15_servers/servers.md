@@ -3,3 +3,6 @@ epoll是poll的升级版.其实poll和epoll都是用于同时监视多个文件�
 * poll布置完监视任务就需要取得监视的结果,而epoll就是用epoll_wait函数进行阻塞监视并返回监视结果.
 epoll更成熟.<br>
 * nginx和apache对比
+
+* 同步/异步/阻塞/非阻塞的理解
+* * 同步互斥

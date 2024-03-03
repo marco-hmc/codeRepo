@@ -2,7 +2,8 @@
 * 讲讲你对Linux内存的了解?
 * Linux内存的页表的作用是什么?
 * Linux内核地址空间的布局,内核地址空间是如何访问物理内存的?
-
+* https://blog.csdn.net/zzxiaozhao/article/details/102527023
+    * https://www.tutorialspoint.com/operating_system/index.htm
 
 
 #### 无存储器抽象(没有内存抽象的年代) 最简单的存储器抽象就是根本没有抽象 内存单一连续分配

@@ -1,5 +1,7 @@
 ## prerequisites
-
+blog
+    * [GitHub - Veeupup/veeupup.github.io: blog... maybe writing more..](https://github.com/Veeupup/veeupup.github.io)
+    * 
 1. 什么是Jekyll,什么是bundler
    * Jekyll
     是一个简单的静态网站生成器,可以用于将纯文本转化成为静态网站.通过一个配置文件来控制生成过程
