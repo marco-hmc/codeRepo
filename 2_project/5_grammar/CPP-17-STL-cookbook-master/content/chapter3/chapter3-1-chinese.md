@@ -12,74 +12,31 @@
 
    ```c++
    #include <iostream> 
-   ```
-
-2. 迭代器结构命名为`num_iterator`:
-
-   ```c++
    class num_iterator { 
-   ```
 
-3. 其数据类型只能是整型，仅用是用来计数的，构造函数会初始化它们。显式声明构造函数是一个好习惯，这就能避免隐式类型转换。需要注意的是，我们会使用`position`值来初始化`i`。这就让`num_iterator`可以进行默认构造。虽然我们的整个例子中都没有使用默认构造函数，但默认构造函数对于STL的算法却是很重要的。
-
-   ```c++
    	int i;
    public:
    	explicit num_iterator(int position = 0) : i{position} {}
-   ```
-
-4. 当对迭代器解引用时*it`，将得到一个整数：
-
-   ```c++
    	int operator*() const { return i; }
-   ```
-
-5. 前缀加法操作`++it`：
-
-   ```c++
        num_iterator& operator++() {
            ++i;
            return *this;
        }
-   ```
-
-6. `for`循环中需要迭代器之间进行比较。如果不相等，则继续迭代：
-
-   ```c++
        bool operator!=(const num_iterator &other) const {
        	return i != other.i;
        }
    };
-   ```
-
-7. 迭代器类就实现完成了。我们仍需要一个中间对象对应于` for (int i : intermediate(a, b)) {...}`写法，其会从头到尾的遍历，其为一种从a到b遍历的预编程。我们称其为`num_range`:
-
-   ```c++
+   
    class num_range {
-   ```
-
-8. 其包含两个整数成员，一个表示从开始，另一个表示结束。如果我们要从0到9遍历，那么a为0，b为10(`[0, 10)`)：
-
-   ```c++
        int a;
        int b;
    public:
        num_range(int from, int to)
-       	: a{from}, b{to}
-       {}
-   ```
-
-9. 该类也只有两个成员函数需要实现：`begin`和`end`函数。两个函数都返回指向对应数字的指针：一个指向开始，一个指向末尾。
-
-   ```c++
+       	: a{from}, b{to}{}
        num_iterator begin() const { return num_iterator{a}; }
        num_iterator end() const { return num_iterator{b}; }
    };
-   ```
 
-10. 所有类都已经完成，让我们来使用一下。让我们在主函数中写一个例子，遍历100到109间的数字，并打印这些数值：
-
-   ```c++
    int main()
    {
        for (int i : num_range{100, 110}) {

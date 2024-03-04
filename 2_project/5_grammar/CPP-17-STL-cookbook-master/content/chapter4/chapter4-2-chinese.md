@@ -22,21 +22,14 @@
     #include <list>
     #include <vector>
     #include <functional>
-    ```
-2. 我们先实现一个简单的函数，其返回值是一个Lambda表达式。其需要传入一个容器，并且返回一个函数对象，这个函数对象会以引用的方式捕获容器。且函数对象本身接受传入一个整型参数。当向函数对象传入一个整型时，表达式将会把传入的整型，添加到捕获的容器尾部：
 
-   ```c++
    template <typename C>
    static auto consumer (C &container)
        return [&] (auto value) {
        	container.push_back(value);
        };
    }
-   ```
-
-3. 另一个辅助函数将会打印传入的容器中所有的内容：
-
-   ```c++
+   
    template <typename C>
    static void print (const C &c)
    {
@@ -45,38 +38,20 @@
        }
        std::cout << '\n';
    }
-   ```
 
-4. 主函数中，我们先实例化一个`deque`和一个`list`，还有一个`vector`，这些容器存放的元素都是`int`类型。
-
-   ```c++
    int main()
    {
        std::deque<int> d;
        std::list<int> l;
        std::vector<int> v;
-   ```
 
-5. 现在使用`consumer`函数对象与刚刚实例化的容器进行配合：将在`vector`中存储生成自定义的函数对象。然后，用一个`vector`存放着三个函数对象。每个函数对象都会捕获对应的容器对象。这些容器对象都是不同的类型，不过都是函数对象。所以，`vector`中的实例类型为` std::function<void(int)>`。所有函数对象都将隐式转换成一个`std::function`对象，这样就可以存储在`vector`中了。
-
-   ```c++
        const std::vector<std::function<void(int)>> consumers
        	{consumer(d), consumer(l), consumer(v)};
-   ```
-
-6. 现在我们将10个整型值传入自定义函数对象：
-
-   ```c++
        for (size_t i {0}; i < 10; ++i) {
            for (auto &&consume : consumers) {
            	consume(i);
            }
        }
-   ```
-
-7. 三个容器都包含了同样的10个整数。让我们来打印它们：
-
-   ```c++
        print(d);
        print(l);
        print(v);
@@ -117,6 +92,3 @@ std::function<void(int)> f (
 > Note:
 >
 > 很多初学者都认为或希望`std::function<...>`的实际表达类型是一个Lambda表达式。不过这是错误的理解！因为有多态库的帮助，其才能将Lambda表达式进行包装，从而抹去类型的差异。
-
-
-

@@ -1,14 +1,40 @@
-(3) 二分搜索算法(1)
-    lower_bound(beg, end, val) // 返回指向第一个小于等于val的迭代器
-    (2) upper_bound(beg, end, val) // 返回指向第一个大于val的迭代器
-    (3) equal_range(beg, end, val) // 返回以上一个pair包含以上两个函数返回参数
+#include <iostream>
+#include <vector>
 
-    while (left <= right) {
-  mid = left + (right - left) / 2; // 等价于(right+left)/2,但是可避免溢出
-  if (nums[mid] > target)
-    right = mid - 1; // 因为mid不是,所以可以排除
-  else if (num[mid] < target)
-    left = mid + 1;
-  else
-    return mid;
+using namespace std;
+
+// 二分搜索函数
+int binarySearch(vector<int> &nums, int target) {
+  int left = 0;
+  int right = nums.size() - 1;
+
+  while (left <= right) {
+    int mid = left + (right - left) / 2;
+
+    if (nums[mid] == target) {
+      return mid;
+    } else if (nums[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+
+  return -1; // 如果未找到目标元素,则返回-1
+}
+
+int main() {
+  vector<int> nums = {1, 3, 5, 7, 9, 11, 13};
+  int target = 7;
+
+  int result = binarySearch(nums, target);
+
+  if (result != -1) {
+    cout << "目标元素 " << target << " 在数组中的索引位置为: " << result
+         << endl;
+  } else {
+    cout << "目标元素 " << target << " 未找到" << endl;
+  }
+
+  return 0;
 }

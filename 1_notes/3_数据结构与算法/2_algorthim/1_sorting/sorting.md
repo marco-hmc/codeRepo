@@ -1,6 +1,27 @@
 * 找出排序数组中离第k个数最近的m个数,最近的意思是相减绝对值最小
 * ## 排序
 
+| 排序算法 |      平均时间复杂度       |         最好情况          |         最坏情况          |       空间复杂度       | 排序方式  | 稳定性 |
+| :------: | :-----------------------: | :-----------------------: | :-----------------------: | :--------------------: | :-------: | :----: |
+| 冒泡排序 |    $ \textbf{O}(n^2) $    |     $ \textbf{O}(n) $     |    $ \textbf{O}(n^2) $    |   $ \textbf{O}(1) $    | In-place  |  稳定  |
+| 选择排序 |    $ \textbf{O}(n^2) $    |    $ \textbf{O}(n^2) $    |    $ \textbf{O}(n^2) $    |   $ \textbf{O}(1) $    | In-place  | 不稳定 |
+| 插入排序 |   $ \textbf{O}(n^{2}) $   |     $ \textbf{O}(n) $     |    $ \textbf{O}(n^2) $    |   $ \textbf{O}(1) $    | In-place  |  稳定  |
+| 希尔排序 |  $ \textbf{O}(n\log n) $  |  $ \textbf{O}(n^{1.3}) $  |    $ \textbf{O}(n^2) $    |   $ \textbf{O}(1) $    | In-place  | 不稳定 |
+| 归并排序 |  $ \textbf{O}(n\log n) $  |  $ \textbf{O}(n\log n) $  |  $ \textbf{O}(n\log n) $  |   $ \textbf{O}(n) $    | Out-place |  稳定  |
+| 快速排序 |  $ \textbf{O}(n\log n) $  |  $ \textbf{O}(n\log n) $  |    $ \textbf{O}(n^2) $    | $ \textbf{O}(\log n) $ | In-place  | 不稳定 |
+|  堆排序  |  $ \textbf{O}(n\log n) $  |  $ \textbf{O}(n\log n) $  |  $ \textbf{O}(n\log n) $  |   $ \textbf{O}(1) $    | In-place  | 不稳定 |
+|          |                           |                           |                           |                        |           |        |
+| 计数排序 |    $ \textbf{O}(n+k) $    |    $ \textbf{O}(n+k) $    |    $ \textbf{O}(n+k) $    |  $ \textbf{O}(n+k) $   | Out-place |  稳定  |
+|  桶排序  |    $ \textbf{O}(n+k) $    |     $ \textbf{O}(n) $     |    $ \textbf{O}(n^2) $    |  $ \textbf{O}(n+k) $   | Out-place |  稳定  |
+| 基数排序 | $ \textbf{O}(n\times k) $ | $ \textbf{O}(n\times k) $ | $ \textbf{O}(n\times k) $ |  $ \textbf{O}(n+k) $   | Out-place |  稳定  |
+
+* 平均时间复杂度同样是$ \textbf{O}(n\log n) $,为什么快速排序要比堆排序性能好?
+  * 堆排序访问数据的方式没有快速排序友好
+    * **对于快速排序来说,数据是顺序访问的.而对于堆排序来说,数据是跳着访问的.**比如,堆排序中,最重要的一个操作就是数据的堆化.比如下面这个例子,对堆顶进行堆化,会依次访问数组下标是1,2,4,8的元素,而不像快速排序那样,局部顺序访问,所以,**这样对CPU缓存是不友好的**
+  * 对于同样的数据,在排序过程中,堆排序算法的数据交换次数要多于快速排序
+    * 对于基于比较的排序算法来说,整个排序过程是由两个基本操作组成的,比较和交换.**快速排序交换的次数不会比逆序的多.但是堆排序的第一步是建堆,建堆的过程会打乱数据原有的相对选择顺序,导致数据有序度降低.比如对于一组已经有序的数据来说,经过建堆之后,数据反而变得更无序了**
+
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/4ea956ed6bbe434d826b2d5406b86909.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAY2FsbV9H,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
 
 ### 1. 时间复杂度O(n^2)的排序

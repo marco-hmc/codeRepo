@@ -8,19 +8,12 @@
 
 本节中，我们使用一些迭代器包装器，展示如何使用包装器，并了解其如何在编程任务中给予我们帮助。
 
-1. 包含必要的头文件。
-
    ```c++
    #include <iostream>
    #include <string>
    #include <iterator>
    #include <sstream>
    #include <deque>
-   ```
-
-2. 声明使用的命名空间。
-
-   ```c++
    using namespace std;
    ```
 

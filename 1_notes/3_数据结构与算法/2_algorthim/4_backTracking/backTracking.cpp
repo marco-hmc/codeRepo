@@ -1,6 +1,7 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
 
+using namespace std;
 
 int n, m;
 struct Point {
