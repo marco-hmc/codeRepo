@@ -1,29 +1,3 @@
-## [函数模板](https://en.cppreference.com/w/cpp/language/function_template)
-
-* 编写时不指定具体类型，直到使用时才能确定，这个概念就是泛型。模板，顾名思义，编写一次即可适用于任意类型。模板定义以关键词 template 开始，后跟一个模板参数列表，类型参数前必须使用关键字 typename 或 class，在模板参数列表中这两个关键字含义相同，可以互换使用。函数模板通常不用声明为 inline，唯一例外的是特定类型的全特化，因为编译器可能忽略 inline，函数模板是否内联取决于编译器的优化策略
-
-```cpp
-#include <cassert>
-#include <string>
-
-namespace jc {
-
-template <typename T>
-T max(const T& a, const T& b) {
-  return a < b ? b : a;
-}
-
-}  // namespace jc
-
-int main() {
-  assert(jc::max<int>(1, 3) == 3);
-  assert(jc::max<double>(1.0, 3.14) == 3.14);
-  std::string s1 = "down";
-  std::string s2 = "demo";
-  assert(jc::max<std::string>(s1, s2) == "down");
-}
-```
-
 ## 两阶段编译（Two-Phase Translation）
 
 * 模板编译分为实例化前检查和实例化两个阶段。实例化前检查模板代码本身，包括
@@ -31,74 +5,7 @@ int main() {
   * 检查是否使用不依赖于模板参数的未知名称，如未声明的类型名、函数名
   * 检查不依赖于模板参数的静态断言
 
-```cpp
-template <typename T>
-void f(T x) {
-  undeclared();  // 一阶段编译错误，未声明的函数
-  static_assert(sizeof(int) > 10);  // 一阶段，sizeof(int) <= 10，总会编译失败
-}
-
-int main() {}
-```
-
-* 实例化期间保证代码有效，比如对不能解引用的类型进行解引用就会实例化出错，此外会再次检查依赖于模板参数的部分
-
-```cpp
-template <typename T>
-void f(T x) {
-  undeclared(x);  // 调用 undeclared(T) 才会出现函数未声明的实例化错误
-  static_assert(sizeof(T) > 10);  // 如果 sizeof(T) <= 10 则实例化错误
-}
-
-int main() {
-  f(42);  // 调用函数才会进行实例化，不调用则不会有实例化错误
-}
-```
-
 ## [模板实参推断（Template Argument Deduction）](https://en.cppreference.com/w/cpp/language/template_argument_deduction)
-
-* 调用模板时，如果不显式指定模板参数类型，则编译器会根据传入的实参推断模板参数类型
-
-```cpp
-#include <cassert>
-#include <string>
-
-namespace jc {
-
-template <typename T>
-T max(const T& a, const T& b) {
-  return a < b ? b : a;
-}
-
-}  // namespace jc
-
-int main() {
-  assert(jc::max(1, 3) == 3);          // T 推断为 int
-  assert(jc::max(1.0, 3.14) == 3.14);  // T 推断为 double
-  std::string s1 = "down";
-  std::string s2 = "demo";
-  assert(jc::max(s1, s2) == "down");  // T 推断为 std::string
-}
-```
-
-* 实参的推断要求一致，其本身不会为了编译通过自动做类型转换
-
-```cpp
-#include <cassert>
-
-namespace jc {
-
-template <typename T>
-T max(const T& a, const T& b) {
-  return a < b ? b : a;
-}
-
-}  // namespace jc
-
-int main() {
-  jc::max(1, 3.14);  // 错误，T 分别推断出 int 和 double，类型不明确
-}
-```
 
 * 字符串字面值传引用会推断为字符数组（传值则推断为 `const char*`，数组和函数会 decay 为指针）
 
