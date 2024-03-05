@@ -28,3 +28,5 @@
    - 在Qt应用程序中使用.rcc文件,例如通过调用QResource::registerResource函数注册资源文件,然后可以通过资源路径来访问资源.
 
 请注意,具体的使用方法可能会因不同的开发环境和工具链而有所差异.
+
+qt的selectionModel是什么?
