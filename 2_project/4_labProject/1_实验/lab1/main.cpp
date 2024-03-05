@@ -4,27 +4,30 @@
 #include <process.h>
 #include <string.h>
 
-// Codeblocks Ê¹ÓÃµÄÊÇ MingGW À´±àÒë£¬MingGW²»Ö§³Ö#pragma comment(lib,"Ws2_32.lib") µÄÐ´·¨
-// ¸ÃÃüÁîÊÇ¾²Ì¬Á´½Ó Ws2_32.lib ¿â£¬ ¿ÉÒÔÔÚÉèÖÃÀï£¬¼ÓÉÏ -lws2_32 »ò -lwsock32
-//#pragma comment(lib,"Ws2_32.lib")
+// Codeblocks Ê¹ï¿½Ãµï¿½ï¿½ï¿½ MingGW
+// ï¿½ï¿½ï¿½ï¿½ï¿½ë,MingGWï¿½ï¿½Ö§ï¿½ï¿½#pragma comment(lib,"Ws2_32.lib")
+// ï¿½ï¿½Ð´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ Ws2_32.lib ï¿½â,
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï,ï¿½ï¿½ï¿½ï¿½ -lws2_32 ï¿½ï¿½ -lwsock32
+// #pragma comment(lib,"Ws2_32.lib")
 
-#define MAXSIZE 65507 //·¢ËÍÊý¾Ý±¨ÎÄµÄ×î´ó³¤¶È
-#define HTTP_PORT 80 //http ·þÎñÆ÷¶Ë¿Ú
+#define MAXSIZE 65507 // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½Äµï¿½ï¿½ï¿½ó³¤¶ï¿?
+#define HTTP_PORT 80 // http ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½
 
-#define INVILID_WEBSITE "http://www.qq.com/"          //±»ÆÁ±ÎµÄÍøÕ¾
-#define FISHING_WEB_SRC "http://today.hit.edu.cn/"    //µöÓãµÄÔ´ÍøÖ·
-#define FISHING_WEB_DEST "http://jwts.hit.edu.cn/"    //µöÓãµÄÄ¿µÄÍøÖ·
-#define FISHING_WEB_HOST "jwts.hit.edu.cn"            //µöÓãÄ¿µÄµØÖ·µÄÖ÷»úÃû
+#define INVILID_WEBSITE "http://www.qq.com/" // ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½ï¿½ï¿½Õ¾
+#define FISHING_WEB_SRC "http://today.hit.edu.cn/" // ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö?
+#define FISHING_WEB_DEST                                                       \
+  "http://jwts.hit.edu.cn/" // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½Ö?
+#define FISHING_WEB_HOST                                                       \
+  "jwts.hit.edu.cn" // ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Äµï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-//Http ÖØÒªÍ·²¿Êý¾Ý
+// Http ï¿½ï¿½ÒªÍ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 struct HttpHeader{
-    char method[4]; // POST »òÕß GET£¬×¢ÒâÓÐÐ©Îª CONNECT£¬±¾ÊµÑéÔÝ ²»¿¼ÂÇ
-    char url[1024]; // ÇëÇóµÄ url
-    char host[1024]; // Ä¿±êÖ÷»ú
-    char cookie[1024 * 10]; //cookie
-    HttpHeader(){
-        ZeroMemory(this,sizeof(HttpHeader));
-    }
+  char method[4]; // POST ï¿½ï¿½ï¿½ï¿½ GETï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½Ð©Îª
+                  // CONNECTï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  char url[1024];         // ï¿½ï¿½ï¿½ï¿½ï¿? url
+  char host[1024];        // Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  char cookie[1024 * 10]; // cookie
+  HttpHeader() { ZeroMemory(this, sizeof(HttpHeader)); }
 };
 
 BOOL InitSocket();
@@ -37,21 +40,21 @@ void makeFilename(char *url, char *filename);
 void makeCache(char *buffer, char *url);
 void getCache(char *buffer, char *filename);
 
-//´úÀíÏà¹Ø²ÎÊý
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿?
 SOCKET ProxyServer;
 sockaddr_in ProxyServerAddr;
 const int ProxyPort = 10240;
 
-//»º´æÏà¹Ø²ÎÊý
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿?
 boolean haveCache = FALSE;
 boolean needCache = TRUE;
 char * strArr[100];
 
-//ÓÉÓÚÐÂµÄÁ¬½Ó¶¼Ê¹ÓÃÐÂÏß³Ì½øÐÐ´¦Àí£¬¶ÔÏß³ÌµÄÆµ·±µÄ´´½¨ºÍÏú»ÙÌØ±ðÀË·Ñ×ÊÔ´
-//¿ÉÒÔÊ¹ÓÃÏß³Ì³Ø¼¼ÊõÌá¸ß·þÎñÆ÷Ð§ÂÊ
-//const int ProxyThreadMaxNum = 20;
-//HANDLE ProxyThreadHandle[ProxyThreadMaxNum] = {0};
-//DWORD ProxyThreadDW[ProxyThreadMaxNum] = {0};
+// ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½Ó¶ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ß³Ì½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³Ìµï¿½Æµï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½ï¿½Ë·ï¿½ï¿½ï¿½Ô´
+// ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ß³Ì³Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ß·ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿?
+// const int ProxyThreadMaxNum = 20;
+// HANDLE ProxyThreadHandle[ProxyThreadMaxNum] = {0};
+// DWORD ProxyThreadDW[ProxyThreadMaxNum] = {0};
 
 struct ProxyParam{
     SOCKET clientSocket;
@@ -59,17 +62,19 @@ struct ProxyParam{
 };
 
 int main(int argc, char* argv[]) {
-    printf("´úÀí·þÎñÆ÷ÕýÔÚÆô¶¯\n");
-    printf("³õÊ¼»¯...\n");
-    if(!InitSocket()){
-        printf("socket ³õÊ¼»¯Ê§°Ü\n");
-        return -1;
-    }
-    printf("´úÀí·þÎñÆ÷ÕýÔÚÔËÐÐ£¬¼àÌý¶Ë¿Ú %d\n",ProxyPort);
+  printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
+  printf("ï¿½ï¿½Ê¼ï¿½ï¿½...\n");
+  if (!InitSocket()) {
+    printf("socket ï¿½ï¿½Ê¼ï¿½ï¿½Ê§ï¿½ï¿½\n");
+    return -1;
+  }
+    printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï"
+           "¿½ï¿½Ë¿ï¿½ %d\n",
+           ProxyPort);
     SOCKET acceptSocket = INVALID_SOCKET;
     ProxyParam *lpProxyParam;
     HANDLE hThread;
-    //´úÀí·þÎñÆ÷²»¶Ï¼àÌý
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½
     while(true){
         acceptSocket = accept(ProxyServer,NULL,NULL);
         lpProxyParam = new ProxyParam;
@@ -91,52 +96,60 @@ int main(int argc, char* argv[]) {
 // FullName:  InitSocket
 // Access:    public
 // Returns:   BOOL
-// Qualifier: ³õÊ¼»¯Ì×½Ó×Ö
+// Qualifier: ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½×½ï¿½ï¿½ï¿½
 //************************************
 BOOL InitSocket(){
-    //¼ÓÔØÌ×½Ó×Ö¿â£¨±ØÐë£©
-    WORD wVersionRequested;
-    WSADATA wsaData;        //WSADATA½á¹¹ÌåÖÐÖ÷Òª°üº¬ÁËÏµÍ³ËùÖ§³ÖµÄWinsock°æ±¾ÐÅÏ¢
-    //Ì×½Ó×Ö¼ÓÔØÊ±´íÎóÌáÊ¾
-    int err;
-    //°æ±¾ 2.2
-    wVersionRequested = MAKEWORD(2, 2);
-    //¼ÓÔØ dll ÎÄ¼þ Scoket ¿â
-    err = WSAStartup(wVersionRequested, &wsaData);
-    if(err != 0){
-        //ÕÒ²»µ½ winsock.dll
-        printf("¼ÓÔØ winsock Ê§°Ü£¬´íÎó´úÂëÎª: %d\n", WSAGetLastError());
-        return FALSE;
-    }
-    //LOBYTE()µÃµ½Ò»¸ö16bitÊý×îµÍ£¨×îÓÒ±ß£©ÄÇ¸ö×Ö½Ú
-    //HIBYTE()µÃµ½Ò»¸ö16bitÊý×î¸ß£¨×î×ó±ß£©ÄÇ¸ö×Ö½Ú
-    //ÅÐ¶Ï´ò¿ªµÄÊÇ·ñÊÇ2.2°æ±¾
+  // ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½ï¿½Ö¿â(ï¿½ï¿½ï¿½ë)
+  WORD wVersionRequested;
+  WSADATA
+      wsaData; // WSADATAï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½Ö§ï¿½Öµï¿½Winsockï¿½æ±¾ï¿½ï¿½Ï¢
+  // ï¿½×½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
+  int err;
+  // ï¿½æ±¾ 2.2
+  wVersionRequested = MAKEWORD(2, 2);
+  // ï¿½ï¿½ï¿½ï¿½ dll ï¿½Ä¼ï¿½ Scoket ï¿½ï¿½
+  err = WSAStartup(wVersionRequested, &wsaData);
+  if (err != 0) {
+    // ï¿½Ò²ï¿½ï¿½ï¿½ winsock.dll
+    printf("ï¿½ï¿½ï¿½ï¿½ winsock Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î?: %d\n",
+           WSAGetLastError());
+    return FALSE;
+  }
+    // LOBYTE()ï¿½Ãµï¿½Ò»ï¿½ï¿½16bitï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½Ò±ß£ï¿½ï¿½Ç¸ï¿½ï¿½Ö½ï¿?
+    // HIBYTE()ï¿½Ãµï¿½Ò»ï¿½ï¿½16bitï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½Ç¸ï¿½ï¿½Ö½ï¿½
+    // ï¿½Ð¶Ï´ò¿ªµï¿½ï¿½Ç·ï¿½ï¿½ï¿½2.2ï¿½æ±¾
     if(LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) !=2)   {
-        printf("²»ÄÜÕÒµ½ÕýÈ·µÄ winsock °æ±¾\n");
-        WSACleanup();
-        return FALSE;
+      printf("ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½È·ï¿½ï¿½ winsock ï¿½æ±¾\n");
+      WSACleanup();
+      return FALSE;
     }
-    //AF_INET,PF_INET	IPv4 InternetÐ­Òé
-    //SOCK_STREAM	TcpÁ¬½Ó£¬Ìá¹©ÐòÁÐ»¯µÄ¡¢¿É¿¿µÄ¡¢Ë«ÏòÁ¬½ÓµÄ×Ö½ÚÁ÷¡£Ö§³Ö´øÍâÊý¾Ý´«Êä
+    // AF_INET,PF_INET	IPv4 InternetÐ­ï¿½ï¿½
+    // SOCK_STREAM
+    // Tcpï¿½ï¿½ï¿½Ó£ï¿½ï¿½á¹©ï¿½ï¿½ï¿½Ð»ï¿½ï¿½Ä¡ï¿½ï¿½É¿ï¿½ï¿½Ä¡ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½
     ProxyServer = socket(AF_INET, SOCK_STREAM, 0);
     if(INVALID_SOCKET == ProxyServer){
-        printf("´´½¨Ì×½Ó×ÖÊ§°Ü£¬´íÎó´úÂëÎª£º%d\n",WSAGetLastError());
-        return FALSE;
+      printf("ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿"
+             "?%d\n",
+             WSAGetLastError());
+      return FALSE;
     }
     ProxyServerAddr.sin_family = AF_INET;
-    ProxyServerAddr.sin_port = htons(ProxyPort);      //½«ÕûÐÍ±äÁ¿´ÓÖ÷»ú×Ö½ÚË³Ðò×ª±ä³ÉÍøÂç×Ö½ÚË³Ðò
+    ProxyServerAddr.sin_port = htons(
+        ProxyPort); // ï¿½ï¿½ï¿½ï¿½ï¿½Í±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½Ë³ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½Ë³ï¿½ï¿?
 
-    //ÆÁ±ÎÓÃ»§
-    //ProxyServerAddr.sin_addr.S_un.S_addr = INADDR_ANY;
-    ProxyServerAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");//½ö±¾»úÓÃ»§¿É·ÃÎÊ·þÎñÆ÷
-    //ProxyServerAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.2");  //ÆÁ±ÎÓÃ»§
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
+    // ProxyServerAddr.sin_addr.S_un.S_addr = INADDR_ANY;
+    ProxyServerAddr.sin_addr.S_un.S_addr = inet_addr(
+        "127.0.0.1"); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½É·ï¿½ï¿½Ê·ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ProxyServerAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.2");
+    // //ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
     if(bind(ProxyServer,(SOCKADDR*)&ProxyServerAddr,sizeof(SOCKADDR)) == SOCKET_ERROR){
-        printf("°ó¶¨Ì×½Ó×ÖÊ§°Ü\n");
-        return FALSE;
+      printf("ï¿½ï¿½ï¿½×½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½\n");
+      return FALSE;
     }
     if(listen(ProxyServer, SOMAXCONN) == SOCKET_ERROR){
-        printf("¼àÌý¶Ë¿Ú%d Ê§°Ü",ProxyPort);
-        return FALSE;
+      printf("ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½%d Ê§ï¿½ï¿½", ProxyPort);
+      return FALSE;
     }
     return TRUE;
 }
@@ -145,7 +158,7 @@ BOOL InitSocket(){
 // FullName:  ProxyThread
 // Access:    public
 // Returns:   unsigned int __stdcall
-// Qualifier: Ïß³ÌÖ´ÐÐº¯Êý
+// Qualifier: ï¿½ß³ï¿½Ö´ï¿½Ðºï¿½ï¿½ï¿½
 // Parameter: LPVOID lpParameter
 //************************************
 unsigned int __stdcall ProxyThread(LPVOID lpParameter){
@@ -165,10 +178,10 @@ unsigned int __stdcall ProxyThread(LPVOID lpParameter){
     ZeroMemory(CacheBuffer, recvSize + 1);
     memcpy(CacheBuffer, Buffer, recvSize);
 
-    //½âÎöhttpÊ×²¿
+    // ï¿½ï¿½ï¿½ï¿½httpï¿½×²ï¿½
     ParseHttpHead(CacheBuffer, httpHeader);
 
-    //»º´æ
+    // ï¿½ï¿½ï¿½ï¿½
     char *DateBuffer;
     DateBuffer = (char*)malloc(MAXSIZE);
 	ZeroMemory(DateBuffer, strlen(Buffer) + 1);
@@ -179,103 +192,122 @@ unsigned int __stdcall ProxyThread(LPVOID lpParameter){
 	makeFilename(httpHeader->url, filename);
 	//printf("filename : %s\n", filename);
 	char *field = "Date";
-	char date_str[30];  //±£´æ×Ö¶ÎDateµÄÖµ
-	ZeroMemory(date_str, 30);
+        char date_str[30]; // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½Dateï¿½ï¿½Öµ
+        ZeroMemory(date_str, 30);
 	ZeroMemory(fileBuffer, MAXSIZE);
 	FILE *in;
 	if ((in = fopen(filename, "rb")) != NULL) {
-		printf("\nÓÐ»º´æ\n");
-		fread(fileBuffer, sizeof(char), MAXSIZE, in);
-		fclose(in);
-		ParseDate(fileBuffer, field, date_str);
-		printf("date_str:%s\n", date_str);
-		makeNewHTTP(Buffer, date_str);
-		haveCache = TRUE;
-		goto success;
+          printf("\nï¿½Ð»ï¿½ï¿½ï¿½\n");
+          fread(fileBuffer, sizeof(char), MAXSIZE, in);
+          fclose(in);
+          ParseDate(fileBuffer, field, date_str);
+          printf("date_str:%s\n", date_str);
+          makeNewHTTP(Buffer, date_str);
+          haveCache = TRUE;
+          goto success;
 	}
 
-    //ÍøÕ¾¹ýÂË£ºÆÁ±ÎÒ»¸öÍøÕ¾
-    if (strcmp (httpHeader->url, INVILID_WEBSITE) == 0) {
-        printf("\n=====================================\n\n");
-        printf("-------------Sorry!!!¸ÃÍøÕ¾ÒÑ±»ÆÁ±Î----------------\n");
-        goto error;
+        // ï¿½ï¿½Õ¾ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Õ¾
+        if (strcmp(httpHeader->url, INVILID_WEBSITE) == 0) {
+          printf("\n=====================================\n\n");
+          printf("-------------Sorry!!!ï¿½ï¿½ï¿½ï¿½Õ¾ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½ï¿½------"
+                 "--"
+               "--------\n");
+          goto error;
     }
-    //ÍøÕ¾Òýµ¼£º½«·ÃÎÊÍøÖ·×ªµ½ÆäËûÍøÕ¾
-	if (strstr(httpHeader->url, FISHING_WEB_SRC) != NULL) {
-		printf("\n=====================================\n\n");
-		printf("-------------ÒÑ´ÓÔ´ÍøÖ·£º%s ×ªµ½ Ä¿µÄÍøÖ· £º%s ----------------\n", FISHING_WEB_SRC,FISHING_WEB_DEST);
-		// ÖÁÓÚÎªÊ²Ã´Òª¼ÓÒ»£¬ÎÒÒ²²»ÖªµÀ£¬Ö»ÄÜËµÉè³É²»¼ÓÒ»²»ºÃÊ¹ Ö»Òª´óÓÚËûÔ­À´µÄ³¤¶È¾Í¿ÉÒÔ
-		memcpy(httpHeader->host, FISHING_WEB_HOST, strlen(FISHING_WEB_HOST) + 1);
-        memcpy(httpHeader->url, FISHING_WEB_DEST, strlen(FISHING_WEB_DEST));
-        //memcpy(httpHeader->host, "jwts.hit.edu.cn", strlen("jwts.hit.edu.cn")); //ÕâÐÐ²»¿ÉÒÔÓÃ£¬²»ÖªµÀÎªÊ²Ã´¡£¡£¡£
-	}
+    // ï¿½ï¿½Õ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¾
+    if (strstr(httpHeader->url, FISHING_WEB_SRC) != NULL) {
+      printf("\n=====================================\n\n");
+      printf("-------------ï¿½Ñ´ï¿½Ô´ï¿½ï¿½Ö·ï¿½ï¿½%s ×ªï¿½ï¿½ "
+             "Ä¿ï¿½ï¿½ï¿½ï¿½Ö· ï¿½ï¿½%s ----------------\n",
+             FISHING_WEB_SRC, FISHING_WEB_DEST);
+      // ï¿½ï¿½ï¿½ï¿½ÎªÊ²Ã´Òªï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½Öªï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ëµï¿½ï¿½É²ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê?
+      // Ö»Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½Ä³ï¿½ï¿½È¾Í¿ï¿½ï¿½ï¿½
+      memcpy(httpHeader->host, FISHING_WEB_HOST, strlen(FISHING_WEB_HOST) + 1);
+      memcpy(httpHeader->url, FISHING_WEB_DEST, strlen(FISHING_WEB_DEST));
+      // memcpy(httpHeader->host, "jwts.hit.edu.cn", strlen("jwts.hit.edu.cn"));
+      // //ï¿½ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½Öªï¿½ï¿½ÎªÊ²Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    }
     delete CacheBuffer;
     delete DateBuffer;
 
 success:
     if(!ConnectToServer(&((ProxyParam *)lpParameter)->serverSocket,httpHeader->host)) {
-        printf("Á¬½ÓÄ¿±ê·þÎñÆ÷Ê§°Ü£¡£¡£¡\n");
-        goto error;
+      printf("ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½\n");
+      goto error;
     }
-    printf("´úÀíÁ¬½ÓÖ÷»ú %s ³É¹¦\n",httpHeader->host);
-    //½«¿Í»§¶Ë·¢ËÍµÄ HTTP Êý¾Ý±¨ÎÄÖ±½Ó×ª·¢¸øÄ¿±ê·þÎñÆ÷
+    printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %s ï¿½É¹ï¿½\n",
+           httpHeader->host);
+    // ï¿½ï¿½ï¿½Í»ï¿½ï¿½Ë·ï¿½ï¿½Íµï¿½ HTTP
+    // ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½Ö±ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
     ret = send(((ProxyParam *)lpParameter)->serverSocket,Buffer,strlen(Buffer) + 1,0);
-    //µÈ´ýÄ¿±ê·þÎñÆ÷·µ»ØÊý¾Ý
+    // ï¿½È´ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
     recvSize = recv(((ProxyParam *)lpParameter)->serverSocket,Buffer,MAXSIZE,0);
     if(recvSize <= 0){
-        printf("·µ»ØÄ¿±ê·þÎñÆ÷µÄÊý¾ÝÊ§°Ü£¡£¡£¡\n");
-        goto error;
+      printf("ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½"
+             "ï¿½ï¿½ï¿½\n");
+      goto error;
     }
-	//ÓÐ»º´æÊ±£¬ÅÐ¶Ï·µ»ØµÄ×´Ì¬ÂëÊÇ·ñÊÇ304£¬ÈôÊÇÔò½«»º´æµÄÄÚÈÝ·¢ËÍ¸ø¿Í»§¶Ë
-	if (haveCache == TRUE) {
-		getCache(Buffer, filename);
+    // ï¿½Ð»ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ð¶Ï·ï¿½ï¿½Øµï¿½×´Ì¬ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½304ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò½«»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½Í¸ï¿½ï¿½Í»ï¿½ï¿½ï¿?
+    if (haveCache == TRUE) {
+      getCache(Buffer, filename);
 	}
 	if (needCache == TRUE) {
-		makeCache(Buffer, httpHeader->url);  //»º´æ±¨ÎÄ
-	}
-    //½«Ä¿±ê·þÎñÆ÷·µ»ØµÄÊý¾ÝÖ±½Ó×ª·¢¸ø¿Í»§¶Ë
-    ret = send(((ProxyParam *)lpParameter)->clientSocket,Buffer,sizeof(Buffer),0);
+          makeCache(Buffer, httpHeader->url); // ï¿½ï¿½ï¿½æ±¨ï¿½ï¿½
+        }
+        // ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿?
+        ret = send(((ProxyParam *)lpParameter)->clientSocket, Buffer,
+                   sizeof(Buffer), 0);
 
-//´íÎó´¦Àí
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 error:
-    printf("¹Ø±ÕÌ×½Ó×Ö\n");
-    delete Buffer;
-    delete fileBuffer;
-    delete filename;
-    Sleep(200);
-    closesocket(((ProxyParam*)lpParameter)->clientSocket);
-    closesocket(((ProxyParam*)lpParameter)->serverSocket);
-    delete  lpParameter;
-    _endthreadex(0);
-    return 0;
+  printf("ï¿½Ø±ï¿½ï¿½×½ï¿½ï¿½ï¿½\n");
+  delete Buffer;
+  delete fileBuffer;
+  delete filename;
+  Sleep(200);
+  closesocket(((ProxyParam *)lpParameter)->clientSocket);
+  closesocket(((ProxyParam *)lpParameter)->serverSocket);
+  delete lpParameter;
+  _endthreadex(0);
+  return 0;
 }
 //************************************
 // Method:    ParseHttpHead
 // FullName:  ParseHttpHead
 // Access:    public
 // Returns:   void
-// Qualifier: ½âÎö TCP ±¨ÎÄÖÐµÄ HTTP Í·²¿
+// Qualifier: ï¿½ï¿½ï¿½ï¿½ TCP ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ HTTP Í·ï¿½ï¿½
 // Parameter: char * buffer
 // Parameter: HttpHeader * httpHeader
 //************************************
 void ParseHttpHead(char *buffer,HttpHeader * httpHeader){
     char *p;
     const char * delim = "\r\n";
-    p = strtok(buffer,delim); // µÚÒ»´Îµ÷ÓÃ£¬µÚÒ»¸ö²ÎÊýÎª±»·Ö½âµÄ×Ö·û´®
-    //ÌáÈ¡µÚÒ»ÐÐ
-    //printf("%s\n",p);
+    p = strtok(
+        buffer,
+        delim); // ï¿½ï¿½Ò»ï¿½Îµï¿½ï¿½Ã£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿?
+    // ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½
+    // printf("%s\n",p);
     if(p[0] == 'G'){
-        //GET ·½Ê½
-        memcpy(httpHeader->method,"GET",3);
-        memcpy(httpHeader->url,&p[4],strlen(p) -13); //'Get' ºÍ 'HTTP/1.1' ¸÷Õ¼ 3 ºÍ 8 ¸ö£¬ÔÙ¼ÓÉÏÁ©¿Õ¸ñ£¬Ò»¹²13¸ö
+      // GET ï¿½ï¿½Ê½
+      memcpy(httpHeader->method, "GET", 3);
+      memcpy(httpHeader->url, &p[4],
+             strlen(p) -
+                 13); //'Get' ï¿½ï¿½ 'HTTP/1.1' ï¿½ï¿½Õ¼ 3 ï¿½ï¿½ 8
+                      //ï¿½ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½Ò»ï¿½ï¿½13ï¿½ï¿½
     }
     else if(p[0] == 'P'){
-        //POST ·½Ê½
-        memcpy(httpHeader->method,"POST",4);
-        memcpy(httpHeader->url,&p[5],strlen(p) - 14); //'Post' ºÍ 'HTTP/1.1' ¸÷Õ¼ 4 ºÍ 8 ¸ö£¬ÔÙ¼ÓÉÏÁ©¿Õ¸ñ£¬Ò»¹²14¸ö
+      // POST ï¿½ï¿½Ê½
+      memcpy(httpHeader->method, "POST", 4);
+      memcpy(httpHeader->url, &p[5],
+             strlen(p) -
+                 14); //'Post' ï¿½ï¿½ 'HTTP/1.1' ï¿½ï¿½Õ¼ 4 ï¿½ï¿½ 8
+                      //ï¿½ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½Ò»ï¿½ï¿½14ï¿½ï¿½
     }
-    printf("·ÃÎÊµÄurlÊÇ £º %s\n",httpHeader->url);
-    p = strtok(NULL,delim);              // µÚ¶þ´Îµ÷ÓÃ£¬ÐèÒª½«µÚÒ»¸ö²ÎÊýÉèÎª NULL
+    printf("ï¿½ï¿½ï¿½Êµï¿½urlï¿½ï¿½ ï¿½ï¿½ %s\n", httpHeader->url);
+    p = strtok(NULL, delim); // ï¿½Ú¶ï¿½ï¿½Îµï¿½ï¿½Ã£ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª
+                             // NULL
     while(p){
         switch(p[0]){
             case 'H'://Host
@@ -302,7 +334,8 @@ void ParseHttpHead(char *buffer,HttpHeader * httpHeader){
 // FullName:  ConnectToServer
 // Access:    public
 // Returns:   BOOL
-// Qualifier: ¸ù¾ÝÖ÷»ú´´½¨Ä¿±ê·þÎñÆ÷Ì×½Ó×Ö£¬²¢Á¬½Ó
+// Qualifier:
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
 // Parameter: SOCKET * serverSocket
 // Parameter: char * host
 //************************************
@@ -327,7 +360,7 @@ BOOL ConnectToServer(SOCKET *serverSocket,char *host){
     return TRUE;
 }
 
-//·ÖÎöHTTPÍ·²¿µÄfield×Ö¶Î£¬Èç¹û°üº¬¸ÃfieldÔò·µ»Øtrue£¬²¢»ñÈ¡ÈÕÆÚ
+// ï¿½ï¿½ï¿½ï¿½HTTPÍ·ï¿½ï¿½ï¿½ï¿½fieldï¿½Ö¶Î£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fieldï¿½ò·µ»ï¿½trueï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
 boolean ParseDate(char *buffer, char *field, char *tempDate) {
 	char *p, *ptr, temp[5];
 	//*field = "If-Modified-Since";
@@ -347,7 +380,7 @@ boolean ParseDate(char *buffer, char *field, char *tempDate) {
 	return TRUE;
 }
 
-//¸ÄÔìHTTPÇëÇó±¨ÎÄ
+// ï¿½ï¿½ï¿½ï¿½HTTPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void makeNewHTTP(char *buffer, char *value) {
 	const char *field = "Host";
 	const char *newfield = "If-Modified-Since: ";
@@ -360,10 +393,10 @@ void makeNewHTTP(char *buffer, char *value) {
 		temp[i] = pos[i];
 	}
 	*pos = '\0';
-	while (*newfield != '\0') {  //²åÈëIf-Modified-Since×Ö¶Î
-		*pos++ = *newfield++;
-	}
-	while (*value != '\0') {
+        while (*newfield != '\0') { // ï¿½ï¿½ï¿½ï¿½If-Modified-Sinceï¿½Ö¶ï¿½
+          *pos++ = *newfield++;
+        }
+        while (*value != '\0') {
 		*pos++ = *value++;
 	}
 	*pos++ = '\r';
@@ -373,7 +406,7 @@ void makeNewHTTP(char *buffer, char *value) {
 	}
 }
 
-//¸ù¾Ýurl¹¹ÔìÎÄ¼þÃû
+// ï¿½ï¿½ï¿½ï¿½urlï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
 void makeFilename(char *url, char *filename) {
 	while (*url != '\0') {
 		if (*url != '/' && *url != ':' && *url != '.') {
@@ -384,47 +417,48 @@ void makeFilename(char *url, char *filename) {
     strcat(filename, ".txt");
 }
 
-//½øÐÐ»º´æ
+// ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½
 void makeCache(char *buffer, char *url) {
 	char *p, *ptr, num[10], tempBuffer[MAXSIZE + 1];
 	const char * delim = "\r\n";
 	ZeroMemory(num, 10);
 	ZeroMemory(tempBuffer, MAXSIZE + 1);
 	memcpy(tempBuffer, buffer, strlen(buffer));
-	p = strtok(tempBuffer, delim);//ÌáÈ¡µÚÒ»ÐÐ
-	memcpy(num, &p[9], 3);
-	if (strcmp(num, "200") == 0) {  //×´Ì¬ÂëÊÇ200Ê±»º´æ
-		//printf("url : %s\n", url);
-		char filename[100] = { 0 };  // ¹¹ÔìÎÄ¼þÃû
-		makeFilename(url, filename);
-		printf("filename : %s\n", filename);
-		FILE *out;
-		out = fopen(filename, "w");
-		fwrite(buffer, sizeof(char), strlen(buffer), out);
-		fclose(out);
-		printf("\n=====================================\n\n");
-		printf("\nÍøÒ³ÒÑ¾­±»»º´æ\n");
-	}
+        p = strtok(tempBuffer, delim); // ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½
+        memcpy(num, &p[9], 3);
+        if (strcmp(num, "200") == 0) { // ×´Ì¬ï¿½ï¿½ï¿½ï¿½200Ê±ï¿½ï¿½ï¿½ï¿½
+          // printf("url : %s\n", url);
+          char filename[100] = {0}; // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+          makeFilename(url, filename);
+          printf("filename : %s\n", filename);
+          FILE *out;
+          out = fopen(filename, "w");
+          fwrite(buffer, sizeof(char), strlen(buffer), out);
+          fclose(out);
+          printf("\n=====================================\n\n");
+          printf("\nï¿½ï¿½Ò³ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
+        }
 }
 
-//»ñÈ¡»º´æ
+// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
 void getCache(char *buffer, char *filename) {
 	char *p, *ptr, num[10], tempBuffer[MAXSIZE + 1];
 	const char * delim = "\r\n";
 	ZeroMemory(num, 10);
 	ZeroMemory(tempBuffer, MAXSIZE + 1);
 	memcpy(tempBuffer, buffer, strlen(buffer));
-	p = strtok(tempBuffer, delim);//ÌáÈ¡µÚÒ»ÐÐ
-	memcpy(num, &p[9], 3);
-	if (strcmp(num, "304") == 0) {  //Ö÷»ú·µ»ØµÄ±¨ÎÄÖÐµÄ×´Ì¬ÂëÎª304Ê±·µ»ØÒÑ»º´æµÄÄÚÈÝ
-        printf("\n=====================================\n\n");
-		printf("´Ó±¾»ú»ñµÃ»º´æ\n");
-		ZeroMemory(buffer, strlen(buffer));
-		FILE *in = NULL;
-		if ((in = fopen(filename, "r")) != NULL) {
-			fread(buffer, sizeof(char), MAXSIZE, in);
-			fclose(in);
-		}
-		needCache = FALSE;
-	}
+        p = strtok(tempBuffer, delim); // ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½
+        memcpy(num, &p[9], 3);
+        if (strcmp(num, "304") ==
+            0) { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ØµÄ±ï¿½ï¿½ï¿½ï¿½Ðµï¿½×´Ì¬ï¿½ï¿½Îª304Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ñ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
+          printf("\n=====================================\n\n");
+          printf("ï¿½Ó±ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½\n");
+          ZeroMemory(buffer, strlen(buffer));
+          FILE *in = NULL;
+          if ((in = fopen(filename, "r")) != NULL) {
+            fread(buffer, sizeof(char), MAXSIZE, in);
+            fclose(in);
+          }
+          needCache = FALSE;
+        }
 }
