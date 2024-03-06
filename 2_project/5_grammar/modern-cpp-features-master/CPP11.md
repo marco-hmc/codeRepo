@@ -122,17 +122,6 @@ struct B : A {}; // error -- base 'A' is marked 'final'
 ```
 
 ### Default functions
-A more elegant, efficient way to provide a default implementation of a function, such as a constructor.
-```c++
-struct A {
-  A() = default;
-  A(int x) : x{x} {}
-  int x {1};
-};
-A a; // a.x == 1
-A a2 {123}; // a.x == 123
-```
-
 With inheritance:
 ```c++
 struct B {
