@@ -1,4 +1,13 @@
 [toc]
+* OT
+  * monday:
+  * tuesday: 1830-1930
+  * wednesday:
+  * thursday:
+  * friday:
+  * saturday:
+  * sunday:
+
 ## 1. doing
 
 ### 1.1 trivals
