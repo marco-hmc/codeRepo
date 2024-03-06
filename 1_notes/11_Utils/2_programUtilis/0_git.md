@@ -153,6 +153,47 @@ git config --global http.proxy 'socks5://127.0.0.1:7890'
 git config --global https.proxy 'socks5://127.0.0.1:7890'
 
 
+### 3. config
+
+#### 3.1 .gitattributes
+
+.gitattributes怎么用?
+`.gitattributes` 文件是一个文本文件,放在 Git 仓库的根目录或其子目录中,用于定义文件的属性.每一行都是一个模式(pattern)和一个或多个属性,模式和属性之间用空格分隔.
+
+以下是一些常见的 `.gitattributes` 文件的用法:
+
+1. 设置行尾风格:你可以使用 `text` 属性来设置文件的行尾风格.例如,如果你想让所有的 `.txt` 文件在提交时自动转换为 LF 行尾,你可以添加以下行:
+
+   ```
+   *.txt text
+   ```
+
+2. 设置二进制文件:你可以使用 `binary` 属性来标记二进制文件,这样 Git 就不会尝试对它们进行合并或查找差异.例如,如果你想让所有的 `.jpg` 文件被视为二进制文件,你可以添加以下行:
+
+   ```
+   *.jpg binary
+   ```
+
+3. 设置文件的合并策略:你可以使用 `merge` 属性来设置文件的合并策略.例如,如果你想让所有的 `.html` 文件使用 `html` 合并策略,你可以添加以下行:
+
+   ```
+   *.html merge=html
+   ```
+
+4. 设置文件的差异策略:你可以使用 `diff` 属性来设置文件的差异策略.例如,如果你想让所有的 `.py` 文件使用 `python` 差异策略,你可以添加以下行:
+
+   ```
+   *.py diff=python
+   ```
+
+5. 设置导出忽略:你可以使用 `export-ignore` 属性来设置在导出操作(如 `git archive`)时应忽略的文件.例如,如果你不想将 `.gitignore` 文件包含在导出的存档中,你可以添加以下行:
+
+   ```
+   .gitignore export-ignore
+   ```
+
+注意,`.gitattributes` 文件中的设置对所有的 Git 操作都有效,包括 `git diff`/`git merge` 和 `git add` 等.如果你想要覆盖全局的设置,你可以在项目的子目录中创建另一个 `.gitattributes` 文件.
+
 ### 4. 其他操作
 
 #### 4.1 版本号

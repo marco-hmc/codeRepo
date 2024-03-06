@@ -1,4 +1,7 @@
 #include <iostream>
+#include <numeric>
+#include <stdarg.h>
+#include <stdio.h>
 
 // --1. fold expression
 template<typename... Args>
@@ -22,10 +25,45 @@ auto sum3(const First first, const Args... args) -> decltype(first) {
   return std::accumulate(values.begin(), values.end(), First{0});
 }
 
-// --4. 
-#include <stdio.h>
-#include <stdarg.h>
+void test_sum() {
+  {
+    int result = sum(1, 2, 3, 4, 5);
+    std::cout << "Sum: " << result << std::endl;
+  }
+  {
+    int result = sum2(1, 2, 3, 4, 5);
+    std::cout << "Sum: " << result << std::endl;
+  }
+  {
+    int result = sum3(1, 2, 3, 4, 5);
+    std::cout << "Sum: " << result << std::endl;
+  }
+}
 
+// 1. recursive parameter unpack
+template <typename T0> void printf1(T0 value) {
+  std::cout << value << std::endl;
+}
+template <typename T, typename... Ts> void printf1(T value, Ts... args) {
+  std::cout << value << std::endl;
+  printf1(args...);
+}
+
+// 2. variadic template parameter unfold
+template <typename T0, typename... T> void printf2(T0 t0, T... t) {
+  std::cout << t0 << std::endl;
+  if constexpr (sizeof...(t) > 0)
+    printf2(t...);
+}
+
+// 3. parameter unpack using initializer_list
+template <typename T, typename... Ts> auto printf3(T value, Ts... args) {
+  std::cout << value << std::endl;
+  (void)std::initializer_list<T>{
+      ([&args] { std::cout << args << std::endl; }(), value)...};
+}
+
+// 4. args
 void printNumbers(int count, ...)
 {
 // 下面三个都是和va_list搭配使用的宏
@@ -47,9 +85,27 @@ void printNumbers(int count, ...)
     va_end(args);
 }
 
+void test_print() {
+  printf1(3, 1, 2, 3);
+  printf2(3, 1, 2, 3);
+  printf3(3, 1, 2, 3);
+  printNumbers(3, 1, 2, 3);
+}
+
+// sizeof...
+template <typename... Ts> void magic(Ts... args) {
+  std::cout << sizeof...(args) << std::endl;
+}
+
+void test_magic() {
+  magic();
+  magic(1);
+  magic(1, "");
+}
+
 int main() {
-    int result = sum(1, 2, 3, 4, 5);
-    printNumbers(3, 1, 2, 3); // 输出:1 2 3
-    std::cout << "Sum: " << result << std::endl;
-    return 0;
+  test_sum();
+  test_print();
+  test_magic();
+  return 0;
 }
