@@ -2,8 +2,8 @@
 * OT
   * monday:
   * tuesday: 1830-1930
-  * wednesday:
-  * thursday:
+  * wednesday: 1830-1930
+  * thursday: 1800-1930
   * friday:
   * saturday:
   * sunday:
@@ -41,3 +41,4 @@
 
 
 ## 3. done
+https://github.com/rkimball/tinytcp

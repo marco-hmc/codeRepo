@@ -1,5 +1,4 @@
-#include <bits/stdc++.h>
-
+#include <iostream>
 using namespace std;
 
 // Insertion sort: Shifting each element to its correct position in the array

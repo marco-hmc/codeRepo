@@ -1,0 +1,622 @@
+#### 1. 释放器
+#### 2. 异常安全
+#### 3. weak_ptr
+shared_ptr<Node> bar(new Node(),funcf);
+
+```cpp
+//初始化方式1
+std::unique_ptr<int> sp1(new int(123));
+
+//初始化方式2
+std::unique_ptr<int> sp2;
+sp2.reset(new int(123));
+
+//初始化方式3
+std::unique_ptr<int> sp3 = std::make_unique<int>(123);
+```
+你应该尽量使用初始化方式 3 的方式去创建一个 **std::unique_ptr** 而不是方式 1 和 2,因为形式 3 更安全,原因 Scott Meyers 在其<Effective Modern C++>中已经解释过了,有兴趣的读者可以阅读此书相关章节.
+
+> 令很多人对 C++11 规范不满的地方是,C++11 新增了 std::make_shared() 方法创建一个 std::shared_ptr 对象,却没有提供相应的 std::make_unique() 方法创建一个 std::unique_ptr 对象,这个方法直到 C++14 才被添加进来.当然,在 C++11 中你很容易实现出这样一个方法来:
+
+鉴于 **std::auto_ptr** 的前车之鉴,**std::unique_ptr** 禁止复制语义,为了达到这个效果,**std::unique_ptr** 类的拷贝构造函数和赋值运算符(operator =)被标记为 **delete**.
+
+- 分清楚场合应该使用哪种类型的智能指针;
+
+  通常情况下,如果你的资源不需要在其他地方共享,那么应该优先使用 **std::unique_ptr**,反之使用 **std::shared_ptr**,当然这是在该智能指针需要管理资源的生命周期的情况下;如果不需要管理对象的生命周期,请使用 **std::weak_ptr**.
+
+* https://cloud.tencent.com/developer/article/1688444
+  shared_ptr的循环引用问题,以及weak_ptr的引入.
+* https://blog.csdn.net/Yetao1996/article/details/125146352
+  三种指针的初始化
+
+
+  以上代码利用 std::move 将 sp1 持有的堆内存(值为 123)转移给 sp2,再把 sp2 转移给 sp3.最后,sp1 和 sp2 不再持有堆内存的引用,变成一个空的智能指针对象.并不是所有的对象的 std::move 操作都有意义,只有实现了移动构造函数(Move Constructor)或移动赋值运算符(operator =)的类才行,而 **std::unique_ptr** 正好实现了这二者,以下是实现伪码:
+
+```cpp
+template<typename T, typename Deletor>
+class unique_ptr
+{
+    //其他函数省略...
+public:
+    unique_ptr(unique_ptr&& rhs)
+    {
+        this->m_pT = rhs.m_pT;
+        //源对象释放
+        rhs.m_pT = nullptr;
+    }
+
+    unique_ptr& operator=(unique_ptr&& rhs)
+    {
+        this->m_pT = rhs.m_pT;
+        //源对象释放
+        rhs.m_pT = nullptr;
+        return *this;
+    }
+
+private:
+    T*    m_pT;
+};
+```
+
+这是 **std::unique_ptr** 具有移动语义的原因,希望读者可以理解之.关于移动构造和 **std::move**,我们将在后面章节详细介绍.
+
+**std::unique_ptr** 不仅可以持有一个堆对象,也可以持有一组堆对象,示例如下:
+
+```cpp
+#include <iostream>
+#include <memory>
+
+int main()
+{
+    //创建10个int类型的堆对象
+    //形式1
+    std::unique_ptr<int[]> sp1(new int[10]);
+
+    //形式2
+    std::unique_ptr<int[]> sp2;
+    sp2.reset(new int[10]);
+    //形式3
+    std::unique_ptr<int[]> sp3(std::make_unique<int[]>(10));
+
+    for (int i = 0; i < 10; ++i)
+    {
+        sp1[i] = i;
+        sp2[i] = i;
+        sp3[i] = i;
+    }
+
+    for (int i = 0; i < 10; ++i)
+    {
+        std::cout << sp1[i] << ", " << sp2[i] << ", " << sp3[i] << std::endl;
+    }
+
+    return 0;
+}
+```
+
+程序执行结果如下:
+
+```
+[root@myaliyun testmybook]# g++ -g -o test_unique_ptr_with_array test_unique_ptr_with_array.cpp -std=c++17
+[root@myaliyun testmybook]# ./test_unique_ptr_with_array 
+0, 0, 0
+1, 1, 1
+2, 2, 2
+3, 3, 3
+4, 4, 4
+5, 5, 5
+6, 6, 6
+7, 7, 7
+8, 8, 8
+9, 9, 9
+```
+
+**std::shared_ptr** 和 **std::weak_ptr** 也可以持有一组堆对象,用法与 **std::unique_ptr** 相同,下文不再赘述.
+
+**自定义智能指针对象持有的资源的释放函数**
+
+默认情况下,智能指针对象在析构时只会释放其持有的堆内存(调用 delete 或者 delete[]),但是假设这块堆内存代表的对象还对应一种需要回收的资源(如操作系统的套接字句柄/文件句柄等),我们可以通过自定义智能指针的资源释放函数.假设现在有一个 Socket 类,对应着操作系统的套接字句柄,在回收时需要关闭该对象,我们可以如下自定义智能指针对象的资源析构函数,这里以 **std::unique_ptr** 为例:
+
+```
+#include <iostream>
+#include <memory>
+
+class Socket
+{
+public:
+    Socket()
+    {
+
+    }
+
+    ~Socket()
+    {
+
+    }
+
+    //关闭资源句柄
+    void close()
+    {
+
+    }
+};
+
+int main()
+{
+    auto deletor = [](Socket* pSocket) {
+        //关闭句柄
+        pSocket->close();
+        //TODO: 你甚至可以在这里打印一行日志...
+        delete pSocket;
+    };
+
+    std::unique_ptr<Socket, void(*)(Socket * pSocket)> spSocket(new Socket(), deletor);
+
+    return 0;
+}
+```
+
+自定义 **std::unique_ptr** 的资源释放函数其规则是:
+
+```
+std::unique_ptr<T, DeletorFuncPtr>
+```
+
+其中 T 是你要释放的对象类型,DeletorPtr 是一个自定义函数指针.上述代码 **33** 行表示 DeletorPtr 有点复杂,我们可以使用 **decltype(deletor)** 让编译器自己推导 deletor 的类型,因此可以将 **33** 行代码修改为:
+
+```
+std::unique_ptr<Socket, decltype(deletor)> spSocket(new Socket(), deletor);
+```
+
+#### std::shared_ptr
+
+**std::unique_ptr** 对其持有的资源具有独占性,而 **std::shared_ptr** 持有的资源可以在多个 **std::shared_ptr** 之间共享,每多一个 **std::shared_ptr** 对资源的引用,资源引用计数将增加 1,每一个指向该资源的 **std::shared_ptr** 对象析构时,资源引用计数减 1,最后一个 **std::shared_ptr** 对象析构时,发现资源计数为 0,将释放其持有的资源.多个线程之间,递增和减少资源的引用计数是安全的.(注意:这不意味着多个线程同时操作 **std::shared_ptr** 引用的对象是安全的).**std::shared_ptr** 提供了一个 **use_count()** 方法来获取当前持有资源的引用计数.除了上面描述的,**std::shared_ptr** 用法和 **std::unique_ptr** 基本相同.
+
+下面是一个初始化 **std::shared_ptr** 的示例:
+
+```
+//初始化方式1
+std::shared_ptr<int> sp1(new int(123));
+
+//初始化方式2
+std::shared_ptr<int> sp2;
+sp2.reset(new int(123));
+
+//初始化方式3
+std::shared_ptr<int> sp3;
+sp3 = std::make_shared<int>(123);
+```
+
+和 **std::unique_ptr** 一样,你应该优先使用 **std::make_shared** 去初始化一个 **std::shared_ptr** 对象.
+
+再来看另外一段代码:
+
+```
+#include <iostream>
+#include <memory>
+
+class A
+{
+public:
+    A()
+    {
+        std::cout << "A constructor" << std::endl;
+    }
+
+    ~A()
+    {
+        std::cout << "A destructor" << std::endl;
+    }
+};
+
+int main()
+{
+    {
+        //初始化方式1
+        std::shared_ptr<A> sp1(new A());
+
+        std::cout << "use count: " << sp1.use_count() << std::endl;
+
+        //初始化方式2
+        std::shared_ptr<A> sp2(sp1);
+        std::cout << "use count: " << sp1.use_count() << std::endl;
+
+        sp2.reset();
+        std::cout << "use count: " << sp1.use_count() << std::endl;
+
+        {
+            std::shared_ptr<A> sp3 = sp1;
+            std::cout << "use count: " << sp1.use_count() << std::endl;
+        }
+
+        std::cout << "use count: " << sp1.use_count() << std::endl;
+    }
+
+    return 0;
+}
+```
+
+- 上述代码 **22** 行 sp1 构造时,同时触发对象 A 的构造,因此 A 的构造函数会执行;
+- 此时只有一个 sp1 对象引用 **22** 行 new 出来的 A 对象(为了叙述方便,下文统一称之为**资源对象 A**),因此代码 **24** 行打印出来的引用计数值为 **1**;
+- 代码 **27** 行,利用 sp1 拷贝一份 sp2,导致代码 **28** 行打印出来的引用计数为 **2**;
+- 代码 **30** 行调用 sp2 的 reset() 方法,sp2 释放对资源对象 A 的引用,因此代码 **31** 行打印的引用计数值再次变为 **1**;
+- 代码 **34** 行 利用 sp1 再次 创建 sp3,因此代码 **35** 行打印的引用计数变为 **2**;
+- 程序执行到 **36** 行以后,sp3 出了其作用域被析构,资源 A 的引用计数递减 1,因此 代码 **38** 行打印的引用计数为 **1**;
+- 程序执行到 **39** 行以后,sp1 出了其作用域被析构,在其析构时递减资源 A 的引用计数至 **0**,并析构资源 A 对象,因此类 A 的析构函数被调用.
+
+所以整个程序的执行结果如下:
+
+```
+[root@myaliyun testmybook]# ./test_shared_ptr_use_count 
+A constructor
+use count: 1
+use count: 2
+use count: 1
+use count: 2
+use count: 1
+A destructor
+```
+
+**std::enable_shared_from_this**
+
+实际开发中,有时候需要在类中返回包裹当前对象(this)的一个 **std::shared_ptr** 对象给外部使用,C++ 新标准也为我们考虑到了这一点,有如此需求的类只要继承自 **std::enable_shared_from_this** 模板对象即可.用法如下:
+
+```
+#include <iostream>
+#include <memory>
+
+class A : public std::enable_shared_from_this<A>
+{
+public:
+    A()
+    {
+        std::cout << "A constructor" << std::endl;
+    }
+
+    ~A()
+    {
+        std::cout << "A destructor" << std::endl;
+    }
+
+    std::shared_ptr<A> getSelf()
+    {
+        return shared_from_this();
+    }
+};
+
+int main()
+{
+    std::shared_ptr<A> sp1(new A());
+
+    std::shared_ptr<A> sp2 = sp1->getSelf();
+
+    std::cout << "use count: " << sp1.use_count() << std::endl;
+
+    return 0;
+}
+```
+
+上述代码中,类 A 的继承 **std::enable_shared_from_this** 并提供一个 **getSelf()** 方法返回自身的 **std::shared_ptr** 对象,在 **getSelf()** 中调用 **shared_from_this()** 即可.
+
+**std::enable_shared_from_this** 用起来比较方便,但是也存在很多不易察觉的陷阱.
+
+**陷阱一:不应该共享栈对象的 this 给智能指针对象**
+
+假设我们将上面代码 main 函数 **25** 行生成 A 对象的方式改成一个栈变量,即:
+
+```
+//其他相同代码省略...
+
+int main()
+{
+    A a;
+
+    std::shared_ptr<A> sp2 = a.getSelf();
+
+    std::cout << "use count: " << sp2.use_count() << std::endl;
+
+    return 0;
+}
+```
+
+运行修改后的代码会发现程序在 `std::shared_ptr sp2 = a.getSelf();` 产生崩溃.这是因为,智能指针管理的是堆对象,栈对象会在函数调用结束后自行销毁,因此不能通过 **shared_from_this()** 将该对象交由智能指针对象管理.切记:**智能指针最初设计的目的就是为了管理堆对象的(即那些不会自动释放的资源)**.
+
+**陷阱二:避免 std::enable_shared_from_this 的循环引用问题**
+
+再来看另外一段代码:
+
+```
+// test_std_enable_shared_from_this.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+#include <iostream>
+#include <memory>
+
+class A : public std::enable_shared_from_this<A>
+{
+public:
+    A()
+    {
+        m_i = 9;
+        //注意:
+        //比较好的做法是在构造函数里面调用shared_from_this()给m_SelfPtr赋值
+        //但是很遗憾不能这么做,如果写在构造函数里面程序会直接崩溃
+
+        std::cout << "A constructor" << std::endl;
+    }
+
+    ~A()
+    {
+        m_i = 0;
+
+        std::cout << "A destructor" << std::endl;
+    }
+
+    void func()
+    {
+        m_SelfPtr = shared_from_this();
+    }
+
+public:
+    int                 m_i;
+    std::shared_ptr<A>  m_SelfPtr;
+
+};
+
+int main()
+{
+    {
+        std::shared_ptr<A> spa(new A());
+        spa->func();
+    }
+
+    return 0;
+}
+```
+
+乍一看上面的代码好像看不出什么问题,让我们来实际运行一下看看输出结果:
+
+```
+[root@myaliyun testmybook]# g++ -g -o test_std_enable_shared_from_this_problem test_std_enable_shared_from_this_problem.cpp
+[root@myaliyun testmybook]# ./test_std_enable_shared_from_this_problem
+A constructor
+```
+
+```
+#include <iostream>
+#include <memory>
+
+int main()
+{
+    //创建一个std::shared_ptr对象
+    std::shared_ptr<int> sp1(new int(123));
+    std::cout << "use count: " << sp1.use_count() << std::endl;
+
+    //通过构造函数得到一个std::weak_ptr对象
+    std::weak_ptr<int> sp2(sp1);
+    std::cout << "use count: " << sp1.use_count() << std::endl;
+
+    //通过赋值运算符得到一个std::weak_ptr对象
+    std::weak_ptr<int> sp3 = sp1;
+    std::cout << "use count: " << sp1.use_count() << std::endl;
+
+    //通过一个std::weak_ptr对象得到另外一个std::weak_ptr对象
+    std::weak_ptr<int> sp4 = sp2;
+    std::cout << "use count: " << sp1.use_count() << std::endl;
+
+    return 0;
+}
+```
+
+程序执行结果如下:
+
+```
+[root@myaliyun testmybook]# g++ -g -o test_weak_ptr test_weak_ptr.cpp 
+[root@myaliyun testmybook]# ./test_weak_ptr
+use count: 1
+use count: 1
+use count: 1
+use count: 1
+```
+
+无论通过何种方式创建 **std::weak_ptr** 都不会增加资源的引用计数,因此每次输出引用计数的值都是 1.
+
+既然,**std::weak_ptr** 不管理对象的生命周期,那么其引用的对象可能在某个时刻被销毁了,如何得知呢?**std::weak_ptr** 提供了一个 **expired()** 方法来做这一项检测,返回 true,说明其引用的资源已经不存在了;返回 false,说明该资源仍然存在,这个时候可以使用 **std::weak_ptr** 的 **lock()** 方法得到一个 **std::shared_ptr** 对象然后继续操作资源,以下代码演示了该用法:
+
+```
+//tmpConn_ 是一个 std::weak_ptr<TcpConnection> 对象
+//tmpConn_引用的TcpConnection已经销毁,直接返回
+if (tmpConn_.expired())
+    return;
+
+std::shared_ptr<TcpConnection> conn = tmpConn_.lock();
+if (conn)
+{
+    //对conn进行操作,省略...
+}
+```
+
+有读者可能对上述代码产生疑问,既然使用了 **std::weak_ptr** 的 **expired()** 方法判断了对象是否存在,为什么不直接使用 **std::weak_ptr** 对象对引用资源进行操作呢?实际上这是行不通的,**std::weak_ptr** 类没有重写 **operator->** 和 **operator*** 方法,因此不能像 **std::shared_ptr** 或 **std::unique_ptr** 一样直接操作对象,同时 **std::weak_ptr** 类也没有重写 **operator!** 操作,因此也不能通过 **std::weak_ptr** 对象直接判断其引用的资源是否存在:
+
+```
+#include <memory>
+
+class A
+{
+public:
+    void doSomething()
+    {
+
+    }
+};
+
+int main()
+{    
+    std::shared_ptr<A> sp1(new A());
+
+    std::weak_ptr<A> sp2(sp1);
+
+    //正确代码
+    if (sp1)
+    {
+        //正确代码
+        sp1->doSomething();
+        (*sp1).doSomething();
+    }
+
+    //正确代码
+    if (!sp1)
+    {
+
+    }
+
+    //错误代码,无法编译通过
+    //if (sp2)
+    //{
+    //    //错误代码,无法编译通过
+    //    sp2->doSomething();
+    //    (*sp2).doSomething();
+    //}
+
+    //错误代码,无法编译通过
+    //if (!sp2)
+    //{
+
+    //}
+
+    return 0;
+}
+```
+
+之所以 **std::weak_ptr** 不增加引用资源的引用计数不管理资源的生命周期,是因为,即使它实现了以上说的几个方法,调用它们也是不安全的,因为在调用期间,引用的资源可能恰好被销毁了,这会造成棘手的错误和麻烦.
+
+因此,**std::weak_ptr** 的正确使用场景是那些资源如果可能就使用,如果不可使用则不用的场景,它不参与资源的生命周期管理.例如,网络分层结构中,Session 对象(会话对象)利用 Connection 对象(连接对象)提供的服务工作,但是 Session 对象不管理 Connection 对象的生命周期,Session 管理 Connection 的生命周期是不合理的,因为网络底层出错会导致 Connection 对象被销毁,此时 Session 对象如果强行持有 Connection 对象与事实矛盾.
+
+**std::weak_ptr** 的应用场景,经典的例子是订阅者模式或者观察者模式中.这里以订阅者为例来说明,消息发布器只有在某个订阅者存在的情况下才会向其发布消息,而不能管理订阅者的生命周期.
+
+```
+class Subscriber
+{
+
+};
+
+class SubscribeManager
+{
+public:
+    void publish()
+    {
+        for (const auto& iter : m_subscribers)
+        {
+            if (!iter.expired())
+            {
+                //TODO:给订阅者发送消息
+            }
+        }
+    }
+
+private:
+    std::vector<std::weak_ptr<Subscriber>>   m_subscribers;
+};
+```
+
+#### 智能指针对象的大小
+
+一个 **std::unique_ptr** 对象大小与裸指针大小相同(即 sizeof(std::unique_ptr<T>) == sizeof(void*)),而 **std::shared_ptr** 的大小是 **std::unique_ptr** 的一倍.以下是我分别在 Visual Studio 2019 和 gcc/g++ 4.8 上(二者都编译成 x64 程序)的测试结果:
+
+**测试代码**
+
+```
+#include <iostream>
+#include <memory>
+#include <string>
+
+int main()
+{
+    std::shared_ptr<int> sp0;
+    std::shared_ptr<std::string> sp1;
+    sp1.reset(new std::string());
+    std::unique_ptr<int> sp2;
+    std::weak_ptr<int> sp3;
+
+    std::cout << "sp0 size: " << sizeof(sp0) << std::endl;
+    std::cout << "sp1 size: " << sizeof(sp1) << std::endl;
+    std::cout << "sp2 size: " << sizeof(sp2) << std::endl;
+    std::cout << "sp3 size: " << sizeof(sp3) << std::endl;
+
+    return 0;
+}
+```
+
+Visual Studio 2019 运行结果:
+
+![](../imgs/sp1.webp)
+
+gcc/g++ 运行结果:
+
+![](../imgs/sp2.webp)
+
+在 32 位机器上,**std_unique_ptr** 占 4 字节,**std::shared_ptr** 和 **std::weak_ptr** 占 8 字节;在 64 位机器上,**std_unique_ptr** 占 8 字节,**std::shared_ptr** 和 **std::weak_ptr** 占 16 字节.也就是说,**std_unique_ptr** 的大小总是和原始指针大小一样,**std::shared_ptr** 和 **std::weak_ptr** 大小是原始指针的一倍.
+
+#### 智能指针使用注意事项
+
+- 一旦一个对象使用智能指针管理后,就不该再使用原始裸指针去操作;
+  看一段代码:
+
+记住,一旦智能指针对象接管了你的资源,所有对资源的操作都应该通过智能指针对象进行,不建议再通过原始指针进行操作了.当然,除了 **std::weak_ptr**,**std::unique_ptr** 和 **std::shared_ptr** 都提供了获取原始指针的方法__**get()** 函数.
+
+  ```cpp
+  int main()
+  {    
+    Subscriber* pSubscriber = new Subscriber();
+  
+    std::unique_ptr<Subscriber> spSubscriber(pSubscriber);
+  
+    //pTheSameSubscriber和pSubscriber指向同一个对象
+    Subscriber* pTheSameSubscriber= spSubscriber.get();
+  
+    return 0;
+  }
+  ```
+
+- 认真考虑,避免操作某个引用资源已经释放的智能指针;
+
+  ```cpp
+  //连接断开
+  void MonitorServer::OnClose(const std::shared_ptr<TcpConnection>& conn)
+  {    
+    std::lock_guard<std::mutex> guard(m_sessionMutex);
+    for (auto iter = m_sessions.begin(); iter != m_sessions.end(); ++iter)
+    {
+        //通过比对connection对象找到对应的session
+        if ((*iter)->GetConnectionPtr() == conn)
+        {
+            m_sessions.erase(iter);
+            //注意这里:程序在此处崩溃
+            LOGI("monitor client disconnected: %s", conn->peerAddress().toIpPort().c_str());
+            break;
+        }
+    }
+  }
+  ```
+  崩溃原因是传入的 conn 对象和上一个例子中的 sp2 一样都是另外一个 **std::shared_ptr** 的引用,当连接断开时,对应的 TcpConnection 对象可能早已被销毁,而 conn 引用就会变成空指针(严格来说是不再拥有一个 TcpConnection 对象),此时调用 TcpConnection 的 peerAddress() 方法就会产生和上一个示例一样的错误.
+
+- 作为类成员变量时,应该优先使用前置声明(forward declarations)
+
+  我们知道,为了减小编译依赖加快编译速度和生成二进制文件的大小,C/C++ 项目中一般在 *.h 文件对于指针类型尽量使用前置声明,而不是直接包含对应类的头文件.例如:
+
+  ```cpp
+  //Test.h
+  //在这里使用A的前置声明,而不是直接包含A.h文件
+  class A;
+  
+  class Test
+  {
+  public:
+    Test();
+    ~Test();
+  
+  private:
+    A*      m_pA;
+  };
+  ```
+
+  同样的道理,在头文件中当使用智能指针对象作为类成员变量时,也应该优先使用前置声明去引用智能指针对象的包裹类,而不是直接包含包裹类的头文件.
