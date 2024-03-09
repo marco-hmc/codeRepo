@@ -5,7 +5,7 @@
   * wednesday: 1830-1930
   * thursday: 1800-1930
   * friday:
-  * saturday:
+  * saturday: 1420-1850
   * sunday:
 
 ## 1. doing
@@ -15,13 +15,9 @@
   2. 医保卡补办
 
 ### 1.5 readings
-  1. **cpp**
-    2_project\modern-cpp-tutorial-master\book\zh-cn\
   2. **refactor**
     1_notes\6_设计模式\refactoring2\ch1.md
-  3. **js**
-    1_notes\0_frontEnd\js\en.javascript.info-master\1-js\05-data-types\01-primitives-methods\article.md
-  4. **template**
+  3. **template**
     2_project\Cpp-Templates-2ed-master\Cpp-Templates-2ed-master\docs\01_function_template.md
 
 ##  2. todo

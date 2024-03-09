@@ -14,50 +14,20 @@
    #include <iostream>
    #include <map>
    #include <string>
-   ```
 
-2. 创建一个`map`实例，并填充一些内容。
-
-   ```c++
    int main()
    {
        std::map<std::string, size_t> m { {"b", 1}, {"c", 2}, {"d", 3} };
-   ```
-
-3. 我们将插入多个元素，对于每次插入，我们都会传入一个hint迭代器。第一次插入我们不指定其开始位置，只将插入位置指向`map`的`end`迭代器之前。
-
-   ```c++
        auto insert_it (std::end(m));
-   ```
-
-4. 我们将以字母表的反序进行元素的插入，然后使用hint迭代器，然后使用`insert`函数的返回值重新初始化迭代器的值。下一个元素将在`hint`迭代器前插入。
-
-   ```c++
        for (const auto &s : {"z", "y", "x", "w"}) {
            insert_it = m.insert(insert_it, {s, 1});
        }
-   ```
-
-5. 为了展示在什么情况下`insert`函数不工作，我们将要插入最左侧位置的元素插入到最右侧。
-
-   ```c++
        m.insert(std::end(m), {"a", 1});
-   ```
-
-6. 最后我们打印当前的`map`。
-
-   ```c++
        for (const auto & [key, value] : m) {
            std::cout << "\"" << key << "\": " << value << ", ";
        }
        std::cout << '\n';
    }
-   ```
-
-7. 编译运行程序，错误的插入并没有对结果又什么影响，`map`实例中对象的顺序仍然是对的。
-
-   ```
-   "a": 1, "b": 1, "c": 2, "d": 3, "w": 1, "x": 1, "y": 1, "z": 1,
    ```
 
 ## How it works...
