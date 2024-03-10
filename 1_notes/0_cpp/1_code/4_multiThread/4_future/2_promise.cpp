@@ -23,7 +23,7 @@ void test_1() {
 
   std::future<int> fu = std::async(std::launch::async, factorial, std::ref(f));
 
-  p.set_value(4);
+  // p.set_value(4);
   x = fu.get();
   std::cout << "Result from Child: " << x << std::endl;
 }
@@ -48,6 +48,6 @@ void test_2() {
 
 int main() {
   test_1();
-  test_2();
+  // test_2();
   return 0;
 }
