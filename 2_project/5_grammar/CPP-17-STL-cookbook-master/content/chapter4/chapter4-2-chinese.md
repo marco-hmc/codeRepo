@@ -24,7 +24,7 @@
     #include <functional>
 
    template <typename C>
-   static auto consumer (C &container)
+   static auto consumer (C &container){
        return [&] (auto value) {
        	container.push_back(value);
        };

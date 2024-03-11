@@ -19,11 +19,6 @@ C++17之前，因为对应的键已经存在，我们不得不将整个键-值�
    #include <map>
    
    using namespace std;
-   ```
-
-2. 我们会在修改map的时候打印之前和之后结果，所以这里先实现了一个辅助函数。
-
-   ```c++
    template <typename M>
    void print(const M &m)
    {
@@ -32,11 +27,6 @@ C++17之前，因为对应的键已经存在，我们不得不将整个键-值�
       		cout << placement << ": " << driver << '\n';
        }
    }
-   ```
-
-3. 主函数中，我们实例化并初始化一个`map`，其键为整型，表示是当前的排位；值为字符型，表示驾驶员的姓名。我们在这里先打印一下这个`map`，因为我们会在下一步对其进行修改。
-
-   ```c++
    int main()
    {
        map<int, string> race_placement {
@@ -45,25 +35,10 @@ C++17之前，因为对应的键已经存在，我们不得不将整个键-值�
            {7, "Toad"}, {8, "Donkey Kong Jr."}
        };
        print(race_placement);
-   ```
-
-4. 让我来看下排位赛的某一圈的情况，Bowser因为赛车事故排在最后，Donkey Kong Jr. 从最后一名超到第三位。例子中首先要从`map`中提取节点，因为这是唯一能修改键值的方法。`extract`函数是C++17新加的特性。其可以从`map`中删除元素，并没有内存重分配的副作用。看下这里是怎么用的吧。
-
-   ```c++
    {
        auto a(race_placement.extract(3));
        auto b(race_placement.extract(8)); 
-   ```
-
-5. 现在我们要交换Bowser和Donkey Kong Jr.的键。键通常都是无法修改的，不过我们可以通过`extract`方法来修改元素的键。
-
-   ```c++
    	swap(a.key(), b.key());
-   ```
-
-6. `std::map`的`insert`函数在C++17中有一个新的重载版本，其接受已经提取出来的节点，就是为了在插入他们时，不会分配不必要的内存。
-
-   ```c++
        race_placement.insert(move(a));
        race_placement.insert(move(b));
    }

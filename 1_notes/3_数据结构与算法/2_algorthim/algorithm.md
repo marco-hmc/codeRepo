@@ -1568,6 +1568,7 @@ int scoreOfParentheses(string s) {
       if(board.empty())
           return;
       int rows = board.size(), cols = board[0].size();
+      
       queue<pair<int, int> > pos;
       for(int i = 0; i < rows; ++i){
           if(board[i][0] == 'O')
@@ -4091,39 +4092,6 @@ class Solution {
         } 
         return res;
     }
-};
-```
-
-  
-
-# 洗牌算法
-
-## [打乱数组](https://leetcode-cn.com/problems/shuffle-an-array/)
-
-```c++
-class Solution {
-public:
-    Solution(vector<int>& nums) {
-        origin = nums;
-    }
-    
-    /** Resets the array to its original configuration and return it. */
-    vector<int> reset() {
-        return origin;
-    }
-    
-    /** Returns a random shuffling of the array. */
-    vector<int> shuffle() {
-        int n = origin.size();
-        vector<int> ret(origin);
-        for(int i = 0; i < n; i++){
-            int randNum = rand() % (n - i) + i; // 生成 [i, n) 之间的随机数
-            swap(ret[i], ret[randNum]);
-        }
-        return ret;
-    }
-private:
-    vector<int> origin;
 };
 ```
 

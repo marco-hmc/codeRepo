@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-
+using namespace std;
 void original_method() {
   std::vector<int> numbers = {1, 2, 3, 4, 2, 5, 2, 6, 7, 2};
   int target = 2;
@@ -37,8 +37,30 @@ void erase_remove_trick() {
   }
 }
 
-int main() {
+void test_1() {
   original_method();
   erase_remove_trick();
+}
+
+void test_2() {
+  vector<int> v{1, 2, 3, 2, 5, 2, 6, 2, 4, 8};
+  const auto new_end(remove(begin(v), end(v), 2));
+  v.erase(new_end, end(v));
+  for (auto i : v) {
+    cout << i << ", ";
+  }
+  cout << '\n';
+  const auto odd([](int i) { return i % 2 != 0; });
+  v.erase(remove_if(begin(v), end(v), odd), end(v));
+  v.shrink_to_fit();
+  for (auto i : v) {
+    cout << i << ", ";
+  }
+  cout << '\n';
+}
+
+int main() {
+  test_1();
+  test_2();
   return 0;
 }

@@ -1,3 +1,5 @@
+the lazy fox jumps over brown dog
+
 什么是令牌环网络?
 
 cout 不是一个变量,而是 C++ 标准库中用于标准输出的对象.它是 ostream 类型的对象,负责向标准输出设备(通常是终端)输出数据.
