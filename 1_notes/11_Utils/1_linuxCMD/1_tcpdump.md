@@ -1,3 +1,23 @@
+#### (19)tcpdump常用命令
+用简单的话来定义tcpdump,就是:dump the traffic on a network,根据使用者的定义对网络上的数据包进行截获的包分析工具. tcpdump可以将网络中传送的数据包的"头"完全截获下来提供分析.它支持针对网络层/协议/主机/网络或端口的过滤,并提供and/or/not等逻辑语句来帮助你去掉无用的信息.
+
+实用命令实例
+
+将某端口收发的数据包保存到文件<br>
+`sudo tcpdump -i any port 端口 -w 文件名.cap`
+
+
+打印请求到屏幕<br>
+`sudo tcpdump -i any port 端口 -Xnlps0`
+
+默认启动<br>
+`tcpdump`
+普通情况下,直接启动tcpdump将监视第一个网络接口上所有流过的数据包.
+监视指定网络接口的数据包<br>
+`tcpdump -i eth1`
+如果不指定网卡,默认tcpdump只会监视第一个网络接口,一般是eth0,下面的例子都没有指定网络接口.　
+
+
 ## Linux tcpdump 使用介绍
 
 **tcpdump** 是 Linux 系统提供一个非常强大的抓包工具,熟练使用它,对我们排查网络问题非常有用.如果你的机器上还没有安装,可以使用如下命令安装:

@@ -11,26 +11,14 @@
    ```c++
    template <typename ... Ts>
    auto sum(Ts ... ts);
-   ```
 
-2. 那么现在我们拥有一个参数包`ts`，并且函数必须将参数包展开，然后使用表达式进行求和。如果我们对这些参数进行某个操作(比如：加法)，那么为了将这个操作应用于该参数包，就需要使用括号将表达式包围：
-
-   ```c++
    template<typename ... Ts>
    auto sum(Ts ... ts){
    	return (ts + ...);
    }
-   ```
 
-3. 现在我们可以调用这个函数：
-
-   ```c++
    int the_sum {sum(1, 2, 3, 4, 5)}; // value: 15
-   ```
 
-4. 这个操作不仅对`int`类型起作用，我们能对任何支持加号的类型使用这个函数，比如`std::string`:
-
-   ```c++
    std::string a{"Hello "};
    std::string b{"World"};
 

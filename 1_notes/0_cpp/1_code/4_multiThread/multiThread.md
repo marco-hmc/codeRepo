@@ -1,5 +1,6 @@
 ## threads
 
+#### (13)Linux中线程的同步方式有哪些?
 ### 1. thread
 
 #### 1.1 join和detach

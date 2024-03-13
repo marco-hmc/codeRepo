@@ -1,11 +1,11 @@
 [toc]
 * OT
   * monday:
-  * tuesday: 1830-1930
-  * wednesday: 1830-1930
-  * thursday: 1800-1930
+  * tuesday: 1830-1800
+  * wednesday: 1800-1930
+  * thursday: 
   * friday:
-  * saturday: 1420-1850
+  * saturday:
   * sunday:
 
 ## 1. doing

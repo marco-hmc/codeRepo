@@ -16,4 +16,7 @@ PLM结合电子商务技术与协同技术,将产品开发流程与SCM/CRM/ERP�
 * mfg
 "MFG" 通常是 "Manufacturing" 的缩写,意为制造业.这一术语涵盖了从原材料到最终产品的整个制造过程,包括生产/加工/装配等.
 * aec
+
 "AEC" 通常是 "Architecture, Engineering, and Construction" 的缩写,意为建筑/工程和建设.这一术语涵盖了建筑设计/工程规划和施工等领域,包括建筑/土木工程/结构工程等.
+
+![alt text](image.png)

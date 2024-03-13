@@ -1,3 +1,41 @@
+* if(a)这个也可以重载
+
+### Non-static data member initializers
+Allows non-static data members to be initialized where they are declared, potentially cleaning up constructors of default initializations.
+```c++
+// Default initialization prior to C++11
+class Human {
+    Human() : age{0} {}
+  private:
+    unsigned age;
+};
+// Default initialization on C++11
+class Human {
+  private:
+    unsigned age {0};
+};
+```
+
+
+* 临时变量可以绑定到左值引用吗?
+引用绑定到临时对象是一种语言特性,它确保通过引用绑定的临时对象在整个语句块中都保持有效.这个特性通常与 const 引用一起使用.
+
+引用绑定到临时对象的规则:
+右值引用: 当使用右值引用(&&)绑定到返回的右值(例如函数返回的临时对象)时,编译器会延长右值的生命周期,使得引用继续有效.
+
+cpp
+Copy code
+T&& rvalue = getRvalue();  // rvalue 引用绑定到右值
+const 引用: 当使用 const 引用绑定到右值(临时对象)时,编译器也会延长右值的生命周期.
+
+cpp
+Copy code
+const T& constRef = getTemporary();  // const 引用绑定到临时对象
+为什么需要引用绑定到临时对象:
+避免不必要的拷贝: 当函数返回临时对象时,使用引用绑定可以避免不必要的拷贝构造,提高性能.
+
+允许延迟析构: 通过延长临时对象的生命周期,允许在整个语句块中使用临时对象,而不会在引用失效时导致未定义行为.
+
 * ***UniquePtr(const UniquePtr &) = delete;禁用拷贝构造***
     拷贝构造函数的参数通常是常量引用(const reference),而不是值(value),主要有以下两个原因:
 
