@@ -3,7 +3,7 @@
   * monday:
   * tuesday: 1830-1800
   * wednesday: 1800-1930
-  * thursday: 
+  * thursday: 1800-1900
   * friday:
   * saturday:
   * sunday:

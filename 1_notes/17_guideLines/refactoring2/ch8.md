@@ -746,8 +746,6 @@ function emitPhotoData(aPhoto) {
 
 ## 8.4 搬移语句到调用者（Move Statements to Callers）
 
-反向重构：搬移语句到函数（213）
-
 ```js
 emitPhotoData(outStream, person.photo);
 
@@ -765,8 +763,6 @@ function emitPhotoData(outStream, photo) {
 ```
 
 ### 动机
-
-作为程序员，我们的职责就是设计出结构一致、抽象合宜的程序，而程序抽象能力的源泉正是来自函数。与其他抽象机制的设计一样，我们并非总能平衡好抽象的边界。随着系统能力发生演进（通常只要是有用的系统，功能都会演进），原先设定的抽象边界总会悄无声息地发生偏移。对于函数来说，这样的边界偏移意味着曾经视为一个整体、一个单元的行为，如今可能已经分化出两个甚至是多个不同的关注点。
 
 函数边界发生偏移的一个征兆是，以往在多个地方共用的行为，如今需要在某些调用点面前表现出不同的行为。于是，我们得把表现不同的行为从函数里挪出，并搬移到其调用处。这种情况下，我会使用移动语句（223）手法，先将表现不同的行为调整到函数的开头或结尾，再使用本手法将语句搬移到其调用点。只要差异代码被搬移到调用点，我就可以根据需要对其进行修改。
 
@@ -973,29 +969,6 @@ function emitPhotoData(outStream, photo) {
 
 ## 8.5 以函数调用取代内联代码（Replace Inline Code with Function Call）
 
-```js
-let appliesToMass = false;
-for (const s of states) {
-  if (s === "MA") appliesToMass = true;
-}
-
-appliesToMass = states.includes("MA");
-```
-
-### 动机
-
-善用函数可以帮助我将相关的行为打包起来，这对于提升代码的表达力大有裨益—— 一个命名良好的函数，本身就能极好地解释代码的用途，使读者不必了解其细节。函数同样有助于消除重复，因为同一段代码我不需要编写两次，每次调用一下函数即可。此外，当我需要修改函数的内部实现时，也不需要四处寻找有没有漏改的相似代码。（当然，我可能需要检查函数的所有调用点，判断它们是否都应该使用新的实现，但通常很少需要这么仔细，即便需要，也总好过四处寻找相似代码。）
-
-如果我见到一些内联代码，它们做的事情仅仅是已有函数的重复，我通常会以一个函数调用取代内联代码。但有一种情况需要特殊对待，那就是当内联代码与函数之间只是外表相似但其实并无本质联系时。这种情况下，当我改变了函数实现时，并不期望对应内联代码的行为发生改变。判断内联代码与函数之间是否真正重复，从函数名往往可以看出端倪：如果一个函数命名得当，也确实与内联代码做了一样的事，那么这个名字用在内联代码的语境里也应该十分协调；如果函数名显得不协调，可能是因为命名本身就比较糟糕（此时可以运用函数改名（124）来解决），也可能是因为函数与内联代码彼此的用途确实有所不同。若是后者的情况，我就不应该用函数调用取代该内联代码。
-
-我发现，配合一些库函数使用，会使本手法效果更佳，因为我甚至连函数体都不需要自己编写了，库已经提供了相应的函数。
-
-### 做法
-
-将内联代码替代为对一个既有函数的调用。
-
-测试。
-
 ## 8.6 移动语句（Slide Statements）
 
 曾用名：合并重复的代码片段（Consolidate Duplicate Conditional Fragments）
@@ -1011,24 +984,6 @@ const chargePerUnit = pricingPlan.unit;
 const order = retreiveOrder();
 let charge;
 ```
-
-### 动机
-
-让存在关联的东西一起出现，可以使代码更容易理解。如果有几行代码取用了同一个数据结构，那么最好是让它们在一起出现，而不是夹杂在取用其他数据结构的代码中间。最简单的情况下，我只需使用移动语句就可以让它们聚集起来。此外还有一种常见的“关联”，就是关于变量的声明和使用。有人喜欢在函数顶部一口气声明函数用到的所有变量，我个人则喜欢在第一次需要使用变量的地方再声明它。
-
-通常来说，把相关代码搜集到一处，往往是另一项重构（通常是在提炼函数（106））开始之前的准备工作。相比于仅仅把几行相关的代码移动到一起，将它们提炼到独立的函数往往能起到更好的抽象效果。但如果起先存在关联的代码就没有彼此在一起，那么我也很难应用提炼函数（106）的手法。
-
-### 做法
-
-确定待移动的代码片段应该被搬往何处。仔细检查待移动片段与目的地之间的语句，看看搬移后是否会影响这些代码正常工作。如果会，则放弃这项重构。
-
-往前移动代码片段时，如果片段中声明了变量，则不允许移动到任何变量的声明语句之前。往后移动代码片段时，如果有语句引用了待移动片段中的变量，则不允许移动到该语句之后。往后移动代码片段时，如果有语句修改了待移动片段中引用的变量，则不允许移动到该语句之后。往后移动代码片段时，如果片段中修改了某些元素，则不允许移动到任何引用了这些元素的语句之后。
-
-剪切源代码片段，粘贴到上一步选定的位置上。
-
-测试。
-
-如果测试失败，那么尝试减小移动的步子：要么是减少上下移动的行数，要么是一次搬移更少的代码。
 
 ### 范例
 
@@ -1255,6 +1210,7 @@ function youngestAge() {
 function totalSalary() {
  return people.reduce((total,p) => total + p.salary, 0);
 }
+
 function youngestAge() {
  return Math.min(...people.map(p => p.age));
 }
@@ -1272,26 +1228,8 @@ for (const i of input) {
 
 const names = input
   .filter(i => i.job === "programmer")
-  .map(i => i.name)
-;
+  .map(i => i.name);
 ```
-
-### 动机
-
-与大多数程序员一样，我入行的时候也有人告诉我，迭代一组集合时得使用循环。不过时代在发展，如今越来越多的编程语言都提供了更好的语言结构来处理迭代过程，这种结构就叫作集合管道（collection pipeline）。集合管道[mf-cp]是这样一种技术，它允许我使用一组运算来描述集合的迭代过程，其中每种运算接收的入参和返回值都是一个集合。这类运算有很多种，最常见的则非 map 和 filter 莫属：map 运算是指用一个函数作用于输入集合的每一个元素上，将集合变换成另外一个集合的过程；filter 运算是指用一个函数从输入集合中筛选出符合条件的元素子集的过程。运算得到的集合可以供管道的后续流程使用。我发现一些逻辑如果采用集合管道来编写，代码的可读性会更强——我只消从头到尾阅读一遍代码，就能弄清对象在管道中间的变换过程。
-
-### 做法
-
-创建一个新变量，用以存放参与循环过程的集合。
-
-也可以简单地复制一个现有的变量赋值给新变量。
-
-从循环顶部开始，将循环里的每一块行为依次搬移出来，在上一步创建的集合变量上用一种管道运算替代之。每次修改后运行测试。
-
-搬移完循环里的全部行为后，将循环整个删除。
-
-如果循环内部通过累加变量来保存结果，那么移除循环后，将管道运算的最终结果赋值给该累加变量。
-
 ### 范例
 
 在这个例子中，我们有一个 CSV 文件，里面存有各个办公室（office）的一些数据。
@@ -1329,165 +1267,6 @@ function acquireData(input) {
 }
 ```
 
-这个循环略显复杂，我希望能用一组管道操作来替换它。
-
-第一步是先创建一个独立的变量，用来存放参与循环过程的集合值。
-
-```js
-function acquireData(input) {
-  const lines = input.split("\n");
-  let firstLine = true;
-  const result = [];
-  const loopItems = lines;
-  for (const line of loopItems) {
-    if (firstLine) {
-      firstLine = false;
-      continue;
-    }
-    if (line.trim() === "") continue;
-    const record = line.split(",");
-    if (record[1].trim() === "India") {
-      result.push({ city: record[0].trim(), phone: record[2].trim() });
-    }
-  }
-  return result;
-}
-```
-
-循环第一部分的作用是在忽略 CSV 文件的第一行数据。这其实是一个切片（slice）操作，因此我先从循环中移除这部分代码，并在集合变量的声明后面新增一个对应的 slice 运算来替代它。
-
-```js
-function acquireData(input) {
-  const lines = input.split("\n");
-  let firstLine = true;
-  const result = [];
-  const loopItems = lines.slice(1);
-  for (const line of loopItems) {
-    if (firstLine) {
-      firstLine = false;
-      continue;
-    }
-    if (line.trim() === "") continue;
-    const record = line.split(",");
-    if (record[1].trim() === "India") {
-      result.push({ city: record[0].trim(), phone: record[2].trim() });
-    }
-  }
-  return result;
-}
-```
-
-从循环中删除代码还有一个好处，那就是 firstLine 这个控制变量也可以一并移除了——无论何时，删除控制变量总能使我身心愉悦。
-
-该循环的下一个行为是要移除数据中的所有空行。这同样可用一个过滤（filter）运算替代之。
-
-```js
-function acquireData(input) {
- const lines = input.split("\n");
- const result = [];
- const loopItems = lines
-    .slice(1)
-    .filter(line => line.trim() !== "")
-    ;
- for (const line of loopItems) {
-  if (line.trim() === "") continue;
-  const  record = line.split(",");
-  if (record[1].trim() === "India") {
-   result.push({city: record[0].trim(), phone: record[2].trim()});
-  }
- }
- return result;
-}
-```
-
-    编写管道运算时，我喜欢让结尾的分号单占一行，这样方便调整管道的结构。
-
-接下来是将数据的一行转换成数组，这明显可以用一个 map 运算替代。然后我们还发现，原来的 record 命名其实有误导性，它没有体现出“转换得到的结果是数组”这个信息，不过既然现在还在做其他重构，先不动它会比较安全，回头再为它改名也不迟。
-
-```js
-function acquireData(input) {
- const lines = input.split("\n");
- const result = [];
- const loopItems = lines
-    .slice(1)
-    .filter(line => line.trim() !== "")
-    .map(line => line.split(","))
-    ;
- for (const line of loopItems) {
-  const record = line;.split(",");
-  if (record[1].trim() === "India") {
-   result.push({city: record[0].trim(), phone: record[2].trim()});
-  }
- }
- return result;
-}
-```
-
-然后又是一个过滤（filter）操作，只从结果中筛选出印度办公室的记录。
-
-```js
-function acquireData(input) {
- const lines = input.split("\n");
- const result = [];
- const loopItems = lines
-    .slice(1)
-    .filter(line => line.trim() !== "")
-    .map(line => line.split(","))
-    .filter(record => record[1].trim() === "India")
-    ;
- for (const line of loopItems) {
-  const record = line;
-  if (record[1].trim() === "India") {
-   result.push({city: record[0].trim(), phone: record[2].trim()});
-  }
- }
- return result;
-}
-```
-
-最后再把结果映射（map）成需要的记录格式：
-
-```js
-  function acquireData(input) {
- const lines = input.split("\n");
- const result = [];
- const loopItems = lines
-    .slice(1)
-    .filter(line => line.trim() !== "")
-    .map(line => line.split(","))
-    .filter(record => record[1].trim() === "India")
-    .map(record => ({city: record[0].trim(), phone: record[2].trim()}))
-    ;
- for (const line of loopItems) {
-  const record = line;
-  result.push(line);
- }
- return result;
-}
-```
-
-现在，循环剩余的唯一作用就是对累加变量赋值了。我可以将上面管道产出的结果赋值给该累加变量，然后删除整个循环：
-
-```js
-function acquireData(input) {
- const lines = input.split("\n");
- const result = lines
-    .slice(1)
-    .filter(line => line.trim() !== "")
-    .map(line => line.split(","))
-    .filter(record => record[1].trim() === "India")
-    .map(record => ({city: record[0].trim(), phone: record[2].trim()}))
-    ;
- for (const line of loopItems) {
-  const record = line;
-  result.push(line);
- }
- return result;
-}
-```
-
-以上就是本手法的全部精髓所在了。不过后续还有些清理工作可做：我内联了 result 变量，为一些函数变量改名，最后还对代码进行布局，让它读起来更像个表格。
-
 ```js
 function acquireData(input) {
  const lines = input.split("\n");
@@ -1501,32 +1280,4 @@ function acquireData(input) {
 }
 ```
 
-我还想过是否要内联 lines 变量，但我感觉它还算能解释该行代码的意图，因此我还是将它留在了原处。
-
-延伸阅读
-
-如果想了解更多用集合管道替代循环的案例，可以参考我的文章“Refactoring with Loops and Collection Pipelines”[mf-ref-pipe]。
-
 ## 8.9 移除死代码（Remove Dead Code）
-
-```js
-if (false) {
-  doSomethingThatUsedToMatter();
-}
-```
-
-### 动机
-
-事实上，我们部署到生产环境甚至是用户设备上的代码，从来未因代码量太大而产生额外费用。就算有几行用不上的代码，似乎也不会因此拖慢系统速度，或者占用过多的内存，大多数现代的编译器还会自动将无用的代码移除。但当你尝试阅读代码、理解软件的运作原理时，无用代码确实会带来很多额外的思维负担。它们周围没有任何警示或标记能告诉程序员，让他们能够放心忽略这段函数，因为已经没有任何地方使用它了。当程序员花费了许多时间，尝试理解它的工作原理时，却发现无论怎么修改这段代码都无法得到期望的输出。
-
-一旦代码不再被使用，我们就该立马删除它。有可能以后又会需要这段代码，但我从不担心这种情况；就算真的发生，我也可以从版本控制系统里再次将它翻找出来。如果我真的觉得日后它极有可能再度启用，那还是要删掉它，只不过可以在代码里留一段注释，提一下这段代码的存在，以及它被移除的那个提交版本号——但老实讲，我已经记不得我上次撰写这样的注释是什么时候了，当然也未曾因为不写而感到过遗憾。
-
-在以前，业界对于死代码的处理态度多是注释掉它。在版本控制系统还未普及、用起来又不太方便的年代，这样做有其道理；但现在版本控制系统已经相当普及。如今哪怕是一个极小的代码库我都会把它放进版本控制，这些无用代码理应可以放心清理了。
-
-### 做法
-
-如果死代码可以从外部直接引用，比如它是一个独立的函数时，先查找一下还有无调用点。
-
-将死代码移除。
-
-测试。

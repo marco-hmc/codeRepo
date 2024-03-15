@@ -8,286 +8,25 @@
 另一条路径是用函数组合成变换（149）将函数组合成变换式（transform），这对于处理只读数据尤为便利。再往前一步，常常可以用拆分阶段（154）将这些模块组成界限分明的处理阶段。
 
 ## 6.1 提炼函数（Extract Function）
+反向重构:内联函数(115)
 
-曾用名：提炼函数（Extract Method）
-
-反向重构：内联函数（115）
-
-![](./figures/image00284.jpeg)
-
-### 动机
-
-有的观点从代码的长度考虑，认为一个函数应该能在一屏中显示。
-有的观点从复用的角度考虑，认为只要被用过不止一次的代码，就应该单独放进一个函数；只用过一次的代码则保持内联（inline）的状态。
-但我认为最合理的观点是“将意图与实现分开”：如果你需要花时间浏览一段代码才能弄清它到底在干什么，那么就应该将其提炼到一个函数中，并根据它所做的事为其命名。
-
-### 做法
-- 创造一个新函数，根据这个函数的意图来对它命名（以它“做什么”来命名，而不是以它“怎样做”命名）。
-
-> **Tip**  
-如果编程语言支持嵌套函数，就把新函数嵌套在源函数里，这能减少后面需要处理的超出作用域的变量个数。我可以稍后再使用搬移函数（198）把它从源函数中搬移出去。
-
-> **Tip**  
-如果提炼出的新函数嵌套在源函数内部，就不存在变量作用域的问题了。
-
-这些“作用域限于源函数”的变量通常是局部变量或者源函数的参数。最通用的做法是将它们都作为参数传递给新函数。只要没在提炼部分对这些变量赋值，处理起来就没什么难度。
-
-如果某个变量是在提炼部分之外声明但只在提炼部分被使用，就把变量声明也搬移到提炼部分代码中去。
-
-如果变量按值传递给提炼部分又在提炼部分被赋值，就必须多加小心。如果只有一个这样的变量，我会尝试将提炼出的新函数变成一个查询（query），用其返回值给该变量赋值。
-
-但有时在提炼部分被赋值的局部变量太多，这时最好是先放弃提炼。这种情况下，我会考虑先使用别的重构手法，例如拆分变量（240）或者以查询取代临时变量（178），来简化变量的使用情况，然后再考虑提炼函数。
-
-- 所有变量都处理完之后，编译。
-
-> **Tip**  
-有些重构工具直接支持这一步。如果工具不支持，可以快速搜索一下，看看别处是否还有重复代码。
-
-### 范例：对局部变量再赋值
-
-问题就变得复杂了。这里我们只讨论临时变量的问题。如果你发现源函数的参数被赋值，应该马上使用拆分变量（240）将其变成临时变量。
-
-被赋值的临时变量也分两种情况。较简单的情况是：这个变量只在被提炼代码段中使用。若果真如此，你可以将这个临时变量的声明移到被提炼代码段中，然后一起提炼出去。如果变量的初始化和使用离得有点儿远，可以用移动语句（223）把针对这个变量的操作放到一起。
-
-比较糟糕的情况是：被提炼代码段之外的代码也使用了这个变量。此时我需要返回修改后的值。我会用下面这个已经很眼熟的函数来展示该怎么做：
-
-```js
-function printOwing(invoice) {
-  let outstanding = 0;
-
-  printBanner();
-
-  // calculate outstanding
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-
-  recordDueDate(invoice);
-  printDetails(invoice, outstanding);
-}
-```
-
-前面的重构我都一步到位地展示了结果，因为它们都很简单。但这次我会一步一步展示“做法”里的每个步骤。
-
-首先，把变量声明移动到使用处之前。
-
-```js
-function printOwing(invoice) {
-  printBanner();
-
-  // calculate outstanding
-  let outstanding = 0;
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-
-  recordDueDate(invoice);
-  printDetails(invoice, outstanding);
-}
-```
-
-然后把想要提炼的代码复制到目标函数中。
-
-```js
-function printOwing(invoice) {
-  printBanner();
-
-  // calculate outstanding
-  let outstanding = 0;
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-
-  recordDueDate(invoice);
-  printDetails(invoice, outstanding);
-}
-function calculateOutstanding(invoice) {
-  let outstanding = 0;
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-  return outstanding;
-}
-```
-
-由于 outstanding 变量的声明已经被搬移到提炼出的新函数中，就不需要再将其作为参数传入了。outstanding 是提炼代码段中唯一被重新赋值的变量，所以我可以直接返回它。
-
-我的 JavaScript 环境在编译期提供不了任何价值——简直还不如文本编辑器的语法分析有用，所以“做法”里的“编译”一步可以跳过了。下一件事是修改原来的代码，令其调用新函数。新函数返回了修改后的 outstanding 变量值，我需要将其存入原来的变量中。
-
-```js
-function printOwing(invoice) {
-  printBanner();
-  let outstanding = calculateOutstanding(invoice);
-  recordDueDate(invoice);
-  printDetails(invoice, outstanding);
-}
-function calculateOutstanding(invoice) {
-  let outstanding = 0;
-  for (const o of invoice.orders) {
-    outstanding += o.amount;
-  }
-  return outstanding;
-}
-```
-
-在收工之前，我还要修改返回值的名字，使其符合我一贯的编码风格。
-
-```js
-function printOwing(invoice) {
-  printBanner();
-  const outstanding = calculateOutstanding(invoice);
-  recordDueDate(invoice);
-  printDetails(invoice, outstanding);
-}
-function calculateOutstanding(invoice) {
-  let result = 0;
-  for (const o of invoice.orders) {
-    result += o.amount;
-  }
-  return result;
-}
-```
-
-我还顺手把原来的 outstanding 变量声明成 const 的，令其在初始化之后不能再次被赋值。
-
-这时候，你可能会问：“如果需要返回的变量不止一个，又该怎么办呢？”
-
-有几种选择。最好的选择通常是：挑选另一块代码来提炼。我比较喜欢让每个函数都只返回一个值，所以我会安排多个函数，用以返回多个值。如果真的有必要提炼一个函数并返回多个值，可以构造并返回一个记录对象—不过通常更好的办法还是回过头来重新处理局部变量，我常用的重构手法有以查询取代临时变量（178）和拆分变量（240）。
-
-如果我想把提炼出的函数搬移到别的上下文（例如变成顶层函数），会引发一些有趣的问题。我偏好小步前进，所以我本能的做法是先提炼成嵌套函数，然后再将其移入新的上下文。但这种做法的麻烦在于处理局部变量，而这个困难无法提前发现，直到我开始最后的搬移时才突然暴露。从这个角度考虑，即便可以先提炼成嵌套函数，或许也应该至少将目标函数放在源函数的同级，这样我就能立即看出提炼的范围是否合理。
 
 ## 6.2 内联函数（Inline Function）
 
-曾用名：内联函数（Inline Method）
-
 反向重构：提炼函数（106）
-
-![](./figures/image00286.jpeg)
-
-```js
-function getRating(driver) {
- return moreThanFiveLateDeliveries(driver) ? 2 : 1;
-}
-
-function moreThanFiveLateDeliveries(driver) {
- return driver.numberOfLateDeliveries > 5;
-}
-
-
-function getRating(driver) {
- return (driver.numberOfLateDeliveries > 5) ? 2 : 1;
-}
-```
-
-### 动机
-
-另一种需要使用内联函数的情况是：我手上有一群组织不甚合理的函数。可以将它们都内联到一个大型函数中，再以我喜欢的方式重新提炼出小函数。
-
-如果代码中有太多间接层，使得系统中的所有函数都似乎只是对另一个函数的简单委托，造成我在这些委托动作之间晕头转向，那么我通常都会使用内联函数。当然，间接层有其价值，但不是所有间接层都有价值。
-
-### 做法
-
-- 检查函数，确定它不具多态性。
-
-> **Tip**  
-如果该函数属于一个类，并且有子类继承了这个函数，那么就无法内联。
-
-- 找出这个函数的所有调用点。
-- 将这个函数的所有调用点都替换为函数本体。
-- 每次替换之后，执行测试。
-
-> **Tip**  
-不必一次完成整个内联操作。如果某些调用点比较难以内联，可以等到时机成熟后再来处理。
-
-- 删除该函数的定义。
-
-被我这样一写，内联函数似乎很简单。但情况往往并非如此。对于递归调用、多返回点、内联至另一个对象中而该对象并无访问函数等复杂情况，我可以写上好几页。我之所以不写这些特殊情况，原因很简单：如果你遇到了这样的复杂情况，就不应该使用这个重构手法。
 
 ## 6.3 提炼变量（Extract Variable）
 
-曾用名：引入解释性变量（Introduce Explaining Variable）
-
 反向重构：内联变量（123）
-
-![](./figures/image00288.jpeg)
-
-```js
-return (
-  order.quantity * order.itemPrice -
-  Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 +
-  Math.min(order.quantity * order.itemPrice * 0.1, 100)
-);
-
-const basePrice = order.quantity * order.itemPrice;
-const quantityDiscount =
-  Math.max(0, order.quantity - 500) * order.itemPrice * 0.05;
-const shipping = Math.min(basePrice * 0.1, 100);
-return basePrice - quantityDiscount + shipping;
-```
-
-### 动机
-
-“将新的名字暴露得更宽”的坏处则是需要额外的工作量。如果工作量很大，我会暂时搁下这个想法，稍后再用以查询取代临时变量（178）来处理它。但如果处理其他很简单，我就会立即动手，这样马上就可以使用这个新名字。有一个好的例子：如果我处理的这段代码属于一个类，对这个新的变量使用提炼函数（106）会很容易。
-
-### 做法
-
-- 确认要提炼的表达式没有副作用。
-- 声明一个不可修改的变量，把你想要提炼的表达式复制一份，以该表达式的结果值给这个变量赋值。
-- 用这个新变量取代原来的表达式。
-- 测试。
-
-如果该表达式出现了多次，请用这个新变量逐一替换，每次替换之后都要执行测试。
-
 
 ## 6.4 内联变量（Inline Variable）
 
 曾用名：内联临时变量（Inline Temp）
 
-反向重构：提炼变量（119）
-
-![](./figures/image00290.jpeg)
-
-```js
-let basePrice = anOrder.basePrice;
-return (basePrice > 1000);
-```
-
-```js
-return anOrder.basePrice > 1000;
-```
-
-### 动机
-
-在一个函数内部，变量能给表达式提供有意义的名字，因此通常变量是好东西。但有时候，这个名字并不比表达式本身更具表现力。还有些时候，变量可能会妨碍重构附近的代码。若果真如此，就应该通过内联的手法消除变量。
-
-### 做法
-
-- 检查确认变量赋值语句的右侧表达式没有副作用。
-- 如果变量没有被声明为不可修改，先将其变为不可修改，并执行测试。
-
-> **Tip**  
-这是为了确保该变量只被赋值一次。
-
-
-- 找到第一处使用该变量的地方，将其替换为直接使用赋值语句的右侧表达式。
-- 测试。
-- 重复前面两步，逐一替换其他所有使用该变量的地方。
-- 删除该变量的声明点和赋值语句。
-- 测试。
-
 ## 6.5 改变函数声明（Change Function Declaration）
 
 别名：函数改名（Rename Function）
 
-曾用名：函数改名（Rename Method）
-
-曾用名：添加参数（Add Parameter）
-
-曾用名：移除参数（Remove Parameter）
-
-别名：修改签名（Change Signature）
-
-![](./figures/image00292.jpeg)
 
 ```js
 function circum(radius) {...}
@@ -299,7 +38,7 @@ function circumference(radius) {...}
 
 ### 动机
 
-修改参数列表不仅能增加函数的应用范围，还能改变连接一个模块所需的条件，从而去除不必要的耦合。在前面这个例子中，修改参数列表之后，“处理电话号码格式”的逻辑所在的模块就无须了解“人”这个概念。减少模块彼此之间的信息依赖，当我要做出修改时就能减轻我大脑的负担——毕竟我的脑容量已经不如从前那么大了（跟我脑袋的大小没关系）。
+在前面这个例子中，修改参数列表之后，“处理电话号码格式”的逻辑所在的模块就无须了解“人”这个概念。减少模块彼此之间的信息依赖，当我要做出修改时就能减轻我大脑的负担——毕竟我的脑容量已经不如从前那么大了（跟我脑袋的大小没关系）。
 
 如何选择正确的参数，没有简单的规则可循。我可能有一个简单的函数，用于判断支付是否逾期——如果超期 30 天未付款，那么这笔支付就逾期了。这个函数的参数应该是“支付”（payment）对象，还是支付的到期日呢？如果使用支付对象，会使这个函数与支付对象的接口耦合，但好处是可以很容易地访问后者的其他属性，当“逾期”的逻辑发生变化时就不用修改所有调用该函数的代码——换句话说，提高了该函数的封装度。
 

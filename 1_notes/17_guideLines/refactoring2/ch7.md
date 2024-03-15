@@ -1269,7 +1269,6 @@ manager = aPerson.department.manager;
 只要完成了对 Department 所有函数的修改，并相应修改了 Person 的所有客户端，我就可以移除 Person 中的 department 访问函数了。
 
 ## 7.8 移除中间人（Remove Middle Man）
-
 反向重构：隐藏委托关系（189）
 
 ```js

@@ -44,7 +44,7 @@ int main() {
     manager.addTransaction(t1);
     manager.addTransaction(t2);
     manager.addTransaction(t3);
-
+ 
     manager.printTransactions();
 
     return 0;
