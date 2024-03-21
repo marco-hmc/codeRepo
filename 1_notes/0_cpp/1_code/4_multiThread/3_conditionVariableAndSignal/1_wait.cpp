@@ -1,16 +1,16 @@
-// condition_variable example
-#include <iostream>           // std::cout
-#include <thread>             // std::thread
-#include <mutex>              // std::mutex, std::unique_lock
 #include <condition_variable> // std::condition_variable
+#include <iostream>           // std::cout
+#include <mutex>              // std::mutex, std::unique_lock
+#include <thread>             // std::thread
 
 std::mutex mtx;
 std::condition_variable cv;
 bool ready = false;
 
-void print_id (int id) {
+void print_id(int id) {
   std::unique_lock<std::mutex> lck(mtx);
-  while (!ready) cv.wait(lck);
+  while (!ready)
+    cv.wait(lck);
   // ...
   std::cout << "thread " << id << '\n';
 }
@@ -21,17 +21,17 @@ void go() {
   cv.notify_all();
 }
 
-int main ()
-{
+int main() {
   std::thread threads[10];
   // spawn 10 threads:
-  for (int i=0; i<10; ++i)
-    threads[i] = std::thread(print_id,i);
+  for (int i = 0; i < 10; ++i)
+    threads[i] = std::thread(print_id, i);
 
   std::cout << "10 threads ready to race...\n";
-  go();                       // go!
+  go(); // go!
 
-  for (auto& th : threads) th.join();
+  for (auto &th : threads)
+    th.join();
 
   return 0;
 }

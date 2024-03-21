@@ -1,7 +1,3 @@
-/*
- * client.c为客户端代码
- */
-
 #include "config.h"
 
 /*readline函数实现*/

@@ -1,0 +1,16 @@
+{
+    "code":200 ,
+    "msg":"接口返回成功" ,
+    "status":true ,
+    "data":{"redirectUrl":"https://weapp.eteams.cn?cusMenuId=5116426542444337800&amp;urlPageTitle=6aaW6aG1&amp;ticket=ST-105627-teAjEGuBNeZePIugITnO-https://weapp.eteams.cn" ,
+    "tgtTicket":"TGT102727-PWq0DECLsCKuuFZ7fVc9Vm3iR4FE9nqidJTqLejTFNXTmwuTf3" ,
+    "stTicket":"ST-105627-teAjEGuBNeZePIugITnO-https://weapp.eteams.cn" ,
+    "hasTenant":true ,
+    "encryptPassword":"%symmetric%-df068e94d7c7cea054de0e1305275c10" ,
+    "needQysCheck":false ,
+    "needPwdChange":false ,
+    "needChangeMobileBind":false ,
+    "needCheckAgreement":false ,
+    "customData":{}} ,
+    "fail":false
+}

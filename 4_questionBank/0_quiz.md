@@ -1,3 +1,30 @@
+* 为什么c++的成员不可以既是template又是virtual的
+* enable_share_from_this是做什么的
+* 为什么stl中的内存分配器要设计为一个模板参数而不是一个构造函数参数？
+* 如何实现一个引用计数指针，以及其中要注意的点？
+* 拷贝构造函数的参数可以不加引用吗？为什么
+* 定义一个类B，它有一个A*类型的成员变量。并写出它的拷贝构造函数。
+考察一下对于深拷贝，浅拷贝的思考。
+* shared_ptr的引用计数是怎么存储的？    多线程场景怎么解决
+* 模板类A中有一个static变量x，那么该程序中变量x的实例有几分？
+* shared ptr<T>怎么实现一个普通指针的const T*效果?
+* shared ptr修改指向的时候，分析一下过程，性能开销如何?
+
+* 如果一个函数有多处return，我想每个return都加一些相同的处理，最好怎么实现?
+这里最好的写法就是RAII模式的应用。不过很多时候我们也不必每次新建一个RAII模式的类。可以使用用unique ptr来完成。
+
+* vecotra;a在堆上还是栈上? vecotraa;a中数据在堆上还是栈上?
+
+
+* 
+<!-- int main() {
+  int a[2][5] = {{1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}};
+  cout << a << endl;
+  cout << *a << endl;
+  cout << *a[0] << endl;
+  return 0;
+} -->
+
 * if(a)这个也可以重载
 
 ### Non-static data member initializers

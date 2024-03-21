@@ -30,10 +30,27 @@
 #### 1.3 joinable
 
 ### 2. mutex
+mutex
+
+Critical Section(临界区)是指一段代码或一段程序,其中包含对共享资源的访问或修改.在多线程或并发编程中,由于多个线程同时访问共享数据,为了防止竞争条件(Race Condition)和确保数据的一致性,需要通过同步机制将临界区保护起来.
+
 
 #### 2.1 args
-#### 2.2 lock_guard
-#### 2.3 unique_lock
+#### 2.2 lock_guard 2.3 unique_lock
+是的,你的理解是正确的.
+
+`std::lock_guard`和`std::unique_lock`都是RAII(Resource Acquisition Is Initialization)风格的互斥锁包装器,它们在构造时自动锁定互斥锁,在析构时自动解锁互斥锁.这种设计可以确保在函数退出(正常或异常)时自动释放锁,从而避免了因忘记解锁而导致的死锁.
+
+`std::lock_guard`和`std::unique_lock`的主要区别在于,`std::unique_lock`提供了更多的灵活性:
+
+1. **延迟锁定**:`std::unique_lock`可以在创建时不立即锁定互斥锁,然后在需要的时候再锁定.`std::lock_guard`则在创建时必须立即锁定互斥锁.
+
+2. **所有权传递**:`std::unique_lock`是可移动的,这意味着你可以将锁的所有权从一个`std::unique_lock`对象转移到另一个.`std::lock_guard`则不可移动.
+
+3. **手动锁定和解锁**:`std::unique_lock`提供了`lock`和`unlock`方法,允许你在任何时候手动锁定和解锁互斥锁.`std::lock_guard`则不提供这些方法.
+
+因此,如果你需要更多的控制,例如延迟锁定/所有权传递或手动锁定和解锁,那么应该使用`std::unique_lock`.如果你只需要简单地锁定和解锁互斥锁,那么`std::lock_guard`可能是更好的选择,因为它更简单,且开销更小.
+
 `std::adopt_lock`/`std::defer_lock` 和 `std::try_to_lock` 都是 `std::unique_lock` 的构造函数可以接受的锁策略参数,它们的含义和使用场景如下:
 
 1. **std::adopt_lock**:这个策略表示互斥锁在构造锁对象时已经被锁定.当你已经手动锁定了一个互斥锁,然后想要将它的管理权交给 `std::unique_lock` 时,可以使用 `std::adopt_lock`.这样,`std::unique_lock` 在构造时就不会再次尝试锁定互斥锁,而是直接接管已经被锁定的互斥锁.
@@ -58,78 +75,71 @@
 
 总的来说,如果你需要更多的控制和灵活性,或者需要使用条件变量,那么 `std::unique_lock` 是一个好的选择.如果你只需要简单地锁定和解锁互斥锁,那么 `std::lock_guard` 可能是一个更好的选择,因为它更简单,性能开销也可能更小.
 
-### 3. mutex
-mutex
+是的,C++中确实有`std::shared_lock`.这是一个类模板,用于管理`std::shared_mutex`或`std::shared_timed_mutex`类型的互斥锁.
 
-Critical Section(临界区)是指一段代码或一段程序,其中包含对共享资源的访问或修改.在多线程或并发编程中,由于多个线程同时访问共享数据,为了防止竞争条件(Race Condition)和确保数据的一致性,需要通过同步机制将临界区保护起来.
+`std::shared_lock`的主要特性是它支持共享所有权语义.这意味着多个`std::shared_lock`可以同时拥有同一个互斥锁的共享所有权.当一个`std::shared_lock`拥有互斥锁的共享所有权时,其他线程可以获取互斥锁的共享所有权,但不能获取互斥锁的独占所有权.这在某些需要多个读者和单个写者的情况下非常有用.
+
+`std::shared_lock`的使用方式与`std::unique_lock`类似.你可以在创建`std::shared_lock`时锁定互斥锁,也可以稍后手动调用`std::shared_lock::lock`或`std::shared_lock::lock_shared`方法来锁定互斥锁.当`std::shared_lock`被销毁时,它会自动释放互斥锁.
+
+需要注意的是,`std::shared_lock`只能用于支持共享所有权语义的互斥锁,如`std::shared_mutex`和`std::shared_timed_mutex`.对于不支持共享所有权语义的互斥锁,如`std::mutex`,你应该使用`std::unique_lock`或`std::lock_guard`.
 
 
-### 4. cv
-`std::condition_variable` 是 C++ 中的一个类,它用于同步线程.特别是在某些情况下,一个线程需要等待另一个线程完成特定操作时,可以使用 `std::condition_variable`.
+### 3. condition variable
+`std::condition_variable`是C++中的一种同步原语,它可以用来在多线程环境中实现复杂的同步模式.以下是一些常见的用法:
 
-使用 `std::condition_variable` 的基本步骤如下:
+1. **等待通知**:一个线程可以使用`std::condition_variable::wait`或`wait_for`/`wait_until`方法来等待另一个线程的通知.当`wait`被调用时,当前线程将被阻塞,直到另一个线程调用`std::condition_variable::notify_one`或`notify_all`方法.
 
-1. **创建一个 `std::condition_variable` 对象**:这个对象将被用来同步线程.
+2. **条件等待**:`std::condition_variable::wait`方法还可以接受一个谓词(返回`bool`的函数或函数对象).只有当这个谓词返回`true`时,`wait`才会返回.这可以用来实现条件等待:线程等待某个条件成立.
 
-2. **在等待线程中,使用 `std::condition_variable::wait` 方法**:这个方法会阻塞当前线程,直到另一个线程通知 `std::condition_variable` 对象.
 
-3. **在通知线程中,使用 `std::condition_variable::notify_one` 或 `std::condition_variable::notify_all` 方法**:这些方法会唤醒一个或所有等待 `std::condition_variable` 对象的线程.
+3. **唤醒一个或多个线程**:可以使用`std::condition_variable::notify_one`方法唤醒一个等待的线程,或者使用`std::condition_variable::notify_all`方法唤醒所有等待的线程.
 
-下面是一个简单的示例:
+以下是一个简单的例子,展示了如何使用`std::condition_variable`实现生产者-消费者模式:
 
 ```cpp
-#include <iostream>
-#include <thread>
-#include <mutex>
 #include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
 
-std::mutex mtx;
-std::condition_variable cv;
-bool ready = false;
+std::queue<int> produced_nums;
+std::mutex m;
+std::condition_variable cond_var;
 
-void printMessage() {
-    std::unique_lock<std::mutex> lock(mtx);
-    cv.wait(lock, []{return ready;}); // 等待 ready 变为 true
-    std::cout << "Hello, world!" << std::endl;
+void producer() {
+    for (int i = 0; ; i++) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(900));
+        std::lock_guard<std::mutex> lock(m);
+        produced_nums.push(i);
+        cond_var.notify_all();
+    }
 }
 
-void setReady() {
-    std::unique_lock<std::mutex> lock(mtx);
-    ready = true;
-    cv.notify_all(); // 通知所有等待的线程
+void consumer() {
+    while (true) {
+        std::unique_lock<std::mutex> lock(m);
+        cond_var.wait(lock, []{ return !produced_nums.empty(); });
+        std::cout << "consuming " << produced_nums.front() << '\n';
+        produced_nums.pop();
+    }
 }
 
 int main() {
-    std::thread t1(printMessage);
-    std::thread t2(setReady);
+    std::thread producer_thread(producer);
+    std::thread consumer_thread(consumer);
 
-    t1.join();
-    t2.join();
+    producer_thread.join();
+    consumer_thread.join();
 
     return 0;
 }
 ```
 
-在这个示例中,线程 `t1` 会等待 [`ready`](command:_github.copilot.openSymbolInFile?%5B%22codeRepo%2F1_notes%2F0_cpp%2F1_code%2F4_multiThread%2F3_conditionVariableAndSignal%2Fexample1.cpp%22%2C%22ready%22%5D "codeRepo/1_notes/0_cpp/1_code/4_multiThread/3_conditionVariableAndSignal/example1.cpp") 变为 `true`.线程 `t2` 会设置 [`ready`](command:_github.copilot.openSymbolInFile?%5B%22codeRepo%2F1_notes%2F0_cpp%2F1_code%2F4_multiThread%2F3_conditionVariableAndSignal%2Fexample1.cpp%22%2C%22ready%22%5D "codeRepo/1_notes/0_cpp/1_code/4_multiThread/3_conditionVariableAndSignal/example1.cpp") 为 `true`,然后通知所有等待 [`cv`](command:_github.copilot.openSymbolInFile?%5B%22codeRepo%2F1_notes%2F0_cpp%2F1_code%2F4_multiThread%2F3_conditionVariableAndSignal%2Fexample1.cpp%22%2C%22cv%22%5D "codeRepo/1_notes/0_cpp/1_code/4_multiThread/3_conditionVariableAndSignal/example1.cpp") 的线程.
-
-`std::condition_variable::wait` 方法有两种形式,一种接受一个 `std::unique_lock` 参数,另一种接受一个 `std::unique_lock` 和一个谓词(即返回 `bool` 的函数或者 lambda 表达式).
-
-1. `void wait (std::unique_lock<std::mutex>& lck);`:这个版本的 `wait` 方法会阻塞当前线程,直到另一个线程调用了 `notify_one` 或 `notify_all` 方法.`lck` 是一个已经锁定的 `std::unique_lock` 对象,`wait` 方法会在开始等待前解锁它,然后在被通知后重新锁定它.
-
-2. `template <class Predicate> void wait (std::unique_lock<std::mutex>& lck, Predicate pred);`:这个版本的 `wait` 方法接受一个谓词作为第二个参数.这个谓词是一个返回 `bool` 的函数或者 lambda 表达式.`wait` 方法会一直阻塞当前线程,直到谓词返回 `true`.这个版本的 `wait` 方法在被通知后,会检查谓词的返回值.如果谓词返回 `false`,则 `wait` 方法会继续阻塞当前线程.这样可以避免虚假唤醒的问题.
-
-在你给出的代码中:
-
-```cpp
-while (!ready) cv.wait(lck);
-```
-
-`cv.wait(lck)` 的参数 `lck` 是一个 `std::unique_lock` 对象,`wait` 方法会在开始等待前解锁它,然后在被通知后重新锁定它.`while (!ready)` 是一个谓词,只有当 `ready` 变为 `true` 时,`wait` 方法才会停止阻塞当前线程.
+在这个例子中,生产者线程生成数字并将其放入队列,然后通知所有等待的消费者线程.消费者线程等待队列非空,然后从队列中取出并消费数字.
 
 ### 5. future
 
-future是表示未来能够得到的值,具体什么时候能够得到,依赖于承诺对象的实现;
-什么是承诺对象?
+future是表示未来能够得到的值,具体什么时候能够得到,依赖于承诺对象的实现;什么是承诺对象?
 promise和packaged_task就是承诺对象,但这些承诺对象set_value的时候,就可以执行future.get()
 
 #### 5.1 async的入参解释
@@ -185,3 +195,4 @@ std::shared_future<int> sf = f.share();
 ```
 
 在这段代码中,`sf`是一个`std::shared_future`对象,它与`f`共享同一个状态,也就是说,它们都可以获取到同一个值.
+

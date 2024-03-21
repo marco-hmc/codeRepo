@@ -1,7 +1,7 @@
 [toc]
 * OT
   * monday:
-  * tuesday: 1830-1800
+  * tuesday: 1830-2000
   * wednesday: 1800-1930
   * thursday: 1800-1900
   * friday:

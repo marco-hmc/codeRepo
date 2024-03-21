@@ -2,6 +2,8 @@
 #include <functional>
 #include <future>
 #include <memory>
+#include <mutex>
+#include <queue>
 #include <unordered_map>
 #include <vector>
 
@@ -34,6 +36,17 @@ public:
     auto task = std::make_shared<std::packaged_task<RType>>(
         std::bind(std::forward<Func>(func), std::forward<Args>(args)...));
     std::future<RType> future = task->get_future();
+
+    std::unique_lock<std::mutex> lock(taskQueMtx_);
+    if (!notFull_.wait_for(lock, std::chrono::seconds(1), [&]() -> bool {
+          return tasks_.size() < (size_t)taskQueMaxThreshHold_;
+        })) {
+      std::cerr << "task queue is full, submit task fail." << std::endl;
+      auto task = std::make_shared<std::packaged_task<RType()>>(
+          []() -> RType { return RType(); });
+      (*task)();
+      return task->get_future();
+    }
   }
 
 private:
@@ -43,7 +56,8 @@ private:
   std::atomic_int curThreadSize_;
   std::atomic_int idleThreadSize_;
 
-  std::vector<Task> tasks_;
+  std::queue<Task> tasks_;
+  std::mutex taskQueMtx_;
   // std::atomic_int taskSize_;
 };
 
