@@ -4,22 +4,43 @@
 Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
 
 C++17 includes the following new language features:
-- [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
-- [declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
-- [folding expressions](#folding-expressions)
-- [new rules for auto deduction from braced-init-list](#new-rules-for-auto-deduction-from-braced-init-list)
-- [constexpr lambda](#constexpr-lambda)
-- [lambda capture this by value](#lambda-capture-this-by-value)
-- [inline variables](#inline-variables)
-- [nested namespaces](#nested-namespaces)
-- [structured bindings](#structured-bindings)
-- [selection statements with initializer](#selection-statements-with-initializer)
-- [constexpr if](#constexpr-if)
-- [utf-8 character literals](#utf-8-character-literals)
-- [direct-list-initialization of enums](#direct-list-initialization-of-enums)
-- [\[\[fallthrough\]\], \[\[nodiscard\]\], \[\[maybe_unused\]\] attributes](#fallthrough-nodiscard-maybe_unused-attributes)
-- [\_\_has\_include](#\_\_has\_include)
-- [class template argument deduction](#class-template-argument-deduction)
+- [C++17](#c17)
+  - [Overview](#overview)
+  - [C++17 Language Features](#c17-language-features)
+    - [Template argument deduction for class templates](#template-argument-deduction-for-class-templates)
+    - [Declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
+    - [Folding expressions](#folding-expressions)
+    - [New rules for auto deduction from braced-init-list](#new-rules-for-auto-deduction-from-braced-init-list)
+    - [constexpr lambda](#constexpr-lambda)
+    - [Lambda capture `this` by value](#lambda-capture-this-by-value)
+    - [Inline variables](#inline-variables)
+    - [Nested namespaces](#nested-namespaces)
+    - [Structured bindings](#structured-bindings)
+    - [Selection statements with initializer](#selection-statements-with-initializer)
+    - [constexpr if](#constexpr-if)
+    - [UTF-8 character literals](#utf-8-character-literals)
+    - [Direct list initialization of enums](#direct-list-initialization-of-enums)
+    - [\[\[fallthrough\]\], \[\[nodiscard\]\], \[\[maybe\_unused\]\] attributes](#fallthrough-nodiscard-maybe_unused-attributes)
+    - [\_\_has\_include](#__has_include)
+    - [Class template argument deduction](#class-template-argument-deduction)
+  - [C++17 Library Features](#c17-library-features)
+    - [std::variant](#stdvariant)
+    - [std::optional](#stdoptional)
+    - [std::any](#stdany)
+    - [std::string\_view](#stdstring_view)
+    - [std::invoke](#stdinvoke)
+    - [std::apply](#stdapply)
+    - [std::filesystem](#stdfilesystem)
+    - [std::byte](#stdbyte)
+    - [Splicing for maps and sets](#splicing-for-maps-and-sets)
+    - [Parallel algorithms](#parallel-algorithms)
+    - [std::sample](#stdsample)
+    - [std::clamp](#stdclamp)
+    - [std::reduce](#stdreduce)
+    - [Prefix sum algorithms](#prefix-sum-algorithms)
+    - [GCD and LCM](#gcd-and-lcm)
+    - [std::not\_fn](#stdnot_fn)
+    - [String conversion to/from numbers](#string-conversion-tofrom-numbers)
 
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
@@ -685,23 +706,3 @@ const auto [ ptr, ec ] = std::from_chars(str.data(), str.data() + str.size(), n)
 if (ec == std::errc{}) { std::cout << n << std::endl; } // 123
 else { /* handle failure */ }
 ```
-
-## Acknowledgements
-* [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
-* [C++ Rvalue References Explained](http://thbecker.net/articles/rvalue_references/section_01.html) - a great introduction I used to understand rvalue references, perfect forwarding, and move semantics.
-* [clang](http://clang.llvm.org/cxx_status.html) and [gcc](https://gcc.gnu.org/projects/cxx-status.html)'s standards support pages. Also included here are the proposals for language/library features that I used to help find a description of, what it's meant to fix, and some examples.
-* [Compiler explorer](https://godbolt.org/)
-* [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended book!
-* [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
-* [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
-* [What are some uses of decltype(auto)?](http://stackoverflow.com/questions/24109737/what-are-some-uses-of-decltypeauto)
-* And many more SO posts I'm forgetting...
-
-## Author
-Anthony Calandra
-
-## Content Contributors
-See: https://github.com/AnthonyCalandra/modern-cpp-features/graphs/contributors
-
-## License
-MIT

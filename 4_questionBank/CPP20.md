@@ -4,35 +4,70 @@
 Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
 
 C++20 includes the following new language features:
-- [coroutines](#coroutines)
-- [concepts](#concepts)
-- [designated initializers](#designated-initializers)
-- [template syntax for lambdas](#template-syntax-for-lambdas)
-- [range-based for loop with initializer](#range-based-for-loop-with-initializer)
-- [\[\[likely\]\] and \[\[unlikely\]\] attributes](#likely-and-unlikely-attributes)
-- [deprecate implicit capture of this](#deprecate-implicit-capture-of-this)
-- [class types in non-type template parameters](#class-types-in-non-type-template-parameters)
-- [constexpr virtual functions](#constexpr-virtual-functions)
-- [explicit(bool)](#explicitbool)
-- [immediate functions](#immediate-functions)
-- [using enum](#using-enum)
-- [lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
-- [char8_t](#char8_t)
-- [constinit](#constinit)
+- [C++20](#c20)
+  - [Overview](#overview)
+  - [C++20 Language Features](#c20-language-features)
+    - [Coroutines](#coroutines)
+    - [Concepts](#concepts)
+    - [Designated initializers](#designated-initializers)
+    - [Template syntax for lambdas](#template-syntax-for-lambdas)
+    - [Range-based for loop with initializer](#range-based-for-loop-with-initializer)
+    - [\[\[likely\]\] and \[\[unlikely\]\] attributes](#likely-and-unlikely-attributes)
+    - [Deprecate implicit capture of this](#deprecate-implicit-capture-of-this)
+    - [Class types in non-type template parameters](#class-types-in-non-type-template-parameters)
+    - [constexpr virtual functions](#constexpr-virtual-functions)
+    - [explicit(bool)](#explicitbool)
+    - [Immediate functions](#immediate-functions)
+    - [using enum](#using-enum)
+    - [Lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
+    - [char8\_t](#char8_t)
+    - [constinit](#constinit)
+  - [C++20 Library Features](#c20-library-features)
+    - [Concepts library](#concepts-library)
+    - [Synchronized buffered outputstream](#synchronized-buffered-outputstream)
+    - [std::span](#stdspan)
+    - [Bit operations](#bit-operations)
+    - [Math constants](#math-constants)
+    - [std::is\_constant\_evaluated](#stdis_constant_evaluated)
+    - [std::make\_shared supports arrays](#stdmake_shared-supports-arrays)
+    - [starts\_with and ends\_with on strings](#starts_with-and-ends_with-on-strings)
+    - [Check if associative container has element](#check-if-associative-container-has-element)
+    - [std::bit\_cast](#stdbit_cast)
+    - [std::midpoint](#stdmidpoint)
+    - [std::to\_array](#stdto_array)
 
 C++20 includes the following new library features:
-- [concepts library](#concepts-library)
-- [synchronized buffered outputstream](#synchronized-buffered-outputstream)
-- [std::span](#stdspan)
-- [bit operations](#bit-operations)
-- [math constants](#math-constants)
-- [std::is_constant_evaluated](#stdis_constant_evaluated)
-- [std::make_shared supports arrays](#stdmake_shared-supports-arrays)
-- [starts_with and ends_with on strings](#starts_with-and-ends_with-on-strings)
-- [check if associative container has element](#check-if-associative-container-has-element)
-- [std::bit_cast](#stdbit_cast)
-- [std::midpoint](#stdmidpoint)
-- [std::to_array](#stdto_array)
+- [C++20](#c20)
+  - [Overview](#overview)
+  - [C++20 Language Features](#c20-language-features)
+    - [Coroutines](#coroutines)
+    - [Concepts](#concepts)
+    - [Designated initializers](#designated-initializers)
+    - [Template syntax for lambdas](#template-syntax-for-lambdas)
+    - [Range-based for loop with initializer](#range-based-for-loop-with-initializer)
+    - [\[\[likely\]\] and \[\[unlikely\]\] attributes](#likely-and-unlikely-attributes)
+    - [Deprecate implicit capture of this](#deprecate-implicit-capture-of-this)
+    - [Class types in non-type template parameters](#class-types-in-non-type-template-parameters)
+    - [constexpr virtual functions](#constexpr-virtual-functions)
+    - [explicit(bool)](#explicitbool)
+    - [Immediate functions](#immediate-functions)
+    - [using enum](#using-enum)
+    - [Lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
+    - [char8\_t](#char8_t)
+    - [constinit](#constinit)
+  - [C++20 Library Features](#c20-library-features)
+    - [Concepts library](#concepts-library)
+    - [Synchronized buffered outputstream](#synchronized-buffered-outputstream)
+    - [std::span](#stdspan)
+    - [Bit operations](#bit-operations)
+    - [Math constants](#math-constants)
+    - [std::is\_constant\_evaluated](#stdis_constant_evaluated)
+    - [std::make\_shared supports arrays](#stdmake_shared-supports-arrays)
+    - [starts\_with and ends\_with on strings](#starts_with-and-ends_with-on-strings)
+    - [Check if associative container has element](#check-if-associative-container-has-element)
+    - [std::bit\_cast](#stdbit_cast)
+    - [std::midpoint](#stdmidpoint)
+    - [std::to\_array](#stdto_array)
 
 ## C++20 Language Features
 
@@ -600,23 +635,3 @@ std::to_array<int>({1, 2, 3}); // returns `std::array<int, 3>`
 int a[] = {1, 2, 3};
 std::to_array(a); // returns `std::array<int, 3>`
 ```
-
-## Acknowledgements
-* [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
-* [C++ Rvalue References Explained](http://thbecker.net/articles/rvalue_references/section_01.html) - a great introduction I used to understand rvalue references, perfect forwarding, and move semantics.
-* [clang](http://clang.llvm.org/cxx_status.html) and [gcc](https://gcc.gnu.org/projects/cxx-status.html)'s standards support pages. Also included here are the proposals for language/library features that I used to help find a description of, what it's meant to fix, and some examples.
-* [Compiler explorer](https://godbolt.org/)
-* [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended book!
-* [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
-* [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
-* [What are some uses of decltype(auto)?](http://stackoverflow.com/questions/24109737/what-are-some-uses-of-decltypeauto)
-* And many more SO posts I'm forgetting...
-
-## Author
-Anthony Calandra
-
-## Content Contributors
-See: https://github.com/AnthonyCalandra/modern-cpp-features/graphs/contributors
-
-## License
-MIT

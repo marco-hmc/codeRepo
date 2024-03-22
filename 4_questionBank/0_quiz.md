@@ -1,18 +1,152 @@
+### 内存空间
+在计算机系统中,内存空间通常被划分为以下几个部分:
+
+1. **代码段(Text Segment)**:也被称为文本区域,这部分空间存储程序的机器代码.
+
+2. **数据段(Data Segment)**:这部分空间存储程序中的全局变量和静态变量.
+
+3. **堆(Heap)**:堆是用于动态内存分配的区域,如C++中的new操作符和C中的malloc函数分配的内存.
+
+4. **栈(Stack)**:栈用于存储局部变量和函数调用的信息.每当一个函数被调用时,一个新的栈帧就会被压入栈中,这个栈帧包含了函数的局部变量和返回地址.
+
+5. **常量段(Constant Segment)**:这部分空间存储程序中的常量值.
+
+6. **BSS段(Block Started by Symbol)**:这部分空间存储程序中未初始化的全局变量和静态变量.
+
+在多线程环境中,每个线程都有自己的栈空间,但所有线程共享同一个堆空间.
+
+需要注意的是,这些内存划分是逻辑上的划分,物理内存的实际布局可能会因操作系统和硬件的不同而有所不同.
+
+#### 1. 常量段和数据段为什么要分开?
+常量段和数据段被分开主要是出于以下几个原因:
+
+1. **保护**:常量段中的数据是只读的,不应被修改.将常量段和数据段分开可以让操作系统设置不同的内存保护权限,防止程序错误地修改常量数据.
+
+2. **优化**:编译器和链接器可以对常量数据进行优化.例如,如果一个常量在程序中被多次使用,编译器可以只在常量段中存储一份该常量的副本.
+
+3. **内存管理**:在某些系统中,常量段可能被映射到只读的物理内存或者ROM中,这样可以节省可读写的物理内存.
+
+总的来说,将常量段和数据段分开可以提高程序的安全性和效率,同时也有助于内存管理.
+
+#### 2. bss段和数据段为什么要分开?
+BSS段和数据段被分开主要是出于以下几个原因:
+
+1. **初始化**:数据段中的变量在程序开始运行之前就已经被初始化了,而BSS段中的变量则在程序开始运行时被自动初始化为0.将这两种变量分开可以让操作系统和编译器更有效地处理它们.
+
+2. **存储优化**:在程序的可执行文件中,BSS段的变量不需要占用任何实际的存储空间,只需要记录它们的位置和大小.这是因为BSS段的变量在程序开始运行时都会被初始化为0,所以没有必要在可执行文件中为它们存储实际的数据.这可以减小可执行文件的大小,节省磁盘空间.
+
+3. **内存管理**:将BSS段和数据段分开可以让操作系统更有效地管理内存.例如,操作系统可以将数据段映射到只读的物理内存中,而将BSS段映射到可读写的物理内存中.
+
+总的来说,将BSS段和数据段分开可以提高程序的效率,减小可执行文件的大小,同时也有助于内存管理.
+
+#### 3. 多线程的内存空间是如何管理的
+多线程的内存空间是怎么管理的?
+在C++中,每个线程都有自己的栈空间,这个栈空间是在线程创建时由操作系统自动分配的.线程的栈空间通常用于存储线程的局部变量和函数调用的上下文信息.
+
+线程的栈空间通常位于进程的虚拟地址空间中,每个线程的栈空间都是独立的,互不干扰.线程的栈空间大小通常有一个默认值,但是在某些系统和编程环境中,你可以在创建线程时指定栈空间的大小.
+
+需要注意的是,虽然每个线程都有自己的栈空间,但是所有线程共享同一个进程的堆空间.这意味着线程可以通过堆来共享数据,但是需要注意同步和数据一致性的问题.
+
+
+#### 4. 多进程的内存空间是如何管理的
+
+### Lambda capture initializers
+This allows creating lambda captures initialized with arbitrary expressions. The name given to the captured value does not need to be related to any variables in the enclosing scopes and introduces a new name inside the lambda body. The initializing expression is evaluated when the lambda is _created_ (not when it is _invoked_).
+```c++
+int factory(int i) { return i * 10; }
+auto f = [x = factory(2)] { return x; }; // returns 20
+
+auto generator = [x = 0] () mutable {
+  // this would not compile without 'mutable' as we are modifying x on each call
+  return x++;
+};
+auto a = generator(); // == 0
+auto b = generator(); // == 1
+auto c = generator(); // == 2
+```
+Because it is now possible to _move_ (or _forward_) values into a lambda that could previously be only captured by copy or reference we can now capture move-only types in a lambda by value. Note that in the below example the `p` in the capture-list of `task2` on the left-hand-side of `=` is a new variable private to the lambda body and does not refer to the original `p`.
+```c++
+auto p = std::make_unique<int>(1);
+
+auto task1 = [=] { *p = 5; }; // ERROR: std::unique_ptr cannot be copied
+// vs.
+auto task2 = [p = std::move(p)] { *p = 5; }; // OK: p is move-constructed into the closure object
+// the original p is empty after task2 is created
+```
+Using this reference-captures can have different names than the referenced variable.
+```c++
+auto x = 1;
+auto f = [&r = x, x = x * 10] {
+  ++r;
+  return r + x;
+};
+f(); // sets x to 2 and returns 12
+```
+
+
+### Compile-time integer sequences
+The class template `std::integer_sequence` represents a compile-time sequence of integers. There are a few helpers built on top:
+* `std::make_integer_sequence<T, N>` - creates a sequence of `0, ..., N - 1` with type `T`.
+* `std::index_sequence_for<T...>` - converts a template parameter pack into an integer sequence.
+
+Convert an array into a tuple:
+```c++
+template<typename Array, std::size_t... I>
+decltype(auto) a2t_impl(const Array& a, std::integer_sequence<std::size_t, I...>) {
+  return std::make_tuple(a[I]...);
+}
+
+template<typename T, std::size_t N, typename Indices = std::make_index_sequence<N>>
+decltype(auto) a2t(const std::array<T, N>& a) {
+  return a2t_impl(a, Indices());
+}
+```
+
+
+### Ref-qualified member functions
+Member functions can now be qualified depending on whether `*this` is an lvalue or rvalue reference.
+
+```c++
+struct Bar {
+  // ...
+};
+
+struct Foo {
+  Bar getBar() & { return bar; }
+  Bar getBar() const& { return bar; }
+  Bar getBar() && { return std::move(bar); }
+private:
+  Bar bar;
+};
+
+Foo foo{};
+Bar bar = foo.getBar(); // calls `Bar getBar() &`
+
+const Foo foo2{};
+Bar bar2 = foo2.getBar(); // calls `Bar Foo::getBar() const&`
+
+Foo{}.getBar(); // calls `Bar Foo::getBar() &&`
+std::move(foo).getBar(); // calls `Bar Foo::getBar() &&`
+
+std::move(foo2).getBar(); // calls `Bar Foo::getBar() const&&`
+```
+
+
 * 向量化是什么意思?
 * 为什么c++的成员不可以既是template又是virtual的
 * enable_share_from_this是做什么的
-* 为什么stl中的内存分配器要设计为一个模板参数而不是一个构造函数参数？
-* 如何实现一个引用计数指针，以及其中要注意的点？
-* 拷贝构造函数的参数可以不加引用吗？为什么
-* 定义一个类B，它有一个A*类型的成员变量。并写出它的拷贝构造函数。
-考察一下对于深拷贝，浅拷贝的思考。
-* shared_ptr的引用计数是怎么存储的？    多线程场景怎么解决
-* 模板类A中有一个static变量x，那么该程序中变量x的实例有几分？
+* 为什么stl中的内存分配器要设计为一个模板参数而不是一个构造函数参数?
+* 如何实现一个引用计数指针,以及其中要注意的点?
+* 拷贝构造函数的参数可以不加引用吗?为什么
+* 定义一个类B,它有一个A*类型的成员变量.并写出它的拷贝构造函数.
+考察一下对于深拷贝,浅拷贝的思考.
+* shared_ptr的引用计数是怎么存储的?    多线程场景怎么解决
+* 模板类A中有一个static变量x,那么该程序中变量x的实例有几分?
 * shared ptr<T>怎么实现一个普通指针的const T*效果?
-* shared ptr修改指向的时候，分析一下过程，性能开销如何?
+* shared ptr修改指向的时候,分析一下过程,性能开销如何?
 
-* 如果一个函数有多处return，我想每个return都加一些相同的处理，最好怎么实现?
-这里最好的写法就是RAII模式的应用。不过很多时候我们也不必每次新建一个RAII模式的类。可以使用用unique ptr来完成。
+* 如果一个函数有多处return,我想每个return都加一些相同的处理,最好怎么实现?
+这里最好的写法就是RAII模式的应用.不过很多时候我们也不必每次新建一个RAII模式的类.可以使用用unique ptr来完成.
 
 * vecotra;a在堆上还是栈上? vecotraa;a中数据在堆上还是栈上?
 

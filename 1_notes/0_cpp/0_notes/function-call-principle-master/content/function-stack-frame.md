@@ -83,7 +83,4 @@
 ![](https://image.coder.cat/stack6.png)
 
 
-
-
-
 **C/C++中销毁栈帧并不会清空被销毁栈帧中的数据。**
