@@ -1,3 +1,4 @@
+* 向量化是什么意思?
 * 为什么c++的成员不可以既是template又是virtual的
 * enable_share_from_this是做什么的
 * 为什么stl中的内存分配器要设计为一个模板参数而不是一个构造函数参数？

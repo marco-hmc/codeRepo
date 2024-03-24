@@ -18,11 +18,6 @@
 
 附录，包括新的语言特性的简要描述，主要是与多线程相关的特性，以及在第4章中提到的消息传递库的实现细节和C++11线程库的完整的参考。
 
-## 谁应该读这本书
-
-如果你正在用C++写一个多线程程序，你应该阅读本书。如果你正在使用C++标准库中新的多线程工具，你可以从本书中得到一些指导意见。如果你正在使用其他线程库，后面章节里的建议和技术指导也很值得一看。
-
-阅读本书需要你有较好的C++基础；虽然，关于多线程编程的知识或者经验不是必须的，不过这些经验可能有用。
 
 ### 如何使用这本书
 
@@ -42,29 +37,8 @@
 
 ### 软件需求
 
-使用书中的代码，可能需要一个较新的C++编译器(要支持C++11语言的特性(见附录A))，还需要C++支持标准线程库。
-
-写本书的时候，g++是唯一实现标准线程库的编译器(尽管Microsoft Visual Studio 2011 preview中也有实现)。g++4.3发布时添加了线程库，并且在随后的发布版本中进行扩展。g++4.3也支持部分C++11语言特性，更多特性的支持在后续发布版本中也有添加。更多细节请参考g++ C++11的状态页面[1]。
-
 Microsoft Visual Studio 2010支持部分C++11特性，例如：右值引用和lambda函数，但是没有实现线程库。
 
 我的公司Software Solutions Ltd，销售C++11标准线程库的完整实现，其可以使用在Microsoft Visual Studio 2005, Microsoft Visual Studio 2008, Microsoft Visual Studio 2010，以及各种g++版本上[2]。这个线程库也可以用来测试本书中的例子。
 
 Boost线程库[3]提供的API，以及可移植到多个平台。本书中的大多数例子将`std::`替换为`boost::`，再`#include`引用适当的头文件，就能使用Boost线程库来运行。还有部分工具还不支持(例如`std::async`)或在Boost线程库中有着不同名字(例如：`boost::unique_future`)。
-
-## 作者在线
-
-购买*C++ Concurrency in Action*就能访问曼宁(*Manning Publications*)的私人网络论坛，在那里可以对本书做一些评论，问一些技术问题，获得作者或其他读者的帮助。为了能够访问论坛和订阅它的内容，在浏览器地址中输入www.manning.com/CPlusPlusConcurrencyinAction后，页面将告诉你如何注册之后访问论坛，你能获得什么样的帮助，还有论坛中的一些规则。
-
-曼宁保证为本书的读者提供互相交流，以及和作者交流的场所。虽然曼宁自愿维护本书的论坛，但不保证这样的场所不会收取任何的费用。所以，建议你可以尝试提一些有挑战性的问题给作者，免得这样的地方白白浪费。
-
-在本书印刷时，就可以通过Internet访问作者的在线论坛和之前讨论的文字记录。
-
-----------
-
-
-【1】GNU Compiler Collection C++0x/C++11 status page, http://gcc.gnu.org/projects/cxx0x.html.
-
-【2】The `just::thread` implementation of the C++ Standard Thread Library, http://www.stdthread.co.uk.
-
-【3】The Boost C++ library collection, http://www.boost.org.

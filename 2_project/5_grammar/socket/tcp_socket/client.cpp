@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
   bzero(&servAddr, sizeof(servAddr));
   servAddr.sin_family = AF_INET;
   servAddr.sin_port = htons(PORT);
+  
   if (inet_pton(AF_INET, argv[1], &servAddr.sin_addr) < 0) {
     printf("inet_pton error for %s\n", argv[1]);
     exit(1);
