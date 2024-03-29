@@ -43,9 +43,6 @@ std::shared_ptr<FILE> smartFile(fopen("file.txt", "r"), [](FILE* ptr){
     }
 });
 ```
-
-在这个例子中,当最后一个`std::shared_ptr`不再需要文件时,它会自动调用释放器来关闭文件.
-
 ### 2. quiz
 
 #### 2. 异常安全

@@ -1,3 +1,35 @@
+### thread传参陷阱,避免传指针
+```cpp
+void f(int i, std::string const& s);
+std::thread t(f, 3, "hello");
+```
+
+这段代码中的问题在于,`std::thread`的构造函数会复制传入的参数,而不是引用.这意味着,当你创建线程`t`时,它会复制`buffer`的值(一个指向本地字符数组的指针),而不是字符数组本身.
+
+然后,`oops`函数结束时,本地字符数组`buffer`将被销毁,但是新线程可能仍在运行,试图访问已经销毁的`buffer`.这就导致了未定义行为,因为你试图访问已经不再存在的内存.
+
+此外,`buffer`被传递给函数`f`作为`std::string`参数,这需要一个从`char*`到`std::string`的隐式转换.这个转换可能会在新线程中进行,也可能在`oops`函数结束后进行.如果在`oops`函数结束后进行,那么转换将试图读取已经销毁的`buffer`,这也是未定义行为.
+
+为了修复这个问题,你可以在创建线程之前,就将`buffer`转换为`std::string`:
+
+```cpp
+std::thread t(f, 3, std::string(buffer));
+```
+
+这样,`std::thread`的构造函数将复制这个`std::string`对象,而不是`buffer`指针,从而避免了访问已经销毁的内存.
+
+```cpp
+void f(int i,std::string const& s);
+void oops(int some_param)
+{
+  char buffer[1024]; // 1
+  sprintf(buffer, "%i",some_param);
+  std::thread t(f,3,buffer); // 2
+  t.detach();
+}
+```
+
+
 ### 内存空间
 在计算机系统中,内存空间通常被划分为以下几个部分:
 
