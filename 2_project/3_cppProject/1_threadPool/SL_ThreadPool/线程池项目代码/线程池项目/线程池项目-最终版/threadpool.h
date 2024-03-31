@@ -1,20 +1,20 @@
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <memory>
 #include <atomic>
-#include <mutex>
 #include <condition_variable>
 #include <functional>
-#include <unordered_map>
-#include <thread>
 #include <future>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <unordered_map>
+#include <vector>
 
-const int TASK_MAX_THRESHHOLD = 2; // INT32_MAX;
-const int THREAD_MAX_THRESHHOLD = 1024;
+const int TASK_MAX_THRESHOLD = 2; // INT32_MAX;
+const int THREAD_MAX_THRESHOLD = 1024;
 const int THREAD_MAX_IDLE_TIME = 60; // 单位:秒
 
 // 线程池支持的模式
@@ -45,9 +45,9 @@ public:
   int getId() const { return threadId_; }
 
 private:
-	ThreadFunc func_;
-	static int generateId_;
-        int threadId_; // 保存线程id
+  ThreadFunc func_;
+  static int generateId_;
+  int threadId_; // 保存线程id
 };
 
 int Thread::generateId_ = 0;
@@ -58,8 +58,8 @@ public:
   // 线程池构造
   ThreadPool()
       : initThreadSize_(0), taskSize_(0), idleThreadSize_(0), curThreadSize_(0),
-        taskQueMaxThreshHold_(TASK_MAX_THRESHHOLD),
-        threadSizeThreshHold_(THREAD_MAX_THRESHHOLD),
+        taskQueMaxThreshHold_(TASK_MAX_THRESHOLD),
+        threadSizeThreshHold_(THREAD_MAX_THRESHOLD),
         poolMode_(PoolMode::MODE_FIXED), isPoolRunning_(false) {}
 
   // 线程池析构
@@ -80,109 +80,108 @@ public:
     poolMode_ = mode;
   }
 
-        // 设置task任务队列上线阈值
-        void setTaskQueMaxThreshHold(int threshhold) {
-          if (checkRunningState())
-            return;
-          taskQueMaxThreshHold_ = threshhold;
-        }
+  // 设置task任务队列上线阈值
+  void setTaskQueMaxThreshHold(int threshhold) {
+    if (checkRunningState())
+      return;
+    taskQueMaxThreshHold_ = threshhold;
+  }
 
-        // 设置线程池cached模式下线程阈值
-        void setThreadSizeThreshHold(int threshhold) {
-          if (checkRunningState())
-            return;
-          if (poolMode_ == PoolMode::MODE_CACHED) {
-            threadSizeThreshHold_ = threshhold;
-          }
-        }
+  // 设置线程池cached模式下线程阈值
+  void setThreadSizeThreshHold(int threshhold) {
+    if (checkRunningState())
+      return;
+    if (poolMode_ == PoolMode::MODE_CACHED) {
+      threadSizeThreshHold_ = threshhold;
+    }
+  }
 
-        // 给线程池提交任务
-        // 使用可变参模板编程,让submitTask可以接收任意任务函数和任意数量的参数
-        // pool.submitTask(sum1, 10, 20);   csdn  大秦坑王 右值引用+引用折叠原理
-        // 返回值future<>
-        template <typename Func, typename... Args>
-        auto submitTask(Func &&func, Args &&...args)
-            -> std::future<decltype(func(args...))> {
-          // 打包任务,放入任务队列里面
-          using RType = decltype(func(args...));
-          auto task = std::make_shared<std::packaged_task<RType()>>(
-              std::bind(std::forward<Func>(func), std::forward<Args>(args)...));
-          std::future<RType> result = task->get_future();
+  // 给线程池提交任务
+  // 使用可变参模板编程,让submitTask可以接收任意任务函数和任意数量的参数
+  // pool.submitTask(sum1, 10, 20);   csdn  大秦坑王 右值引用+引用折叠原理
+  // 返回值future<>
+  template <typename Func, typename... Args>
+  auto submitTask(Func &&func, Args &&...args)
+      -> std::future<decltype(func(args...))> {
+    // 打包任务,放入任务队列里面
+    using RType = decltype(func(args...));
+    auto task = std::make_shared<std::packaged_task<RType()>>(
+        std::bind(std::forward<Func>(func), std::forward<Args>(args)...));
+    std::future<RType> result = task->get_future();
 
-          // 获取锁
-          std::unique_lock<std::mutex> lock(taskQueMtx_);
-          // 用户提交任务,最长不能阻塞超过1s,否则判断提交任务失败,返回
-          if (!notFull_.wait_for(lock, std::chrono::seconds(1), [&]() -> bool {
-                return taskQue_.size() < (size_t)taskQueMaxThreshHold_;
-              })) {
-            // 表示notFull_等待1s种,条件依然没有满足
-            std::cerr << "task queue is full, submit task fail." << std::endl;
-            auto task = std::make_shared<std::packaged_task<RType()>>(
-                []() -> RType { return RType(); });
-            (*task)();
-            return task->get_future();
-          }
+    // 获取锁
+    std::unique_lock<std::mutex> lock(taskQueMtx_);
+    // 用户提交任务,最长不能阻塞超过1s,否则判断提交任务失败,返回
+    if (!notFull_.wait_for(lock, std::chrono::seconds(1), [&]() -> bool {
+          return taskQue_.size() < (size_t)taskQueMaxThreshHold_;
+        })) {
+      // 表示notFull_等待1s种,条件依然没有满足
+      std::cerr << "task queue is full, submit task fail." << std::endl;
+      auto task = std::make_shared<std::packaged_task<RType()>>(
+          []() -> RType { return RType(); });
+      (*task)();
+      return task->get_future();
+    }
 
-          // 如果有空余,把任务放入任务队列中
-          // taskQue_.emplace(sp);
-          // using Task = std::function<void()>;
-          taskQue_.emplace([task]() { (*task)(); });
-          taskSize_++;
+    // 如果有空余,把任务放入任务队列中
+    // taskQue_.emplace(sp);
+    // using Task = std::function<void()>;
+    taskQue_.emplace([task]() { (*task)(); });
+    taskSize_++;
 
-          // 因为新放了任务,任务队列肯定不空了,在notEmpty_上进行通知,赶快分配线程执行任务
-          notEmpty_.notify_all();
+    // 因为新放了任务,任务队列肯定不空了,在notEmpty_上进行通知,赶快分配线程执行任务
+    notEmpty_.notify_all();
 
-          // cached模式 任务处理比较紧急 场景:小而快的任务
-          // 需要根据任务数量和空闲线程的数量,判断是否需要创建新的线程出来
-          if (poolMode_ == PoolMode::MODE_CACHED &&
-              taskSize_ > idleThreadSize_ &&
-              curThreadSize_ < threadSizeThreshHold_) {
-            std::cout << ">>> create new thread..." << std::endl;
+    // cached模式 任务处理比较紧急 场景:小而快的任务
+    // 需要根据任务数量和空闲线程的数量,判断是否需要创建新的线程出来
+    if (poolMode_ == PoolMode::MODE_CACHED && taskSize_ > idleThreadSize_ &&
+        curThreadSize_ < threadSizeThreshHold_) {
+      std::cout << ">>> create new thread..." << std::endl;
 
-            // 创建新的线程对象
-            auto ptr = std::make_unique<Thread>(std::bind(
-                &ThreadPool::threadFunc, this, std::placeholders::_1));
-            int threadId = ptr->getId();
-            threads_.emplace(threadId, std::move(ptr));
-            // 启动线程
-            threads_[threadId]->start();
-            // 修改线程个数相关的变量
-            curThreadSize_++;
-            idleThreadSize_++;
-          }
+      // 创建新的线程对象
+      auto ptr = std::make_unique<Thread>(
+          std::bind(&ThreadPool::threadFunc, this, std::placeholders::_1));
+      int threadId = ptr->getId();
+      threads_.emplace(threadId, std::move(ptr));
+      // 启动线程
+      threads_[threadId]->start();
+      // 修改线程个数相关的变量
+      curThreadSize_++;
+      idleThreadSize_++;
+    }
 
-          // 返回任务的Result对象
-          return result;
-        }
+    // 返回任务的Result对象
+    return result;
+  }
 
-        // 开启线程池
-        void start(int initThreadSize = std::thread::hardware_concurrency()) {
-          // 设置线程池的运行状态
-          isPoolRunning_ = true;
+  // 开启线程池
+  void start(int initThreadSize = std::thread::hardware_concurrency()) {
+    // 设置线程池的运行状态
+    isPoolRunning_ = true;
 
-          // 记录初始线程个数
-          initThreadSize_ = initThreadSize;
-          curThreadSize_ = initThreadSize;
+    // 记录初始线程个数
+    initThreadSize_ = initThreadSize;
+    curThreadSize_ = initThreadSize;
 
-          // 创建线程对象
-          for (int i = 0; i < initThreadSize_; i++) {
-            // 创建thread线程对象的时候,把线程函数给到thread线程对象
-            auto ptr = std::make_unique<Thread>(std::bind(
-                &ThreadPool::threadFunc, this, std::placeholders::_1));
-            int threadId = ptr->getId();
-            threads_.emplace(threadId, std::move(ptr));
-            // threads_.emplace_back(std::move(ptr));
-          }
+    // 创建线程对象
+    for (int i = 0; i < initThreadSize_; i++) {
+      // 创建thread线程对象的时候,把线程函数给到thread线程对象
+      auto ptr = std::make_unique<Thread>(
+          std::bind(&ThreadPool::threadFunc, this, std::placeholders::_1));
+      int threadId = ptr->getId();
+      threads_.emplace(threadId, std::move(ptr));
+      // threads_.emplace_back(std::move(ptr));
+    }
 
-          // 启动所有线程  std::vector<Thread*> threads_;
-          for (int i = 0; i < initThreadSize_; i++) {
-            threads_[i]->start(); // 需要去执行一个线程函数
-            idleThreadSize_++;    // 记录初始空闲线程的数量
-          }
-        }
+    // 启动所有线程  std::vector<Thread*> threads_;
+    for (int i = 0; i < initThreadSize_; i++) {
+      threads_[i]->start(); // 需要去执行一个线程函数
+      idleThreadSize_++;    // 记录初始空闲线程的数量
+    }
+  }
 
-        ThreadPool(const ThreadPool&) = delete;
-	ThreadPool& operator=(const ThreadPool&) = delete;
+  ThreadPool(const ThreadPool &) = delete;
+  ThreadPool &operator=(const ThreadPool &) = delete;
 
 private:
   // 定义线程函数
