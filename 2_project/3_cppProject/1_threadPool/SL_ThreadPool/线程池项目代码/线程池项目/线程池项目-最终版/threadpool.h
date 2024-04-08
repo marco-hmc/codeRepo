@@ -112,10 +112,10 @@ public:
     // 获取锁
     std::unique_lock<std::mutex> lock(taskQueMtx_);
     // 用户提交任务,最长不能阻塞超过1s,否则判断提交任务失败,返回
-    if (!notFull_.wait_for(lock, std::chrono::seconds(1), [&]() -> bool {
+    if (!notFull_.wait_for(lock, std::chrono::seconds(1), [&]() {
           return taskQue_.size() < (size_t)taskQueMaxThreshHold_;
         })) {
-      // 表示notFull_等待1s种,条件依然没有满足
+      // 表示notFull_等待1s,条件依然没有满足
       std::cerr << "task queue is full, submit task fail." << std::endl;
       auto task = std::make_shared<std::packaged_task<RType()>>(
           []() -> RType { return RType(); });

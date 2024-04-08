@@ -1,6 +1,8 @@
 # 高效的修改std::map元素的键值
 
-在`std::map`数据结构中，键-值通常都对应存在，而且键通常是唯一并排序过的，而且键值一旦设定那么就不允许用户再进行修改。为了阻止用户修改键，键的类型声明使用了`const`。
+在`std::map`数据结构中，键-值通常都对应存在，而且键通常是唯一并排序过的，而且键值一旦设定那么就不允许用户再进行修改。
+
+为了阻止用户修改键，键的类型声明使用了`const`。
 
 这种限制是非常明智的，其可以保证用户很难在使用`std::map`的时候出错。不过，如果我们真的需要修改`map`的键值该怎么办呢？
 
@@ -27,6 +29,7 @@ C++17之前，因为对应的键已经存在，我们不得不将整个键-值�
       		cout << placement << ": " << driver << '\n';
        }
    }
+
    int main()
    {
        map<int, string> race_placement {
@@ -38,9 +41,10 @@ C++17之前，因为对应的键已经存在，我们不得不将整个键-值�
    {
        auto a(race_placement.extract(3));
        auto b(race_placement.extract(8)); 
-   	swap(a.key(), b.key());
+       	swap(a.key(), b.key());
        race_placement.insert(move(a));
        race_placement.insert(move(b));
+   }
    }
    ```
 

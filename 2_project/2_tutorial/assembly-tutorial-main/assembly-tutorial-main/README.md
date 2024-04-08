@@ -69,24 +69,14 @@ The steps are identified by a single digit, 0-9:
 
 ## ELF Files and the Loader
 
-The operating system program loader reads in the ELF file and allocates memory for the .text section and loads that data from the file into that memory.  
-
-Then the loader allocates memory for the initialized data (.data) and reads that data from the file into that memory.  
-
-Then the loader allocates memory for the constant data (.rodata) and reads that data from the file into that memory.  
-
-The loader allocates memory for the .bss section.  Since the .bss section is uninitialized, it only needs to be allocated.
-
----
-
 The linker reads in intermediate object files (```.o```) and links them together to make the final executable.  
 
 Each .o file may declare variables that might be accessed from other .o files and to access variables that are defined in some other .o file.  
 
-The linker fixes up the addresses in the final output so the code works as expected!
-
 ### Permissions (Sections and Privileged Instructions)
-The compiler/assembler/linker generally makes the code execute only.  If you try to store to those addresses, you will get a segfault.  
+The compiler/assembler/linker generally makes the code execute only.  
+
+If you try to store to those addresses, you will get a segfault.
 
 The .data and .bss sections are marked as read/write and the .rodata is marked as read-only.
 
@@ -110,7 +100,9 @@ When a program is launched, it is allocated a small amount of RAM, enough for th
 
 #### Paging and Swapping
 
-Another thing the OS can do when there is an out of memory (OOM) condition is to "page" one or more 4096 byte pages from memory to the system's swap file/partition.  This frees up enough pages to use to handle the page fault.  When a program that has memory paged to disk is scheduled to run (use the CPU), the code might cause further page faults to read back in the paged memory.  It's possible the program never accesses that memory, and that's perfectly fine.
+Another thing the OS can do when there is an out of memory (OOM) condition is to "page" one or more 4096 byte pages from memory to the system's swap file/partition.  
+
+This frees up enough pages to use to handle the page fault.  When a program that has memory paged to disk is scheduled to run (use the CPU), the code might cause further page faults to read back in the paged memory.  It's possible the program never accesses that memory, and that's perfectly fine.
 
 Finally, if the OS cannot resolve the OOM condition with one of those (or potentially other clever) strategies, it just randomly kills a running program.  This seems evil, but what else can it do?
 
@@ -120,25 +112,17 @@ The heap initially has a small but reasonable amount of RAM allocated.  It can b
 
 ## ALU
 
-The cost of having circuitry to add two arbitrary memory locations together is prohibitive.  You have 1M x 1M add circuits required, and that's just for addition!  
+Each of these operations is a CPU "opcode."  
 
-The math (add) capability is, instead, implemented in the ALU (Arithmetic-Logic Unit) of the CPU.  The CPU provides some (small) number of general purpose "registers" and the ALU implements the add circuitry just between those registers.  
+The CPU reads the byte opcode from memory and executes it.  
 
-You can think of a register as a (temporary) variable that is on chip, usable by the ALU to do math and logic operations.  You have to load your operand or operands into registers to perform math, then you can store the result to a variable in memory.
+In the simplest view of the CPU, the above program is 4 instructions.
 
-For example, to add two numbers at memory locations (addresses) 0x100 and 0x200 and store the result at address 0x300, and we have two registers named a and b:
-```
-  load value at 0x100 into a
-  load value at 0x200 into b
-  add a and b, leaving result in a
-  store a at 0x3000
-```
+The load and store instructions use 1 byte for opcode and 2 more for the addresses.  The add uses just the one byte for the opcode (add b to a).
 
-I have just introduced something like a snippet of assembly language code!  We need operations to be able to load memory into registers, add registers together, and store registers to memory.  Each of these operations is a CPU "opcode."  The CPU reads the byte opcode from memory and executes it.  Some opcodes, like the load and store ones, require parameters like the address to load from or store to.  These addresses are stored in the program immediately following the opcode.  As we progress, we're going to see that the instruction sizes (op code plus parameters) are different depending on the instruction (op code) and parameters.  
+The load instruction requires a clock cycle to load the opcode, another 2 for each byte of the address, and another 2 to load the value from RAM at the address specified in the parameters, for 5 total clock cycles.  
 
-In the simplest view of the CPU, the above program is 4 instructions.  The load and store instructions use 1 byte for opcode and 2 more for the addresses.  The add uses just the one byte for the opcode (add b to a).
-
-Each instruction uses 1 or more "clock cycles," depending on the complexity of the operation.  The load instruction requires a clock cycle to load the opcode, another 2 for each byte of the address, and another 2 to load the value from RAM at the address specified in the parameters, for 5 total clock cycles.  The add instruction takes just 1 clock cycle.  The store takes 5 as well.
+The add instruction takes just 1 clock cycle.  The store takes 5 as well.
 
 ## x64/AMD64 Registers
 
@@ -146,7 +130,11 @@ For all intents and purposes, the Intel and AMD processors have the same registe
 
 ### General Purpose Registers
 
-You have 4 general purpose registers, A, B, C, and D, though we don't use these specific names for the registers.  The size of the register/contents matters.  So for a byte value, we use AL or AH, or BL/BH, or CL/CH, or DL/DH.  The L means "low order byte" and H means "high order byte."  For word values, we use AX, BX, CX, and DX.  For 32 bit word values, we use EAX, EBX, ECX, and EDX.  And for 64 bit word values, we use RAX, RBX, RCX, and RDX.
+You have 4 general purpose registers, A, B, C, and D, though we don't use these specific names for the registers.  The size of the register/contents matters.  So for a byte value, we use AL or AH, or BL/BH, or CL/CH, or DL/DH.  The L means "low order byte" and H means "high order byte."  
+
+For word values, we use AX, BX, CX, and DX.
+For 32 bit word values, we use EAX, EBX, ECX, and EDX.  
+And for 64 bit word values, we use RAX, RBX, RCX, and RDX.
 
 When we use the registers whose size are smaller than 64 bits, the remaining bits in the register are not affected.  For example, if AX contains 0x0102 and we load 0x03 into AL, AX will contain 0x0103.  This will only matter if you load bytes into registers and add word registers together, in error.  There might be tricks you play to take advantage of the nature of the register loads/stores.
 
@@ -163,7 +151,7 @@ The RBP register is a general purpose register that is typically used as a base 
 ### CPU Control Registers
 
 #### Stack 
-The RSP register contains the address of the last thing pushed on the processor stack. You can push registers on the stack to preserve their values, you can pop them to restore their values, address values already on the stack by index, etc.
+You can push registers on the stack to preserve their values, you can pop them to restore their values, address values already on the stack by index, etc.
 
 #### Instruction Pointer
 The RIP register contains the address of the next instruction to be executed.  The CPU automatically adds the correct number to it as it executes instructions to keep it pointed at the correct next instruction.  When you call a subroutine, the RIP is pushed on the RSP stack and RIP is loaded with the address of the subroutine.  When the subroutine returns, the RIP that was pushed before the call is popped from the stack into RIP.  Execution continues at the instruction after the call.
@@ -183,15 +171,10 @@ There are several instructions that set and clear these bits, programmatically.
 
 # AMD64 Instruction Set
 
-You will learn the instruction set as you go.  The instruction set is documented as a reference manual, not a programming manual.  That is, each instruction is documented as to what it does.  But there is no particular "how to use this instruction" documentation.
+The instruction set is documented as a reference manual, not a programming manual.  
+That is, each instruction is documented as to what it does.  But there is no particular "how to use this instruction" documentation.
 
-You can find the instruction set documented on various Web Sites.  The best source is the Intel Programmer's Manual or the AMD64 Programmer's Manual.
-
-Here is a decent Web Page that lists the instructions in a table, one line per instruction with a short description.
-
-https://www.felixcloutier.com/x86/
-
-There are over 1500 instructions, from AAA to XTEST that we can use.  Too many to document every one here. However, there are much fewer commonly used instructions that we use for most things.
+There are over 1500 instructions, from AAA to XTEST that we can use.  
 
 The format of a line of source code in assembly is:
 ```
@@ -442,20 +425,10 @@ PUSHF - push flags register on the stack
 ```
 
 # Assembler Source, Directives,  and Macros
-The assembler is a program that reads assembly source code and generates a binary output file or ELF .o file.  The assembler reads a line at a time and writes the encoded program instructions for that line to the output file.  
-
-NASM is a great free assembler, LLVM Assembler (as), and Gnu Assembler/as/gas (part of the gcc package) are two assemblers that are used for Linux and MacOS assembly development/programming.  For all intents and purposes, LLVM and Gnu assemblers are identical.  There are other assemblers out there, but they are beyond the scope of this tutorial.
-
-
-There are two styles of assembly source for x64: Intel and AT&T. 
-
-* Intel syntax expects operands to be specified as ```destination, source```.
-* AT&T syntax expects operands to be specified as ```source, destination```.  
-
-The NASM assembler uses Intel syntax and the GNU/LLVM assemblers can use either Intel or AT&T; you choose which using an assembler directive.  
+NASM is a great free assembler, LLVM Assembler (as), and Gnu Assembler/as/gas (part of the gcc package) are two assemblers that are used for Linux and MacOS assembly development/programming.  
 
 ## Assembler Directives
-An assembler directive is not machine instructions.  Instead, these are used to convey information to the assembler to effect code generation as you prefer.  Assembler directives are specific to the assembler you are using and the source code using these is not portable between assemblers.  The nature of (order of) Intel and AT&T syntax makes code written for one not portable to an assembler using the other.
+Assembler directives are specific to the assembler you are using and the source code using these is not portable between assemblers.  The nature of (order of) Intel and AT&T syntax makes code written for one not portable to an assembler using the other.
 
 The gas (gnu/llvm) assembler uses the .intel_syntax directive to tell the assembler that the source format of the file is Intel syntax.  Otherwise, AT&T syntax is assumed.
 
@@ -899,7 +872,7 @@ Hello, world!
 
 ## How it works
 
-MacOS and Linux provide quite a few syscalls each, or operating system calls that we can call from any language.  There are quite a few syscalls in common between the two, but they are different flavors of Unix (Linux vs. BSD-ish/MacOS).  The two flavors have several syscalls that are provided in one OS but not the other.  The syscall numbers (passed in rax) are also different between the operating systems.
+The two flavors have several syscalls that are provided in one OS but not the other.  The syscall numbers (passed in rax) are also different between the operating systems.
 
 The C libraries contain code similar to our code above, to write strings to a file.  For our purposes we use the file number for stdout to write to the console.
 
