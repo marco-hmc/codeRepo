@@ -1,24 +1,27 @@
 [toc]
 * OT
-  * monday: 1800-2030
-  * tuesday: 1800-2030
-  * wednesday: 1830-1930
-  * thursday: 1800-
+  * monday:
+  * tuesday:
+  * wednesday:
+  * thursday:
   * friday:
   * saturday:
   * sunday:
 
 ## 1. doing
+  1. 内存序
 
 ### 1.1 trivals
   1. podcast
   2. 医保卡补办
 
 ### 1.5 readings
-  2. **refactor**
+  1. refactor
     1_notes\6_设计模式\refactoring2\ch1.md
-  3. **template**
+  2. template
     2_project\Cpp-Templates-2ed-master\Cpp-Templates-2ed-master\docs\01_function_template.md
+  4. tinyTCP
+    https://github.com/rkimball/tinytcp
 
 ##  2. todo
   * **project**
@@ -37,4 +40,3 @@
 
 
 ## 3. done
-https://github.com/rkimball/tinytcp

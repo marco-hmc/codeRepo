@@ -1,8 +1,8 @@
-# A.4 常量表达式函数
+  # A.4 常量表达式函数
 
 整型字面值，例如42，就是常量表达式。所以，简单的数学表达式，例如，23x2-4。可以使用其来初始化const整型变量，然后将const整型变量作为新表达的一部分：
 
-```
+```cpp
 const int i=23;
 const int two_i=i*2;
 const int four=4;
@@ -13,7 +13,7 @@ const int forty_two=two_i-four;
 
 - 指定数组长度：
 
-```
+```cpp
 int bounds=99;
 int array[bounds];  // 错误，bounds不是一个常量表达式
 const int bounds2=99;
@@ -22,7 +22,7 @@ int array2[bounds2];  // 正确，bounds2是一个常量表达式
 
 - 指定非类型模板参数的值：
 
-```
+```cpp
 template<unsigned size>
 struct test
 {};
@@ -32,7 +32,7 @@ test<bounds2> ia2;  // 正确，bounds2是一个常量表达式
 
 - 对类中static const整型成员变量进行初始化：
 
-```
+```cpp
 class X
 {
   static const int the_answer=forty_two;
@@ -41,7 +41,7 @@ class X
 
 - 对内置类型进行初始化或可用于静态初始化集合：
 
-```
+```cpp
 struct my_aggregate
 {
   int a;
@@ -58,7 +58,7 @@ static my_aggregate ma2={dummy,dummy};  // 动态初始化
 
 `constexpr`会对功能进行修改，当参数和函数返回类型符合要求，并且实现很简单，那么这样的函数就能够被声明为`constexpr`，这样函数可以当做常数表达式来使用：
 
-```
+```cpp
 constexpr int square(int x)
 {
   return x*x;
@@ -68,7 +68,7 @@ int array[square(5)];
 
 在这个例子中，array有25个元素，因为square函数的声明为`constexpr`。当然，这种方式可以当做常数表达式来使用，不意味着什么情况下都是能够自动转换为常数表达式：
 
-```
+```cpp
 int dummy=4;
 int array[square(dummy)];  // 错误，dummy不是常数表达式
 ```
