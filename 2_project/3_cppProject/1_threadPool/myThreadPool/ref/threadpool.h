@@ -265,7 +265,7 @@ private:
       } // 就应该把锁释放掉
 
       // 当前线程负责执行这个任务
-      if (task != nullptr) {
+      if (task) {
         task(); // 执行function<void()>
       }
 

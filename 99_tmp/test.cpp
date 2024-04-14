@@ -1,22 +1,15 @@
 #include <iostream>
-#include <thread>
+#include <regex>
+#include <string>
 
-void task1() { std::cout << "Executing Task 1" << std::endl; }
-
-void task2() { std::cout << "Executing Task 2" << std::endl; }
+std::string filterChinesePunctuation(const std::string &str) {
+  std::regex chinese_punctuation("[\u3000-\u303F]|[\uFF00-\uFFEF]");
+  return std::regex_replace(str, chinese_punctuation, "");
+}
 
 int main() {
-  std::thread t1(task1);
-
-  // 在运行时决定执行哪个任务
-  if (false) {
-    std::thread t2 = std::move(t1); // 将线程控制权从 t1 转移到 t2
-                                    // std::thread t2 = t1; // 编译错误
-    t2.join();
-  } else {
-    t1 = std::thread(task2); // 重新赋值,接管新线程的控制权
-    t1.join();
-  }
-
+  std::string str = "Hello, World!../';，。？！【】";
+  std::string punctuation_filtered = filterChinesePunctuation(str);
+  std::cout << "Filtered string: " << punctuation_filtered << std::endl;
   return 0;
 }

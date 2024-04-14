@@ -1,6 +1,8 @@
+#include <condition_variable>
 #include <functional>
 #include <iostream>
 #include <mutex>
+#include <thread>
 using namespace std;
 
 class Foo {

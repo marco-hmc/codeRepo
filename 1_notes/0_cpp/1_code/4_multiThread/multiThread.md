@@ -1,6 +1,5 @@
 ## threads
 
-#### (13)Linux中线程的同步方式有哪些?
 ### 1. thread
 
 #### 1.1 join和detach
@@ -196,3 +195,5 @@ std::shared_future<int> sf = f.share();
 
 在这段代码中,`sf`是一个`std::shared_future`对象,它与`f`共享同一个状态,也就是说,它们都可以获取到同一个值.
 
+
+#### 5.4 packaged_task
