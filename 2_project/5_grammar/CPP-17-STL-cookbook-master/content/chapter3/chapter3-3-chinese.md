@@ -15,53 +15,25 @@
    #include <sstream>
    #include <deque>
    using namespace std;
-   ```
 
-3. 开始使用`std::istream_iterator`。这里我们特化为`int`类型。这样，迭代器就能将标准输入解析成整数。例如，当我们遍历这个迭代器，其就和`std::vector<int>`一样了。`end`迭代器的类型没有变化，但不需要构造参数:
-
-   ```c++ 
    int main()
    {
        istream_iterator<int> it_cin {cin};
        istream_iterator<int> end_cin;
-   ```
 
-4. 接下来，我们实例化一个`std::deque<int>`，并且将标准输入中的所有数字拷贝到队列中。队列本身不是一个迭代器，所以我们使用`std::back_inserter`辅助函数将队列包装入`std::back_insert_iterator`中。这样指定的迭代器就能执行`v.pack_back(item)`，将标准输入中的每个元素放入容器中。这样就能让队列自动增长。
-
-   ```c++
        deque<int> v;
        copy(it_cin, end_cin, back_inserter(v));	
-   ```
-
-5. 接下来，我们使用`std::istringstream`将元素拷贝到队列中部。先使用字符串，来定义一个字符流的实例：
-
-   ```c++
+   
    	istringstream sstr {"123 456 789"};
-   ```
 
-6. 我们需要选择列表的插入点。这个点必须在中间，我们使用队列的起始指针，然后使用`std::next`函数将其指向中间位置。函数第二个参数的意思就是让指针前进多少，这里选择`v.size() / 2`步，也就是队列的正中间位置(这里我们将`v.size()`强转为`int`类型，因为`std::next`第二个参数类型为`difference_type`，是和第一个迭代器参数间的距离。因此，该类型是个有符号类型。根据编译选项，如果我们不进行显式强制转化，编译器可能会报出警告)。
-
-   ```c++
        auto deque_middle (next(begin(v),
        	 static_cast<int>(v.size()) / 2));
-   ```
 
-7. 现在，我们可以从输入流中一步步的拷贝整数到队列当中。另外，流的`end`包装迭代器为空的` std::istream_iterator<int> `。这个队列已经被包装到一个插入包装器中，也就是成为`std::insert_iterator`的一个实例，其指向队列中间位置的迭代器，我们用`deque_middle`表示:
-
-   ```c++
    	copy(istream_iterator<int>{sstr}, {}, inserter(v, deque_middle));
-   ```
 
-8. 现在，让我们使用`std::front_insert_iterator`插入一些元素到队列中部：
-
-   ```c++
        initializer_list<int> il2 {-1, -2, -3};
        copy(begin(il2), end(il2), front_inserter(v));
-   ```
 
-9. 最后一步将队列中的全部内容打印出来。`std::ostream_iterator`作为输出迭代器，在我们的例子中其就是从`std::cout`拷贝打印出的信息，并将各个元素使用逗号隔开：
-
-   ```c++
        copy(begin(v), end(v), ostream_iterator<int>{cout, ", "});
        cout << '\n';
    }

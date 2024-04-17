@@ -1,10 +1,12 @@
 # 构建zip迭代适配器
 
-不同的编程语言引领了不同的编程方式。不同语言有各自的受众群体，因为表达方式的不同，所以对于优雅地定义也不同。
+虽然风格迥异，但是纯函数式编程却能在大多数情况下产生非常优雅地代码。
 
-纯函数式编程算是编程风格中一种比较特别的方式。其与C和C++命令方式编程的风格大相径庭。虽然风格迥异，但是纯函数式编程却能在大多数情况下产生非常优雅地代码。
+这里用向量点乘为例，使用函数式方法优雅地实现这个功能。
 
-这里用向量点乘为例，使用函数式方法优雅地实现这个功能。给定两个向量，然后让对应位置上的两个数字相乘，然后将所有数字加在一起。也就是`(a, b, c) * (d, e, f)`的结果为`(a * e + b * e + c * f) `。我们在C和C++也能完成这样的操作。代码可能类似如下的方式：
+给定两个向量，然后让对应位置上的两个数字相乘，然后将所有数字加在一起。也就是`(a, b, c) * (d, e, f)`的结果为`(a * e + b * e + c * f) `。
+
+我们在C和C++也能完成这样的操作。代码可能类似如下的方式：
 
 ```c++
 std::vector<double> a {1.0, 2.0, 3.0};
@@ -44,70 +46,38 @@ STL提供了相应的函数实现`std::inner_product`，也能在一行之内完
    #include <iostream>
    #include <vector>
    #include <numeric>
-   ```
 
-2. 定义`zip_iterator`类。同时也要实现一个范围类`zip_iterator`，这样我们在每次迭代时就能获得两个值。这也意味着我们同时遍历两个迭代器：
-
-   ```c++
    class zip_iterator {
-   ```
 
-3. zip迭代器的容器中需要保存两个迭代器：
-
-   ```c++
    	using it_type = std::vector<double>::iterator;
 
    	it_type it1;
    	it_type it2;
-   ```
 
-4. 构造函数会将传入的两个容器的迭代器进行保存，以便进行迭代：
-
-   ```c++
    public:
        zip_iterator(it_type iterator1, it_type iterator2)
        	: it1{iterator1}, it2{iterator2}
        {}
-   ```
 
-5. 增加zip迭代器就意味着增加两个成员迭代器：
-
-   ```c++
        zip_iterator& operator++() {
            ++it1;
            ++it2;
            return *this;
        }
-   ```
 
-6. 如果zip中的两个迭代器来自不同的容器，那么他们一定不相等。通常，这里会用逻辑或(||)替换逻辑与(&&)，但是这里我们需要考虑两个容器长度不一样的情况。这样的话，我们需要在比较的时候同时匹配两个容器。这样，我们就能遍历完其中一个容器时，及时停下循环：
-
-   ```c++
    	bool operator!=(const zip_iterator& o) const {
        	return it1 != o.it1 && it2 != o.it2;
        }
-   ```
 
-7. 逻辑等操作符可以使用逻辑不等的操作符的实现，是需要将结果取反即可：
-
-   ```c++
        bool operator==(const zip_iterator& o) const {
        	return !operator!=(o);
        }
-   ```
 
-8. 解引用操作符用来访问两个迭代器指向的值：
-
-   ```c++
        std::pair<double, double> operator*() const {
        	return {*it1, *it2};
        }
    };
-   ```
 
-9. 迭代器算是实现完了。我们需要让迭代器兼容STL算法，所以我们对标准模板进行了特化。这里讲迭代器定义为一个前向迭代器，并且解引用后返回的是一对`double`值。虽然，本节我们没有使用`difference_type`，但是对于不同编译器实现的STL可能就需要这个类型：
-
-   ```c++
    namespace std {
    template <>
    struct iterator_traits<zip_iterator> {
@@ -116,29 +86,17 @@ STL提供了相应的函数实现`std::inner_product`，也能在一行之内完
        using difference_type = long int;
    };
    }
-   ```
 
-10. 现在来定义范围类，其`begin`和`end`函数返回`zip`迭代器：
-
-    ```c++
     class zipper {
         using vec_type = std::vector<double>;
         vec_type &vec1;
         vec_type &vec2; 
-    ```
 
-11. 这里需要从zip迭代器中解引用两个容器中的值：
-
-    ```c++
     public:
         zipper(vec_type &va, vec_type &vb)
         	: vec1{va}, vec2{vb}
         {}
-    ```
 
-12. `begin`和`end`函数将返回指向两容器开始的位置和结束位置的迭代器对：
-
-    ```c++
         zip_iterator begin() const {
         	return {std::begin(vec1), std::begin(vec2)};
         }
@@ -146,42 +104,22 @@ STL提供了相应的函数实现`std::inner_product`，也能在一行之内完
        		return {std::end(vec1), std::end(vec2)};
         }
     };
-    ```
 
-13. 如Haskell和Python的例子一样，我们定义了两个`double`为内置类型的`vector`。这里我们也声明了所使用的命名空间。
-
-    ```c++
     int main()
     {
         using namespace std;
         vector<double> a {1.0, 2.0, 3.0};
         vector<double> b {4.0, 5.0, 6.0};
-    ```
 
-14. 可以直接使用两个`vector`对`zipper`类进行构造：
-
-    ```c++
     	zipper zipped {a, b};
-    ```
 
-15. 我们将使用`std::accumulate`将所有值累加在一起。这里我们不能直接对`std::pair<double, double>`实例的结果进行累加，因为这里没有定义`sum`变量。因此，我们需要定义一个辅助Lambda函数来对这个组对进行操作，将两个数相乘，然后进行累加。Lambda函数指针可以作为`std::accumulate`的一个参数传入：
-
-    ```c++
         const auto add_product ([](double sum, const auto &p) {
         	return sum + p.first * p.second;
         });
-    ```
 
-16. 现在，让我们来调用`std::accumulate`将所有点积的值累加起来：
-
-    ```c++
         const auto dot_product (accumulate(
         	begin(zipped), end(zipped), 0.0, add_product));
-    ```
 
-17. 最后，让我们来打印结果：
-
-    ```c++
     	cout << dot_product << '\n';
     }
     ```
