@@ -18,11 +18,7 @@ C++11之后，STL提供了`chrono`库，其让对时间的操作更加简单。
    #include <chrono>
    
    using namespace std; 
-   ```
 
-2. 我们将打印绝对时间点。使用`chrono::time_point`模板类型来获取，因此需要对输出流操作符进行重载。对时间点的打印方式有很多，我们将会使用`%c`来表示标准时间格式。当然，可以只打印时间、日期或是我们需要的信息。调用`put_time`之前对不同类型的变量进行转换的方式看起来有些笨拙，不过这里只这么做一次：
-
-   ```c++
    ostream& operator<<(ostream &os,
    	const chrono::time_point<chrono::system_clock> &t)
    {
@@ -30,47 +26,27 @@ C++11之后，STL提供了`chrono`库，其让对时间的操作更加简单。
        const auto loct (std::localtime(&tt));
        return os << put_time(loct, "%c");
    }
-   ```
 
-3. STL已经定义了`seconds`，`minutes`，`hours`等时间类型，所以我们只需要为其添加`days`类型就好。这很简单，只需要对`chrono::duration`模板类型进行特化，将hours类型乘以24，就表示一天具有24个小时：
-
-   ```c++
    using days = chrono::duration<
        chrono::hours::rep,
        ratio_multiply<chrono::hours::period, ratio<24>>>;
-   ```
 
-4. 为了用很有优雅的方式表示很多天，我们定义属于`days`类型的字面值操作符。现在我们程序中写`3_days`就代表着3天：
-
-   ```c++
    constexpr days operator ""_days(unsigned long long d)
    {
    	return days{d};
    }
-   ```
 
-5. 实际程序中，我们将会对时间点进行记录，然后就会对这个时间点进行打印。因为已经对操作符进行了重载，所以完成这样的事情就变得很简单：
-
-   ```c++
    int main()
    {
        auto now (chrono::system_clock::now());
        
        cout << "The current date and time is " << now << '\n'; 
-   ```
 
-6. 我们使用`now`函数来获得当前的时间点，并可以为这个时间添加一个偏移，然后再对其进行打印。为当前的时间添加12个小时，其表示的为12个小时之后的时间：
-
-   ```c++
    	chrono::hours chrono_12h {12};
    	
    	cout << "In 12 hours, it will be "
    		<< (now + chrono_12h)<< '\n';
-   ```
 
-7. 这里将使用`chrono_literals`命名空间中的函数，声明使用这个命名空间会解锁小时、秒等等时间类型的间隔字面值类型。这样我们就能很优雅的对12个小时15分之前的时间或7天之前的时间进行打印：
-
-   ```c++
        using namespace chrono_literals;
        
    	cout << "12 hours and 15 minutes ago, it was "

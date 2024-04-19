@@ -23,42 +23,26 @@
    #include <iterator>
 
    using namespace std; 
-   ```
 
-2.  我们将对两个信号的误差和进行计算。这两个信号一个是`sine`，另一个信号也是`sine`，不过其中之一的使用`double`类型进行保存，另一个使用`int`类型进行保存。因为`double`和`int`类型表示数值的范围有差异，就像是模拟信号`as`转换成数字信号`ds`。
-
-   ```c++
    int main()
    {
        const size_t sig_len {100};
        vector<double> as (sig_len); // a for analog
        vector<int> ds (sig_len); // d for digital
-   ```
 
-3. 为了生成一个`sin`波形，我们事先了一个简单的Lambda表达式，并可以传入一个可变的计数变量`n`。我们可以经常在需要的时候调用表达式，其将返回下一个时间点的`sine`波形。`std::generate`可以使用信号值来填充数组，并且使用`std::copy`将数组中的`double`类型的变量，转换成`int`类型变量：
-
-   ```c++
    	auto sin_gen ([n{0}] () mutable {
        	return 5.0 * sin(n++ * 2.0 * M_PI / 100);
        });
        generate(begin(as), end(as), sin_gen);
        copy(begin(as), end(as), begin(ds));
-   ```
 
-4. 我们可以对信号进行打印，也可以使用绘图进行显示：
-
-   ```c++
    	copy(begin(as), end(as),
        	ostream_iterator<double>{cout, " "});
        cout << '\n';
        copy(begin(ds), end(ds),
        	ostream_iterator<double>{cout, " "});
        cout << '\n'; 
-   ```
 
-5. 现在来计算误差和，我们使用`std::inner_product`，因为这个函数能帮助我们计算两个信号矢量的差异。该函数能在指定范围内进行迭代，然后选择相应位置上进行差值计算，然后在进行平方，再进行相加：
-
-   ```c++
        cout << inner_product(begin(as), end(as), begin(ds),
        					0.0, std::plus<double>{},
        					[](double a, double b) {

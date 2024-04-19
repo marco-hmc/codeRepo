@@ -33,11 +33,7 @@ void func(U u) { std::cout << u.b << '\n'; }
    #include <algorithm>
    
    using namespace std;
-   ```
 
-2. 接下来，我们将实现两个具有类似功能的类，不过两个类型之间并没有什么联系。第一个类型是`cat`。`cat`对象具有名字，并能喵喵叫：
-
-   ```c++
    class cat {
        string name;
        
@@ -48,11 +44,7 @@ void func(U u) { std::cout << u.b << '\n'; }
        	cout << name << " says Meow!\n";
        }
    };
-   ```
 
-3. 另一个类是`dog`。`dog`能汪汪叫：
-
-   ```c++
    class dog {
    	string name;
        
@@ -63,44 +55,24 @@ void func(U u) { std::cout << u.b << '\n'; }
    		cout << name << " says Woof!\n";
    	}
    };
-   ```
 
-4. 现在我们就可以来定义一个`animal`类型，其为`std::variant<dog, cat>`的别名类型。其和以前的联合体一样，同时具有`variant`的特性：
-
-   ```c++
    using animal = variant<dog, cat>;
-   ```
 
-5. 编写主函数之前，我们再来实现两个辅助者。其中之一为动物判断谓词，通过调用`is_type<cat>(...)`或`is_type<dog>(...)`，可以判断动物实例中的动物为`cat`或`dog`。其实现只需要对`holds_alternative`进行调用即可，其为`variant`类型的一个通用谓词函数：
-
-   ```c++
    template <typename T>
    bool is_type(const animal &a) {
    	return holds_alternative<T>(a);
    }
-   ```
 
-6. 第二个辅助者为一个结构体，其看起来像是一个函数对象。其实际是一个双重函数对象，因为其`operator()`实现了两次。一种实现是接受`dog`作为参数输入，另一个实现是接受`cat`类型作为参数输入。对于两种实现，其会调用`woof`或`meow`函数：
-
-   ```c++
    struct animal_voice
    {
        void operator()(const dog &d) const { d.woof(); }
        void operator()(const cat &c) const { c.meow(); }
    };
-   ```
 
-7. 现在让我们使用这些辅助者和类型。首先，定义一个`animal`变量的实例，然后对其进行填充：
-
-   ```c++
    int main()
    {
    	list<animal> l {cat{"Tuba"}, dog{"Balou"}, cat{"Bobby"}};
-   ```
 
-8. 现在，我们会将列表的中内容打印三次，并且每次都使用不同的方式。第一种使用`variant::index()`。因为`animal`类型是`variant<dog, cat>`类型的别名，其返回值的0号索引代表了一个`dog`的实例。1号索引则代表了`cat`的实例。这里的关键是变量特化的顺序。`switch-cast`代码块中，可以通过`get<T>`的方式获取内部的`cat`或`dog`实例：
-
-    ```c++
        for (const animal &a : l) {
            switch (a.index()) {
            case 0:
@@ -112,11 +84,7 @@ void func(U u) { std::cout << u.b << '\n'; }
            }
        }
        cout << "-----\n";
-    ```
 
-9. 我们也可以显示的使用类型作为其索引。`get_if<dog>`会返回一个指向`dog`类型的指针。如果没有`dog`实例在列表中，那么指针则为`null`。这样，我们可以尝试获取下一种不同类型的实例，直到成功为止：
-
-   ```c++
    	for (const animal &a : l) {
            if (const auto d (get_if<dog>(&a)); d) {
            	d->woof();
@@ -125,20 +93,12 @@ void func(U u) { std::cout << u.b << '\n'; }
            }
        }
        cout << "-----\n";
-   ```
 
-10. 使用`variant::visit`是一种非常优雅的方式。这个函数能够接受一个函数对象和一个`variant`实例。函数对象需要对`variant`中所有可能类型进行重载。我们在之前已经对`operator()`进行了重载，所以这里可以直接对其进行使用：
-
-    ```c++
     	for (const animal &a : l) {
     		visit(animal_voice{}, a);
     	}
     	cout << "-----\n";
-    ```
 
-11. 最后，我们将回来数一下`cat`和`dog`在列表中的数量。`is_type<T>`的`cat`和`dog`特化函数，将会与`std::count_if`结合起来使用，用来返回列表中不同实例的个数：
-
-    ```c++
         cout << "There are "
             << count_if(begin(l), end(l), is_type<cat>)
             << " cats and "

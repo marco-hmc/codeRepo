@@ -1,3 +1,22 @@
+
+<Modern C++ Design>中(别问我为什么老举这本书,因为<C++ Templates>和<Generic Programming>
+
+```cpp
+// * C++14 允许 auto 作为返回类型,它通过 return 语句推断返回类型,C++11 则需要额外指定尾置返回类型,对于三目运算符,其结果类型为两个操作数类型中更公用的类型,比如 int 和 double 的公用类型是 double
+#include <cassert>
+
+namespace jc {
+
+template <typename T, typename U>
+auto max(const T& a, const U& b) -> decltype(true ? a : b) {
+  return a < b ? b : a;
+}
+
+}  // namespace jc
+
+int main() { assert(jc::max(1, 3.14) == 3.14); }
+```
+
 # 2.1 线程管理的基础
 ## 2.1.1 启动线程
 

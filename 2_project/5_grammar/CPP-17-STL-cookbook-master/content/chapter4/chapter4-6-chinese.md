@@ -1,8 +1,14 @@
 # 使用std::accumulate和Lambda函数实现transform_if
 
-大多数用过`std::copy_if`和`std::transform`的开发者可能曾经疑惑过，为什么标准库里面没有`std::transform_if`。`std::copy_if`会将源范围内符合谓词判断的元素挑出来，不符合条件的元素忽略。而`std::transform`会无条件的将源范围内所有元素进行变换，然后放到目标范围内。这里的变换谓词是由用户提供的一个函数，这个函数不会太复杂，比如乘以多个数或将元素完全变换成另一种类型。
+大多数用过`std::copy_if`和`std::transform`的开发者可能曾经疑惑过，为什么标准库里面没有`std::transform_if`。
 
-这两个函数很早就存在了，不过到现在还是没有`std::transform_if`函数。本节就来实现这个函数。看起来实现这个函数并不难，可以通过谓词将对应的元素选择出来，然后将这些挑选出来的元素进行变换。不过，我们会利用这个机会更加深入的了解Lambda表达式。
+`std::copy_if`会将源范围内符合谓词判断的元素挑出来，不符合条件的元素忽略。
+
+而`std::transform`会无条件的将源范围内所有元素进行变换，然后放到目标范围内。这里的变换谓词是由用户提供的一个函数，这个函数不会太复杂，比如乘以多个数或将元素完全变换成另一种类型。
+
+这两个函数很早就存在了，不过到现在还是没有`std::transform_if`函数。本节就来实现这个函数。看起来实现这个函数并不难，可以通过谓词将对应的元素选择出来，然后将这些挑选出来的元素进行变换。
+
+不过，我们会利用这个机会更加深入的了解Lambda表达式。
 
 ## How to do it...
 
@@ -14,38 +20,20 @@
    #include <iostream>
    #include <iterator>
    #include <numeric>
-   ```
 
-2. 首先，我们来实现一个`map`函数。其能接受一个转换函数作为参数，然后返回一个函数对象，这个函数对象将会和`std::accumulate`一起工作。
-
-   ```c++
    template <typename T>
    auto map(T fn)
    {
-   ```
-
-3. 当传入一个递减函数时，我们会返回一个函数对象，当这个函数对象调用递减函数时，其会返回另一个函数对象，这个函数对象可以接受一个累加器和一个输入参数。递减函数会在累加器中进行调用，并且`fn`将会对输入变量进行变换。如果这里看起来比较复杂的话，我们将在后面进行详细的解析：
-
-   ```c++
        return [=] (auto reduce_fn) {
            return [=] (auto accum, auto input) {
            	return reduce_fn(accum, fn(input));
            };
        };
    }
-   ```
 
-4. 现在，让我们来实现一个`filter`函数。其和`map`的工作原理一样，不过其不会对输入进行修改(`map`中会对输入进行变换)。另外，我们接受一个谓词函数，并且在不接受谓词函数的情况下，跳过输入变量，而非减少输入变量：
-
-   ```c++
    template <typename T>
    auto filter(T predicate)
    {
-   ```
-
-5. 两个Lambda表达式与`map`函数具有相同的函数签名。其不同点在于`input`参数是否进行过操作。谓词函数用来区分我们是否对输入调用`reduce_fn`函数，或者直接调用累加器而不进行任何修改：
-
-   ```c++
        return [=] (auto reduce_fn) {
            return [=] (auto accum, auto input) {
                if (predicate(input)) {
@@ -56,36 +44,19 @@
            };
        };
    }
-   ```
 
-6. 现在让我们使用这些辅助函数。我们实例化迭代器，我们会从标准输入中获取整数值：
-
-   ```c++
    int main()
    {
        std::istream_iterator<int> it {std::cin};
        std::istream_iterator<int> end_it;
-   ```
-
-7. 然后，我们会调用谓词函数`even`，当传入一个偶数时，这个函数会返回true。变换函数`twice`会对输入整数做乘2处理：
-
-   ```c++
        auto even ([](int i) { return i % 2 == 0; });
        auto twice ([](int i) { return i * 2; });
-   ```
 
-8. `std::accumulate`函数会将所对应范围内的数值进行累加。累加默认就是通过`+`操作符将范围内的值进行相加。我们想要提供自己的累加函数，也就是我们不想只对值进行累加。我们会将迭代器`it`进行解引用，获得其对应的值，之后对再对其进行处理：
-
-   ```c++
        auto copy_and_advance ([](auto it, auto input) {
            *it = input;
            return ++it;
        });
-   ```
 
-9. 我们现在将之前零零散散的实现拼组在一起。我们对标准输入进行迭代，通过输出迭代器`ostream_iterator`将对应的值输出在终端上。 `copy_and_advance`函数对象将会接收用户输入的整型值，之后使用输出迭代器进行输出。将值赋值给输出迭代器，将会使打印变得高效。不过，我们只会将偶数挑出来，然后对其进行乘法操作。为了达到这个目的，我们将`copy_and_advance`函数包装入`even`过滤器中，再包装入`twice`引射器中：
-
-   ```c++
        std::accumulate(it, end_it,
            std::ostream_iterator<int>{std::cout, ", "},
            filter(even)(

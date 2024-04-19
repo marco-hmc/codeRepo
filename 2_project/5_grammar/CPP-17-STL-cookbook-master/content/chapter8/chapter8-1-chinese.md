@@ -19,62 +19,30 @@ C++11之后，STL具有了很多用来测量和显示时间的新类型和函数
    #include <optional>
    
    using namespace std; 
-   ```
 
-2. `chrono::duration`经常用来表示所用时间的长度，其为秒的倍数或小数，所有STL的程序都由整型类型进行特化。本节中，将使用`double`进行特化。本节之后，我们更多的会关注已经存在于STL的时间单位：
-
-   ```c++
    using seconds = chrono::duration<double>;
-   ```
 
-3. 1毫秒为1/1000秒，可以用这个单位来定义秒。`ratio_multiply`模板参数可以使用STL预定义的`milli`用来表示`seconds::period`，其会给我们相应的小数。`ratio_multiply`为基本时间的倍数：
-
-   ```c++
    using milliseconds = chrono::duration<
    	double, ratio_multiply<seconds::period, milli>>;
-   ```
 
-4. 对于微秒来说也是一样的。可以使用`micro`表示：
-
-   ```c++
    using microseconds = chrono::duration<
    	double, ratio_multiply<seconds::period, micro>>;
-   ```
 
-5. 现在我们实现一个函数，会用来从用户的输入中读取一个字符串，并且统计用户输入所用的时间。这个函数没有参数，在返回用户输入的同时，返回所用的时间，我们用一个组对(pair)将这两个数进行返回：
-
-   ```c++
    static pair<string, seconds> get_input()
    {
    	string s;
-   ```
 
-6. 我们需要从用户开始输入时计时，记录一个时间点的方式可以写成如下方式：
-
-   ```c++
    	const auto tic (chrono::steady_clock::now());
-   ```
 
-7. 现在可以来获取用户的输入了。当我们没有获取成功，将会返回一个默认的元组对象。这个元组对象中的元素都是空：
-
-   ```c++
        if (!(cin >> s)) {
        	return { {}, {} };
        }
-   ```
 
-8. 成功获取输入后，我们会打上下一个时间戳。然后，返回用户的输入和输入所用的时间。注意这里获取的都是绝对的时间戳，通过计算这两个时间戳的差，我们得到了打印所用的时间：
-
-   ```c++
        const auto toc (chrono::steady_clock::now());
        
    	return {s, toc - tic};
    } 
-   ```
 
-9. 现在让我们来实现主函数，使用一个循环获取用户的输入，直到用户输入正确的字符串为止。在每次循环中，我们都会让用户输入"C++17"，然后调用`get_input`函数：
-
-   ```c++
    int main()
    {
        while (true) {
@@ -82,17 +50,9 @@ C++11之后，STL具有了很多用来测量和显示时间的新类型和函数
        			" fast as you can.\n> ";
            
        	const auto [user_input, diff] = get_input();
-   ```
 
-10. 然后对输入进行检查。当输入为空，程序会终止：
-
-   ```c++
    		if (user_input == "") { break; }
-   ```
 
-11. 当用户正确的输入"C++17"，我们将会对用户表示祝贺，然后返回其输入所用时间。`diff.count()`函数会以浮点数的方式返回输入所用的时间。当我们使用STL原始的`seconds`时间类型时，将会得到一个已舍入的整数，而不是一个小数。通过使用以毫秒和微秒为单位的计时，我们将获得对应单位的计数，然后通过相应的转换方式进行时间单位转换：
-
-    ```c++
             if (user_input == "C++17") {
                 cout << "Bravo. You did it in:\n"
                     << fixed << setprecision(2)
@@ -103,11 +63,6 @@ C++11之后，STL具有了很多用来测量和显示时间的新类型和函数
                     << setw(12) << microseconds(diff).count()
                     << " microseconds.\n";
                 break;
-    ```
-
-12. 如果用户输入有误时，我们会提示用户继续输入：
-
-    ```c++
             } else {
                 cout << "Sorry, your input does not match."
                			" You may try again.\n";
