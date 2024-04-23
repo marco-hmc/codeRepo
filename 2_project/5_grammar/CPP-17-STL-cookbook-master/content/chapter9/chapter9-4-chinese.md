@@ -18,24 +18,12 @@
    
    using namespace std;
    using namespace chrono_literals;
-   ```
 
-2. 整个程序都会围绕共享互斥量展开，为了简单，我们定义了一个全局实例：
-
-   ```c++
    shared_mutex shared_mut;
-   ```
 
-3. 接下来，我们将会使用`std::shared_lock`和`std::unique_lock`这两个RAII辅助者。为了让其类型看起来没那么复杂，这里进行别名操作：
-
-   ```c++
    using shrd_lck = shared_lock<shared_mutex>;
    using uniq_lck = unique_lock<shared_mutex>;
-   ```
 
-4. 开始写主函数之前，先使用互斥锁的独占模式来实现两个辅助函数。下面的函数中，我们将使用`unique_lock`实例来作为共享互斥锁。其构造函数的第二个参数`defer_lock`会告诉对象让锁处于解锁的状态。否则，构造函数会尝试对互斥量上锁阻塞程序，直至成功为止。然后，会对`exclusive_lock`的成员函数`try_lock`进行调用。该函数会立即返回，并且返回相应的布尔值，布尔值表示互斥量是否已经上锁，或是在其他地方已经锁住：
-
-   ```c++
    static void print_exclusive()
    {
        uniq_lck l {shared_mut, defer_lock};
@@ -46,32 +34,20 @@
        	cout << "Unable to lock exclusively.\n";
        }
    }
-   ```
 
-5. 另一个函数也差不多。其会将程序阻塞，直至其获取相应的锁。然后，会使用抛出异常的方式来模拟发生错误的情况(只会返回一个整数，而非一个非常复杂的异常对象)。虽然，其会立即退出，并且在上下文中我们获取了一个锁住的互斥量，但是这个互斥量也可以被释放。这是因为`unique_lock`的析构函数在任何情况下都会将对应的锁进行释放：
-
-   ```c++
    static void exclusive_throw()
    {
        uniq_lck l {shared_mut};
        throw 123;
    }
-   ```
 
-6. 现在，让我们来写主函数。首先，先开一个新的代码段，并且实例化一个`shared_lock`实例。其构造函数将会立即对共享模式下的互斥量进行上锁。我们将会在下一步了解到这一动作的意义：
-
-   ```c++
    int main()
    {
        {
            shrd_lck sl1 {shared_mut};
            
            cout << "shared lock once.\n";
-   ```
 
-7. 现在我们开启另一个代码段，并使用同一个互斥量实例化第二个`shared_lock`实例。现在具有两个`shared_lock`实例，并且都具有同一个互斥量的共享锁。实际上，可以使用同一个互斥量实例化很多的`shared_lock`实例。然后，调用`print_exclusive`，其会尝试使用互斥量的独占模式对互斥量进行上锁。这样的调用当然不会成功，因为互斥量已经在共享模式下锁住了：
-
-   ```c++
            {
                shrd_lck sl2 {shared_mut};
    
@@ -79,21 +55,13 @@
    
                print_exclusive();
            }
-   ```
 
-8. 离开这个代码段后，`shared_locks12`的析构函数将会释放互斥量的共享锁。`print_exclusive`函数还是失败，这是因为互斥量依旧处于共享锁模式：
-
-   ```c++
            cout << "shared lock once again.\n";
    
            print_exclusive();
        }
        cout << "lock is free.\n";
-   ```
 
-9. 离开这个代码段时，所有`shared_lock`对象就都被销毁了，并且互斥量再次处于解锁状态，现在我们可以在独占模式下对互斥量进行上锁了。调用`exclusive_throw`，然后调用`print_exclusive`。不过因为`unique_lock`是一个RAII对象，所以是异常安全的，也就是无论`exclusive_throw`返回了什么，互斥量最后都会再次解锁。这样即便是互斥量处于锁定状态，`print_exclusive` 也不会被错误的状态所阻塞：
-
-   ```c++
        try {
       		exclusive_throw();
        } catch (int e) {
@@ -124,7 +92,7 @@
 
 **互斥量**
 
-其为**mut**ual **ex**clusion的缩写。并发时不同的线程对于相关的共享数据同时进行修改时，可能会造成结果错误，我们在这里就可以使用互斥量对象来避免这种情况的发生，STL提供了不同特性的互斥量。不过，这些互斥量的共同点就是具有`lock`和`unlock`两个成员函数。
+其为**mutual exclusion**的缩写。并发时不同的线程对于相关的共享数据同时进行修改时，可能会造成结果错误，我们在这里就可以使用互斥量对象来避免这种情况的发生，STL提供了不同特性的互斥量。不过，这些互斥量的共同点就是具有`lock`和`unlock`两个成员函数。
 
 一个互斥量在解锁状态下时，当有线程对其使用`lock()`时，这个线程就获取了互斥量，并对互斥量进行上锁。这样，但其他线程要对这互斥量进行上锁时，就会处于阻塞状态，知道第一个线程对该互斥量进行释放。`std::mutex`就可以做到。
 
