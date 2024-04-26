@@ -1,7 +1,7 @@
 [toc]
 * OT
   * monday:
-  * tuesday:
+  * tuesday: 1830-1930
   * wednesday:
   * thursday:
   * friday:
@@ -10,6 +10,16 @@
 
 ## 1. doing
   1. 内存序
+  2. threadPool
+  3. webServer
+  4. connectionPool
+  5. multiThread
+  6. rapidJson
+  7. rpc
+  8. levelDb
+  9. spdlog
+  10. regex
+  11. 
 
 ### 1.1 trivals
   1. podcast
@@ -50,6 +60,5 @@
     * OS-project
     * network-project
     * 自己做一个vs code插件,可以实现将词汇自动粘贴到某个给定路径,自己用来背单词用.
-
 
 ## 3. done
