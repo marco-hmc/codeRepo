@@ -4,6 +4,7 @@
 #include <thread>
 #include <functional>
 #include <utility>
+
 void worker(std::future<void>& output)
 {
    std::packaged_task<void(bool&)> my_task{ [](bool& done) { done=true; } };
