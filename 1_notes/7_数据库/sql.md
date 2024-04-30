@@ -1,4 +1,72 @@
 
+I will provide you some valuable tips to rapidly learn SQL and become a professional within few months
+
+Create your own database and practice on it.
+
+Solve SQL puzzles and challenges available online.
+
+Participate in online SQL communities and forums.
+
+Use online SQL tutorials and courses.
+
+Attend SQL workshops and webinars.
+
+Practice SQL queries on real-world datasets.
+
+Analyze and manipulate data from different sources.
+
+Create and use SQL stored procedures and functions.
+
+Work on SQL projects and collaborate with other SQL professionals.
+
+Follow best practices and guidelines for SQL optimization and performance.
+
+To get you started, I will highly recommend you look at these articles.
+
+They will guide you through :
+
+What you need to know to get started:
+
+https://link.medium.com/kz9qL7TtCAb
+
+10 tips you should know:
+
+https://link.medium.com/NsrPQF1tCAb
+
+SQL query Optimization:
+
+https://link.medium.com/LwrtUV7tCAb
+
+Sql queries for complex business reports:
+
+https://link.medium.com/Cbi6fRbuCAb
+
+The power of sql case statement:
+
+https://link.medium.com/rY2G7UfuCAb
+
+Advanced SQL queries for mysql workbench series:
+
+PART 1: https://link.medium.com/Ab6QXnmuCAb
+
+PART 2: https://link.medium.com/mMo35opuCAb
+
+PART 3: https://link.medium.com/DXVhGKruCAb
+
+Understanding SQL inner join with practical examples:
+
+https://link.medium.com/8MYnwLtuCAb
+
+Unleashing the power of SQL aggregate functions:
+
+PART 1: https://link.medium.com/ZKZtBMAuCAb
+
+PART 2: https://link.medium.com/xpA0E7DuCAb
+
+PART 3: https://link.medium.com/7xKteHFuCAb
+
+PART 4: https://link.medium.com/zmMc91IuCAb
+
 # 3. 数据库
 * [小林-数据库](https://www.xiaolincoding.com/mysql/base/how_select.html#mysql-%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84)
 * 并行事务引发的问题

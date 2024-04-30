@@ -1,0 +1,6 @@
+msgCenter
+    subscribe()
+    unSubscribe()
+
+msgSender
+        

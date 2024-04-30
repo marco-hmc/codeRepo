@@ -1,4 +1,5 @@
 # include<iostream>
+
 template<typename T>
 struct has_type {
     template<typename C>

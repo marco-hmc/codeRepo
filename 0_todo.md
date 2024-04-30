@@ -9,17 +9,19 @@
   * sunday:
 
 ## 1. doing
-  1. 内存序
-  2. threadPool
-  3. webServer
-  4. connectionPool
-  5. multiThread
-  6. rapidJson
-  7. rpc
-  8. levelDb
-  9. spdlog
-  10. regex
-  11. 
+  1. thread_local是啥
+  1. sql语句
+  2. 内存序
+  3. threadPool
+  4. webServer
+  5. connectionPool
+  6. multiThread
+  7. rapidJson
+  8. rpc
+  9. levelDb
+  10. spdlog
+  11. regex
+  12. 
 
 ### 1.1 trivals
   1. podcast
