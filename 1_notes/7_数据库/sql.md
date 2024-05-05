@@ -1,71 +1,103 @@
+## 1. login
+* `sudo systemctl start mysql`
+* `sudo systemctl stop mysql`
+* `mysql -u [username] -p`
+* `sudo mysql -u root`
+sudo gedit /etc/mysql/my.cnf
 
-I will provide you some valuable tips to rapidly learn SQL and become a professional within few months
+ show databases;
+  use <数据库名>
 
-Create your own database and practice on it.
+  CREATE DATABASE mysql_shiyan;
 
-Solve SQL puzzles and challenges available online.
+CREATE TABLE employee (id int(10),name char(20),phone int(12));
 
-Participate in online SQL communities and forums.
+DROP TABLE table_name;
 
-Use online SQL tutorials and courses.
+    FOREIGN KEY(sid) REFERENCES student(sid),
+    FOREIGN KEY(cid) REFERENCES course(cid)
 
-Attend SQL workshops and webinars.
+在 MySQL 中，通常有这几种约束：
 
-Practice SQL queries on real-world datasets.
+约束类型：	主键	默认值	唯一	外键	非空
+关键字：	PRIMARY KEY	DEFAULT	UNIQUE	FOREIGN KEY	NOT NULL
 
-Analyze and manipulate data from different sources.
+source /home/shiyanlou/Desktop/MySQL-03-01.sql;
 
-Create and use SQL stored procedures and functions.
+主键（PRIMARY KEY）作为数据表中一行数据的唯一标识符，在一张表中通过主键就能准确定位到某一行数据，因此主键十分重要，它不能有重复记录且不能为空。
 
-Work on SQL projects and collaborate with other SQL professionals.
+在 MySQL-03-01.sql 中，这里有主键：
+还有一种特殊的主键——复合主键。主键不仅可以是表中的一列，也可以由表中的两列或多列来共同标识，比如：
 
-Follow best practices and guidelines for SQL optimization and performance.
+---
+默认值约束 (DEFAULT) 规定，当有 DEFAULT 约束的列，插入数据为空时，将使用默认值。
+people_num INT(10) DEFAULT 10,
 
-To get you started, I will highly recommend you look at these articles.
 
-They will guide you through :
+---
+关键字 LIKE 可用于实现模糊查询，常见于搜索功能中。
 
-What you need to know to get started:
+和 LIKE 联用的通常还有通配符，代表未知字符。SQL 中的通配符是 _ 和 % 。其中 _ 代表一个未指定字符，% 代表不定个未指定字符
+---
+SELECT name,age,salary,phone FROM employee ORDER BY salary DESC;
+---
+SELECT of_dpt,COUNT(proj_name) AS count_project FROM project GROUP BY of_dpt
+HAVING of_dpt IN
+(SELECT in_dpt FROM employee WHERE name='Tom');
+---
+SELECT id,name,people_num
+FROM employee JOIN department
+ON employee.in_dpt = department.dpt_name
+ORDER BY id;
 
-https://link.medium.com/kz9qL7TtCAb
+---
+RENAME TABLE 原名 TO 新名字;
 
-10 tips you should know:
+ALTER TABLE 原名 RENAME 新名;
 
-https://link.medium.com/NsrPQF1tCAb
+ALTER TABLE 原名 RENAME TO 新名;
 
-SQL query Optimization:
+3.3.1 增加一列
+在表中增加一列的语句格式为：
 
-https://link.medium.com/LwrtUV7tCAb
+ALTER TABLE 表名字 ADD COLUMN 列名字 数据类型 约束;
+或：
+ALTER TABLE 表名字 ADD 列名字 数据类型 约束;
 
-Sql queries for complex business reports:
+ALTER TABLE employee ADD weight INT(4) DEFAULT 120 AFTER age;
 
-https://link.medium.com/Cbi6fRbuCAb
+---
 
-The power of sql case statement:
+ALTER TABLE 表名字 ADD INDEX 索引名 (列名);
 
-https://link.medium.com/rY2G7UfuCAb
+CREATE INDEX 索引名 ON 表名字 (列名);
 
-Advanced SQL queries for mysql workbench series:
+在使用 SELECT 语句查询的时候，语句中 WHERE 里面的条件，会自动判断有没有可用的索引。
 
-PART 1: https://link.medium.com/Ab6QXnmuCAb
+比如有一个用户表，它拥有用户名(username)和个人签名(note)两个字段。其中用户名具有唯一性，并且格式具有较强的限制，我们给用户名加上一个唯一索引；个性签名格式多变，而且允许不同用户使用重复的签名，不加任何索引。
 
-PART 2: https://link.medium.com/mMo35opuCAb
+这时候，如果你要查找某一用户，使用语句 select * from user where username=? 和 select * from user where note=? 性能是有很大差距的，对建立了索引的用户名进行条件查询会比没有索引的个性签名条件查询快几倍，在数据量大的时候，这个差距只会更大。
 
-PART 3: https://link.medium.com/DXVhGKruCAb
+视图是从一个或多个表中导出来的表，是一种虚拟存在的表。它就像一个窗口，通过这个窗口可以看到系统专门提供的数据，这样，用户可以不用看到整个数据库中的数据，而只关心对自己有用的数据。
 
-Understanding SQL inner join with practical examples:
+注意理解视图是虚拟的表：
 
-https://link.medium.com/8MYnwLtuCAb
+数据库中只存放了视图的定义，而没有存放视图中的数据，这些数据存放在原来的表中；
+使用视图查询数据时，数据库系统会从原来的表中取出对应的数据；
+视图中的数据依赖于原来表中的数据，一旦表中数据发生改变，显示在视图中的数据也会发生改变；
+在使用视图的时候，可以把它当作一张表。
+创建视图的语句格式为：
 
-Unleashing the power of SQL aggregate functions:
+CREATE VIEW 视图名(列a,列b,列c) AS SELECT 列1,列2,列3 FROM 表名字;
 
-PART 1: https://link.medium.com/ZKZtBMAuCAb
+导入和导出
 
-PART 2: https://link.medium.com/xpA0E7DuCAb
+备份
 
-PART 3: https://link.medium.com/7xKteHFuCAb
+mysqldump -u root 数据库名>备份文件名;   #备份整个数据库
 
-PART 4: https://link.medium.com/zmMc91IuCAb
+mysqldump -u root 数据库名 表名字>备份文件名;  #备份整个表
+##
 
 # 3. 数据库
 * [小林-数据库](https://www.xiaolincoding.com/mysql/base/how_select.html#mysql-%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84)
