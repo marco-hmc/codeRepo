@@ -33,7 +33,6 @@
 
 ### 1.5 readings
   1. multiThread
-    - grammar
     - threadPool
   2. network
     - socket

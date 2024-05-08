@@ -22,11 +22,6 @@
    #include <future>
    
    using namespace std;
-   ```
-
-2. `scaler` 和`scaled_cmplx`没有任何改动：
-
-   ```c++
    using cmplx = complex<double>;
    
    static auto scaler(int min_from, int max_from,
@@ -49,11 +44,6 @@
    		return cmplx{scaler_x(x), scaler_y(y)};
    	};
    }
-   ```
-
-3. `mandelbrot_iterations`函数中会增加迭代的次数，为的就是增加计算负荷：
-
-   ```c++
    static auto mandelbrot_iterations(cmplx c)
    {
        cmplx z {};
@@ -65,11 +55,6 @@
        }
        return iterations;
    }
-   ```
-
-4. 主函数中的部分代码也不需要进行任何修改：
-
-   ```c++
    int main()
    {
        const size_t w {100};
@@ -83,30 +68,15 @@
        auto i_to_xy ([=](int x) {
       		return scale(x % w, x / w);
        }); 
-   ```
-
-5. `to_iteration_count`函数中，不能直接调用`mandelbrot_iterations(x_to_xy(x))`，需要使用异步函数` std::async `：
-
-   ```c++
        auto to_iteration_count ([=](int x) {
            return async(launch::async,
            			mandelbrot_iterations, i_to_xy(x));
        });	
-   ```
-
-6. 进行最后的修改之前，函数`to_iteration_count`会返回特定坐标需要迭代的次数。那么就会返回一个`future`变量，这个变量用于在后面获取异步结果时使用。因此，需要一个`vector`来盛放所有`future`变量，所以我们就在这里添加了一个。将输出迭代器作为第三个参数传入`transform`函数，并在`vector`变量`r`中放入新的输出：
-
-   ```c++
    	vector<int> v (w * h);
        vector<future<size_t>> r (w * h);
        iota(begin(v), end(v), 0);
        transform(begin(v), end(v), begin(r),
        		 to_iteration_count);
-   ```
-
-7. `accumulate`不会在对第二个参数中`size_t`的值进行打印，不过这次改成了`future<size_t>`。我们需要花点时间对这个类型进行适应(对于一些初学者来说，这里使用`auto&`类型的话可能会让其产生疑惑)，之后需要调用`x.get()`来访问`x`中的值，如果`x`中的值还没计算出来，程序将会阻塞进行等待：
-
-   ```c++
        auto binfunc ([w, n{0}] (auto output_it, future<size_t> &x)
        		mutable {
        	*++output_it = (x.get() > 50 ? '*' : ' ');
