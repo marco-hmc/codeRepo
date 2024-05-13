@@ -1,45 +1,29 @@
+#include <fstream>
+#include <future>
 #include <iostream>
-#include <vector>
+#include <mutex>
+#include <string>
+#include <thread>
 
-enum class Status { UNVISITED, VISITING, VISITED };
 
-bool hasCycleDFS(int node, std::vector<std::vector<int>> &graph,
-                 std::vector<Status> &status) {
-  status[node] = Status::VISITING;
-  for (int neighbor : graph[node]) {
-    if (status[neighbor] == Status::VISITING) {
-      return true;
-    }
-    if (status[neighbor] == Status::UNVISITED &&
-        hasCycleDFS(neighbor, graph, status)) {
-      return true;
-    }
-  }
-  status[node] = Status::VISITED;
-  return false;
-}
+int factorial(int N) {
+  int res = 1;
+  for (int i = N; i > 1; i--)
+    res *= i;
+  std::cout << "Result is: " << res << std::endl;
 
-bool hasCycle(int numNodes, std::vector<std::vector<int>> &graph) {
-  std::vector<Status> status(numNodes, Status::UNVISITED);
-  for (int i = 0; i < numNodes; ++i) {
-    if (status[i] == Status::UNVISITED && hasCycleDFS(i, graph, status)) {
-      return true;
-    }
-  }
-  return false;
+  return res;
 }
 
 int main() {
-  // Test case 1: Graph with a cycle
-  std::vector<std::vector<int>> graph1 = {{1, 2}, {2, 3}, {3, 1}};
-  std::cout << "start" << std::endl;
-  std::cout << (hasCycle(4, graph1) ? "Graph contains a cycle\n"
-                                    : "Graph doesn't contain a cycle\n");
+  int x;
+  /*std::thread t1(factorial, 4);*/
 
-  // Test case 2: Graph without a cycle
-  std::vector<std::vector<int>> graph2 = {{1, 2}, {2, 3}, {3, 4}};
-  std::cout << (hasCycle(5, graph2) ? "Graph contains a cycle\n"
-                                    : "Graph doesn't contain a cycle\n");
+  // 从子线程获取变量到主线程
+  // std::future<int> fu = std::async(std::launch::async|std::launch::deferred,
+  // factorial, 4);
+  std::future<int> fu = std::async(std::launch::deferred, factorial, 4);
+  x = fu.get(); // get()函数会等待子线程结束,然后将返回值传给x.并且future对象只能被调用一次
 
   return 0;
 }
