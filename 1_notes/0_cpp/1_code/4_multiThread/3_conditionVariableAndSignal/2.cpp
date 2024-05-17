@@ -21,6 +21,7 @@ void function_1() {
     count--;
   }
 }
+
 //数据的消费者
 void function_2() {
   int data = 0;
@@ -38,6 +39,6 @@ void function_2() {
 int main() {
   std::thread t1(function_1);
   std::thread t2(function_2);
-  t1.join();
   t2.join();
+  t1.join();
 }

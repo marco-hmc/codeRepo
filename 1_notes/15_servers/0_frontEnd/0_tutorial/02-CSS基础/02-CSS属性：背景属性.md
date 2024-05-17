@@ -1,9 +1,3 @@
-
-
-> 本文最初发表于[博客园](http://www.cnblogs.com/smyhvae/p/8277895.html)，并在[GitHub](https://github.com/qianguyihao/Web)上持续更新**前端的系列文章**。欢迎在GitHub上关注我，一起入门和进阶前端。
-
-> 以下是正文。
-
 ## background 的常见背景属性
 
 
@@ -39,40 +33,7 @@
 
 ## background-color：背景颜色的表示方法
 
-css2.1 中，颜色的表示方法有三种：单词、rgb表示法、十六进制表示法。
-
-比如红色可以有下面的三种表示方法：
-
-```css
-	background-color: red;
-	background-color: rgb(255,0,0);
-	background-color: #ff0000;
-```
-
-CSS3 中，有一种新的表示颜色的方式：RGBA或者HSLA。
-
-RGBA、HSLA可应用于**所有**使用颜色的地方。
-
-下面分别介绍。
-
-### 用英语单词表示
-
-能够用英语单词来表述的颜色，都是简单颜色，比如red、green、blue、orange、gray等。代码举例：
-
-```css
-background-color: red;
-```
 ### RGB 表示法
-
-RGB 表示三原色“红”red、“绿”green、“蓝”blue。
-
-光学显示器中，每个像素都是由三原色的发光原件组成的，靠明亮度不同调成不同的颜色的。r、g、b的值，每个值的取值范围0~255，一共256个值。
-
-比如红色：
-
-```css
-background-color: rgb(255,0,0);
-```
 
 黑色：
 

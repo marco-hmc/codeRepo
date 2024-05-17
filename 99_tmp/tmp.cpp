@@ -1,29 +1,15 @@
-#include <fstream>
-#include <future>
 #include <iostream>
-#include <mutex>
-#include <string>
-#include <thread>
-
-
-int factorial(int N) {
-  int res = 1;
-  for (int i = N; i > 1; i--)
-    res *= i;
-  std::cout << "Result is: " << res << std::endl;
-
-  return res;
-}
+using namespace std;
 
 int main() {
-  int x;
-  /*std::thread t1(factorial, 4);*/
+  char hello[] = "你好你好你好";
+  // 输出19,如果你好是通过utf8输入,如果你好是通过gbk输入的,输出13
+  std::cout << sizeof(hello) << std::endl;
+  std::cout << hello << std::endl; // 输出hello你好
 
-  // 从子线程获取变量到主线程
-  // std::future<int> fu = std::async(std::launch::async|std::launch::deferred,
-  // factorial, 4);
-  std::future<int> fu = std::async(std::launch::deferred, factorial, 4);
-  x = fu.get(); // get()函数会等待子线程结束,然后将返回值传给x.并且future对象只能被调用一次
+  wchar_t hello_w[] = L"你好你好你好";
+  std::cout << sizeof(hello_w)
+            << std::endl; // 输出14, utf16编码,尽管"你好"输入是以utf8输入的
 
   return 0;
 }

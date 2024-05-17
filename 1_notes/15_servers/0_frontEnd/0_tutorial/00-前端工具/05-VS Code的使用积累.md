@@ -1,6 +1,3 @@
-
-
-
 ## 常见配置
 
 
@@ -11,7 +8,6 @@
 ```
 
 参考链接：<https://blog.csdn.net/WestLonly/article/details/78048049>
-
 
 
 **在新的窗口中打开文件**：
@@ -44,13 +40,6 @@ live-server
 
 
 参考链接：[Visual Studio Code + live-server编辑和浏览HTML网页](http://www.cnblogs.com/1zhk/p/5699379.html)
-
-
-## 常用插件
-
-方式一：打开VS Code，左侧有五个按钮，点击最下方的按钮，然后就可以开始安装相应的插件了。
-
-方式二：在vscode中输入快捷键「ctrl+shift+P」，弹出指令窗口，输入`extension:install`，回车，左侧即打开扩展安装的界面。
 
 
 ### sftp：文件传输
@@ -226,41 +215,11 @@ VSCode自带的高亮显示，实在是不够显眼。用插件支持一下吧�
 - <https://www.cnblogs.com/AmosLee94/p/8338013.html>
 
 
-
-
-## 常用快捷键
-
-
-| Win快捷键 |Mac快捷键| 作用 | 备注 |
-|:-------------|:-------------|:-----|:-----|
-| Shift + Alt + F |Shift + option + F| 代码格式化 |  |
-| Ctrl + Shift + N | |在当前行上面增加一行并跳至该行  |   |
-|  **Ctrl + Shift + D** | |复制当前行到下一行  |   |
-
-
-
-
-
-### 如何同时打开多个窗口
-
-
-
-
-
-
-
-
-
-
-
-
 ## 问题
 
 问题1
 
 解决；You can kill the Microsoft.VSCode.Cpp.IntelliSense.Msvc process to save the file successfully. 也就是 IntelliSense 这个进程。
-
-
 
 
 ## 参考链接
@@ -271,10 +230,3 @@ VSCode自带的高亮显示，实在是不够显眼。用插件支持一下吧�
 ### 某网友的VS Code 插件截图
 
 ![](http://img.smyhvae.com/20180611_2255.png)
-
-
-
-
-
-
-
