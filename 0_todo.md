@@ -1,7 +1,7 @@
 [toc]
 * OT
   * monday:
-  * tuesday: 1830-1930
+  * tuesday:
   * wednesday:
   * thursday:
   * friday:
@@ -9,14 +9,13 @@
   * sunday:
 
 ## 1. doing
+  1. github: 1_sl_threadPool
+  2. github: 2_sl_webServer
+  3. github: 3_sl_webServer
   3. 周记
   4. 博客
-    - 要在__layout的project.html中添加归档功能
   6. cmake
-  1. c++的三五法则
-
   1. sql语句
-  2. 内存序
   3. threadPool
   4. webServer
   5. connectionPool
@@ -58,7 +57,6 @@
     * otSumbit_python
     * json
     * logging
-    * catch2
     * multiThread
     * skipList
     * coredump

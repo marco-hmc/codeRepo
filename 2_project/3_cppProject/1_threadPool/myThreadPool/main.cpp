@@ -4,7 +4,7 @@
 
 void test_1() {
   ThreadPool threadPool;
-  threadPool.setMode(ThreadPool::PoolMode::MODE_FIXED);
+  threadPool.setMode(PoolMode::MODE_FIXED);
   threadPool.start(2);
 
   std::future<int> result1 =
