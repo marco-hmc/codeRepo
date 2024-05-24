@@ -2,8 +2,6 @@
 
 ### 1、var 声明的变量会挂载在 window 对象上，而 let 和 const 声明的变量不会
 
-举例：
-
 ```js
 var a = '我是a';
 console.log(a); // 打印结果：我是a
