@@ -1,16 +1,24 @@
-class MyClass:
-    def __init__(self, name):
-        self.name = name
+import os
 
 
-# 创建一个实例并赋值给变量a
-a = MyClass("a")
+def generate_summary(directory):
+    summary = "# Summary\n\n"
 
-# 将a赋值给b
-b = a
+    for root, dirs, files in os.walk(directory):
+        level = root.replace(directory, "").count(os.sep)
+        indent = "  " * level
+        summary += f"{indent}* [{os.path.basename(root)}/]({root}/)\n"
+        sub_indent = "  " * (level + 1)
+        for file in files:
+            if file.endswith(".md") and file != "README.md":
+                summary += f"{sub_indent}* [{file[:-3]}]({os.path.join(root, file)})\n"
 
-# 通过b修改实例的状态
-b.name = "b"
+    with open("summary.md", "w") as f:
+        f.write(summary)
 
-# 打印a的name属性，结果是'b'
-print(a.name)
+
+# 指定你的代码仓库目录
+directory = (
+    r"C:\Users\marco\Documents\1_codeRepo\codeRepoProject\codeRepo\99_tmp\testMd"
+)
+generate_summary(directory)

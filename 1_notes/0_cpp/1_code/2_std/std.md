@@ -1,3 +1,20 @@
+## stl的algorithm
+
+### 1. tricks
+#### 1. 使用`std::transform`
+是的,使用`std::transform`时,你需要预先为输出范围分配足够的空间.这是因为`std::transform`不会自动为你的输出范围分配空间,它只是将转换后的元素写入到输出迭代器指向的位置.
+
+例如,如果你正在处理一个`std::vector<int>`,并且你想要将其所有元素转换为其自身的平方,那么你需要先为输出范围分配足够的空间,如下所示:
+
+```cpp
+std::vector<int> input = {1, 2, 3, 4, 5};
+std::vector<int> output(input.size());  // 预先分配足够的空间
+
+std::transform(input.begin(), input.end(), output.begin(), [](int x) { return x * x; });
+```
+
+在这个例子中,`output`的大小在调用`std::transform`之前就已经被设置为与`input`相同.这样,`std::transform`就可以安全地将转换后的元素写入到`output`中.
+
 #### STL库,vector的内存管理,deque的内存管理,list的排序
 vector的内存管理原理是动态数组.当我们创建一个vector对象时,它会分配一块连续的内存来存储元素.当我们向vector中添加元素时,如果当前内存空间不足以容纳新的元素,vector会自动重新分配更大的内存块,并将原有的元素复制到新的内存块中.这个过程称为动态内存分配.当我们从vector中删除元素时,vector会释放不再使用的内存,以便节省内存空间.
 

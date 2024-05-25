@@ -51,3 +51,108 @@ JIT是"Just-In-Time"编译的缩写,是一种将程序代码在运行时(而非�
 JIT编译技术试图结合解释型语言和编译型语言的优点.它在程序运行时将代码编译为机器代码,但只编译正在执行的部分,而不是全部代码.这样,它既可以在运行时动态修改代码,又可以通过编译为机器代码来提高运行速度.
 
 JIT编译技术在许多现代语言和运行时系统中都有应用,如Java的HotSpot虚拟机/.NET的CLR/Python的PyPy/JavaScript的V8等.
+
+### 什么是dom?
+DOM(Document Object Model)是一种编程接口,它允许 JavaScript 和其他脚本语言操作 HTML 和 XML 文档的内容/结构和样式.DOM 将文档解析为一个由节点和对象(包括属性和方法)组成的结构,使得编程语言可以操作文档的内容和结构.
+
+在 JavaScript 中,DOM 是由以下几种类型的节点组成的:
+
+- **文档节点**:代表整个文档,是 DOM 树的根节点.
+
+- **元素节点**:代表 HTML 或 XML 文档中的元素,如 `<p>`/`<div>` 等.
+
+- **属性节点**:代表元素的属性.
+
+- **文本节点**:代表元素或属性中的文本内容.
+
+这些节点都是对象,具有各自的属性和方法.通过这些属性和方法,我们可以读取和修改节点的内容,创建和删除节点,添加和删除节点的属性,等等.
+
+例如,我们可以使用 `getElementById` 方法获取一个元素节点,然后使用 `innerHTML` 属性修改其内容,或者使用 `style` 属性修改其样式.
+
+总的来说,DOM 是 JavaScript 操作网页内容的一种方式,它将网页转化为一个对象模型,使得我们可以像操作对象一样操作网页.
+
+### 如何将html转为dom树?
+DOM(Document Object Model)将整个网页转化为一个对象模型的过程通常被称为"解析",这是浏览器的渲染引擎在加载网页时自动进行的.
+
+当浏览器加载 HTML 文档时,它会从上到下逐行读取文档内容.对于每一个遇到的 HTML 标签,浏览器会创建一个对应的 DOM 对象(节点).这些对象包含了该标签的所有信息,如标签名/属性/父节点/子节点等.
+
+这些 DOM 对象按照它们在 HTML 文档中的嵌套关系组织成一个树状结构,称为 DOM 树.在 DOM 树中,整个文档是一个"文档节点",HTML 标签是"元素节点",标签的属性是"属性节点",标签中的文本内容是"文本节点".
+
+例如,对于以下的 HTML 文档:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Title</title>
+</head>
+<body>
+    <h1>My Heading</h1>
+    <p>My paragraph.</p>
+</body>
+</html>
+```
+
+浏览器会解析成如下的 DOM 树:
+
+```
+Document
+└── HTML
+    ├── HEAD
+    │   └── TITLE
+    │       └── "My Title"
+    └── BODY
+        ├── H1
+        │   └── "My Heading"
+        └── P
+            └── "My paragraph."
+```
+
+通过这种方式,DOM 将网页转化为一个对象模型,使得 JavaScript 可以通过操作这些对象来操作网页的内容和结构.
+
+### js是如何操作dom树的
+
+JavaScript 操作 DOM 树主要通过以下几个步骤:
+
+1. **获取节点**:首先,我们需要获取到我们想要操作的 DOM 节点.JavaScript 提供了多种方法来获取节点,如 `getElementById`/`getElementsByClassName`/`getElementsByTagName`/`querySelector` 和 `querySelectorAll` 等.
+
+   ```javascript
+   var element = document.getElementById('myElement');
+   ```
+
+2. **修改节点**:获取到节点后,我们可以使用节点的属性和方法来修改它.例如,我们可以修改元素节点的 `innerHTML` 属性来改变它的内容,或者修改 `style` 属性来改变它的样式.
+
+   ```javascript
+   element.innerHTML = 'New content';
+   element.style.color = 'red';
+   ```
+
+3. **添加和删除节点**:我们还可以使用 `appendChild`/`insertBefore`/`removeChild` 等方法来添加/移动或删除节点.
+
+   ```javascript
+   var newElement = document.createElement('div');
+   document.body.appendChild(newElement);
+   
+   var oldElement = document.getElementById('oldElement');
+   document.body.removeChild(oldElement);
+   ```
+
+4. **添加和删除事件监听器**:我们可以使用 `addEventListener` 和 `removeEventListener` 方法来添加或删除事件监听器,使得我们可以在用户与网页交互时执行特定的代码.
+
+   ```javascript
+   element.addEventListener('click', function() {
+       alert('Element was clicked!');
+   });
+   ```
+
+以上就是 JavaScript 操作 DOM 树的基本步骤.通过这些步骤,我们可以动态地修改网页的内容/结构和样式,以及响应用户的交互.
+
+
+### js和html是如何一起工作的
+实际上,当浏览器加载 HTML 文档时,它会读取 HTML 文档的文本内容,然后根据这些文本内容创建 DOM 树.这个过程被称为"解析".
+
+在解析过程中,浏览器会逐行读取 HTML 文档的文本内容.对于每一个遇到的 HTML 标签,浏览器会创建一个对应的 DOM 对象(节点).这些对象包含了该标签的所有信息,如标签名/属性/父节点/子节点等.
+
+然后,这些 DOM 对象按照它们在 HTML 文档中的嵌套关系组织成一个树状结构,称为 DOM 树.在 DOM 树中,整个文档是一个"文档节点",HTML 标签是"元素节点",标签的属性是"属性节点",标签中的文本内容是"文本节点".
+
+这个 DOM 树就是一个 JavaScript 对象,JavaScript 可以通过操作这个对象来操作网页的内容和结构.所以,我们可以说,浏览器是将 HTML 文档的文本内容解析成一个 JavaScript 对象,然后 JavaScript 通过操作这个对象来操作 DOM 树.
