@@ -4,6 +4,15 @@
 
 [toc]
 
+### 0. 常用git指令
+
+* 代理设置
+  * `git config --global http.proxy http://127.0.0.1:7890`
+  * `git config --global https.proxy https://127.0.0.1:7890`
+* 查看设置
+  * `git config --global -l`
+
+
 ### 1. git基本操作
 
 #### 1.1 git的工程区域和工作状态
@@ -260,16 +269,6 @@ git config --global https.proxy 'socks5://127.0.0.1:7890'
   1. `git branch -d -r branch_name` // branch_name为本地分支名
   2. `git push origin branch_name` // 将删除推送远端
 
-* **`origin`是什么?**
-
-  当你克隆一个远程仓库时,Git 会默认给远程仓库起一个别名叫做 `origin`.
-
-  * **为什么origin不能够作为缺省处理,难道还会有多个远程仓库?**
-
-    是的,可能会有多个仓库.
-
-    有多个团队同时开发一个产品.A团队开发公共组件,他们有一个仅包含公共组件相关代码的仓库;B团队开发业务层面的逻辑,他们既需要开发业务相关,也需要使用A团队的公共组件代码.因此对于B团队来说,他们需要同步更新A团队的仓库,他们是多仓库的.而对于A团队来说,他们不太需要考虑B团队,因此他们是单仓库的.
-
 * **git merge和git rebase,是谁合并了谁?**
 
   例如,如果你当前在 `main` 分支上,想要将 `feature` 分支的更改合并到 `main` 分支上,可以执行以下命令:
@@ -280,5 +279,3 @@ git config --global https.proxy 'socks5://127.0.0.1:7890'
   ```
 
   使用git merge和git rebase一般不显式指定两个分支,可能是怕谁合并谁带来太大的心智负担,因此一般都是切换到要保留的分支,然后合并其他分支.
-
-* 

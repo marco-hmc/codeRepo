@@ -12,6 +12,9 @@
   1. github: 1_sl_threadPool
   2. github: 2_sl_webServer
   3. github: 3_sl_webServer
+  4. https://github.com/wuyongch/-Student-management-system/tree/main/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9Fhttps://github.com/wuyongch/-Student-management-system/tree/main/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F
+  5. https://github.com/parallel101/course/tree/master
+  6. https://github.com/jiayaozhang/OpenVDB_and_TBB
   3. 周记
   4. 博客
   6. cmake
@@ -119,3 +122,5 @@ MySQL InnoDB MVCC 实现机制
 《高性能MySQL》
 《MySQL技术内幕》
 这两本主要对索引、innodb存储引擎、锁、并发控制讲得比较清楚，建议挑对应章节看。
+
+
