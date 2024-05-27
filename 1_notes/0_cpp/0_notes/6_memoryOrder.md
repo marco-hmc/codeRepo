@@ -1,3 +1,6 @@
+_tags: c++, constructing
+_label: -1
+
 ## 内存序
 
 ### 1. 指令重排

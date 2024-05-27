@@ -1,3 +1,6 @@
+_tags: c++, constructing, reading notes
+_label: -1
+
 ## My effective C++
 
 ### 1. effective C++
@@ -61,54 +64,12 @@ FileSystem& tfs() {
 
 此外，这种方法还可以避免 "static deinitialization order fiasco"。这是因为在程序结束时，静态对象的析构函数会按照与构造函数相反的顺序被调用。如果一个对象的析构函数依赖于另一个对象，而那个对象已经被析构，就会出现问题。但是，如果我们将静态对象封装在函数内部，就可以确保它们在程序结束时仍然存在。
 
-### 4. 初始化比赋值快
+#### 1.5 初始化比赋值快
+* 为内置型对象进行手工初始化，因为C++不保证初始化他们
+* 构造函数最好使用初始化列初始化而不是复制，并且他们初始化时有顺序的
+* 为了免除跨文件编译的初始化次序问题，应该以local static对象替换non-local static对象
 
-初始化的函数通常在构造函数上（注意区分初始化和赋值的关系，初始化的效率高，赋值的效率低，而且这些初始化是有次序的，base classes更早于他们的派生类（参看[C++ primer 二刷笔记](https://github.com/Tianji95/note-of-C-plus-plus-primer/blob/master/C%2B%2Bprimer%E4%BA%8C%E5%88%B7%E7%AC%94%E8%AE%B0.md)
-
-除了这些以外，如果我们有两个文件A和B，需要分别编译，A构造函数中用到了B中的对象，那么初始化A和B的顺序就很重要了，这些变量称为（non-local static对象）
-
-解决方法是：将每个non-local static对象搬到自己专属的函数内，并且该对象被声明为static，然后这些函数返回一个reference指向他所含的对象，用户调用这些函数，而不直接涉及这些对象（Singleton模式手法）：
-
-    原代码：
-    "A.h"
-    class FileSystem{
-        public:
-            std::size_t numDisks() const;
-    };
-    extern FileSystem tfs;
-    "B.h"
-    class Directory{
-        public:
-            Directory(params){
-                std::size_t disks = tfs.numDisks(); //使用tfs
-            }
-    }
-    Director tempDir(params);
-    修改后：
-    "A.h"
-    class FileSystem{...}    //同前
-    FileSystem& tfs(){       //这个函数用来替换tfs对象，他在FileSystem class 中可能是一个static，            
-        static FileSystem fs;//定义并初始化一个local static对象，返回一个reference
-        return fs;
-    }
-    "B.h"
-    class Directory{...}     // 同前
-    Directory::Directory(params){
-        std::size_t disks = tfs().numDisks();
-    }
-    Directotry& tempDir(){   //这个函数用来替换tempDir对象，他在Directory class中可能是一个static，
-        static Directory td; //定义并初始化local static对象，返回一个reference指向上述对象
-        return td;
-    }
-
-这样做的原理在于C++对于函数内的local static对象会在“该函数被调用期间，且首次遇到的时候”被初始化。当然我们需要避免“A受制于B，B也受制于A”
-
-总结：
-+ 为内置型对象进行手工初始化，因为C++不保证初始化他们
-+ 构造函数最好使用初始化列初始化而不是复制，并且他们初始化时有顺序的
-+ 为了免除跨文件编译的初始化次序问题，应该以local static对象替换non-local static对象
-
-#### 1.5 了解C++ 那些自动生成和调用的函数
+#### 1.6 了解C++ 那些自动生成和调用的函数
 编译器自动生成的默认构造函数/拷贝构造函数/拷贝赋值操作符和析构函数对成员变量的处理方式如下:
 
 1. 默认构造函数:如果你没有为类定义一个构造函数,编译器会生成一个默认构造函数.这个默认构造函数不会对成员变量进行任何初始化操作.对于内置类型的成员变量,如果你没有在类体中显式初始化它们,它们的值将是未定义的.对于类类型的成员变量,它们将使用其类的默认构造函数进行初始化.
@@ -119,7 +80,7 @@ FileSystem& tfs() {
 
 4. 析构函数:如果你没有为类定义一个析构函数,编译器会生成一个默认析构函数.这个默认析构函数不会对成员变量进行任何操作.但是,当对象被销毁时,它的成员变量也会被销毁.对于类类型的成员变量,它们将使用其类的析构函数进行销毁.
 
-#### 2.3 绝不在构造和析构过程中调用virtual函数
+#### 1.7 绝不在构造和析构过程中调用virtual函数
 
 在C++中,构造函数和析构函数中调用虚函数时,不会有动态绑定.也就是说,调用的虚函数是当前正在执行的构造函数或析构函数所在的类版本,而不是对象的动态类型版本.
 
@@ -131,7 +92,7 @@ FileSystem& tfs() {
 
 同样,在析构过程中,也是从派生类开始,然后逐步向上析构基类的部分.在派生类的析构函数执行后,虚函数表已经被设置回基类的虚函数表.因此,在析构函数中调用虚函数时,也会调用基类版本的虚函数,而不是派生类版本的虚函数.
 
-#### 2.4 return this和return *this的区别是什么
+#### 1.8 return this和return *this的区别是什么
 `return this` 和 `return *this` 的主要区别在于它们返回的类型:
 
 - `return this` 返回的是一个指向当前对象的指针.这意味着,如果你有一个对象 `obj`,并且你有一个函数 `func` 返回 `this`,那么 `obj.func()` 将返回一个指向 `obj` 的指针.
@@ -140,12 +101,12 @@ FileSystem& tfs() {
 
 在某些情况下,你可能希望返回一个指向当前对象的指针,例如,如果你正在实现一个链式调用.在其他情况下,你可能希望返回一个引用,例如,如果你正在实现一个赋值运算符,通常你会希望返回一个引用,以便支持连续赋值(例如 `a = b = c`).
 
-#### 2.5 复制对象时勿忘其每一个成分
+#### 1.9 复制对象时勿忘其每一个成分
 + 当编写一个copy或者拷贝构造函数,应该确保复制成员里面的所有变量,以及所有基类的成员
 + 不要尝试用一个拷贝构造函数调用另一个拷贝构造函数,如果想要精简代码的话,应该把所有的功能机能放到第三个函数里面,并且由两个拷贝构造函数共同调用
 + 当新增加一个变量或者继承一个类的时候,很容易出现忘记拷贝构造的情况,所以每增加一个变量都需要在拷贝构造里面修改对应的方法
 
-#### 2.6 设计class犹如设计type
+#### 1.10 设计class犹如设计type
 
 如何设计class:
 + 新的class对象应该被如何创建和构造
@@ -160,31 +121,8 @@ FileSystem& tfs() {
 + 你真的需要一个新type么?如果只是定义新的derived class或者为原来的class添加功能,说不定定义non-member函数或者templates更好
 
 
-#### 1.6 为多态基类声明virtual析构函数
+#### 1.11 为多态基类声明virtual析构函数
 
-其主要原因是如果基类没有virtual析构函数，那么派生类在析构的时候，如果是delete 了一个base基类的指针，那么派生的对象就会没有被销毁，引起内存泄漏。
-例如：
-    
-    class TimeKeeper{
-        public:
-        TimeKeeper();
-        ~TimeKeeper();
-        virtual getTimeKeeper();
-    }
-    class AtomicClock:public TimeKeeper{...}
-    TimeKeeper *ptk = getTimeKeeper();
-    delete ptk;
-除析构函数以外还有很多其他的函数，如果有一个函数拥有virtual 关键字，那么他的析构函数也就必须要是virtual的，但是如果class不含virtual函数,析构函数就不要加virtual了，因为一旦实现了virtual函数，那么对象必须携带一个叫做vptr(virtual table pointer)的指针，这个指针指向一个由函数指针构成的数组，成为vtbl（virtual table），这样对象的体积就会变大，例如：
-
-    class Point{
-        public://析构和构造函数
-        private:
-        int x, y
-    }
-
-本来上面那个代码只占用64bits(假设一个int是32bits)，存放一个vptr就变成了96bits，因此在64位计算机中无法塞到一个64-bits缓存器中，也就无法移植到其他语言写的代码里面了。
-
-总结：
 + 如果一个函数是多态性质的基类，应该有virtual 析构函数
 + 如果一个class带有任何virtual函数，他就应该有一个virtual的析构函数
 + 如果一个class不是多态基类，也没有virtual函数，就不应该有virtual析构函数
@@ -1097,29 +1035,6 @@ new-handler无法给每个class进行定制，但是可以重写new运算符，�
 
 void* operator new(std::size_t, void* pMemory) throw(); //placement new
 static void operator delete(void* pMemory) throw();     //palcement delete，此时要注意名称遮掩问题
-
-#### 杂项讨论 (Miscellany)
-
-**53. 不要轻忽编译器的警告（Pay attention to compiler warnings)**
-
-+ 严肃对待编译器发出的warning， 努力在编译器最高警告级别下无warning
-+ 同时不要过度依赖编译器的警告，因为不同的编译器对待事情的态度可能并不相同，换一个编译器警告信息可能就没有了
-
-**54. 让自己熟悉包括TR1在内的标准程序库 （Familiarize yourself with the standard library, including TR1)**
-
-其实感觉这一条已经有些过时了，不过虽然过时，但是很多地方还是有用的
-+ smart pointers
-+ tr1::function ： 表示任何callable entity（可调用物，只任何函数或者函数对象）
-+ tr1::bind是一种stl绑定器
-+ Hash tables例如set，multisets， maps等
-+ 正则表达式
-+ tuples变量组
-+ tr1::array：本质是一个STL化的数组
-+ tr1::mem_fn:语句构造上与程艳函数指针一样的东西
-+ tr1::reference_wrapper： 一个让references的行为更像对象的东西
-+ 随机数生成工具
-+ type traits
-
 
 ## More Effective C++
 

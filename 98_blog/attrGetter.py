@@ -22,6 +22,7 @@ class FileAttrHandler:
             
     def getAttr(self):
         self.getNumberFromFileName()
+        self.getNameLabels()
         self.getTitle()
         self.getCreateDate()
         self.getSubTitle()
@@ -34,6 +35,16 @@ class FileAttrHandler:
         time_zone = "+0800"
         self.formatted_time = datetime.datetime.fromtimestamp(create_time).strftime('%Y-%m-%d %H:%M:%S %z') + time_zone
         pass    
+
+    def getNameLabels(self):
+        self.tags = []
+        with open(self.filePath, 'r') as file:
+            for line in file:
+                if line.startswith('_label:'):
+                    self.nameLabels = line.strip()[7:].split(',')[0].replace(' ', '')
+                    return
+        self.nameLabels = ""
+        pass
   
     def getTitle(self):
         with open(self.filePath, 'r') as file:
@@ -54,12 +65,13 @@ class FileAttrHandler:
         self.tags = []
         with open(self.filePath, 'r') as file:
             for line in file:
-                if line.startswith('tags_:'):
+                if line.startswith('_tags:'):
                     self.tags = line.strip()[6:].split(',')
                     self.tags = [tag.strip() for tag in self.tags]
                     return
         self.tags = []
-    
+
+
     def getPicture(self):      
         def getSuffix():
             image_files = []
@@ -89,6 +101,8 @@ class FileAttrHandler:
         targetPath = os.path.join(targetDir, f"{self.formatted_time[:10]}-{self.number}-{self.title}.md")
         with open(self.filePath, 'r') as file:
             content = file.read()
+        filtered_lines = [line for line in content if not line.strip().startswith(('_tags', '_labels'))]
+        content = ''.join(filtered_lines)
         with open(targetPath, 'w') as file:
             file.write(attr)
             file.write(content)

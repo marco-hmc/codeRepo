@@ -1,3 +1,6 @@
+_tags: c++, constructing, error, exception
+_label: -1
+
 ## 错误码
 
 错误处理,一般而言有两种处理方法

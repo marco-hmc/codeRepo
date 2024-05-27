@@ -8,7 +8,7 @@
 import sys
 
 if __name__ == '__main__':
-    sys.path[0]="/home/marco/codeRepo/98_blog"
+    sys.path[0]="/home/marco/0_codeRepo/98_blog"
 
 import json
 import os
@@ -51,7 +51,7 @@ class ToBlogHandler:
         for root, dirs, files in os.walk(self.noteDir):
             for file in files:
                 # 只处理满足正则表达式的文件
-                if re.match(r'\d{1,2}_', file):
+                if re.match(r'\d+(\.\d+)?_.*\.md$', file):
                     file_path = os.path.join(root, file)
                     if(self.processAttr(file_path)):
                         self.dealWithImg(file_path)
@@ -59,6 +59,6 @@ class ToBlogHandler:
     
 
 if __name__ == '__main__':
-    handler = ToBlogHandler("/home/marco/codeRepo/98_blog/blogConf.json")
+    handler = ToBlogHandler("/home/marco/0_codeRepo/98_blog/blogConf.json")
     handler.traverseFiles()
     pass

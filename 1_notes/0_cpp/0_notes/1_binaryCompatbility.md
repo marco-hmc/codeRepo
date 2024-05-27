@@ -1,3 +1,6 @@
+_tags: constructing, c++
+_label: -1
+
 ## 二进制兼容
 
 ### 1. 什么是二进制兼容问题?

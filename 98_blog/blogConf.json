@@ -1,9 +1,9 @@
 {
   "debugMode": true,
   "image_index": 1,
-  "noteDir": "/home/marco/codeRepo/1_notes/0_cpp/0_notes",
-  "projectName": "ccpp",
-  "targetDir": "/home/marco/codeRepo/98_blog/test",
-  "target_img_dir": "/home/marco/1_blog/template_blog/vonge-jekyll-bookshop-template/site/images/post",
-  "blogDir": "/home/marco/1_blog/template_blog/vonge-jekyll-bookshop-template/site"
+  "noteDir": "/home/marco/0_codeRepo/1_notes/1_计算机网络",
+  "projectName": "计算机网络",
+  "targetDir": "/home/marco/0_codeRepo/98_blog/test",
+  "target_img_dir": "/home/marco/1_marco_blog/site/images/post",
+  "blogDir": "/home/marco/1_marco_blog/site"
 }

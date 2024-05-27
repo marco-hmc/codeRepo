@@ -24,6 +24,7 @@ Design Points:
 #### 3.5 CAS
 * 什么是CAS(copy and swap)?有什么用?
   在C++编程中,"copy-and-swap"(CAS)是一种常用的技术,用于实现赋值操作符(operator=).CAS的基本思想是先创建一个副本,然后交换副本和原对象.
+
 * 在什么场景下使用?
   实现赋值操作符:CAS是实现赋值操作符(operator=)的一种常见方法.它可以简化代码,并提供强异常安全性.
 
@@ -49,32 +50,6 @@ main函数执行之前主要是初始化系统资源
 5. 将main函数的参数，argc，argv等传递给main函数，然后才真正运行main函数
 
 **在C++内部，在全局构造函数中，访问其他全局或者静态变量，其结果是不可预知的**
-
-## NULL和nullptr的区别
-
-* 在C语言中，NULL通常被定义为：#define NULL ((void *)0)
-
-* 所以NULL实际上是一个空指针，如果在C语言中写入以下代码，编译是没有问题的，因为在**C语言中把空指针赋给int和char指针的时候，发生了隐式类型转换，把void指针转换成了相应类型的指针**
-
-  ```c++
-  int  *pi = NULL;
-  char *pc = NULL;
-  ```
-
-* 以上代码如果使用C++编译器来编译则是会出错的，因为C++是强类型语言，void*是不能隐式转换成其他类型的指针的，所以实际上编译器提供的头文件做了相应的处理
-
-  ```c++
-  #ifdef __cplusplus
-  #define NULL 0
-  #else
-  #define NULL ((void *)0)
-  #endif
-  ```
-
-## 虚函数指针、虚函数表
-
-- 虚函数指针：在含有虚函数类的对象中，指向虚函数表，在运行时确定。
-- 虚函数表：在程序只读数据段（`.rodata section`，见：目标文件存储结构:http://t.cn/E4WVBeF），存放虚函数指针，如果派生类实现了基类的某个虚函数，则在虚表中覆盖原本基类的那个虚函数指针，在编译时根据类的声明创建
 
 ## 虚继承
 
@@ -363,16 +338,6 @@ main函数执行之前主要是初始化系统资源
 
 # STL
 
-* 请你讲讲STL有什么基本组成
-  * STL主要包含六大部件：
-    * 容器
-    * 迭代器
-    * 仿函数
-    * 算法
-    * 分配器
-    * 配接器(适配器)
-  * 他们之间的关系：分配器给容器分配存储空间，算法通过迭代器获取容器中的内容，仿函数可以协助算法完成各种操作，配接器用来套接适配仿函数
-
 * 请你回答一下STL里vector的resize和reserve的区别
   * resize()：改变当前容器内含有元素的数量size，eg: vector\<int\>v；v.resize(len)；v的size变为len，**如果原来v的size小于len，那么容器新增（len-size）个元素，元素的值为默认为0**。当v.push_back(3);之后，则是3是放在了v的末尾，即下标为len，此时容器是size为len+1；**如果原来v的size大于len，resize会移除那些超出len的元素同时销毁他们**
   * reserve()：改变当前容器的最大容量（capacity），**它不会生成元素**，只是确定这个容器允许放入多少对象，如果reserve(len)的len值大于当前的capacity，那么会重新分配一块能存len个对象的空间，然后把之前v.size()个对象通过copy construtor复制过来，销毁之前的内存。len值小于当前capacity，不做处理
@@ -392,5 +357,3 @@ main函数执行之前主要是初始化系统资源
 * functional头文件支持的基于模板的比较函数对象
   * equal_to<Type>、not_equal_to<Type>、greater<Type>、greater_equal<Type>、less<Type>、less_equal<Type>
   * 常用的有greater <Type>()从大到小排序，less <Type>()从小到大排序
-* priority_queue自定义排序要点：
-  * https://blog.csdn.net/imred/article/details/108478144

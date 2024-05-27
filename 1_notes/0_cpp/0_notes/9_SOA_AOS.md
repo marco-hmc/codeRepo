@@ -1,3 +1,6 @@
+_tags: c++, constructing
+_label: -1
+
 ## 什么是soa和aos
 好的，让我们通过一个具体的例子来解释 SOA（Structure of Arrays）和 AOS（Array of Structures）。
 
