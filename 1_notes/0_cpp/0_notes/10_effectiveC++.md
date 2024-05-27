@@ -1,6 +1,7 @@
-## effectiveC++
+## My effective C++
 
-### 1. 视C++ 为一个语言联邦
+### 1. effective C++
+#### 1.1 视C++ 为一个语言联邦
 * C
 * 面向对象编程
 * 泛型编程
@@ -8,7 +9,7 @@
   
 因此当这四个子语言相互切换的时候，可以更多地考虑高效编程，例如pass-by-value和pass-by-reference在不同语言中效率不同
 
-### 2. enum hack
+#### 1.2 enum hack
 应该让编译器代替预处理器定义，因为预处理器定义的变量并没有进入到symbol table里面。编译器有时候会看不到预处理器定义
 
 ```c++
@@ -30,12 +31,12 @@ public:
 在 C++11 之前，"enum hack" 是一种常用的创建类常量的方法，有三个特点常量，编译器确定，所有类只有一份。
 在 C++11 及其后续版本中，我们可以直接在类中定义静态常量整数，这种方法更直观，也更符合 C++ 的风格。因此，"enum hack" 在现代 C++ 代码中的使用已经变得不那么常见。
 
-### 3. 多用const
+#### 1.3 多用const
 应该让编译器代替预处理器定义，因为预处理器定义的变量并没有进入到symbol table里面。编译器有时候会看不到预处理器定义
 * const出现在星号左边， 被指物是常量
 * const出现在星号右边，指针自身是常量
 
-### 4. 如何在C++中正确处理非局部静态对象的初始化顺序问题？
+#### 1.4 如何在C++中正确处理非局部静态对象的初始化顺序问题？
 在 C++ 中，非局部静态对象的初始化顺序问题可以通过 "Initialization on Demand Idiom" 或 "Singleton Pattern" 来解决。这种方法的基本思想是将非局部静态对象封装在函数内部，这样可以确保它们在首次使用时被初始化。
 
 以下是一个示例：
@@ -107,22 +108,59 @@ FileSystem& tfs() {
 + 构造函数最好使用初始化列初始化而不是复制，并且他们初始化时有顺序的
 + 为了免除跨文件编译的初始化次序问题，应该以local static对象替换non-local static对象
 
-#### 二、构造/析构/赋值运算 (Constructors, Destructors, and Assignment Operators)
+#### 1.5 了解C++ 那些自动生成和调用的函数
+编译器自动生成的默认构造函数/拷贝构造函数/拷贝赋值操作符和析构函数对成员变量的处理方式如下:
 
-**5. 了解C++ 那些自动生成和调用的函数（Know what functions C++ silently writes and calls)**
+1. 默认构造函数:如果你没有为类定义一个构造函数,编译器会生成一个默认构造函数.这个默认构造函数不会对成员变量进行任何初始化操作.对于内置类型的成员变量,如果你没有在类体中显式初始化它们,它们的值将是未定义的.对于类类型的成员变量,它们将使用其类的默认构造函数进行初始化.
+
+2. 拷贝构造函数:如果你没有为类定义一个拷贝构造函数,编译器会生成一个默认拷贝构造函数.这个默认拷贝构造函数会对每个成员变量进行拷贝初始化.对于内置类型的成员变量,它们的值将被直接拷贝.对于类类型的成员变量,它们将使用其类的拷贝构造函数进行初始化.
+
+3. 拷贝赋值操作符:如果你没有为类定义一个拷贝赋值操作符,编译器会生成一个默认拷贝赋值操作符.这个默认拷贝赋值操作符会对每个成员变量进行拷贝赋值.对于内置类型的成员变量,它们的值将被直接拷贝.对于类类型的成员变量,它们将使用其类的拷贝赋值操作符进行赋值.
+
+4. 析构函数:如果你没有为类定义一个析构函数,编译器会生成一个默认析构函数.这个默认析构函数不会对成员变量进行任何操作.但是,当对象被销毁时,它的成员变量也会被销毁.对于类类型的成员变量,它们将使用其类的析构函数进行销毁.
+
+#### 2.3 绝不在构造和析构过程中调用virtual函数
+
+在C++中,构造函数和析构函数中调用虚函数时,不会有动态绑定.也就是说,调用的虚函数是当前正在执行的构造函数或析构函数所在的类版本,而不是对象的动态类型版本.
+
+这是因为在构造函数和析构函数中,对象的动态类型是正在构造或析构的类.在构造函数中,派生类的部分尚未被构造,在析构函数中,派生类的部分已经被析构.因此,如果在构造函数或析构函数中调用虚函数,那么将会调用基类版本的虚函数,而不是派生类版本的虚函数.
+
+这可能会导致意外的行为,因为通常我们期望虚函数调用的是对象的动态类型版本的函数.因此,应该避免在构造函数和析构函数中调用虚函数.
+
+在C++中,当创建一个派生类的对象时,构造过程是从基类开始,然后逐步向下构造派生类的部分.在基类的构造函数执行期间,派生类的部分还没有被构造,因此虚函数表(vtable)还没有被设置为派生类的虚函数表.这就是为什么在构造函数中调用虚函数时,会调用基类版本的虚函数,而不是派生类版本的虚函数.
+
+同样,在析构过程中,也是从派生类开始,然后逐步向上析构基类的部分.在派生类的析构函数执行后,虚函数表已经被设置回基类的虚函数表.因此,在析构函数中调用虚函数时,也会调用基类版本的虚函数,而不是派生类版本的虚函数.
+
+#### 2.4 return this和return *this的区别是什么
+`return this` 和 `return *this` 的主要区别在于它们返回的类型:
+
+- `return this` 返回的是一个指向当前对象的指针.这意味着,如果你有一个对象 `obj`,并且你有一个函数 `func` 返回 `this`,那么 `obj.func()` 将返回一个指向 `obj` 的指针.
+
+- `return *this` 返回的是当前对象的一个引用.这意味着,如果你有一个对象 `obj`,并且你有一个函数 `func` 返回 `*this`,那么 `obj.func()` 将返回一个引用到 `obj`.
+
+在某些情况下,你可能希望返回一个指向当前对象的指针,例如,如果你正在实现一个链式调用.在其他情况下,你可能希望返回一个引用,例如,如果你正在实现一个赋值运算符,通常你会希望返回一个引用,以便支持连续赋值(例如 `a = b = c`).
+
+#### 2.5 复制对象时勿忘其每一个成分
++ 当编写一个copy或者拷贝构造函数,应该确保复制成员里面的所有变量,以及所有基类的成员
++ 不要尝试用一个拷贝构造函数调用另一个拷贝构造函数,如果想要精简代码的话,应该把所有的功能机能放到第三个函数里面,并且由两个拷贝构造函数共同调用
++ 当新增加一个变量或者继承一个类的时候,很容易出现忘记拷贝构造的情况,所以每增加一个变量都需要在拷贝构造里面修改对应的方法
+
+#### 2.6 设计class犹如设计type
+
+如何设计class:
++ 新的class对象应该被如何创建和构造
++ 对象的初始化和赋值应该有什么样的差别(不同的函数调用,构造函数和赋值操作符)
++ 新的class如果被pass by value(以值传递),意味着什么(copy构造函数)
++ 什么是新type的"合法值"(成员变量通常只有某些数值是有效的,这些值决定了class必须维护的约束条件)
++ 新的class需要配合某个继承图系么(会受到继承类的约束)
++ 新的class需要什么样的转换(和其他类型的类型变换)
++ 什么样的操作符和函数对于此type而言是合理的(决定声明哪些函数,哪些是成员函数)
++ 什么样的函数必须为private的 
++ 新的class是否还有相似的其他class,如果是的话就应该定义一个class template
++ 你真的需要一个新type么?如果只是定义新的derived class或者为原来的class添加功能,说不定定义non-member函数或者templates更好
 
 
-总结：
-+ 编译器可以自动为class生成default构造函数，拷贝构造函数，拷贝赋值操作符，以及析构函数
-
-**6. 若不想使用编译器自动生成的函数，就该明确拒绝（Explicitly disallow the use of compiler-generated functions you do not want)**
-
-这一条主要是针对类设计者而言的，有一些类可能从需求上不允许两个相同的类，例如某一个类表示某一个独一无二的交易记录，那么编译器自动生成的拷贝和复制函数就是无用的，而且是不想要的
-
-总结：
-+ 可以将不需要的默认自动生成函数设置成delete的或者弄一个private的父类并且继承下来
-
-**7. 为多态基类声明virtual析构函数（Declare destructors virtual in polymorphic base classes)**
+#### 1.6 为多态基类声明virtual析构函数
 
 其主要原因是如果基类没有virtual析构函数，那么派生类在析构的时候，如果是delete 了一个base基类的指针，那么派生的对象就会没有被销毁，引起内存泄漏。
 例如：
@@ -155,97 +193,11 @@ FileSystem& tfs() {
 
 这里主要是因为如果循环析构10个Widgets，如果每一个Widgets都在析构的时候抛出异常，就会出现多个异常同时存在的情况，这里如果把每个异常控制在析构的话就可以解决这个问题：解决方法为：
 
-原代码：
-
-    class DBConn{
-    public:
-        ~DBConn(){
-            db.close();
-        }
-    private:
-        DBConnection db;
-    }
-
-修改后的代码：
-    
-    class DBConn{
-    public:
-        void close(){
-            db.close();
-            closed = true;
-        }
-    
-        ~DBConn(){
-            if(!closed){
-                try{
-                    db.close();
-                }
-                catch(...){
-                    std::abort();
-                }
-            }
-        }
-    private:
-        bool closed;
-        DBConnection db;
-    }
-这种做法就可以一方面将close的的方法交给用户，另一方面在用户忽略的时候还能够做“强迫结束程序”或者“吞下异常”的操作。相比较而言，交给用户是最好的选择，因为用户有机会根据实际情况操作异常。
-
-总结：
-+ 析构函数不要抛出异常，因该在内部捕捉异常
-+ 如果客户需要对某个操作抛出的异常做出反应，应该将这个操作放到普通函数（而不是析构函数）里面
+因为C++标准规定程序必须立即调用 std::terminate 函数来终止程序.这是因为C++不允许在同一时间处理两个异常.
 
 **9. 绝不在构造和析构过程中调用virtual函数（Never call virtual functions during construction or destruction)**
 
 主要是因为有继承的时候会调用错误版本的函数，例如
-
-原代码：
-
-    class Transaction{
-    public:
-        Transaction(){
-            logTransaction();
-        }
-        Virtual void logTransaction const() = 0;
-    };
-    class BuyTransaction:public Transaction{
-        public:
-            virtual void logTransaction() const;
-    };
-    BuyTransaction b;
-    
-    或者有一个更难发现的版本：
-    
-    class Transaction{
-    public:
-        Transaction(){init();}
-        virtual void logTransaction() const = 0;
-    private:
-        void init(){
-            logTransaction();
-        }
-    };
-这个时候代码会调用 Transaction 版本的logTransaction，因为在构造函数里面是先调用了父类的构造函数，所以会先调用父类的logTransaction版本，解决方案是不在构造函数里面调用，或者将需要调用的virtual弄成non-virtual的
-
-修改以后：
-
-    class Transaction{
-    public:
-        explicit Transaction(const std::string& logInfo);
-        void logTransaction(const std::string& logInfo) const; //non-virtual 函数
-    }
-    Transaction::Transaction(const std::string& logInfo){
-        logTransaction(logInfo); //non-virtual函数
-    }
-    class BuyTransaction: public Transaction{
-    public:
-        BuyTransaction(parameters):Transaction(createLogString(parameters)){...} //将log信息传递给base class 构造函数
-    private:
-        static std::string createLogString(parameters); //注意这个函数是用来给上面那个函数初始化数据的，这个辅助函数的方法
-    }
-
-总结：
-+ 在构造和析构期间不要调用virtual函数，因为这类调用从不下降至派生类的版本
 
 **10. 令operator= 返回一个reference to *this （Have assignment operators return a reference to *this)**
 
@@ -261,79 +213,11 @@ FileSystem& tfs() {
 
 主要是要处理 a[i] = a[j] 或者 *px = *py这样的自我赋值。有可能会出现一场安全性问题，或者在使用之前就销毁了原来的对象，例如
 
-原代码：
-    
-    class Bitmap{...}
-    class Widget{
-    private:
-        Bitmap *pb;
-    };
-    Widget& Widget::operator=(const Widget& rhs){
-        delete pb; // 当this和rhs是同一个对象的时候，就相当于直接把rhs的bitmap也销毁掉了
-        pb = new Bitmap(*rhs.pb);
-        return *this;
-    }
-
-修改后的代码
-
-    class Widget{
-        void swap(Widget& rhs);    //交换this和rhs的数据
-    };
-    Widget& Widget::operator=(const Widget& rhs){
-        Widget temp(rhs)           //为rhs数据制作一个副本
-        swap(temp);                //将this数据和上述副本数据交换
-        return *this;
-    }//出了作用域，原来的副本销毁
-
-或者有一个效率不太高的版本：
-    Widget& Widget::operator=(const Widget& rhs){
-        Bitmap *pOrig = pb;       //记住原先的pb
-        pb = new Bitmap(*rhs.pb); //令pb指向 *pb的一个副本
-        delete pOrig;            //删除原先的pb
-        return *this;
-    }
-
-总结：
-+ 确保当对象自我赋值的时候operator=有比较良好的行为，包括两个对象的地址，语句顺序，以及copy-and-swap
-+ 确定任何函数如果操作一个以上的对象，而其中多个对象可能指向同一个对象时，仍然正确
-
 **12. 复制对象时勿忘其每一个成分 （Copy all parts of an object)**
-
-总结：
-+ 当编写一个copy或者拷贝构造函数，应该确保复制成员里面的所有变量，以及所有基类的成员
-+ 不要尝试用一个拷贝构造函数调用另一个拷贝构造函数，如果想要精简代码的话，应该把所有的功能机能放到第三个函数里面，并且由两个拷贝构造函数共同调用
-+ 当新增加一个变量或者继承一个类的时候，很容易出现忘记拷贝构造的情况，所以每增加一个变量都需要在拷贝构造里面修改对应的方法
 
 #### 三、资源管理 (Resource Management)
 
-**13. 以对象管理资源 （Use objects to manage resources)**
-
-主要是为了防止在delete语句执行前return，所以需要用对象来管理这些资源。这样当控制流离开f以后，该对象的析构函数会自动释放那些资源。
-例如shared_ptr就是这样的一个管理资源的对象。他是在自己的析构函数里面做delete操作。所以如果自己需要管理资源的时候，也要在类内进行delete，通过对象来管理资源
-
-总结：
-+ 建议使用shared_ptr
-+ 如果需要自定义shared_ptr，请通过定义自己的资源管理类来对资源进行管理
-
 **14. 在资源管理类中小心copying行为 （Think carefully about copying behavior in resource-managing classes)**
-
-在资源管理类里面，如果出现了拷贝复制行为的话，需要注意这个复制具体的含义，从而保证和我们想要的效果一样
-
-思考下面代码在复制中会发生什么：
-    
-    class Lock{
-    public:
-        explicit Lock(Mutex *pm):mutexPtr(pm){
-            lock(mutexPtr);//获得资源锁
-        }
-        ~Lock(){unlock(mutexPtr);}//释放资源锁
-    private:
-        Mutex *mutexPtr;
-    }
-    Lock m1(&m)//锁定m
-    Lock m2(m1);//好像是锁定m1这个锁。。而我们想要的是除了复制资源管理对象以外，还想复制它所包括的资源（deep copy）。通过使用shared_ptr可以有效避免这种情况。
-
-需要注意的是：copy函数有可能是编译器自动创建出来的，所以在使用的时候，一定要注意自动生成的函数是否符合我们的期望
 
 总结;
 + 复制RAII对象（Resource Acquisition Is Initialization）必须一并复制他所管理的资源（deep copy）
@@ -362,11 +246,6 @@ FileSystem& tfs() {
 + 每一个资源管理类RAII都应该有一个直接获得资源的方法
 + 隐式转换对客户比较方便，显式转换比较安全，具体看需求
 
-**16. 成对使用new和delete时要采取相同形式 （Use the same form in corresponding uses of new and delete)**
-
-总结：
-+ 即： 使用new[]的时候要使用delete[], 使用new的时候一定不要使用delete[]
-
 **17. 以独立语句将new的对象置入智能指针 （Store newed objects in smart pointers in standalone statements)**
 
 主要是会造成内存泄漏，考虑下面的代码：
@@ -385,29 +264,6 @@ FileSystem& tfs() {
 + 凡是有new语句的，尽量放在单独的语句当中，特别是当使用new出来的对象放到智能指针里面的时候
 
 #### 四、设计与声明 (Designs and Declarations)
-
-**18. 让接口容易被正确使用，不易被误用  （Make interfaces easy to use correctly and hard to use incorrectly)**
-
-要思考用户有可能做出什么样子的错误，考虑下面的代码：
-    
-    Date(int month, int day, int year);
-    这一段代码可以有很多问题，例如用户将day和month顺序写反（因为三个参数都是int类型的），可以修改成：
-    Date(const Month &m, const Day &d, const Year &y);//注意这里将每一个类型的数据单独设计成一个类，同时加上const限定符
-    为了让接口更加易用，可以对month加以限制，只有12个月份
-    class Month{
-        public:
-        static Month Jan(){return Month(1);}//这里用函数代替对象，主要是方式第四条：non-local static对象的初始化顺序问题
-    }
-    
-    而对于一些返回指针的问题函数，例如：
-    Investment *createInvestment();//智能指针可以防止用户忘记delete返回的指针或者delete两次指针，但是可能存在用户忘记使用智能指针的情况，那么方法：
-    std::shared_ptr<Investment> createInvestment();就可以强制用户使用智能指针，或者更好的方法是另外设计一个函数：
-    std::shared_ptr<Investment>pInv(0, get)
-
-总结：
-+ “促进正确使用”的办法包括接口的一致性，以及与内置类型的行为兼容
-+ “阻止误用”的办法包括建立新类型、限制类型上的操作，束缚对象值，以及消除客户的资源管理责任
-+ shared_ptr支持定制删除器，从而防范dll问题，可以用来解除互斥锁等
 
 **19. 设计class犹如设计type  （Treat class design as type design)**
 
@@ -1264,20 +1120,10 @@ static void operator delete(void* pMemory) throw();     //palcement delete，此
 + 随机数生成工具
 + type traits
 
-**55. 让自己熟悉Boost （Familiarize yourself with Boost)**
-
-主要是因为boost是一个C++开发者贡献的程序库，代码相对比较好
-
-
-
 
 ## More Effective C++
 
-
-
-#### 一、基础议题
-
-**1. 区分指针和引用**
+#### 区分指针和引用
 
 引用必须指向一个对象，而不是空值，下面是一个危险的例子：
     
@@ -1289,11 +1135,7 @@ static void operator delete(void* pMemory) throw();     //palcement delete，此
 + 需要能够在不同的时刻指向不同的对象
 其他情况应该使用引用
 
-**2. 优先考虑C++风格的类型转换**
-
-上本书说过了，第27条
-
-**3. 决不要把多态用于数组**
+#### ??决不要把多态用于数组
 
 主要是考虑以下写法：
     
@@ -2823,45 +2665,21 @@ C++中，“引用的引用”是违法的，但是上面T的推到结果是Widg
         return func(normalize(std::forward<decltype(x)>(x)));
     };
 
-**34. 优先考虑lambda表达式而非std::bind**
+#### 优先考虑基于任务的编程而非基于线程的编程
+在C++中,std::async 提供了一种更高级别的并发抽象,它可以自动管理线程的生命周期,并且可以获取异步操作的结果.此外,如果异步操作抛出异常,std::async 也可以捕获并在主线程中重新抛出这个异常.这使得 std::async 在许多情况下比直接使用 std::thread 更加方便和安全.
 
-+ lambda表达式具有更好的可读性，表达力也更强，有可能效率也更高
-+ 只有在C++11中，bind还有其发挥作用的余地 
+然而,也有一些情况下你可能需要直接使用 std::thread,例如:
 
-#### 七、并发API
+你需要访问底层线程实现的API(例如 pthread 或 Windows 线程库).
+你需要并且有能力进行线程优化.
+你需要实现 C++ 并发 API 中没有的技术.
+总的来说,除非有特殊需求,否则通常建议优先使用 std::async 而不是直接使用 std::thread
 
-**35. 优先考虑基于任务的编程而非基于线程的编程**
-
-基于线程的代码：
-    
-    int doAsyncWork();
-    std::thread t(doAsyncWork);
-
-基于任务的代码：
-    
-    auto fut = std::async(doAsyncWork);
-
-我们应该优先考虑基于任务的方法（后面这个），首先async是能够获得doAsyncWork的返回值的，并且如果里面有异常的话，也可以捕捉得到。而且更重要的是，使用后面这种方法可以将线程管理的责任交给std标准库来，不需要自己解决死锁，负载均衡，新平台适配等问题
-
-另外，软件线程（操作系统线程或者系统线程）是操作系统的跨进程管理线程，能够创建的数量比硬件线程要多，但是是一种有限资源，当软件线程没有可用的时候，就会直接抛出异常，即使被调用函数式noexcept的。
-
-下面是几种直接使用线程的情况（当然这些情况并不常见）：
-+ 需要访问底层线程实现的API（pthread或者Windows线程库）
-+ 需要并且开发者有能力进行线程优化
-+ 需要实现C++并发API中没有的技术
-
-**36. 如果有异步的必要请指定std::launch::threads**
-
-+ std::launch::async：指定的时候意味着函数f必须以异步方式进行，即在另一个线程上执行
-+ std::launch::deferred 则指f只有在get或者wait函数调用的时候同步执行，如果get或者wait没有调用，则f不执行
-+ 如果不指定策略的话（默认方法），则系统会按照自己的估计来推测需要进行什么样的策略（会带来不确定性），感觉还是很危险的！！！所以尽量在使用的时候指定是否是异步或者是同步
+* 如果有异步的必要请指定`std::launch::threads`
+  * std::launch::async：指定的时候意味着函数f必须以异步方式进行，即在另一个线程上执行
+  * std::launch::deferred 则指f只有在get或者wait函数调用的时候同步执行，如果get或者wait没有调用，则f不执行
+  * 如果不指定策略的话（默认方法），则系统会按照自己的估计来推测需要进行什么样的策略（会带来不确定性），感觉还是很危险的！！！所以尽量在使用的时候指定是否是异步或者是同步
   
-    auto fut = std::async(f);
-    if(fut.wait_for(0s) == std::future_statuc::deferred){....}    //判断是否是同步（是否推迟了）
-    else{
-        while{fut.wait_for(100ms) != std::future_status::ready}{}//不可能死循环，因为之前有过判断是否是同步
-    }
-
 **37. 从各个方面使得std::threads unjoinable**
 
 每一个std::thread类型的对象都处于两种状态：joinable和unjoinable
@@ -2898,19 +2716,49 @@ C++中，“引用的引用”是违法的，但是上面T的推到结果是Widg
 
 所以在异步状态下启动的线程的共享状态的最后一个返回值是会保持阻塞的，知道该任务结束，返回值的析构函数在常规情况下，只会析构返回值的成员变量
 
-**39. 考虑对于单次事件通信使用void**
 
-对于我们在线程中经常使用的flag标志位：
+#### volatile和线程安全无关
+volatile的作用:告诉编译器正在处理的变量使用的是特殊内存,不要在这个变量上做任何优化,即让cpu每次都从内存去取.
+和多线程无关,改用atomic就用atomic
+
+
+#### 什么时候push_back比emplcae_back好?
+在某些情况下,`push_back` 可能比 `emplace_back` 更好:
+
+1. **已经有一个完全构造好的对象**:如果你已经有一个完全构造好的对象,并且你只需要将其添加到容器中,那么 `push_back` 可能会比 `emplace_back` 更好.因为 `emplace_back` 会尝试在容器内部构造一个新的对象,这可能会导致不必要的构造和析构操作.
+
+```cpp
+std::vector<std::string> vec;
+std::string str = "Hello, World!";
+vec.push_back(str);  // 直接将已经构造好的字符串添加到容器中
+```
+
+2. **需要明确的类型转换**:`emplace_back` 会尝试使用传递给它的参数直接在容器内部构造一个新的对象.如果这需要一个不明确的类型转换,那么 `emplace_back` 可能会失败.在这种情况下,`push_back` 可能会更好,因为你可以在调用 `push_back` 之前明确地进行类型转换.
+
+```cpp
+std::vector<int> vec;
+double num = 3.14;
+vec.push_back(static_cast<int>(num));  // 明确地将 double 转换为 int
+```
+
+3. **编译时间**:`emplace_back` 需要在编译时解析构造函数的重载,这可能会增加编译时间.如果你正在优化编译时间,那么 `push_back` 可能会更好.
+
+总的来说,`push_back` 和 `emplace_back` 各有优势,你应该根据具体的情况选择使用哪一个.
+
+
+#### ??考虑对于单次事件通信使用
+
+对于我们在线程中经常使用的flag标志位:
     
     while(!flag){}
 
-可以用线程锁来代替,这个时候等待，不会占用本该进行计算的某一个线程资源：
+可以用线程锁来代替,这个时候等待,不会占用本该进行计算的某一个线程资源:
     
     bool flag(false);
     std::lock_guard<std::mutex> g(m);
     flag = true;
 
-不过使用标志位的话也不太好，如果使用std::promise类型的对象的话就可以解决上面的问题，但是这个途径为了共享状态需要使用堆内存，而且只限于一次性通信
+不过使用标志位的话也不太好,如果使用std::promise类型的对象的话就可以解决上面的问题,但是这个途径为了共享状态需要使用堆内存,而且只限于一次性通信
     
     std::promise<void> p;
     void react();    //反应任务
@@ -2922,55 +2770,3 @@ C++中，“引用的引用”是违法的，但是上面T的推到结果是Widg
         p.set_value();  //取消暂停t
         t.join();       //把t置为unjoinable状态
     }   
-
-**40. 对于并发使用std::atomic，对特殊内存区使用volatile**
-
-atomic原子操作（其他线程只能看到ai的值是0 或者10）:
-    
-    std::atomic<int> ai(0);
-    ai = 10;                 //将ai原子的设置为10
-
-volatile 类型值（其他线程可以看到vi取任何值）：
-    
-    volatile int vi(0);      //将vi初始化为0
-    vi = 10;                 //将vi的值设置为10，如果两个线程同时执行vi++的话，就可能会出现11和12两种情况
-
-volatile的作用：告诉编译器正在处理的变量使用的是特殊内存，不要在这个变量上做任何优化
-    
-    volatile int x;
-    auto y = x; //读取x，（这个时候auto会把const和volatile的修饰词丢弃掉，所以y的类型是int
-    y = x;      //再次读取x，这个时候不会被优化掉
-
-#### 八、微调
-
-**41. 对于那些可移动总是被拷贝的形参使用传值方式**
-
-一般来说，我们写函数的时候是不用按值传递的，但是如果形参本身就是要拷贝或者移动的话，是可以按值来传递的，三种操作的成本如下：
-
-+ 重载操作：对于左值是一次复制，对于右值是一次移动
-+ 使用万能引用：左值是一次复制，右值是一次移动
-+ 按值传递：左值是一次复制加一次移动，右值是两次移动
-
-所以按值传递的应用场景：移动操作成本低廉，形参是可以复制的，因为这两种情况同时满足的时候，按值传递效率并不会低太多
-
-**42. 考虑就地创建而非插入**
-
-+ 插入方法： push_back()等
-+ 就地创建方法：emplace_back()等
-
-考虑以下代码：
-    
-    std::vector<std::string> vs;
-    vs.push_back("xyz");
-
-上面这一段代码一共有三个步骤：
-+ 从xyz变量出发，创建从const char到string的临时变量temp，temp是个右值
-+ temp被传递给push_back的右值重载版本，在内存中为vector构造一个x的副本，创建一个新的对象
-+ 在push_back完成的时候，temp被析构
-
-如果用emplace_back的话，就不会产生任何临时对象，因为emplace_back使用了完美转发方法，这样就会大大提升代码的效率
-
-在以下情况下，创建插入会比插入更高效（其实如果不是出现拒绝添加新值的情况的话，置入永远比插入要好一些）：
-+ 要添加的值是以构造而不是复制的方式加入到容器中的
-+ 传递的实参类型和容器内本身的类型不同
-+ 容器不太可能由于出现重复情况而拒绝添加的新值（例如map）
