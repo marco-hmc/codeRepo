@@ -37,10 +37,10 @@
   12. https://github.com/taw/electron-adventures
   13. 矩阵运算(mvp)
   14. 渲染管线
+  15. https://github.com/CnTransGroup/EffectiveModernCppChinese?tab=readme-ov-file
   15. 博客(计网,操作系统,汇编,计算机图形学(矩阵,渲染管线), 前端(electron))
   16. cmake
   17. sql语句
-  18. threadPool
   19. webServer
   20. connectionPool
   21. multiThread
@@ -143,5 +143,3 @@ MySQL InnoDB MVCC 实现机制
 《高性能MySQL》
 《MySQL技术内幕》
 这两本主要对索引、innodb存储引擎、锁、并发控制讲得比较清楚，建议挑对应章节看。
-
-
