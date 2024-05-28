@@ -30,9 +30,10 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
+                "-std=c17",
                 "${file}",
                 "-o",
-                "${workspaceFolder}\\bin\\${fileBasenameNoExtension}"
+                "${workspaceFolder}/bin/${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${fileDirname}"

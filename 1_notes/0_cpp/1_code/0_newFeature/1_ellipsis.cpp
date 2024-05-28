@@ -3,13 +3,13 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-// --1. fold expression
+// --1. fold expression c17-standard
 template<typename... Args>
 auto sum(Args... args) {
     return (args + ...);
 }
 
-// --2. variadic template
+// --2. variadic template c11-standard
 int sum2() {
     return 0;
 }
@@ -18,7 +18,7 @@ T sum2(T first, Args... args) {
     return first + sum(args...);
 }
 
-// --3. others
+// --3. others c11-standard
 template <typename First, typename... Args>
 auto sum3(const First first, const Args... args) -> decltype(first) {
   const auto values = {first, args...};

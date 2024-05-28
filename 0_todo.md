@@ -15,20 +15,41 @@
   4. https://github.com/wuyongch/-Student-management-system/tree/main/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9Fhttps://github.com/wuyongch/-Student-management-system/tree/main/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F
   5. https://github.com/parallel101/course/tree/master
   6. https://github.com/jiayaozhang/OpenVDB_and_TBB
-  3. 周记
-  4. 博客
-  6. cmake
-  1. sql语句
-  3. threadPool
-  4. webServer
-  5. connectionPool
-  6. multiThread
-  7. rapidJson
-  8. rpc
-  9. levelDb
-  10. spdlog
-  11. regex
-  12. 
+  7. flutter
+  8. GPU 渲染管线与着色器 大白话总结 ---- 一篇就够
+    原文链接:https://blog.csdn.net/newchenxf/article/details/119803489
+  10. 
+模型转换:这一步将3D模型的顶点数据从模型空间转换到世界空间.
+
+视图转换:这一步将世界空间中的顶点数据转换到视图空间,也就是从摄像机的视角看到的空间.
+
+投影转换:这一步将视图空间中的顶点数据转换到裁剪空间,并进行透视除法,得到归一化设备坐标.
+
+裁剪:这一步将超出视野的顶点数据剔除.
+
+光栅化:这一步将裁剪后的顶点数据转换为像素.
+
+片元着色:这一步计算每个像素的颜色和深度.
+
+混合:这一步根据像素的颜色/深度和透明度,将新的像素颜色与帧缓冲区中的现有像素颜色进行混合.
+
+  11. https://github.com/raphaelpor/electron-adventures
+  12. https://github.com/taw/electron-adventures
+  13. 矩阵运算(mvp)
+  14. 渲染管线
+  15. 博客(计网,操作系统,汇编,计算机图形学(矩阵,渲染管线), 前端(electron))
+  16. cmake
+  17. sql语句
+  18. threadPool
+  19. webServer
+  20. connectionPool
+  21. multiThread
+  22. rapidJson
+  23. rpc
+  24. levelDb
+  25. spdlog
+  26. regex
+  27. 
 
 ### 1.1 trivals
   1. podcast

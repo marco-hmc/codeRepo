@@ -201,34 +201,6 @@ FileSystem& tfs() {
 总结：
 + 凡是有new语句的，尽量放在单独的语句当中，特别是当使用new出来的对象放到智能指针里面的时候
 
-#### 四、设计与声明 (Designs and Declarations)
-
-**19. 设计class犹如设计type  （Treat class design as type design)**
-
-如何设计class：
-+ 新的class对象应该被如何创建和构造
-+ 对象的初始化和赋值应该有什么样的差别（不同的函数调用，构造函数和赋值操作符）
-+ 新的class如果被pass by value（以值传递），意味着什么（copy构造函数）
-+ 什么是新type的“合法值”（成员变量通常只有某些数值是有效的，这些值决定了class必须维护的约束条件）
-+ 新的class需要配合某个继承图系么（会受到继承类的约束）
-+ 新的class需要什么样的转换（和其他类型的类型变换）
-+ 什么样的操作符和函数对于此type而言是合理的（决定声明哪些函数，哪些是成员函数）
-+ 什么样的函数必须为private的 
-+ 新的class是否还有相似的其他class，如果是的话就应该定义一个class template
-+ 你真的需要一个新type么？如果只是定义新的derived class或者为原来的class添加功能，说不定定义non-member函数或者templates更好
-
-**20. 以pass-by-reference-to-const替换pass-by-value  （Prefer pass-by-reference-to-const to pass-by-value)**
-
-主要是可以提高效率，同时可以避免基类和子类的参数切割问题
-    
-    bool validateStudent(const Student &s);//省了很多构造析构拷贝赋值操作
-    bool validateStudent(s);
-    
-    subStudent s;
-    validateStudent(s);//调用后,则在validateStudent函数内部实际上是一个student类型，如果有重载操作的话会出现问题
-
-对于STL等内置类型，还是以值传递好一些
-
 **21. 必须返回对象时，别妄想返回其reference  （Don't try to return a reference when you must return an object)**
 
 主要是很容易返回一个已经销毁的局部变量，如果想要在堆上用new创建的话，则用户无法delete，如果想要在全局空间用static的话，也会出现大量问题,所以正确的写法是：
@@ -237,14 +209,6 @@ FileSystem& tfs() {
         return Rational(lhs.n * rhs.n, lhs.d * rhs.d);
     }
 当然这样写的代价就是成本太高，效率会比较低
-
-**22. 将成员变量声明为private  （Declare data members private)**
-
-应该将成员变量弄成private，然后用过public的成员函数来访问他们，这种方法的好处在于可以更精准的控制成员变量，包括控制读写，只读访问等。
-
-同时，如果public的变量发生了改变，如果这个变量在代码中广泛使用，那么将会有很多代码遭到了破坏，需要重新写
-
-另外protected 并不比public更具有封装性，因为protected的变量，在发生改变的时候，他的子类代码也会受到破坏
 
 **23. 以non-member、non-friend替换member函数  （Prefer non-member non-friend functions to member functions)**
 
@@ -286,25 +250,40 @@ FileSystem& tfs() {
         //所有与书签相关的便利函数
     }
 
-**24. 若所有参数皆需类型转换，请为此采用non-member函数  （Declare non-member functions when type conversions should apply to all parameters)**
+#### 1.12 若所有参数皆需类型转换，请为此采用non-member函数 
+在C++中,当你定义一个类的成员函数时,只有第一个参数(在这个例子中是`rhs`)可以进行隐式类型转换.这是因为成员函数的第一个参数实际上是`this`指针,它指向调用该成员函数的对象.
 
-例如想要将一个int类型变量和Rational变量做乘法，如果是成员函数的话，发生隐式转换的时候会因为不存在int到Rational的类型变换而出错：
+例如,假设你有一个`Rational`类,它有一个成员函数`operator*`:
 
+```cpp
+class Rational {
+public:
+    const Rational operator* (const Rational& rhs) const;
+};
+```
 
-    class Rational{
-        public:
-        const Rational operator* (const Rational& rhs)const;
-    }
-    Rational oneHalf;
-    result = oneHalf * 2;
-    result = 2 * oneHalf;//出错，因为没有int转Rational函数
-    
-    non-member函数
-    class Rational{}
-    const Rational operator*(const Rational& lhs, const Rational& rhs){}
+然后,你试图使用一个`int`和一个`Rational`对象进行乘法运算:
 
+```cpp
+Rational oneHalf;
+result = oneHalf * 2;  // 正确,2被隐式转换为Rational
+result = 2 * oneHalf;  // 错误,因为没有int转Rational函数
+```
 
-**25. 考虑写出一个不抛异常的swap函数  （Consider support for a non-throwing swap)**
+在这个例子中,`oneHalf * 2`是正确的,因为`2`可以被隐式转换为`Rational`.然而,`2 * oneHalf`是错误的,因为`2`(即`this`指针指向的对象)不能被隐式转换为`Rational`.
+
+为了解决这个问题,你可以定义一个non-member函数(也就是一个普通的函数,不是类的成员函数)来进行乘法运算.在non-member函数中,所有参数都可以进行隐式类型转换.
+
+例如:
+
+```cpp
+class Rational {};
+const Rational operator*(const Rational& lhs, const Rational& rhs);
+```
+
+在这个例子中,`operator*`函数可以接受两个`Rational`对象作为参数.当你使用一个`int`和一个`Rational`对象进行乘法运算时,`int`可以被隐式转换为`Rational`,无论它是第一个参数还是第二个参数.所以,`2 * oneHalf`和`oneHalf * 2`都是正确的.
+
+#### 1.12 考虑写出一个不抛异常的swap函数
 
 写出一个高效、不容易发生误会、拥有一致性的swap是比较困难的，下面是对比代码：
 
@@ -339,8 +318,6 @@ FileSystem& tfs() {
 + 如果提供了一个member swap，也应该提供一个non-member swap调用前者，对于classes（而不是templates），需要特例化一个std::swap
 + 调用swap时应该针对std::swap使用using std::swap声明，然后调用swap并且不带任何命名空间修饰符
 + 不要再std内加对于std而言是全新的东西（不符合C++标准）
-
-
 
 #### 五、实现 (Implementations)
 
@@ -1413,9 +1390,7 @@ catch子句：
 编译器带来的开销（很难消除，因为所有的编译器都是支持异常的
 try块语句的开销：大概会降低5%-10%的速度和增加相应的代码尺寸
 
-#### 四、效率
-
-**16. 记住80-20准则**
+#### 2.1 记住80-20准则**
 
 分别有20%的代码耗用了80%的程序资源，运行时间，内存，磁盘，有80%的维护投入到20%的代码上
 用profiler工具来对程序进行分析
