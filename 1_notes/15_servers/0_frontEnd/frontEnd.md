@@ -1,14 +1,6 @@
 ## frontEnd
 
-- **MDN (Mozilla) JavaScript Reference**
-    It's great to get in-depth information about individual language functions, methods etc.
-
-    You can find it at <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference>.
-
-    Although, it's often best to use an internet search instead. 
-    
-    Just use "MDN [term]" in the query, e.g. <https://google.com/search?q=MDN+parseInt> to search for the `parseInt` function.
-
+### 1. 
 * For instance, [Node.js](https://wikipedia.org/wiki/Node.js) supports functions that allow JavaScript to read/write arbitrary files, perform network requests, etc.
 
 * - Send requests over the network to remote servers, download and upload files (so-called [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) and [COMET](https://en.wikipedia.org/wiki/Comet_(programming)) technologies).
@@ -180,3 +172,47 @@ Object.freeze(config);
 ```
 
 现在,任何试图修改 `config` 对象的操作都会失败,这个对象的数据保持不变.这可以帮助防止因为意外修改配置导致的错误.
+
+### 附录
+#### 1. terms
+* MDN
+    MDN,全称Mozilla Developer Network,是一个开放的社区和资源库,为开发者提供了大量关于开放网络技术(包括CSS/HTML和JavaScript)的文档和学习资源.
+
+    MDN的JavaScript参考文档是一个非常重要的资源,它提供了关于JavaScript语言的深入信息,包括语言的函数/方法等详细解释和示例.这些信息对于理解和使用JavaScript非常有帮助.
+
+* html/css/js
+    HTML,CSS和JavaScript是构建网页和网站的三大核心技术.
+
+    1. **HTML**:HTML(HyperText Markup Language,超文本标记语言)是用来描述网页内容的语言.它使用一系列元素(或称为标签)来标记和包裹网页的各个部分内容,如标题/段落/列表/链接/图片等.每个元素都有特定的含义和用途,告诉浏览器如何展示相关内容.
+
+    2. **CSS**:CSS(Cascading Style Sheets,层叠样式表)是用来描述网页样式的语言.它可以定义网页中元素的布局/颜色/字体等视觉效果.CSS可以让你将样式信息与HTML内容分离,使得网页的结构和样式可以独立编辑和管理,提高了代码的可维护性.
+
+    3. **JavaScript**:JavaScript是一种编程语言,用于实现网页的交互功能.通过JavaScript,你可以操作DOM(Document Object Model,文档对象模型)来动态修改网页的内容/结构和样式,可以处理用户的输入和操作,可以实现动画效果,可以与服务器进行通信等.
+
+    这三种语言的关系是:HTML负责网页的结构,CSS负责网页的样式,JavaScript负责网页的行为.它们共同工作,构建出丰富/美观/交互的网页和网站.
+
+* nodeJs
+    Node.js是一个开源的/跨平台的JavaScript运行环境,它可以让JavaScript脱离浏览器环境,在服务器或其他计算机环境中运行.Node.js的设计目标是提供一种简单的构建可扩展网络应用的方法.
+    Node.js 的解释和运行是由 Google 的 V8 JavaScript 引擎来完成的.
+    Node.js 在 V8 的基础上,增加了一些 API 和功能,使得 JavaScript 可以进行文件操作/网络通信/操作系统交互等,这些在浏览器环境中无法做到的事情.这使得 JavaScript 可以用于服务器端编程,构建网络应用.
+
+* v8引擎
+    V8 引擎是 Google 开发的开源 JavaScript 引擎.它用于 Google Chrome 浏览器,也是 Node.js 的核心组成部分.
+
+    V8 引擎的主要特性包括:
+
+    1. **即时编译(JIT)**:V8 引擎将 JavaScript 代码直接编译成机器码来执行,而不是先编译成字节码或通过解释器解释执行.这使得 JavaScript 代码的运行效率非常高.
+
+    2. **垃圾回收**:V8 引擎有一个高效的垃圾回收机制,可以自动回收不再使用的内存,防止内存泄漏.
+
+    3. **调用堆栈跟踪**:V8 引擎可以提供详细的调用堆栈信息,帮助开发者调试代码.
+
+    4. **高性能的 JavaScript 执行**:通过各种优化技术,如内联缓存(Inline Caching)/隐藏类(Hidden Classes)等,V8 引擎可以高效地执行 JavaScript 代码.
+
+    V8 引擎的设计目标是提供高性能的 JavaScript 执行环境,同时保持代码的安全性和可移植性.因此,V8 引擎在浏览器和服务器端的 JavaScript 执行环境中都有广泛的应用.
+
+* Dom
+* Ajax
+* Jquery
+* Vue
+* React
