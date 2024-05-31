@@ -68,16 +68,13 @@ public:
 
 int main() {
   Queue queue;
-
   queue.enqueue(10);
   queue.enqueue(20);
   queue.enqueue(30);
-
   std::cout << "Front: " << queue.getFront() << std::endl;
   std::cout << "Rear: " << queue.getRear() << std::endl;
 
   queue.dequeue();
-
   std::cout << "Front: " << queue.getFront() << std::endl;
   std::cout << "Rear: " << queue.getRear() << std::endl;
 

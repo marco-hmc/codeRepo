@@ -321,24 +321,6 @@ const Rational operator*(const Rational& lhs, const Rational& rhs);
 
 #### 五、实现 (Implementations)
 
-
-**26. 尽可能延后变量定义式的出现时间  （Postpone variable definitions as long as possible)**
-
-主要是防止变量在定义以后没有使用，影响效率，应该在用到的时候再定义，同时通过default构造而不是赋值来初始化
-
-**27. 尽量不要进行强制类型转换  （Minimize casting)**
-
-主要是因为：
-
-1.从int转向double容易出现精度错误
-
-2.将一个类转换成他的父类也容易出现问题
-
-总结：
-+ 尽量避免转型，特别是在注重效率的代码中避免dynamic_cast，试着用无需转型的替代设计
-+ 如果转型是必要的，试着将他封装到韩束背后，让用户调用该函数，而不需要在自己的代码里面转型
-+ 如果需要转型，使用新式的static_cast等转型，比原来的（int）好很多（更明显，分工更精确）
-
 **28. 避免返回handles指向对象内部成分  （Avoid returning "handles" to object internals)**
 
 主要是为了防止用户误操作返回的值：
@@ -400,24 +382,6 @@ boundingBox会返回一个temp的新的，暂时的Rectangle对象，在这一�
 + 异常安全函数的三个特征
 + 第二个特征往往能够通过copy-and-swap实现出来，但是并非对所有函数都可实现或具备现实意义
 + 函数提供的异常安全保证，通常最高只等于其所调用各个函数的“异常安全保证”中最弱的那个。即函数的异常安全保证具有连带性
-
-**30. 透彻了解inlining  （Understand the ins and outs of inlining)**
-
-inline 函数的过度使用会让程序的体积变大，内存占用过高
-
-而编译器是可以拒绝将函数inline的，不过当编译器不知道该调用哪个函数的时候，会报一个warning
-
-尽量不要为template或者构造函数设置成inline的，因为template inline以后有可能为每一个模板都生成对应的函数，从而让代码过于臃肿
-同样的道理，构造函数在实际的过程中也会产生很多的代码，例如下面的：
-    
-    class Derived : public Base{
-        public:
-        Derived(){} // 看起来是空白的构造函数
-    }
-    实际上：
-    Derived::Derived{
-        //100行异常处理代码
-    }
 
 **31. 将文件间的编译依存关系降至最低  （Minimize compilation dependencies between files)**
 
@@ -1127,22 +1091,6 @@ static void operator delete(void* pMemory) throw();     //palcement delete，此
 
 这样写的代码在Array<int> a(10);的时候，编译器会先通过类型转换转换成ArraySize，然后再进行构造，虽然麻烦很多，效率也低了很多，但是在一定程度上可以避免隐式转换带来的问题
 
-**6. 区分自增运算符和自减运算符的前缀形式与后缀形式**
-
-这一点主要是要知道前缀和后缀的重载形式是不同的，以及重载的时候不要进行连续重载例如i++++;
-因为连续的+号会导致创建很多临时对象，效率会变低
-
-**7. 不要重载"&&"、"||"和","**
-
-主要是因为上面三个符号，大部分的程序员都已经达成共识，先运算前面的一串表达式，再判断后面的一串表达式：
-if(expression1 && expression2){} 就会先运算第一个表达式，然后再运算第二个表达式
-
-比较特殊的是逗号操作符：“,“，例如最常见的for循环：
-    
-    for(int i = 0, j = strlen(s)-1; i < j; i++, j--){}
-
-在这个for循环里面，因为最后一个部分职能使用一个表达式，分开表达式来改变i和j的值是不合法的，用逗号表达式就会先计算出来左边的i++，然后计算出逗号右边的j--
-
 **8. 理解new和delete在不同情形下的含义**
 
 两种new: new 操作符（new operator）和new操作（operator new）的区别
@@ -1178,47 +1126,6 @@ placement new : placement new 是有一些已经被分配但是没有被处理�
 new[]和delete[]就相当于对每一个数组元素调用构造和析构函数
 
 #### 三、异常
-
-**9. 使用析构函数防止资源泄漏**
-
-原代码：
-    
-    void processAdoptions(istream& dataSource){
-        while(dataSource){
-            ALA *pa = readALA(dataSource);
-        }
-        try{
-            pa->processAdoption();
-        }
-        catch(...){
-            delete pa; //在抛出异常的时候避免泄露
-            throw;
-        }
-        delete pa;     //在不抛出异常的时候避免泄露
-    }
-
-因为这种情况会需要删除两次pa，代码维护很麻烦，所以需要进行优化：
-
-template<class T>
-class auto_ptr{
-public:
-    auto_ptr(T *p=0):ptr(p){} //保存ptr，指向对象
-    ~auto_ptr(){delete prt;}
-private:
-    T *ptr;    
-}
-
-void processAdoptions(istream& dataSource){
-    while(dataSource){
-        auto_ptr<ALA> pa(readALA(dataSource));
-        pa->processAdoption();
-    }
-}
-
-auto_ptr后面隐藏的思想是：使用一个对象来存储需要被自动释放的资源，然后依靠对象的析构函数来释放资源。
-事实上WindowHandle就是这样一个东西
-
-那么这样就引出一个非常重要的规则：资源应该被封装在一个对象里面
 
 **10. 防止构造函数里的资源泄漏**
 
@@ -1867,12 +1774,6 @@ smart pointer 和 const：
 
 #### 六、杂项
 
-**32. 在将来时态下开发程序**
-
-新的函数会被加入到函数库里面， 将来会出现新的重载（所以要注意哪些含糊的函数调用行为的结果），新的类会加入到继承中，新的环境下运行等。
-
-应该通过代码来描述这些行为，而不仅仅是注释写上。实在拿不定我们类怎么设计的时候，仿照int来写
-
 **33. 将非尾端类设计为抽象类**
 
 如果采用这样的代码：
@@ -1950,41 +1851,11 @@ C++的extern‘C’可以禁止进行名字变换，例如：
 
 总结下来就是：确保C++和C编译器产生兼容的obj文件，将在两种语言下都是用的函数声明为extern'C'，只要可能，应该用C++写main(),delete，new成对使用，malloc和free成对使用，
 
-**35. 让自己熟悉C++语言标准**
-
-熟悉stl和一些新的C++特性。
-
-在C++运行库中的几乎任何东西都是模板，几乎所有的内容都在命名空间std中
-
-
 ## Effective Modern C++
 
 some note copy from [EffectiveModernCppChinese](https://github.com/racaljk/EffectiveModernCppChinese)
 
 #### 一、类型推导
-
-**1. 理解模板类型推导**
-
-其他之前说过了，主要是T有三种情况：1.指针或引用。2.通用的引用。3.既不是指针也不是引用
-    
-    template<typename T>
-    void f(T& param);   //param是一个引用
-    
-    int x = 27; // x是一个int
-    const int cx = x; // cx是一个const int
-    const int& rx = x; // rx是const int的引用
-    上面三种在调用f的时候会编译出不一样的代码：
-    f(x);  // T是int，param的类型时int&
-    f(cx); // T是const int，param的类型是const int&
-    f(rx); // T是const int， param的类型时const int&
-    
-    template<typename T>
-    void f(T&& param); // param现在是一个通用的引用
-    
-    template<typename T>
-    void f(T param); // param现在是pass-by-value
-
-如果用数组或者函数指针来调用的话，模板会自动抽象成指针。如果模板本身是第一种情况（指针或引用），那么就会自动编译成数组
 
 **2. 理解auto类型推导**
 
@@ -2041,22 +1912,7 @@ decltype的一些让人意外的应用：
         return (x);   //返回的是int&
     }
 
-**4. 学会查看类型推导结果**
-
-其实就是使用IDE编辑器来进行鼠标悬停/debug模式/运行时typeid输出等操作来查看类型
-
-需要知道的是，编译器报告出来的数据类型并不一定正确，所以还是需要对C++标准的类型推倒熟悉
-
 #### 二、auto
-
-**5. 优先考虑auto而非显式类型声明**
-
-没有初始化auto的时候，会从编译器阶段就报错;
-可以让lambda表达式更加稳定，更加快速，需要更少的资源，避免类型截断的问题，变量声明引起的歧义：
-    
-    std::vector<int> v;
-    unsigned sz = v.size(); //在32位下运行良好，因为此时size()返回的size_type是32位的，unsigned也是32位的，但是在64位上就不行了，size_type会变成64位，而unsigned仍然是32位
-    auto     sz = v.size(); //在64位机器上仍然表现良好
 
 **6. auto推导若非己愿，使用显式类型初始化惯用法**
 
@@ -2106,12 +1962,6 @@ decltype的一些让人意外的应用：
     Widget w1(10, true); //调用第一个构造函数
     Widget w2{10, true}; //调用第二个构造函数
 
-
-**8. 优先考虑nullptr而非0和NULL**
-
-编译器扫到一个0，发现有一个指针用到了他，所以才勉强强行将0解释为空指针，而NULL也是如此，这就会造成一些细节上的不确定性。
-
-使用nullptr不仅可以避免一些歧义，还可以让代码更加清晰，而且nullptr是无法被解释为整数的，可以避免很多问题
 **9. 优先考虑别名声明而非typedefs**
 
 别名声明可以让函数指针变得更容易理解：
@@ -2131,68 +1981,6 @@ decltype的一些让人意外的应用：
     template<class T>
     using remove_const_t = typename remove_const<T>::type
 
-**10. 优先考虑限域枚举(enmus)而非未限域枚举(enum)**
-
-    enum Color { black, white, red}; // black, white, red 和 Color 同属一个定义域
-    auto white = false; // 错误！因为 white 在这个定义域已经被声明过
-    
-    enum class Color { black, white, red}; // black, white, red作用域为 Color
-    auto white = false; // fine, 在这个作用域内没有其他的 "white"
-
-C++98 风格的 enum 是没有作用域的 enum
-
-有作用域的枚举体的枚举元素仅仅对枚举体内部可见。只能通过类型转换（ cast ）转换
-为其他类型
-
-有作用域和没有作用域的 enum 都支持指定潜在类型。有作用域的 enum 的默认潜在类型是 int 。没有作用域的 enum 没有默认的潜在类型。
-
-有作用域的 enum 总是可以前置声明的。没有作用域的 enum 只有当指定潜在类型时才可以前置声明。
-**11. 优先考虑使用delete来禁用函数而不是声明成private却又不实现**
-
-    template <class charT, class traits = char_traits<charT> >
-    class basic_ios : public ios_base {
-    public:
-        basic_ios(const basic_ios& ) = delete;
-        basic_ios& operator=(const basic_ios&) = delete;
-    };
-delete的函数不能通过任何方式被使用，即使是其他成员函数或者friend，都是不行的，但是如果只是声明成privatre，编译器只会报警说是private的。
-
-delete的另一个优势就是任何函数都可以delete，但是只有成员函数才能是private的，例如：
-    
-    bool isLucky(int number); // 原本的函数
-    bool isLucky(char) = delete; // 拒绝char类型
-上面这一段代码如果只是声明成private的话，会被重载
-
-**12. 使用override声明重载函数**
-
-只有当基类和子类的虚函数完全一样的时候，才会出现覆盖的情况，如果不完全一样，则会重载：
-    
-    class Base{
-    public:
-        virtual void doWork();
-    };
-    class Derived: public Base{
-    public:
-        virtual void doWork();   //会覆盖基类
-    };
-    
-    class Derived:public Base{
-    public:
-        virtual void doWork()&&; //不会发生覆盖，而是会重载
-    };
-所以尽量要在需要重写的函数后面加上override
-
-**13. 优先考虑const_iterator而非iterator**
-
-C++98中const_iterator不太好用，但是C++11中很方便
-
-**14. 如果函数不抛出异常请使用noexcept**
-
-因为对于异常本身来说，会不会发生异常往往是人们所关心的事情，什么样的异常反而是不那么关心的，因此noexcept和const是同等重要的信息
-并且加上noexcept关键字，会让编译器对代码的优化变强。
-
-对于像swap这样需要进行异常检查的函数（还有移动操作函数，内存释放函数，析构函数），如果有noexcept关键字的话，会让代码效率提升非常大。当然，noexcept用的时候必须保证函数真的不会抛出异常
-
 **15. 尽可能的使用constexpr**
 
 constexpr：表示的值不仅是const，而且在编译阶段就已知其值了，他们因为这样的特性就会被放到只读内存里面，并且因为这个特性，constexpr的值可以用在数组规格，整形模板实参中：
@@ -2202,8 +1990,6 @@ constexpr：表示的值不仅是const，而且在编译阶段就已知其值了
 
 但是对于constexpr的函数来说，如果所有的函数实参都是已知的，那这个函数也是已知的，如果所有实参都是未知的，编译无法通过，
 在调用constexpr函数时，入股传入的值有一个或多个在编译期未知，那这个函数就是个普通函数，如果都是已知的，那这个函数也是已知的。
-
-使用constexpr会让客户的代码得到足够的支持，并且提升程序的效率
 
 **16. 确保const成员函数线程安全**
 
@@ -2508,52 +2294,6 @@ C++中，“引用的引用”是违法的，但是上面T的推到结果是Widg
     void f(std::size_t sz); IPv4Header h;
     fwd(h.totalLength); //错误
 + 最后，所有的失败情形实际上都归结于模板类型推到失败，或者推到结果是错误的。
-
-#### 六、Lambda表达式
-
-**31. 避免使用默认捕获模式**
-
-主要是使用显式捕获的时候，可以比较明显的让用户知道变量的声明周期：
-    
-    void addDivisorFilter(){
-        auto divisor = computeDivisor(cal1, cal2);
-        filters.emplace_back([&](int value){return value % divisor == 0;}) //危险，因为divisor在闭包里面很容易空悬，生命周期会结束
-    }
-如果用显式捕获的话：
-
-    filters.emplace_back([&divisor](int value){return value % divisor == 0;}) //仍然很危险，但是起码很明显
-最好的做法就是传一个this进去：
-
-    void Widget::addFilter() const{
-        auto currentObjectPtr = this;    //这样就把变量的声明周期和object绑定起来了
-        filters.emplace_back([currentObjectPtr](int value){
-            return value % currentObjectPtr->advisor == 0;
-        })
-    }
-
-**32. 使用初始化捕获来移动对象到闭包中**
-
-    auto func = [pw = std::make_unique<Widget>()]{    //初始化捕获（广义lambda捕获），适用于C++14及其以上
-        return pw->isValidated() && pw->isArchived();
-    };
-    
-    auto func = std::bind([](const std::unique_ptr<Widget>& data){}, std::make_unique<Widget>()); // C++11的版本，和上面的含义一样
-
-**33. 对于std::forward的auto&&形参使用decltype**
-
-在C++14中，我们可以在lambda表达式里面使用auto了，那么我们想要把传统的完美转发用lambda表达式写出来应该是什么样子的呢：
-    
-    class SomeClass{
-    public:
-        template<typename T>
-        auto operator()(T x) const{
-            return func(normalize(x));
-        }
-    }
-    
-    auto f=[](auto&& x){
-        return func(normalize(std::forward<decltype(x)>(x)));
-    };
 
 #### 优先考虑基于任务的编程而非基于线程的编程
 在C++中,std::async 提供了一种更高级别的并发抽象,它可以自动管理线程的生命周期,并且可以获取异步操作的结果.此外,如果异步操作抛出异常,std::async 也可以捕获并在主线程中重新抛出这个异常.这使得 std::async 在许多情况下比直接使用 std::thread 更加方便和安全.

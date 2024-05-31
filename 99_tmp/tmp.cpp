@@ -1,59 +1,101 @@
 #include <iostream>
+#include <queue>
+
+using namespace std;
+
+// 树节点的定义
+struct TreeNode {
+  int val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+// 先序遍历
+void preorderTraversal(TreeNode *root) {
+  if (root == nullptr) {
+    return;
+  }
+  cout << root->val << " ";
+  preorderTraversal(root->left);
+  preorderTraversal(root->right);
+}
+
+// 中序遍历
+void inorderTraversal(TreeNode *root) {
+  if (root == nullptr) {
+    return;
+  }
+  inorderTraversal(root->left);
+  cout << root->val << " ";
+  inorderTraversal(root->right);
+}
+
+// 后序遍历
+void postorderTraversal(TreeNode *root) {
+  if (root == nullptr) {
+    return;
+  }
+  postorderTraversal(root->left);
+  postorderTraversal(root->right);
+  cout << root->val << " ";
+}
+
+// 层序遍历
+void levelOrderTraversal(TreeNode *root) {
+  if (root == nullptr) {
+    return;
+  }
+  queue<TreeNode *> q;
+  q.push(root);
+  while (!q.empty()) {
+    TreeNode *node = q.front();
+    q.pop();
+    cout << node->val << " ";
+    if (node->left != nullptr) {
+      q.push(node->left);
+    }
+    if (node->right != nullptr) {
+      q.push(node->right);
+    }
+  }
+}
 
 int main() {
 
-  std::string str = "四 123";
-  const char *cstr = "四 123";
+  // 创建一个示例树
+  //     1
+  //    / \
+  //   2   3
+  //  / \ / \
+  // 4  5 6  7
+  TreeNode *root = new TreeNode(1);
+  root->left = new TreeNode(2);
+  root->right = new TreeNode(3);
+  root->left->left = new TreeNode(4);
+  root->left->right = new TreeNode(5);
+  root->right->left = new TreeNode(6);
+  root->right->right = new TreeNode(7);
 
-  if (str.c_str() == cstr) {
-    std::cout << "The strings are equal." << std::endl;
-  } else {
-    std::cout << "The strings are not equal." << std::endl;
-  }
-  // std::cout << *str.c_str() << std::endl;
-  std::cout << str.c_str() << std::endl;
-  std::cout << str << std::endl;
+  // 先序遍历
+  cout << "Preorder traversal: ";
+  preorderTraversal(root);
+  cout << endl;
 
-  if (str == cstr) {
-    std::cout << "The strings are equal." << std::endl;
-  } else {
-    std::cout << "The strings are not equal." << std::endl;
-  }
+  // 中序遍历
+  cout << "Inorder traversal: ";
+  inorderTraversal(root);
+  cout << endl;
+
+  // 后序遍历
+  cout << "Postorder traversal: ";
+  postorderTraversal(root);
+  cout << endl;
+
+  // 层序遍历
+  cout << "Level order traversal: ";
+  levelOrderTraversal(root);
+  cout << endl;
+
   return 0;
 }
-
-// #include <stdio.h>
-
-// void f(unsigned char v)
-
-// {
-
-//   char c = v;
-
-//   unsigned char uc = v;
-
-//   unsigned int a = c, b = uc;
-
-//   int i = c, j = uc;
-
-//   printf("----------------\n");
-
-//   printf("%%c: %c, %c\n", c, uc);
-
-//   printf("%%X: %X, %X\n", c, uc);
-
-//   printf("%%u: %u, %u\n", a, b);
-
-//   printf("%%d: %d, %d\n", i, j);
-// }
-
-// int main(int argc, char *argv[])
-
-// {
-
-//   f(0x80);
-
-//   f(0x7F);
-
-//   return 0;
-// }

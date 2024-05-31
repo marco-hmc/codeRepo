@@ -62,7 +62,13 @@ void levelOrderTraversal(TreeNode *root) {
 }
 
 int main() {
+
   // 创建一个示例树
+  //     1
+  //    / \
+  //   2   3
+  //  / \ / \
+  // 4  5 6  7
   TreeNode *root = new TreeNode(1);
   root->left = new TreeNode(2);
   root->right = new TreeNode(3);
@@ -72,21 +78,25 @@ int main() {
   root->right->right = new TreeNode(7);
 
   // 先序遍历
+  // 1 2 4 5 3 6 7
   cout << "Preorder traversal: ";
   preorderTraversal(root);
   cout << endl;
 
   // 中序遍历
+  // 4 2 5 1 6 3 7
   cout << "Inorder traversal: ";
   inorderTraversal(root);
   cout << endl;
 
   // 后序遍历
+  // 4 5 2 6 7 3 1
   cout << "Postorder traversal: ";
   postorderTraversal(root);
   cout << endl;
 
   // 层序遍历
+  // 1 2 3 4 5 6 7
   cout << "Level order traversal: ";
   levelOrderTraversal(root);
   cout << endl;

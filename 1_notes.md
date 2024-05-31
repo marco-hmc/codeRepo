@@ -1,3 +1,45 @@
+**33. 对于std::forward的auto&&形参使用decltype**
+
+在C++14中，我们可以在lambda表达式里面使用auto了，那么我们想要把传统的完美转发用lambda表达式写出来应该是什么样子的呢：
+    
+    class SomeClass{
+    public:
+        template<typename T>
+        auto operator()(T x) const{
+            return func(normalize(x));
+        }
+    }
+    
+    auto f=[](auto&& x){
+        return func(normalize(std::forward<decltype(x)>(x)));
+    };
+
+
+**1. 理解模板类型推导**
+
+其他之前说过了，主要是T有三种情况：1.指针或引用。2.通用的引用。3.既不是指针也不是引用
+    
+    template<typename T>
+    void f(T& param);   //param是一个引用
+    
+    int x = 27; // x是一个int
+    const int cx = x; // cx是一个const int
+    const int& rx = x; // rx是const int的引用
+    上面三种在调用f的时候会编译出不一样的代码：
+    f(x);  // T是int，param的类型时int&
+    f(cx); // T是const int，param的类型是const int&
+    f(rx); // T是const int， param的类型时const int&
+    
+    template<typename T>
+    void f(T&& param); // param现在是一个通用的引用
+    
+    template<typename T>
+    void f(T param); // param现在是pass-by-value
+
+如果用数组或者函数指针来调用的话，模板会自动抽象成指针。
+如果模板本身是第一种情况（指针或引用），那么就会自动编译成数组
+
+
 # 多继承5个父类,如果5个父类都有虚函数的话,派生类就有5个vptr,对吗? 不同的vptr怎么id?
 
 在C++中,如果一个派生类从多个基类继承,每个基类都有虚函数,那么派生类的对象会有多个虚函数表指针(vptr).每个基类的vptr指向其自己的虚函数表(vtable).所以,如果一个派生类从5个都有虚函数的基类继承,那么这个派生类的对象就会有5个vptr.
