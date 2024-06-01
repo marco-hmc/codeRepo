@@ -1,15 +1,8 @@
-
-
-> 本文最初发表于[博客园](https://www.cnblogs.com/smyhvae/p/8424230.html)，并在[GitHub](https://github.com/qianguyihao/Web)上持续更新**前端的系列文章**。欢迎在GitHub上关注我，一起入门和进阶前端。
-
-> 以下是正文。
-
 ## HTML5的介绍
 
 ### Web 技术发展时间线
 
 - 1991 HTML
-
 
 - 1994 HTML2
 
@@ -32,9 +25,7 @@
 
 2002年的表格布局逐渐被淘汰，是因为：表格是用来承载数据的，并不是用来划分网页结构的。
 
-
 2009年就已经推出了HTML5的草案，但直到2014年才有定稿，是因为有移动端的推动。
-
 
 H5草案的前身是叫：Web Application，最早是由[WHATWG](https://baike.baidu.com/item/WHATWG/5803339?fr=aladdin)这个组织在2004年提出的。
 
@@ -863,12 +854,3 @@ H5可以直接在标签里添加自定义属性，**但必须以 `data-` 开头*
 
 </html>
 ```
-
-
-## 我的公众号
-
-想学习<font color=#0000ff>**代码之外的技能**</font>？不妨关注我的微信公众号：**千古壹号**（id：`qianguyihao`）。
-
-扫一扫，你将发现另一个全新的世界，而这将是一场美丽的意外：
-
-![](http://img.smyhvae.com/2016040102.jpg)
