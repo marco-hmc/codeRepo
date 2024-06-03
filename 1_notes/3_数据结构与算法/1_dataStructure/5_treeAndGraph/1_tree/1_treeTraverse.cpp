@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -21,6 +22,29 @@ void preorderTraversal(TreeNode *root) {
   preorderTraversal(root->right);
 }
 
+// 先序遍历
+vector<int> preorderTraversal2(TreeNode *root) {
+  vector<int> result;
+  stack<TreeNode *> stk;
+  if (root != nullptr)
+    stk.push(root);
+
+  while (!stk.empty()) {
+    TreeNode *node = stk.top();
+    stk.pop();
+
+    if (node != nullptr) {
+      result.push_back(node->val);
+      if (node->right)
+        stk.push(node->right);
+      if (node->left)
+        stk.push(node->left);
+    }
+  }
+
+  return result;
+}
+
 // 中序遍历
 void inorderTraversal(TreeNode *root) {
   if (root == nullptr) {
@@ -31,6 +55,27 @@ void inorderTraversal(TreeNode *root) {
   inorderTraversal(root->right);
 }
 
+// 中序遍历
+vector<int> inorderTraversal2(TreeNode *root) {
+  vector<int> result;
+  stack<TreeNode *> stk;
+  TreeNode *curr = root;
+
+  while (!curr || !stk.empty()) {
+    while (!curr) {
+      stk.push(curr);
+      curr = curr->left;
+    }
+
+    curr = stk.top();
+    stk.pop();
+    result.push_back(curr->val);
+    curr = curr->right;
+  }
+
+  return result;
+}
+
 // 后序遍历
 void postorderTraversal(TreeNode *root) {
   if (root == nullptr) {
@@ -39,6 +84,28 @@ void postorderTraversal(TreeNode *root) {
   postorderTraversal(root->left);
   postorderTraversal(root->right);
   cout << root->val << " ";
+}
+
+// 后序遍历
+vector<int> postorderTraversal2(TreeNode *root) {
+  vector<int> result;
+  stack<TreeNode *> stk;
+  if (root != nullptr)
+    stk.push(root);
+
+  while (!stk.empty()) {
+    TreeNode *node = stk.top();
+    stk.pop();
+
+    if (node != nullptr) {
+      result.insert(result.begin(), node->val);
+      if (node->left)
+        stk.push(node->left);
+      if (node->right)
+        stk.push(node->right);
+    }
+  }
+  return result;
 }
 
 // 层序遍历

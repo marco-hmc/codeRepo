@@ -1,101 +1,40 @@
 #include <iostream>
-#include <queue>
+#include <string>
+#include <vector>
 
 using namespace std;
 
-// 树节点的定义
-struct TreeNode {
-  int val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-};
-
-// 先序遍历
-void preorderTraversal(TreeNode *root) {
-  if (root == nullptr) {
+void dfs(vector<string> &ret, string &str, int open, int close) {
+  if (open == 0 && close == 0) {
+    ret.push_back(str);
     return;
   }
-  cout << root->val << " ";
-  preorderTraversal(root->left);
-  preorderTraversal(root->right);
+  if (open > 0) {
+    str.push_back('(');
+    dfs(ret, str, open - 1, close);
+    str.pop_back();
+  }
+  if (close > open) {
+    str.push_back(')');
+    dfs(ret, str, open, close - 1);
+    str.pop_back();
+  }
 }
 
-// 中序遍历
-void inorderTraversal(TreeNode *root) {
-  if (root == nullptr) {
-    return;
-  }
-  inorderTraversal(root->left);
-  cout << root->val << " ";
-  inorderTraversal(root->right);
-}
-
-// 后序遍历
-void postorderTraversal(TreeNode *root) {
-  if (root == nullptr) {
-    return;
-  }
-  postorderTraversal(root->left);
-  postorderTraversal(root->right);
-  cout << root->val << " ";
-}
-
-// 层序遍历
-void levelOrderTraversal(TreeNode *root) {
-  if (root == nullptr) {
-    return;
-  }
-  queue<TreeNode *> q;
-  q.push(root);
-  while (!q.empty()) {
-    TreeNode *node = q.front();
-    q.pop();
-    cout << node->val << " ";
-    if (node->left != nullptr) {
-      q.push(node->left);
-    }
-    if (node->right != nullptr) {
-      q.push(node->right);
-    }
-  }
+vector<string> generateParenthesis(int n) {
+  if (n <= 0)
+    return {};
+  vector<string> ret;
+  string tmp = string("");
+  dfs(ret, tmp, n, n);
+  return ret;
 }
 
 int main() {
-
-  // 创建一个示例树
-  //     1
-  //    / \
-  //   2   3
-  //  / \ / \
-  // 4  5 6  7
-  TreeNode *root = new TreeNode(1);
-  root->left = new TreeNode(2);
-  root->right = new TreeNode(3);
-  root->left->left = new TreeNode(4);
-  root->left->right = new TreeNode(5);
-  root->right->left = new TreeNode(6);
-  root->right->right = new TreeNode(7);
-
-  // 先序遍历
-  cout << "Preorder traversal: ";
-  preorderTraversal(root);
-  cout << endl;
-
-  // 中序遍历
-  cout << "Inorder traversal: ";
-  inorderTraversal(root);
-  cout << endl;
-
-  // 后序遍历
-  cout << "Postorder traversal: ";
-  postorderTraversal(root);
-  cout << endl;
-
-  // 层序遍历
-  cout << "Level order traversal: ";
-  levelOrderTraversal(root);
-  cout << endl;
-
+  int n = 3; // Replace with desired value
+  vector<string> result = generateParenthesis(n);
+  for (const string &str : result) {
+    cout << str << endl;
+  }
   return 0;
 }

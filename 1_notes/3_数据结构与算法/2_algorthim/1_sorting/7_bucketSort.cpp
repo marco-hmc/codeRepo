@@ -1,11 +1,11 @@
 #include<bits/stdc++.h>
 using namespace std;
-struct Node{
 
-    float data;
-    Node* next;
-
+struct Node {
+  float data;
+  Node *next;
 };
+
 void selectionSort(Node* head)
 {
     Node* temp = head;
@@ -29,27 +29,26 @@ void selectionSort(Node* head)
         temp = temp->next;
     }
 }
+
 void bucket_sort(float arr[],int n)
 {
-    Node* bucket[n]={NULL};
-    for (int i = 0; i < n; i++) {
-        int bi = n * arr[i];
-        //cout<<bi<<" ";
-        Node* newnode =new Node();
-        newnode->data = arr[i];
-        newnode->next = NULL;
-        if(bucket[bi] == NULL)
-            bucket[bi] = newnode;
-        else
-        {
-            Node* temp = bucket[bi];
-            while(temp->next!=NULL)
-            {
-                temp=temp->next;
-            }
-            temp->next=newnode;
-        }
+  vector<Node *> bucket(n, NULL);
+  for (int i = 0; i < n; i++) {
+    int bi = n * arr[i];
+    // cout<<bi<<" ";
+    Node *newNode = new Node();
+    newNode->data = arr[i];
+    newNode->next = NULL;
+    if (bucket[bi] == NULL)
+      bucket[bi] = newNode;
+    else {
+      Node *temp = bucket[bi];
+      while (temp->next != NULL) {
+        temp = temp->next;
+      }
+      temp->next = newNode;
     }
+  }
 
     for(int i=0;i<n;i++)
     {
@@ -69,6 +68,7 @@ void bucket_sort(float arr[],int n)
     for(int i=0;i<n;i++)
         cout<<arr[i]<<" ";
 }
+
 int main()
 {
     float arr[] = { 0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434 };

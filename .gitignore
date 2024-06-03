@@ -8,3 +8,4 @@ include
 tmp
 **/*.exe
 blog
+**/__pycache__/
