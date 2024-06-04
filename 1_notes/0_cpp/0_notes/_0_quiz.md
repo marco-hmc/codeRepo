@@ -1,22 +1,10 @@
-
-* enable_share_from_this是做什么的
 * 为什么stl中的内存分配器要设计为一个模板参数而不是一个构造函数参数?
-* 如何实现一个引用计数指针,以及其中要注意的点?
-* 拷贝构造函数的参数可以不加引用吗?为什么
-* 定义一个类B,它有一个A*类型的成员变量.并写出它的拷贝构造函数.
-考察一下对于深拷贝,浅拷贝的思考.
-* shared_ptr的引用计数是怎么存储的?    多线程场景怎么解决
-* 模板类A中有一个static变量x,那么该程序中变量x的实例有几分?
-* shared ptr<T>怎么实现一个普通指针的const T*效果?
-* shared ptr修改指向的时候,分析一下过程,性能开销如何?
-
-* 如果一个函数有多处return,我想每个return都加一些相同的处理,最好怎么实现?
-这里最好的写法就是RAII模式的应用.不过很多时候我们也不必每次新建一个RAII模式的类.可以使用用unique ptr来完成.
 
 ### 内存空间
 
 ### Lambda capture initializers
-This allows creating lambda captures initialized with arbitrary expressions. The name given to the captured value does not need to be related to any variables in the enclosing scopes and introduces a new name inside the lambda body. The initializing expression is evaluated when the lambda is _created_ (not when it is _invoked_).
+The name given to the captured value does not need to be related to any variables in the enclosing scopes and introduces a new name inside the lambda body. 
+The initializing expression is evaluated when the lambda is _created_ (not when it is _invoked_).
 ```c++
 int factory(int i) { return i * 10; }
 auto f = [x = factory(2)] { return x; }; // returns 20
@@ -29,7 +17,10 @@ auto a = generator(); // == 0
 auto b = generator(); // == 1
 auto c = generator(); // == 2
 ```
-Because it is now possible to _move_ (or _forward_) values into a lambda that could previously be only captured by copy or reference we can now capture move-only types in a lambda by value. Note that in the below example the `p` in the capture-list of `task2` on the left-hand-side of `=` is a new variable private to the lambda body and does not refer to the original `p`.
+Because it is now possible to _move_ (or _forward_) values into a lambda that could previously be only captured by copy or reference we can now capture move-only types in a lambda by value. 
+
+Note that in the below example the `p` in the capture-list of `task2` on the left-hand-side of `=` is a new variable private to the lambda body and does not refer to the original `p`.
+
 ```c++
 auto p = std::make_unique<int>(1);
 
@@ -162,49 +153,11 @@ const T& constRef = getTemporary();  // const 引用绑定到临时对象
     std::vector<int>().swap(vec);  // 使用swap方法将一个新的空vector与vec交换
 ```
 
-* 为什么右值可以被常量左值引用 引用?
-   ```cpp
-   const std::string& lv2 = lv1 + lv1; // 合法, 常量左值引用能够延长临时变量的生命周期
-   ```
-
-* unique_ptr是怎么实现的?为什么把形参为左值引用的禁了,只放开了形参为右值引用的?
-
-* shared_ptr是怎么实现的?为什么refCount要是指针?
-
-* 类型放松 协变返回:
-只能用于返回类型是指针或引用的情况
-覆盖函数的类型必须与它所覆盖的虚函数类型完全一致,但是C++吧,就觉得既然都is-a,那么可以说,如果原返回类型是Base*,那么覆盖的函数可以返回Derived*,类似的,返回的类型是Base&,那么覆盖函数可以返回Derived&.这叫协变返回.<br>
-
-腾讯OMG团队(实习)
-
-1/画出tcp头部的协议格式.
-  扩展: udp头部/ip头部/http头部
-2/Http的报文头部
-
-15/滑动窗口的作用
-答:主要就是为了实现流量控制,控制了发送包的速率,每次发送方只能发送滑动窗口内部的数据包,才能保证接收方不会因为发送过快造成流量淹没,数据包的丢失.他的大小是 拥塞窗口和通告窗口 两者的最小值.
-
-项目
-1/如何实现断点续传,如何提高上传速
 
 算法
 1/计算表达式 (改成后缀表达式进行处理)
 2/朋友圈问题,求总共有多少个朋友圈 (使用并查集)
 3/一个数组找中位数(通过快排思想,常数级的若干次求position,直到恰好是中心,时间复杂度是O(n),如果是海量数据呢2g数据,500内存如何处理?->hash之后分成小文件,再外部排序,使用归并,可以使用最大堆,直到数据过半)
-
-腾讯SNG(实习一面)
-
-2/epoll和select的区别
-3/epoll的高效,有几种工作模式( LT/ET)
-5/TIMEWAIT是什么,为什么要设置TIMEWAIT状态
-6/TCP的可靠性是如何实现的?(流量控制/拥塞控制/确认序号/校验???)
-
-oppo(一面)
-
-首先介绍项目,我给他介绍了一下这个项目的架构,功能.
-
-问题2:io复用和异步io有什么区别?
-答:IO复用其实一种同步IO,他只是将事件通知统一交给了select或者epoll,所以,对于IO复用,其实Select或者epoll在检测可用时是阻塞的,里面的读写一般也是阻塞的,而异步IO是不会阻塞的,数据从内核态拷贝到用户态缓冲区完成后,***作系统会发送信号,通知进程处理,这个过程进程是可以继续执行的,这个就是异步io.
 
 编程/算法
 1/一个文件无序存放了1w个数字,每行1个.数字范围1-1w,现在随机删除2个数字.请把他们2个找出来.
@@ -222,6 +175,17 @@ oppo(一面)
 5/如果数据有重复呢?
 答:可以使用2-bitmap,00代表不出现,01代表出现1次,10代表出现2次,11表示无定义,这样遍历一遍就可以找到是哪几个数字
 他回答:不是,比如数字3,具体有多少出现,这个这需要知道的. 我说:10bit可以表示的数是1024,而你每个数字不可能超过1w次.所以要记录次数的话,就还是用bitmap但是不是1位,大概1个数用14bit吧,但相比32位一个数要好些.
+
+
+笔试:
+特殊链表(每个节点带一个随机指针),对该链表进行复制,输出复制后的新链表.(剑指offer原题)
+
+百度云二面
+
+1/socket和epoll的关系区别?(不太懂他意思,反正对epoll的底层进行了阐述)
+2/红黑树是线程安全的吗
+3/有哪些同步手段
+6/计数如何保证线程安全?(cas***作/***作系统底层指令支持)
 
 oppo二面
 
@@ -260,33 +224,3 @@ oppo二面
 
 22/c++多继承是如何实现?如何处理同名变量
 
-百度云一面
-
-4/tcp三次握手 /2次/4次?
-5/tcp可靠性的实现原因
-6/滑动窗口的作用
-7/原子***作如何实现(锁/cas***作)
-8/如何实现一个互斥锁,互斥锁的实现原理
-
-笔试:
-特殊链表(每个节点带一个随机指针),对该链表进行复制,输出复制后的新链表.(剑指offer原题)
-
-百度云二面
-
-1/socket和epoll的关系区别?(不太懂他意思,反正对epoll的底层进行了阐述)
-2/红黑树是线程安全的吗
-3/有哪些同步手段
-6/计数如何保证线程安全?(cas***作/***作系统底层指令支持)
-
-360二面
-2/交给sub 线程的文件描述符如何回收的?
-3/tcp粘包
-8/IO和reactor模式 (吹的select和epoll)
-
-
-腾讯IEG魔方工作室(简历面)
-
-tcp udp 游戏
-容器线程安全
-新链接 何时注册写事件
-主线程如何将fd交给sub线程?

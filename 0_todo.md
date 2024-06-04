@@ -24,7 +24,6 @@
   15. 汇编
   16. flutterEngine，electron
   15. https://github.com/CnTransGroup/EffectiveModernCppChinese?tab=readme-ov-file
-  15. 博客(计网,操作系统,汇编,计算机图形学(矩阵,渲染管线), 前端(electron))
   16. cmake
   17. sql语句
   19. webServer
