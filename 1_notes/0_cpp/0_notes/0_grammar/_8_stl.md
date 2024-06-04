@@ -1,4 +1,5 @@
-
+* 为什么stl中的内存分配器要设计为一个模板参数而不是一个构造函数参数?
+* 
 * 请你回答一下STL里vector的resize和reserve的区别
   * resize()：改变当前容器内含有元素的数量size，eg: vector\<int\>v；v.resize(len)；v的size变为len，**如果原来v的size小于len，那么容器新增（len-size）个元素，元素的值为默认为0**。当v.push_back(3);之后，则是3是放在了v的末尾，即下标为len，此时容器是size为len+1；**如果原来v的size大于len，resize会移除那些超出len的元素同时销毁他们**
   * reserve()：改变当前容器的最大容量（capacity），**它不会生成元素**，只是确定这个容器允许放入多少对象，如果reserve(len)的len值大于当前的capacity，那么会重新分配一块能存len个对象的空间，然后把之前v.size()个对象通过copy construtor复制过来，销毁之前的内存。len值小于当前capacity，不做处理
@@ -18,3 +19,15 @@
 * functional头文件支持的基于模板的比较函数对象
   * equal_to<Type>、not_equal_to<Type>、greater<Type>、greater_equal<Type>、less<Type>、less_equal<Type>
   * 常用的有greater <Type>()从大到小排序，less <Type>()从小到大排序
+
+* ***vector问题***
+    尽量不要在vector中存放bool类型,vector为了做优化,它的内部存放的其实不是bool.
+
+* ***vector删除***
+```c++
+    std::vector<int> vec(1000000, 42);  // 创建一个包含1000000个元素的vector,并初始化为42
+    vec.clear();  // 使用clear方法清空vector,但容量仍然是1000000
+    // 在这之后,vec仍然占用着大量内存,即使已经没有实际的元素
+
+    std::vector<int>().swap(vec);  // 使用swap方法将一个新的空vector与vec交换
+```

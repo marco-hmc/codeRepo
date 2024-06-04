@@ -1,5 +1,59 @@
 ## frontEnd
 
+### 1. js
+
+闭包在JavaScript中如何实现数据隐藏和封装?
+
+js的call(), apply()和bind()有什么用
+---
+
+```javascript
+function fn(a) {
+    console.log(a);
+
+    var a = 666;
+
+    console.log(a);
+
+    function a() {}
+
+    console.log(a);
+
+    var b = function() {};
+
+    console.log(b);
+
+    function c() {}
+}
+
+fn(1);
+// ƒ a() {}
+// 666
+// 666
+// ƒ () {}
+```
+
+
+```javascript
+function foo() {
+    var a = b = 100; // 连续赋值
+}
+
+foo();
+
+console.log(window.b); // 在全局范围内访问 b
+console.log(b); // 在全局范围内访问 b,但是前面没有加 window 这个关键字
+
+console.log(window.a); // 在全局范围内访问 a
+console.log(a); // 在全局范围内访问 a,但是前面没有加 window 这个关键字
+
+// 100
+// 100
+// undefined
+// (会报错,提示 Uncaught ReferenceError: a is not defined)
+```
+
+
 ### 1. 
 * For instance, [Node.js](https://wikipedia.org/wiki/Node.js) supports functions that allow JavaScript to read/write arbitrary files, perform network requests, etc.
 

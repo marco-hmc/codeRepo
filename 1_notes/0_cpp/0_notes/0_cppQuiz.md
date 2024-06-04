@@ -1,3 +1,40 @@
+### Ref-qualified member functions
+Member functions can now be qualified depending on whether `*this` is an lvalue or rvalue reference.
+
+```c++
+struct Bar {
+  // ...
+};
+
+struct Foo {
+  Bar getBar() & { return bar; }
+  Bar getBar() const& { return bar; }
+  Bar getBar() && { return std::move(bar); }
+private:
+  Bar bar;
+};
+
+Foo foo{};
+Bar bar = foo.getBar(); // calls `Bar getBar() &`
+
+const Foo foo2{};
+Bar bar2 = foo2.getBar(); // calls `Bar Foo::getBar() const&`
+
+Foo{}.getBar(); // calls `Bar Foo::getBar() &&`
+std::move(foo).getBar(); // calls `Bar Foo::getBar() &&`
+
+std::move(foo2).getBar(); // calls `Bar Foo::getBar() const&&`
+```
+
+```c++
+auto x = 1;
+auto f = [&r = x, x = x * 10] {
+  ++r;
+  return r + x;
+};
+f(); // sets x to 2 and returns 12
+```
+
 ## cpp quiz
 
 ### 1. grammar
@@ -29,6 +66,30 @@
 
     foo(NULL);  // 调用哪个函数？
     ```
+* **一个new出来的指针,被delete两次会怎么样**
+如果一个指针被`delete`两次,会导致未定义行为(Undefined Behavior).这是因为在第一次`delete`后,该指针已经不再指向有效的内存区域,再次尝试`delete`就是对无效内存的操作,这是非法的.
+
+未定义行为可能会导致各种各样的问题,包括但不限于:
+
+- 程序崩溃
+- 数据损坏
+- 难以预测和解释的行为
+
+为了避免这种情况,你应该确保每个`new`操作都有一个对应的`delete`操作,并且每个`delete`操作都只执行一次.在你的代码中,`UniquePtr`类就是通过封装`new`和`delete`操作来确保资源的正确管理,避免了这种问题.
+
+* ***为什么delete之后,都会设置nullptr***
+
+在C++中,`delete`一个指针后,通常会将其设置为`nullptr`,主要有以下几个原因:
+
+1. **避免悬挂指针**:`delete`一个指针后,该指针就变成了悬挂指针(Dangling Pointer),它不再指向有效的内存区域,但仍然保留了原来的地址值.如果你试图再次使用这个悬挂指针,就会导致未定义行为.将指针设置为`nullptr`可以避免这种情况,因为`nullptr`是一个特殊的指针值,表示该指针不指向任何对象.
+
+2. **安全地重复`delete`**:在C++中,`delete`一个`nullptr`是安全的,不会有任何效果.所以,如果你将一个指针设置为`nullptr`,就可以安全地重复`delete`它,而不会导致未定义行为.
+
+3. **检查指针是否已经被`delete`**:如果你将一个指针设置为`nullptr`,就可以通过检查该指针是否为`nullptr`来判断它是否已经被`delete`.
+
+所以,`delete`一个指针后,通常会将其设置为`nullptr`,以提高程序的安全性和稳定性.
+
+
 
 #### 1.2 右值引用
 
