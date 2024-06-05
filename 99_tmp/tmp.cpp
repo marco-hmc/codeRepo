@@ -1,40 +1,27 @@
 #include <iostream>
-#include <string>
+#include <mutex>
+#include <thread>
 #include <vector>
 
 using namespace std;
+once_flag callflag;
 
-void dfs(vector<string> &ret, string &str, int open, int close) {
-  if (open == 0 && close == 0) {
-    ret.push_back(str);
-    return;
-  }
-  if (open > 0) {
-    str.push_back('(');
-    dfs(ret, str, open - 1, close);
-    str.pop_back();
-  }
-  if (close > open) {
-    str.push_back(')');
-    dfs(ret, str, open, close - 1);
-    str.pop_back();
-  }
-}
+static void once_print() { cout << '!'; }
 
-vector<string> generateParenthesis(int n) {
-  if (n <= 0)
-    return {};
-  vector<string> ret;
-  string tmp = string("");
-  dfs(ret, tmp, n, n);
-  return ret;
+static void print(size_t x) {
+  std::call_once(callflag, once_print);
+  cout << x;
 }
 
 int main() {
-  int n = 3; // Replace with desired value
-  vector<string> result = generateParenthesis(n);
-  for (const string &str : result) {
-    cout << str << endl;
+  vector<thread> v;
+
+  for (size_t i{0}; i < 10; ++i) {
+    v.emplace_back(print, i);
   }
-  return 0;
+
+  for (auto &t : v) {
+    t.join();
+  }
+  cout << '\n';
 }

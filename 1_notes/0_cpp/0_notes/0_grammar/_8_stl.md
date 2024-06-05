@@ -1,3 +1,27 @@
+## stl
+
+### 1. concepts
+* stl包含什么内容?
+STL，全称Standard Template Library（标准模板库），是C++标准库的一部分。它包含了一系列的模板类和函数，主要用于数据处理和算法操作。STL的主要内容包括：
+
+1. **容器（Containers）**：如vector、list、deque、set、map等，用于存储和操作数据。
+
+2. **算法（Algorithms）**：如sort、find、copy、for_each等，提供了一系列对容器进行操作的通用算法。
+
+3. **迭代器（Iterators）**：提供了一种方法，可以按照一定的顺序访问容器中的元素，而无需暴露容器的内部表示。
+
+4. **函数对象（Functors）**：这是一种特殊的对象，可以像函数一样被调用。函数对象通常用于创建可定制的算法。
+
+5. **适配器（Adapters）**：如stack、queue、priority_queue等，它们是在其他容器的基础上，提供了不同的接口。
+
+6. **分配器（Allocators）**：用于控制STL容器的内存分配。
+
+以上就是STL的主要内容。
+
+### 2. 容器
+
+### 3. 算法
+
 * 为什么stl中的内存分配器要设计为一个模板参数而不是一个构造函数参数?
 * 
 * 请你回答一下STL里vector的resize和reserve的区别

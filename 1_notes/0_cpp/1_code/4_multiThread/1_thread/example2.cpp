@@ -1,14 +1,19 @@
-// constructing threads
-#include <iostream>       // std::cout
-#include <atomic>         // std::atomic
-#include <thread>         // std::thread
-#include <vector>         // std::vector
+#include <atomic>
+#include <iostream>
+#include <thread>
+#include <vector>
 
 std::atomic<int> global_counter (0);
 
-void increase_global (int n) { for (int i=0; i<n; ++i) ++global_counter; }
+void increase_global(int n) {
+  for (int i = 0; i < n; ++i)
+    ++global_counter;
+}
 
-void increase_reference (std::atomic<int>& variable, int n) { for (int i=0;   i<n; ++i) ++variable; }
+void increase_reference(std::atomic<int> &variable, int n) {
+  for (int i = 0; i < n; ++i)
+    ++variable;
+}
 
 struct C : std::atomic<int> {
   C() : std::atomic<int>(0) {}
