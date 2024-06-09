@@ -1,6 +1,3 @@
- _tags: c++, constructing
-
-
 ## 内存序
 
 ### 1. 指令重排

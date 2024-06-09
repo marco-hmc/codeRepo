@@ -3,13 +3,19 @@ import datetime
 import json
 import re
 
+import sys
+
+if __name__ == '__main__':
+    sys.path[0]="/home/marco/0_codeRepo/98_blog"
+
+
 class FileAttrHandler:
-    def __init__(self, filePath, confPath='/home/marco/codeRepo/98_blog/blogConf.json'):
+    def __init__(self, filePath, confPath='/home/marco/0_codeRepo/98_blog/blogConf.json'):
         with open(confPath, 'r') as f:
             config = json.load(f)
             self.project = config['projectName']
-            self.target_img_dir = config['target_img_dir']
-            self.blogDir = config['blogDir']
+            self.targetCoverImgDir = config['targetCoverImgDir']
+            self.noteDir = config['noteDir']
         self.debugMode = config['debugMode']
         self.filePath = filePath
         self.confPath = confPath
@@ -64,7 +70,7 @@ class FileAttrHandler:
     def getPicture(self):      
         def getSuffix():
             image_files = []
-            for root, dirs, files in os.walk(self.target_img_dir):
+            for root, dirs, files in os.walk(self.targetCoverImgDir):
                 for file in files:
                     if f"post-{image_index}" in file:
                         suffix = file.split(".")[-1]
@@ -85,8 +91,17 @@ class FileAttrHandler:
             with open(self.confPath, 'w') as conf_file:
                 json.dump(conf_data, conf_file)
     
+    def processTargetDir(self, targetDir):
+        targetDir = os.path.join(targetDir, os.path.relpath(os.path.dirname(self.filePath), os.path.dirname(self.noteDir)))
+        os.makedirs(targetDir, exist_ok=True)
+        path_difference = os.path.relpath(os.path.dirname(self.filePath), self.noteDir)
+        tags_name = path_difference.split(os.path.sep)
+        tags_name = [name.split('_', 1)[-1] if '_' in name else name for name in tags_name]
+        return [targetDir, tags_name]
+
     def writeAttr(self, targetDir):
-        attr = f"---\ntitle: {self.title}\ndate: {self.formatted_time}\nimage: {self.image}\nproject: {self.project}\ntags: {', '.join(self.tags)}\n\n---\n\n"
+        [targetDir, tags] = self.processTargetDir(targetDir)
+        attr = f"---\ntitle: {self.title}\ndate: {self.formatted_time}\nimage: {self.image}\nproject: {self.project}\ntags: {', '.join(tags)}\n\n---\n\n"
         targetPath = os.path.join(targetDir, f"{self.formatted_time[:10]}-{self.number}-{self.title}.md")
         with open(self.filePath, 'r') as file:
             content = file.read()
@@ -98,7 +113,7 @@ class FileAttrHandler:
         pass
 
 if __name__ == '__main__':
-    filePath = '/home/marco/codeRepo/1_notes/0_cpp/0_notes/0_cppQuiz.md'
+    filePath = '/home/marco/0_codeRepo/1_notes/0_cpp/0_notes/0_grammar/11_systemProgram.md'
     handler = FileAttrHandler(filePath)
     handler.writeAttr("/home/marco/codeRepo/98_blog/test")
     pass

@@ -1,22 +1,4 @@
----
-title: "cpp设计模式-入门"
-layout: post
-author: "Marco"
-header-style: text
-hidden: true
-tags:
-  - 设计模式
----
-
-# cpp设计模式-入门
-
-> marco
-
-[toc]
-
-> 本文主要参考资料为[设计模式](https://github.com/me115/design_patterns)\ [uml类图](https://segmentfault.com/a/1190000039232402)
->
-> 估计阅读耗时: 10h+
+## cpp设计模式-入门
 
 ## 1. UML类图和时序图
 

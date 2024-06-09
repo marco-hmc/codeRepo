@@ -1,9 +1,9 @@
-# // project: project_os
-# // project: project_network
-# // project: project_ccpp
-# // project: project_compile
-# // project: project_essay
-# // project: project_data
+# project: project_os
+# project: project_network
+# project: project_ccpp
+# project: project_compile
+# project: project_essay
+# project: project_data
 
 import sys
 
@@ -25,8 +25,7 @@ class ToBlogHandler:
             self.noteDir = config['noteDir']
             self.projectName = config['projectName']
             self.targetDir = config['targetDir']
-            self.target_img_dir = config['target_img_dir']
-            
+            self.targetCoverImgDir = config['targetCoverImgDir']            
         self.confPath =confPath
 
     def processAttr(self, file_path):
@@ -38,19 +37,19 @@ class ToBlogHandler:
     
     def dealWithImg(self, file_path):
         img_dir = os.path.join(os.path.dirname(file_path), '_imgs')
-        target_img_dir = os.path.join(self.targetDir, self.projectName, '_imgs')
+        targetCoverImgDir = os.path.join(self.targetDir, self.projectName, '_imgs')
         if os.path.exists(img_dir):
-            if not os.path.exists(target_img_dir):
-                os.makedirs(target_img_dir)
+            if not os.path.exists(targetCoverImgDir):
+                os.makedirs(targetCoverImgDir)
             for root, dirs, files in os.walk(img_dir):
                 for file in files:
                     img_path = os.path.join(root, file)
-                    shutil.copy(img_path, target_img_dir)
+                    shutil.copy(img_path, targetCoverImgDir)
     
     def traverseFiles(self):
         for root, dirs, files in os.walk(self.noteDir):
             for file in files:
-                # 只处理满足正则表达式的文件
+                # {d}_*.md, {d}.{d}_*.md
                 if re.match(r'\d+(\.\d+)?_.*\.md$', file):
                     file_path = os.path.join(root, file)
                     if(self.processAttr(file_path)):

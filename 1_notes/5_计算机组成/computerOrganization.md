@@ -1,16 +1,6 @@
----
-title: "计算机组成与硬件"
-layout: post
-author: "Marco"
-header-style: text
-hidden: true
-tags:
-  - 计算机组成
----
+## 计算机组成与硬件
 
-# 计算机组成与硬件
-
-## 1. CPU工作原理
+### 1. CPU工作原理
 
 ![1601363919547](https://s2.loli.net/2022/01/21/xUvaARYc1yFNWK4.png)
 
@@ -38,7 +28,7 @@ CPU从功能上可以分为三个模块，分别是控制单元、运算单元�
 * 外设
 
 
-### 1.1 CPU cache
+#### 1.1 CPU cache
 
 * **为什么有了内存，还需要CPU Cache？**
 
@@ -62,7 +52,7 @@ CPU从功能上可以分为三个模块，分别是控制单元、运算单元�
   >
   > ![1603418066134](https://s2.loli.net/2022/01/21/Mpujv91qI3eSw2C.png)
 
-## 2. 内存和硬盘读写
+### 2. 内存和硬盘读写
 
 - 内存工作原理
 

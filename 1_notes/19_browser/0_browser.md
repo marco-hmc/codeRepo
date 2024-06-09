@@ -250,7 +250,9 @@ document.body.addEventListener('touchstart', event => {
 
 而对于非连续性的事件，如keydown，keyup，mousedown，mouseup，touchstart，touchend等，会直接派发给主线程去执行。
 
-### 3. 总结
+
+### 97. conclusion
+
 浏览器的多进程架构，根据不同的功能划分了不同的进程，进程内不同的使命划分了不同的线程，当用户开始浏览网页时候，浏览器进程进行处理输入、开始导航请求数据、请求响应数据，查找新建渲染进程，提交导航，之后渲染又进行了解析HTML构建DOM、构建过程加载子资源、下载并执行JS代码、样式计算、布局、绘制、合成，一步一步的构建出一个可交互的WEB页面，之后浏览器进程又接受页面的交互事件信息，并将其交给渲染进程，渲染进程内主进程进行命中测试，查找目标元素并执行绑定的事件，完成页面的交互。
 
 本文大部分内容也是对inside look at modern web browser系列文章的整理、解读和翻译吧，整理过程还是收获非常大的，希望读者读了本文只有有所启发吧。
@@ -259,12 +261,9 @@ document.body.addEventListener('touchstart', event => {
 来源资料：https://juejin.cn/post/684490...
 最原始资料：https://www.chromium.org/deve...
 
-### 2. 浏览器线程和进程
-
-### 1. 那就是从在浏览器地址栏中输入URL到页面显示，浏览器到底发生了什么？
 
 
-### 附录
+### 98. appendix
 #### 1. uri的schema
 在 URI（统一资源标识符）中，scheme 是用来定义如何访问和处理资源的。除了 "https"，还有许多其他的 scheme，以下是一些常见的例子：
 
@@ -280,5 +279,6 @@ document.body.addEventListener('touchstart', event => {
 
 这些只是众多 scheme 中的一部分，实际上，可以根据需要定义自定义的 scheme。
 
-### 参考
-1. [参考](https://segmentfault.com/a/1190000022633988)
+### 99. reference
+
+1. [深入了解现代网络浏览器](https://developer.chrome.com/blog/inside-browser-part1?hl=zh-cn)

@@ -1,74 +1,16 @@
 ## threads
 
-### new操作是如何保证线程安全的?
-new操作的线程安全性是通过内存管理器实现的.内存管理器会使用一种称为锁的机制来保证在同一时刻只有一个线程可以分配或释放内存.当一个线程正在进行new操作时,其他试图进行new操作的线程将会被阻塞,直到第一个线程完成new操作.
+- 作者以[NonRecurisiveMutest.cc](https://github.com/chenshuo/recipes/tree/master/thread/test)这个为例子,如果mutex是递归的话,push_back()可能(但不总是)导致迭代器失效,程序偶尔会crash,这种错误不好debug.
+- 而这种偶发的crash,发生在调用函数和被调用函数都以为自己拿到了锁,如果恰好都在修改一个对象的时候,这时候就容易crash.
+- 而如果使用非递归锁,这种错误就会提前暴露出来,死锁比偶发的crash总归是好debug.
 
-需要注意的是,虽然new操作本身是线程安全的,但是如果你在多线程环境中使用new操作创建的对象,你仍然需要确保对这些对象的访问是线程安全的.例如,如果两个线程同时访问和修改同一个对象,可能会导致数据竞争和未定义的行为,除非你使用了适当的同步机制(如互斥锁)来保护这个对象.
-
-
-
-在C++中,`new`操作本身是线程安全的.C++标准库保证了在多线程环境中,不同线程可以同时进行`new`操作而不会发生冲突.
-
-`new`操作的线程安全性是通过内存管理器实现的.内存管理器会使用一种称为锁的机制来保证在同一时刻只有一个线程可以分配或释放内存.当一个线程正在进行`new`操作时,其他试图进行`new`操作的线程将会被阻塞,直到第一个线程完成`new`操作.
-
-需要注意的是,虽然`new`操作本身是线程安全的,但是如果你在多线程环境中使用`new`操作创建的对象,你仍然需要确保对这些对象的访问是线程安全的.例如,如果两个线程同时访问和修改同一个对象,可能会导致数据竞争和未定义的行为,除非你使用了适当的同步机制(如互斥锁)来保护这个对象.
-
-
-
-    - 作者以[NonRecurisiveMutest.cc](https://github.com/chenshuo/recipes/tree/master/thread/test)这个为例子,如果mutex是递归的话,push_back()可能(但不总是)导致迭代器失效,程序偶尔会crash,这种错误不好debug.
-    - 而这种偶发的crash,发生在调用函数和被调用函数都以为自己拿到了锁,如果恰好都在修改一个对象的时候,这时候就容易crash.
-    - 而如果使用非递归锁,这种错误就会提前暴露出来,死锁比偶发的crash总归是好debug.
-
-```c++
-  muduo::MutextLock mutex;
-  muduo::Condition cond(mutex);
-  std:deque<int> queue;
-  
-  //消费者
-  int dequeue(){
-      // queue pop掉最后一个,并返回
-      MutexLockGuard lock(mutex);
-      while(queue.emtpy()){ // 不能用if,必须用while,避免虚假唤醒
-          cond.wait(); // 这一步会unlock mutex,并进入等待,不会与其他线程产生死锁
-      }
-      int top = queue.front();
-      queue.pop_front();
-      return top;
-  }
-  ```
-
-  - ***为什么一定要用while循环,而不是if判断?***
-    - 简单来说就是cv有可能会出现[虚假唤醒](https://www.zhihu.com/question/271521213)的情况,用while,不用if的话就可以多次检验.
-    - 给一个虚假唤醒的场景,一个线程A,一个线程B被notify,但是A还没有获得锁,B线程先获得了锁,并消费了队列中的数据(或者说notify的条件又变成不满足了),线程B结束后,A获得了锁,但这个时候条件已经不满足了.
-
-    - 当一个线程在条件变量上调用`.wait()`方法并进入等待状态时,如果后来被另一个线程通过`.notify()`或`.notify_all()`唤醒,那么它会从`.wait()`方法的下一行代码开始执行.
-
-    - 但是,需要注意的是,唤醒并不意味着条件已经满足.这就是为什么我们通常在一个`while`循环中调用`.wait()`方法,循环的条件就是我们等待的条件.这样,每次线程被唤醒时,它都会检查条件是否满足,如果条件不满足,它会再次调用`.wait()`方法进入等待状态.
-    
-    - 这就是所谓的"虚假唤醒",即线程被唤醒,但是条件并未满足.使用`while`循环可以避免因虚假唤醒导致的问题.
-    - 
 - 线程同步的四项原则,尽量用高层同步方法(线程池/队列/倒计时等),mutex和cv都是非常底层的同步原语,在开发中往往都用更高级的工具.但是使用mutex和cv有一个好处就是,分析工具更便于分析;
 - 种种优化方法在没有数据支持的情况下,是靠不住的.很多人误认为用锁会让程序变慢,但实际上影响性能的不是锁,而是锁争用.要学会在程序的复杂度和性能之间取得平衡,并考虑机器扩容的可能.
 - 多机的可扩展能力比单机的性能优化更重要,更值得投入精力.
 - 
 对比过很多资料,最后的多线程入门资料还是在[leetcode](https://leetcode-cn.com/problems/print-in-order/solution/c-hu-chi-suo-tiao-jian-bian-liang-xin-hao-liang-yi/)
 
-  > - [atomic实现原理](https://zhuanlan.zhihu.com/p/115355303)
-  >
-  >   - 不同平台原子操作的实现不一样,但多线程导致的数据冲突都是因为多核cpu同时在跑一份数据,本质上都是保证这个数据在不同cpu的时候,有且只有一个在进行操作.下面是cacheline lock的实现方法
-  >
-  >   - 首先每个cpu核心都有其对应的高速cache
-  >
-  >     ![在这里插入图片描述](https://s2.loli.net/2022/04/14/IxfwdV2vROmhnS8.png)
-  >
-  >     a) CPU1发出"Read Invalidate"消息,其他CPU将原子变量所在的缓存无效,并从Cache返回数据.CPU1将Cache line置成Exclusive状态.然后将该**cache line标记locked**.b) 然后CPU1读取原子变量,修改,最后写入cache line.c) 将cache line置位unlocked.
-  >
-  >     在步骤a)和c)之间,如果其他CPU(例如CPU1)尝试执行一个原子递增操作,CPU1会发送一个"Read Invalidate"消息,CPU0收到消息后,检查对应的cache line的状态是locked,暂时不回复消息(CPU1会一直等待CPU0回复Invalidate Acknowledge消息).直到cache line变成unlocked.这样就可以实现原子操作.我们称这种方式为锁cache line.这种实现方式必须要求操作的变量位于一个cache line.
-  >
-  > - [多核cpu的缓存以及如何保持缓存一致性](https://blog.csdn.net/zhizhengguan/article/details/121275331)
-  >
-  >   - 如果对多核cpu还存疑,可以继续看这个.
-  >
+
 
 - ***什么是析构竞态?***
 
@@ -337,3 +279,62 @@ std::shared_future<int> sf = f.share();
 函数的返回值哪怕没有用变量接着,其实也是存在的,在外部函数结束的时候会被析构.
 
 而`future`的析构又要确保`get()`方法完成,所以如果不接着,就会产生阻塞.
+
+
+### 99. quiz
+#### 1. new操作是如何保证线程安全的?
+new操作的线程安全性是通过内存管理器实现的.内存管理器会使用一种称为锁的机制来保证在同一时刻只有一个线程可以分配或释放内存.当一个线程正在进行new操作时,其他试图进行new操作的线程将会被阻塞,直到第一个线程完成new操作.
+
+需要注意的是,虽然new操作本身是线程安全的,但是如果你在多线程环境中使用new操作创建的对象,你仍然需要确保对这些对象的访问是线程安全的.例如,如果两个线程同时访问和修改同一个对象,可能会导致数据竞争和未定义的行为,除非你使用了适当的同步机制(如互斥锁)来保护这个对象.
+
+在C++中,`new`操作本身是线程安全的.C++标准库保证了在多线程环境中,不同线程可以同时进行`new`操作而不会发生冲突.
+
+`new`操作的线程安全性是通过内存管理器实现的.内存管理器会使用一种称为锁的机制来保证在同一时刻只有一个线程可以分配或释放内存.当一个线程正在进行`new`操作时,其他试图进行`new`操作的线程将会被阻塞,直到第一个线程完成`new`操作.
+
+需要注意的是,虽然`new`操作本身是线程安全的,但是如果你在多线程环境中使用`new`操作创建的对象,你仍然需要确保对这些对象的访问是线程安全的.例如,如果两个线程同时访问和修改同一个对象,可能会导致数据竞争和未定义的行为,除非你使用了适当的同步机制(如互斥锁)来保护这个对象.
+
+#### 2. 为什么一定要用while循环,而不是if判断?
+
+```c++
+  muduo::MutextLock mutex;
+  muduo::Condition cond(mutex);
+  std:deque<int> queue;
+  
+  //消费者
+  int dequeue(){
+      // queue pop掉最后一个,并返回
+      MutexLockGuard lock(mutex);
+      while(queue.emtpy()){ // 不能用if,必须用while,避免虚假唤醒
+          cond.wait(); // 这一步会unlock mutex,并进入等待,不会与其他线程产生死锁
+      }
+      int top = queue.front();
+      queue.pop_front();
+      return top;
+  }
+  ```
+
+- 简单来说就是cv有可能会出现[虚假唤醒](https://www.zhihu.com/question/271521213)的情况,用while,不用if的话就可以多次检验.
+- 给一个虚假唤醒的场景,一个线程A,一个线程B被notify,但是A还没有获得锁,B线程先获得了锁,并消费了队列中的数据(或者说notify的条件又变成不满足了),线程B结束后,A获得了锁,但这个时候条件已经不满足了.
+
+- 当一个线程在条件变量上调用`.wait()`方法并进入等待状态时,如果后来被另一个线程通过`.notify()`或`.notify_all()`唤醒,那么它会从`.wait()`方法的下一行代码开始执行.
+
+- 但是,需要注意的是,唤醒并不意味着条件已经满足.这就是为什么我们通常在一个`while`循环中调用`.wait()`方法,循环的条件就是我们等待的条件.这样,每次线程被唤醒时,它都会检查条件是否满足,如果条件不满足,它会再次调用`.wait()`方法进入等待状态.
+-   - 这就是所谓的"虚假唤醒",即线程被唤醒,但是条件并未满足.使用`while`循环可以避免因虚假唤醒导致的问题.
+
+
+#### 3. atomic实现原理
+- 不同平台原子操作的实现不一样,但多线程导致的数据冲突都是因为多核cpu同时在跑一份数据,本质上都是保证这个数据在不同cpu的时候,有且只有一个在进行操作.下面是cacheline lock的实现方法
+
+- 首先每个cpu核心都有其对应的高速cache
+
+![在这里插入图片描述](https://s2.loli.net/2022/04/14/IxfwdV2vROmhnS8.png)
+
+1. CPU1发出"Read Invalidate"消息,其他CPU将原子变量所在的缓存无效,并从Cache返回数据.CPU1将Cache line置成Exclusive状态.然后将该**cache line标记locked**
+2. 然后CPU1读取原子变量,修改,最后写入cache line.
+3. 将cache line置位unlocked.
+
+在步骤(1)和(3)之间,如果其他CPU(例如CPU1)尝试执行一个原子递增操作,CPU1会发送一个"Read Invalidate"消息,CPU0收到消息后,检查对应的cache line的状态是locked,暂时不回复消息(CPU1会一直等待CPU0回复Invalidate Acknowledge消息).直到cache line变成unlocked.这样就可以实现原子操作.我们称这种方式为锁cache line.这种实现方式必须要求操作的变量位于一个cache line.
+
+#### 4.多核cpu的缓存以及如何保持缓存一致性
+    (https://blog.csdn.net/zhizhengguan/article/details/121275331)
+- 如果对多核cpu还存疑,可以继续看这个.

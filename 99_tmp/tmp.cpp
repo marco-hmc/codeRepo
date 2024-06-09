@@ -1,27 +1,35 @@
-#include <iostream>
-#include <mutex>
-#include <thread>
-#include <vector>
 
-using namespace std;
-once_flag callflag;
 
-static void once_print() { cout << '!'; }
+template <typename T> class unique_ptr {
+public:
+  explicit unique_ptr(T *ptr = nullptr) : m_ptr(ptr) {}
 
-static void print(size_t x) {
-  std::call_once(callflag, once_print);
-  cout << x;
-}
+  ~unique_ptr() { delete m_ptr; }
 
-int main() {
-  vector<thread> v;
+  unique_ptr(const unique_ptr &) = delete;
 
-  for (size_t i{0}; i < 10; ++i) {
-    v.emplace_back(print, i);
+  unique_ptr &operator=(const unique_ptr &) = delete;
+
+  unique_ptr(unique_ptr &&other) : m_ptr(other.m_ptr) { other.m_ptr = nullptr; }
+
+  unique_ptr &operator=(unique_ptr &&other) {
+    if (this != &other) {
+      delete m_ptr;
+      m_ptr = other.m_ptr;
+      other.m_ptr = nullptr;
+    }
+    return *this;
   }
 
-  for (auto &t : v) {
-    t.join();
+  void reset(T *ptr = nullptr) {
+    delete m_ptr;
+    m_ptr = ptr;
   }
-  cout << '\n';
-}
+
+  T *get() const { return m_ptr; }
+
+private:
+  T *m_ptr;
+};
+
+int main() {}
