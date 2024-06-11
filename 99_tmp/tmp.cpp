@@ -1,35 +1,26 @@
+// unique_lock::lock/unlock
+#include <iostream> // std::cout
+#include <mutex>    // std::mutex, std::unique_lock, std::defer_lock
+#include <thread>   // std::thread
 
+std::mutex mtx; // mutex for critical section
 
-template <typename T> class unique_ptr {
-public:
-  explicit unique_ptr(T *ptr = nullptr) : m_ptr(ptr) {}
+void print_thread_id(int id) {
+  std::unique_lock<std::mutex> lck(mtx, std::defer_lock);
+  // critical section (exclusive access to std::cout signaled by locking lck):
+  lck.lock();
+  std::cout << "thread #" << id << '\n';
+  lck.unlock();
+}
 
-  ~unique_ptr() { delete m_ptr; }
+int main() {
+  std::thread threads[10];
+  // spawn 10 threads:
+  for (int i = 0; i < 10; ++i)
+    threads[i] = std::thread(print_thread_id, i + 1);
 
-  unique_ptr(const unique_ptr &) = delete;
+  for (auto &th : threads)
+    th.join();
 
-  unique_ptr &operator=(const unique_ptr &) = delete;
-
-  unique_ptr(unique_ptr &&other) : m_ptr(other.m_ptr) { other.m_ptr = nullptr; }
-
-  unique_ptr &operator=(unique_ptr &&other) {
-    if (this != &other) {
-      delete m_ptr;
-      m_ptr = other.m_ptr;
-      other.m_ptr = nullptr;
-    }
-    return *this;
-  }
-
-  void reset(T *ptr = nullptr) {
-    delete m_ptr;
-    m_ptr = ptr;
-  }
-
-  T *get() const { return m_ptr; }
-
-private:
-  T *m_ptr;
-};
-
-int main() {}
+  return 0;
+}

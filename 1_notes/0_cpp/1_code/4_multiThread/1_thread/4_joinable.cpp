@@ -25,17 +25,33 @@ int main()
 
   return 0;
 }
+/*
+1. `joinable()`是什么？
 
-// 当创建一个`std::thread`对象并传入一个函数时，这个对象就会关联一个新的线程，并开始运行这个函数。
-// 在这种情况下，`joinable()`会返回`true`。
+   `joinable()`是`std::thread`类的一个成员函数，用于检查一个`std::thread`对象是否关联一个活动的线程。
 
-// 如果一个`std::thread`对象没有关联一个活动的线程（例如，它被默认构造，或者已经被join或detach）
-// 那么`joinable()`会返回`false`。
+2. 线程对象什么时候开始运行？
 
-// `join()`是`std::thread`类的另一个成员函数，它用于等待关联的线程结束。调用`join()`后，`std::thread`对象就不再关联一个活动的线程，因此`joinable()`会返回`false`。
+    当你创建一个`std::thread`对象并传递一个函数给它时，这个函数会在一个新的线程中立即开始运行。
+    例如，如果你写`std::thread t(func);`
+    那么`func`会在新的线程`t`中立即开始运行。
 
-// 在代码中，`foo`线程被默认构造，因此它没有关联一个活动的线程，`foo.joinable()`返回`false`。
-// `bar`线程关联了`mythread`函数，因此`bar.joinable()`返回`true`。
-// 当`foo`和`bar`线程被join后，它们都不再关联一个活动的线程，因此`foo.joinable()`和`bar.joinable()`都返回`false`。
+3. `joinable()`什么时候返回true，什么时候返回false？
 
-// 你应该在调用`join()`或`detach()`之前，先检查一个线程是否joinable。如果一个线程不是joinable，但你仍然尝试join或detach它，那么程序就会终止。
+   `std::thread::joinable()`会在以下情况返回true：
+      - 当线程对象已经关联到一个线程（即，它已经开始运行一个函数）
+        并且还没有被分离或连接时。
+
+   `std::thread::joinable()`会在以下情况返回false：
+      - 当线程对象刚被默认构造，还没有关联到任何线程时。
+      - 当线程对象已经被移动，不再关联到原来的线程时。
+      - 当线程已经被连接（通过`join()`）或分离（通过`detach()`）时
+
+4. 什么时候需要判断`joinable()`？
+
+   在你尝试连接（join）或分离（detach）一个线程之前，你应该先检查它是否可以被连接或分离，这可以通过`std::thread::joinable()`来做。
+   如果一个线程不是joinable的，那么尝试连接或分离它会导致程序行为未定义。
+   此外，如果你在析构一个线程对象时，它仍然是joinable的，那么程序会终止。
+   因此，你应该在析构线程对象之前，确保它不是joinable的，或者连接或分离它。
+
+*/

@@ -29,3 +29,12 @@ int main() {
 
   return 0;
 }
+/*
+  1. std::async
+    是一个函数模板，它可以启动一个异步任务，并返回一个std::future对象。
+    这个std::future对象可以用于获取异步任务的结果。
+
+  2. std::future
+    是一个类模板，它表示一个异步操作的结果。你可以调用std::future::get来获取异步操作的结果。
+    如果异步操作还没有完成，std::future::get会阻塞，直到异步操作完成。
+*/

@@ -8,7 +8,7 @@
 
 ### 99. quiz
 
-#### 1. 为什么多线程
+#### 1. 为什么多线程传引用要用`std::ref`
 
 **33. 对于std::forward的auto&&形参使用decltype**
 
@@ -48,3 +48,5 @@ const T& constRef = getTemporary();  // const 引用绑定到临时对象
    const std::string& lv2 = lv1 + lv1; // 合法, 常量左值引用能够延长临时变量的生命周期
    ```
 * 拷贝构造函数的参数可以不加引用吗?为什么
+
+snorkeling
