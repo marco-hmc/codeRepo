@@ -1,8 +1,9 @@
 {
-  "debugMode": true,
-  "image_index": 60,
-  "noteDir": "/home/marco/0_codeRepo/1_notes/0_cpp/0_notes",
-  "projectName": "project_compile",
+  "debugMode": false,
+  "image_index": 53,
+  "noteDir": "/home/marco/0_codeRepo/1_notes/8_\u56fe\u5f62\u5b66\u539f\u7406",
+  "projectName": "project_graphics",
   "targetDir": "/home/marco/2_gitRepo/marco-hmc.github.io/site/collections/_posts",
-  "targetCoverImgDir": "/home/marco/1_marco_blog/site/images/post"
+  "targetCoverImgDir": "/home/marco/2_gitRepo/marco-hmc.github.io/site/images/post",
+  "targetPostImgDir": "/home/marco/2_gitRepo/marco-hmc.github.io/site/images/imgs"
 }

@@ -26,6 +26,7 @@ class ToBlogHandler:
             self.projectName = config['projectName']
             self.targetDir = config['targetDir']
             self.targetCoverImgDir = config['targetCoverImgDir']            
+            self.targetPostImgDir = config['targetPostImgDir']
         self.confPath =confPath
 
     def processAttr(self, file_path):
@@ -36,15 +37,17 @@ class ToBlogHandler:
         return False
     
     def dealWithImg(self, file_path):
-        img_dir = os.path.join(os.path.dirname(file_path), '_imgs')
-        targetCoverImgDir = os.path.join(self.targetDir, self.projectName, '_imgs')
-        if os.path.exists(img_dir):
-            if not os.path.exists(targetCoverImgDir):
-                os.makedirs(targetCoverImgDir)
-            for root, dirs, files in os.walk(img_dir):
+        sourceImgDir = os.path.join(os.path.dirname(file_path), '_imgs')
+        
+        # needToCreateImgsDir = os.path.join(self.targetDir, os.path.relpath(os.path.dirname(file_path), os.path.dirname(self.noteDir)))
+        # targetImgDir = os.path.join(needToCreateImgsDir, '_imgs')
+        
+        if os.path.exists(sourceImgDir):
+            os.makedirs(self.targetPostImgDir, exist_ok=True)
+            for root, dirs, files in os.walk(sourceImgDir):
                 for file in files:
                     img_path = os.path.join(root, file)
-                    shutil.copy(img_path, targetCoverImgDir)
+                    shutil.copy(img_path, self.targetPostImgDir)
     
     def traverseFiles(self):
         for root, dirs, files in os.walk(self.noteDir):

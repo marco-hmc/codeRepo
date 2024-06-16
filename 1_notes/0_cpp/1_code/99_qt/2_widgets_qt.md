@@ -55,4 +55,7 @@
 
     QMdiArea和QMdiSubWindow的关系是:QMdiArea是一个容器,用于存放和管理多个QMdiSubWindow;而QMdiSubWindow是QMdiArea中的一个子窗口,用于显示一个独立的文档或视图.
 
-    
+
+#### 1. QGroupBox
+* QGroupBox是什么组件?
+* locale
