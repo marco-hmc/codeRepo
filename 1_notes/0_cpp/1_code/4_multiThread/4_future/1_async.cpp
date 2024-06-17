@@ -12,21 +12,12 @@ int factorial(int N) {
 
 void test_1() {
   int x;
-  // 如果要从子线程获取变量到主线程,可以通过互斥锁和状态变量的形式,如果子线程计算完毕则notify_all,唤醒主进程
-  // 而除了互斥锁,和主线程这种比较繁琐的实现之外,还可以通过future实现.
-  // 如果是defereed参数,表示是到了get()函数之后才开始算.
-  // 如果是async参数,则表示开一个线程去计算.
-  // std::future<int> fu = std::async(std::launch::async|std::launch::deferred,
-  // factorial, 4);
   std::future<int> fu = std::async(std::launch::deferred, factorial, 4);
   x = fu.get(); // get()函数会等待子线程结束,然后将返回值传给x.并且future对象只能被调用一次
 }
 
-//////////////////////
-
 int main() {
   test_1();
-
   return 0;
 }
 /*
@@ -37,4 +28,10 @@ int main() {
   2. std::future
     是一个类模板，它表示一个异步操作的结果。你可以调用std::future::get来获取异步操作的结果。
     如果异步操作还没有完成，std::future::get会阻塞，直到异步操作完成。
+
+  3. std::future的设计意图是什么？
+    可以看成是线程之间的通信。
+    1. 如果要从子线程获取变量到主线程,可以通过互斥锁和状态变量的形式。
+        若子线程计算完毕则notify_all,唤醒主进程
+    2. 还可以通过future实现.
 */

@@ -1,7 +1,7 @@
-// future example
-#include <chrono>   // std::chrono::milliseconds
-#include <future>   // std::async, std::future
-#include <iostream> // std::cout
+#include <chrono>
+#include <future>
+#include <iostream>
+#include <thread>
 
 // a non-optimized way of checking for prime numbers:
 bool is_prime(int x) {
@@ -13,10 +13,8 @@ bool is_prime(int x) {
 }
 
 int main() {
-  // call function asynchronously:
   std::future<bool> fut = std::async(is_prime, 3045348722);
 
-  // do something while waiting for function to set future:
   std::cout << "checking, please wait";
   std::chrono::milliseconds span(10);
 
@@ -24,7 +22,6 @@ int main() {
     std::cout << '.' << std::flush;
 
   bool x = fut.get(); // retrieve return value
-
   std::cout << "\n3 " << (x ? "is" : "is not") << " prime.\n";
 
   return 0;

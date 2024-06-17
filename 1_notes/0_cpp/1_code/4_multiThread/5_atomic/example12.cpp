@@ -1,4 +1,3 @@
-// atomic_flag as a spinning lock
 #include <iostream>       // std::cout
 #include <atomic>         // std::atomic_flag
 #include <thread>         // std::thread

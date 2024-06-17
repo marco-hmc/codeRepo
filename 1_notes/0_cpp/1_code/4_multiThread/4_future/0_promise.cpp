@@ -23,6 +23,7 @@ void test_1() {
   x = fu.get();
   std::cout << "Result from Child: " << x << std::endl;
 }
+
 //////////////////////////////////////////
 
 void print_int(std::future<int> &fut) {
@@ -37,8 +38,7 @@ void test_2() {
 
   std::thread th1(print_int, std::ref(fut)); // send future to new thread
 
-  prom.set_value(10); // fulfill promise
-                      // (synchronizes with getting the future)
+  prom.set_value(10);
   th1.join();
 }
 
@@ -47,3 +47,14 @@ int main() {
   test_2();
   return 0;
 }
+
+/*
+1. promise怎么用？讲解一下用法。
+  std::promise是C++11引入的一个类模板，它可以用于在一个线程中存储一个值或异常，然后在另一个线程中获取这个值或异常。这样可以实现线程间的同步。
+
+  std::promise<int> prom;
+  std::future<int> fut = prom.get_future();
+  prom.set_value(10);
+  int x = fut.get();
+
+*/

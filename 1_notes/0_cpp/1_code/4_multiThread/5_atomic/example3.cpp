@@ -1,6 +1,5 @@
 #include <atomic>
 #include <iostream>
-#include <utility>
 
 struct A {
   int a[100];

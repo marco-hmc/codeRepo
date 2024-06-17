@@ -14,3 +14,7 @@ int main() {
             << "future result is " << result.get() << std::endl;
   return 0;
 }
+
+/*
+  1. 有了async, 有了thread，为什么还要有packaged_task？packaged_task有什么能力？
+*/
