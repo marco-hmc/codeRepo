@@ -1,31 +1,38 @@
+#include <algorithm>
 #include <iostream>
-#include <thread>
+#include <iterator>
+#include <map>
+#include <string>
+#include <vector>
 
-// 定义一个全局的 thread_local 变量
-thread_local int threadId;
+using namespace std;
 
-void printThreadId() {
-  // 打印当前线程的 ID
-  std::cout << "Thread ID: " << threadId << std::endl;
+namespace std {
+ostream &operator<<(ostream &os, const pair<int, string> &p) {
+  return os << "(" << p.first << ", " << p.second << ")";
 }
+} // namespace std
 
 int main() {
-  // 创建两个线程
-  std::thread t1([]() {
-    // 在线程函数中设置 threadId 的值
-    threadId = 1;
-    printThreadId();
-  });
+  vector<pair<int, string>> v{
+      {1, "one"}, {2, "two"}, {3, "three"}, {4, "four"}, {5, "five"}};
 
-  std::thread t2([]() {
-    // 在线程函数中设置 threadId 的值
-    threadId = 2;
-    printThreadId();
-  });
+  map<int, string> m;
 
-  // 等待两个线程执行完毕
-  t1.join();
-  t2.join();
+  copy_n(begin(v), 3, inserter(m, begin(m)));
 
-  return 0;
+  auto shell_it(ostream_iterator<pair<int, string>>{cout, ", "});
+
+  copy(begin(m), end(m), shell_it);
+  cout << '\n';
+
+  m.clear();
+
+  move(begin(v), end(v), inserter(m, begin(m)));
+
+  copy(begin(m), end(m), shell_it);
+  cout << '\n';
+
+  copy(begin(v), end(v), shell_it);
+  cout << '\n';
 }

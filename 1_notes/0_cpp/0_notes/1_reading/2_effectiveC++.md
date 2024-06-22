@@ -65,8 +65,6 @@ FileSystem& tfs() {
 此外，这种方法还可以避免 "static deinitialization order fiasco"。这是因为在程序结束时，静态对象的析构函数会按照与构造函数相反的顺序被调用。如果一个对象的析构函数依赖于另一个对象，而那个对象已经被析构，就会出现问题。但是，如果我们将静态对象封装在函数内部，就可以确保它们在程序结束时仍然存在。
 
 #### 1.5 初始化比赋值快
-* 为内置型对象进行手工初始化，因为C++不保证初始化他们
-* 构造函数最好使用初始化列初始化而不是复制，并且他们初始化时有顺序的
 * 为了免除跨文件编译的初始化次序问题，应该以local static对象替换non-local static对象
 
 #### 1.6 了解C++ 那些自动生成和调用的函数
@@ -84,7 +82,10 @@ FileSystem& tfs() {
 
 在C++中,构造函数和析构函数中调用虚函数时,不会有动态绑定.也就是说,调用的虚函数是当前正在执行的构造函数或析构函数所在的类版本,而不是对象的动态类型版本.
 
-这是因为在构造函数和析构函数中,对象的动态类型是正在构造或析构的类.在构造函数中,派生类的部分尚未被构造,在析构函数中,派生类的部分已经被析构.因此,如果在构造函数或析构函数中调用虚函数,那么将会调用基类版本的虚函数,而不是派生类版本的虚函数.
+这是因为在构造函数和析构函数中,对象的动态类型是正在构造或析构的类.
+
+在构造函数中,派生类的部分尚未被构造
+在析构函数中,派生类的部分已经被析构.因此,如果在构造函数或析构函数中调用虚函数,那么将会调用基类版本的虚函数,而不是派生类版本的虚函数.
 
 这可能会导致意外的行为,因为通常我们期望虚函数调用的是对象的动态类型版本的函数.因此,应该避免在构造函数和析构函数中调用虚函数.
 
@@ -103,7 +104,6 @@ FileSystem& tfs() {
 
 #### 1.9 复制对象时勿忘其每一个成分
 + 当编写一个copy或者拷贝构造函数,应该确保复制成员里面的所有变量,以及所有基类的成员
-+ 不要尝试用一个拷贝构造函数调用另一个拷贝构造函数,如果想要精简代码的话,应该把所有的功能机能放到第三个函数里面,并且由两个拷贝构造函数共同调用
 + 当新增加一个变量或者继承一个类的时候,很容易出现忘记拷贝构造的情况,所以每增加一个变量都需要在拷贝构造里面修改对应的方法
 
 #### 1.10 设计class犹如设计type
@@ -120,22 +120,13 @@ FileSystem& tfs() {
 + 新的class是否还有相似的其他class,如果是的话就应该定义一个class template
 + 你真的需要一个新type么?如果只是定义新的derived class或者为原来的class添加功能,说不定定义non-member函数或者templates更好
 
-
-#### 1.11 为多态基类声明virtual析构函数
-
-+ 如果一个函数是多态性质的基类，应该有virtual 析构函数
-+ 如果一个class带有任何virtual函数，他就应该有一个virtual的析构函数
-+ 如果一个class不是多态基类，也没有virtual函数，就不应该有virtual析构函数
-
 **8. 别让异常逃离析构函数（Prevent exceptions from leaving destructors)**
 
 这里主要是因为如果循环析构10个Widgets，如果每一个Widgets都在析构的时候抛出异常，就会出现多个异常同时存在的情况，这里如果把每个异常控制在析构的话就可以解决这个问题：解决方法为：
 
 因为C++标准规定程序必须立即调用 std::terminate 函数来终止程序.这是因为C++不允许在同一时间处理两个异常.
 
-**9. 绝不在构造和析构过程中调用virtual函数（Never call virtual functions during construction or destruction)**
-
-主要是因为有继承的时候会调用错误版本的函数，例如
+违反RAII原则：C++中的资源获取即初始化（RAII）原则是通过对象的生命周期管理资源的。对象的析构函数负责释放对象持有的资源。如果析构函数抛出异常，可能会导致资源没有被正确释放，从而导致资源泄露。
 
 **10. 令operator= 返回一个reference to *this （Have assignment operators return a reference to *this)**
 
@@ -149,17 +140,10 @@ FileSystem& tfs() {
 
 **11. 在operator= 中处理“自我赋值” （Handle assignment to self in operator=)**
 
-主要是要处理 a[i] = a[j] 或者 *px = *py这样的自我赋值。有可能会出现一场安全性问题，或者在使用之前就销毁了原来的对象，例如
+主要是要处理 a[i] = a[j] 或者 *px = *py这样的自我赋值。有可能会出现一场安全性问题，或者在使用之前就销毁了原来的对象
 
-**12. 复制对象时勿忘其每一个成分 （Copy all parts of an object)**
 
 #### 三、资源管理 (Resource Management)
-
-**14. 在资源管理类中小心copying行为 （Think carefully about copying behavior in resource-managing classes)**
-
-总结;
-+ 复制RAII对象（Resource Acquisition Is Initialization）必须一并复制他所管理的资源（deep copy）
-+ 普通的RAII做法是：禁止拷贝，使用引用计数方法
 
 **15. 在资源管理类中提供对原始资源的访问（Provide access to raw resources in resource-managing classes)**
 
@@ -200,15 +184,6 @@ FileSystem& tfs() {
 
 总结：
 + 凡是有new语句的，尽量放在单独的语句当中，特别是当使用new出来的对象放到智能指针里面的时候
-
-**21. 必须返回对象时，别妄想返回其reference  （Don't try to return a reference when you must return an object)**
-
-主要是很容易返回一个已经销毁的局部变量，如果想要在堆上用new创建的话，则用户无法delete，如果想要在全局空间用static的话，也会出现大量问题,所以正确的写法是：
-
-    inline const Rational operator * (const Rational &lhs, const Rational &rhs){
-        return Rational(lhs.n * rhs.n, lhs.d * rhs.d);
-    }
-当然这样写的代价就是成本太高，效率会比较低
 
 **23. 以non-member、non-friend替换member函数  （Prefer non-member non-friend functions to member functions)**
 
@@ -1857,26 +1832,6 @@ some note copy from [EffectiveModernCppChinese](https://github.com/racaljk/Effec
 
 #### 一、类型推导
 
-**2. 理解auto类型推导**
-
-auto关键字的类型推倒和模板差不多，auto就相当于模板中的T，所以：
-
-    auto x = 27; // 情况3（x既不是指针也不是引用）
-    const auto cx = x; // 情况3（cx二者都不是）
-    const auto& rx = x; // 情况1（rx是一个非通用的引用）
-    
-    auto&& uref1 = x; // x是int并且是左值，所以uref1的类型是int&
-    auto&& uref2 = cx; // cx是int并且是左值，所以uref2的类型是const int&
-    auto&& uref3 = 27; // 27是int并且是右值， 所以uref3的类型是int&&
-在花括号初始化的时候，推倒的类型是std::initializer_list的一个实例，但是如果把相同的类型初始化给模板，则是失败的，
-
-    auto x = { 11, 23, 9 }; // x的类型是std::initializer_list<int>
-    template<typename T> void f(T param); // 和x的声明等价的模板
-    f({ 11, 23, 9 }); // 错误的！没办法推导T的类型
-    
-    template<typename T> void f(std::initializer_list<T> initList);
-    f({ 11, 23, 9 }); // T被推导成int，initList的类型是std::initializer_list<int>
-
 **3. 理解decltype**
 
     template<typename Container, typename Index> // works, but requires refinements
@@ -1931,97 +1886,6 @@ decltype的一些让人意外的应用：
 
 #### 三、移步现代C++
 
-**7. 区别使用()和{}创建对象**
-
-大括号{}，更像是一种通用的，什么时候初始化都能用的东西，但是大括号会进行类型检查：
-    
-    double x, y, z;
-    int sum1{x+y+z}; //错误，因为double之和可能无法用int表达（超出int范围）
-
-小括号()和等于号=在更多时候是无法使用的，并且小括号很容易被认为是一个函数。但是这两个不会进行类似上面的类型检查：
-    
-    class Widget{
-        int x{0}; //right
-        int y = 0;//right
-        int z(0); //错！
-    };
-    
-    std::atomic<int> ai2(0); //right
-    std::atomic<int> ai3 = 0; //错！
-    
-    Widget w1(10); //调用w1的构造函数
-
-大括号和小括号的另一个区别是带有std::initializer_list<long double> 的时候，会自动调用大括号，反之没区别：
-    
-    class Widget{
-    public:
-        Widget(int i, bool b);
-        Widget(std::initializer_list<long double> il);
-    };
-    
-    Widget w1(10, true); //调用第一个构造函数
-    Widget w2{10, true}; //调用第二个构造函数
-
-**9. 优先考虑别名声明而非typedefs**
-
-别名声明可以让函数指针变得更容易理解：
-
-    // FP等价于一个函数指针，这个函数的参数是一个int类型和
-    // std::string常量类型，没有返回值
-    typedef void (*FP)(int, const std::string&); // typedef
-    // 同上
-    using FP = void (*)(int, const std::string&); // 声明别名
-并且类型别名可以实现别名模板，而typedef不行：
-    
-    template<typname T> // MyAllocList<T>
-    using MyAllocList = std::list<T, MyAlloc<T>>; // 等同于std::list<T,MyAlloc<T>>
-    MyAllocList<Widget> lw; // 终端代码
-模板别名还避免了::type的后缀，在模板中，typedef还经常要求使用typename前缀：
-    
-    template<class T>
-    using remove_const_t = typename remove_const<T>::type
-
-**15. 尽可能的使用constexpr**
-
-constexpr：表示的值不仅是const，而且在编译阶段就已知其值了，他们因为这样的特性就会被放到只读内存里面，并且因为这个特性，constexpr的值可以用在数组规格，整形模板实参中：
-    
-    constexpr auto arraySize = 10;
-    std::array<int, arraySize> data2;
-
-但是对于constexpr的函数来说，如果所有的函数实参都是已知的，那这个函数也是已知的，如果所有实参都是未知的，编译无法通过，
-在调用constexpr函数时，入股传入的值有一个或多个在编译期未知，那这个函数就是个普通函数，如果都是已知的，那这个函数也是已知的。
-
-**16. 确保const成员函数线程安全**
-
-    class Polynomial{
-    public:
-        using RootsType = std::vector<double>;
-        RootsType roots() const{
-            if(!rootAreValid){
-                rootsAreValid = true;
-            }
-            return rootVals;
-        }
-    private:
-        mutable bool rootsAreValid{false};
-        mutable RootsType rootVals{};
-    }
-
-在上面那段代码中，虽然roots是const的成员函数，但是成员变量是mutable的，是可以在里面改的，如果这样做的话，就无法做到线程安全，并且编译器在看到const的时候还认为他是安全的。这个时候只能加上互斥量 std::lock_guard<std::mutex> g(m); mutable std::mutex m;
-
-当然，除了上面添加互斥量的做法以外，成本更低的做法是进行std::atomic的操作（但是仅适用于对单个变量或内存区域的操作）：
-    
-    class Point{
-    public:
-        double distanceFromOrigin() const noexcept{
-            ++callCount;
-            return std::sqrt((x*x) + (y * y));
-        }    
-    private:
-        mutable std::atomic<unsigned> callCount{0};
-        double x, y;
-    };
-
 **17. 理解特殊成员函数函数的生成**
 
 特殊成员函数包括默认构造函数，析构函数，拷贝构造函数，拷贝赋值运算符（这些函数只有在需要的时候才会生成），以及最新的移动构造函数和移动赋值运算符
@@ -2031,25 +1895,6 @@ constexpr：表示的值不仅是const，而且在编译阶段就已知其值了
 对于成员函数模板来说，在任何情况下都不会抑制特殊成员函数的生成
 
 #### 四、智能指针
-
-**18. 对于占有性资源使用std::unique_ptr**
-
-资源是独占的，不允许拷贝，允许进行move
-std::unique_ptr是一个具有开销小，速度快，move-only特定的智能指针，使用独占拥有方式来管理资源
-
-默认情况下，释放资源由delete来完成，也可以指定自定义的析构函数来替代，但是具有丰富状态的deleters和以函数指针作为deleters增大了std::unique_ptr的存储开销
-
-很容易将一个std::unique_ptr转化为std::shared_ptr
-
-**19. 对于共享性资源使用std::shared_ptr**
-
-+ std::shared_ptr是原生指针的两倍大小，因为他们内部除了包含一个原生指针以外，还包含了一个引用计数
-+ 引用计数的内存必须被动态分配，当然用make_shared来创建shared_ptr会避免动态内存的开销。
-+ 引用计数的递增和递减必须是原子操作。
-+ std::shared_ptr为了管理任意资源的共享式内存管理，提供了自动垃圾回收的便利
-+ std::shared_ptr 是 std::unique_ptr 的两倍大，除了控制块，还有需要原子引用计数操作引起的开销
-+ 资源的默认析构一般通过delete来进行，但是自定义的deleter也是支持的。deleter的类型对于 std::shared_ptr 的类型不会产生影响
-+ 避免从原生指针类型变量创建 std::shared_ptr
 
 **20. 对于类似于std::shared_ptr的指针使用std::weak_ptr可能造成悬置**
 

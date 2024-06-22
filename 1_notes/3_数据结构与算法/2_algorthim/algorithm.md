@@ -1,7 +1,22 @@
-# 数学
 #### 怎么求两个节点的最近公共祖先?
+4.自己实现一些基础的函数，例如strcpy/memcpy/memmov/atoi。
+    这些必须完全无误且高效地写出来，比如你的实现中有动态分配堆内存，那么这道题目就算答错
+
+6、排序
+```c++
+struct Adltem {
+    std::string ad_id;
+    int priority;
+    int score
+};
+```
+实现一个函数，按照如下规则排序
+按照priority升序排列
+如果priority一样大，则按照score降序排列
+如果priority一样，则随机排序
 
 
+# 数学
 ## [计数质数](https://leetcode-cn.com/problems/count-primes/)
 
 ## 判断一个数是否2的幂次方
