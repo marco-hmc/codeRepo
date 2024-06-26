@@ -1,38 +1,22 @@
-#include <algorithm>
 #include <iostream>
-#include <iterator>
-#include <map>
-#include <string>
-#include <vector>
 
-using namespace std;
+char a[2] = "0";
 
-namespace std {
-ostream &operator<<(ostream &os, const pair<int, string> &p) {
-  return os << "(" << p.first << ", " << p.second << ")";
-}
-} // namespace std
+struct a_string {
+  a_string() { *a = '1'; }
+  ~a_string() { *a = '0'; }
+  const char *c_str() const { return a; }
+};
+
+void print(const char *s) { std::cout << s; }
+a_string make_string() { return a_string{}; }
 
 int main() {
-  vector<pair<int, string>> v{
-      {1, "one"}, {2, "two"}, {3, "three"}, {4, "four"}, {5, "five"}};
+  a_string s1 = make_string();
+  print(s1.c_str());
 
-  map<int, string> m;
+  const char *s2 = make_string().c_str();
+  print(s2);
 
-  copy_n(begin(v), 3, inserter(m, begin(m)));
-
-  auto shell_it(ostream_iterator<pair<int, string>>{cout, ", "});
-
-  copy(begin(m), end(m), shell_it);
-  cout << '\n';
-
-  m.clear();
-
-  move(begin(v), end(v), inserter(m, begin(m)));
-
-  copy(begin(m), end(m), shell_it);
-  cout << '\n';
-
-  copy(begin(v), end(v), shell_it);
-  cout << '\n';
+  print(make_string().c_str());
 }

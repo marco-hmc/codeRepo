@@ -1,6 +1,6 @@
 mysql可以分为server层和才能出引擎两部分
 
-![alt text](image.png)
+![alt text](_imgs/mysql45_notes_image.png)
 
 server:
     链接器
