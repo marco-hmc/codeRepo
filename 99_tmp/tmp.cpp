@@ -1,22 +1,28 @@
 #include <iostream>
-
-char a[2] = "0";
-
-struct a_string {
-  a_string() { *a = '1'; }
-  ~a_string() { *a = '0'; }
-  const char *c_str() const { return a; }
-};
-
-void print(const char *s) { std::cout << s; }
-a_string make_string() { return a_string{}; }
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 int main() {
-  a_string s1 = make_string();
-  print(s1.c_str());
+  pid_t pid = fork();
 
-  const char *s2 = make_string().c_str();
-  print(s2);
+  if (pid < 0) {
+    std::cerr << "Fork failed" << std::endl;
+    return 1;
+  }
 
-  print(make_string().c_str());
+  if (pid == 0) {
+    // This block will be executed in the child process
+    char *args[] = {(char *)"/bin/ls", (char *)"-l", NULL};
+    execvp(args[0], args);                   // Executes the ls command
+    std::cerr << "Exec failed" << std::endl; // Only gets here if exec failed
+    return 1;
+  } else {
+    // This block will be executed in the parent process
+    int status;
+    waitpid(pid, &status, 0); // Wait for the child process to finish
+    std::cout << "Child finished with status " << status << std::endl;
+  }
+
+  return 0;
 }
