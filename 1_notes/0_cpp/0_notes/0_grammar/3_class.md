@@ -1,3 +1,44 @@
+#### 1.8 return this和return *this的区别是什么
+`return this` 和 `return *this` 的主要区别在于它们返回的类型:
+
+- `return this` 返回的是一个指向当前对象的指针.这意味着,如果你有一个对象 `obj`,并且你有一个函数 `func` 返回 `this`,那么 `obj.func()` 将返回一个指向 `obj` 的指针.
+
+- `return *this` 返回的是当前对象的一个引用.这意味着,如果你有一个对象 `obj`,并且你有一个函数 `func` 返回 `*this`,那么 `obj.func()` 将返回一个引用到 `obj`.
+
+在某些情况下,你可能希望返回一个指向当前对象的指针,例如,如果你正在实现一个链式调用.在其他情况下,你可能希望返回一个引用,例如,如果你正在实现一个赋值运算符,通常你会希望返回一个引用,以便支持连续赋值(例如 `a = b = c`).
+
+
+**10. 令operator= 返回一个reference to *this （Have assignment operators return a reference to *this)**
+
+主要是为了支持连读和连写，例如：
+    
+    class Widget{
+    public:
+        Widget& operator=(int rhs){return *this;}
+    }
+    a = b = c;
+
+**11. 在operator= 中处理“自我赋值” （Handle assignment to self in operator=)**
+
+主要是要处理 a[i] = a[j] 或者 *px = *py这样的自我赋值。有可能会出现一场安全性问题，或者在使用之前就销毁了原来的对象
+
+
+
+#### 1.10 设计class犹如设计type
+
+如何设计class:
++ 新的class对象应该被如何创建和构造
++ 对象的初始化和赋值应该有什么样的差别(不同的函数调用,构造函数和赋值操作符)
++ 新的class如果被pass by value(以值传递),意味着什么(copy构造函数)
++ 什么是新type的"合法值"(成员变量通常只有某些数值是有效的,这些值决定了class必须维护的约束条件)
++ 新的class需要配合某个继承图系么(会受到继承类的约束)
++ 新的class需要什么样的转换(和其他类型的类型变换)
++ 什么样的操作符和函数对于此type而言是合理的(决定声明哪些函数,哪些是成员函数)
++ 什么样的函数必须为private的 
++ 新的class是否还有相似的其他class,如果是的话就应该定义一个class template
++ 你真的需要一个新type么?如果只是定义新的derived class或者为原来的class添加功能,说不定定义non-member函数或者templates更好
+
+
 ## 类的quiz
 
 ### 99. quiz

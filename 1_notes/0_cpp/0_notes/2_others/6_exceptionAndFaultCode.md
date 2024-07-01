@@ -1,3 +1,59 @@
+
+**15. 理解异常处理所付出的代价**
+
+编译器带来的开销（很难消除，因为所有的编译器都是支持异常的
+try块语句的开销：大概会降低5%-10%的速度和增加相应的代码尺寸
+
+**10. 防止构造函数里的资源泄漏**
+
+这一条主要是防止在构造函数中出现异常导致资源泄露：
+    
+    BookEntry::BookEntry(){
+        theImage     = new Image(imageFileName);
+        theAudioClip = new AudioClip(audioClipFileName);
+    }
+    BookEntry::~BookEntry(){
+        delete theImage;
+    }
+
+如果在构造函数new AudioClip里面出现异常的话，那么~BookEntry析构函数就不会执行，那么NewImage就永远不会被删除，而且因为new BookEntry失败，导致delete BookEntry也无法释放theImage，那么只能在构造函数里面使用异常来避免这个问题
+    
+    BookEntry::BookEntry(){
+        try{
+            theImage     = new Image(imageFileName);
+            theAudioClip = new AudioClip(audioClipFileName);
+        }
+        catch(...){
+            delete theImage;
+            delete theAudioClip;
+            //上面一段代码和析构函数里面的一样，所以可以直接封装成一个成员函数cleanup：
+            cleanup();
+            throw;
+        }
+    }
+
+更好的做法是将theImage和theAudioClip做成成员来进行封装：
+    
+    class BookEntry{
+    public:......
+    private:
+        const auto_ptr<Image> theImage;
+        const auto_ptr<AudioClip> theAudioClip;
+    }
+
+**11. 阻止异常传递到析构函数以外**
+
+如果析构函数抛出异常的话，会导致程序直接调用terminate函数，中止程序而不释放对象，所以不应该让异常传递到析构函数外面，而是应该在析构函数里面直接catch并且处理掉
+
+另外，如果析构函数抛出异常的话，那么析构函数就不会完全运行，就无法完成希望做的一些其他事情例如：
+    
+    Session::~Session(){
+        logDestruction(this);
+        endTransaction(); //结束database transaction,如果上面一句失败的话，下面这句就没办法正确执行了
+    }
+
+异常安全
+
 ## 错误码和异常处理
 
 程序出错几乎是必然事件，有可能是由于上游任务提供的数据就是错的。也有可能是程序内部实现，出现了bug。

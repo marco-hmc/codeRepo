@@ -1,3 +1,56 @@
+
+**37. 从各个方面使得std::threads unjoinable**
+
+每一个std::thread类型的对象都处于两种状态：joinable和unjoinable
+
++ joinable：对应底层已运行、可运行或者运行结束的出于阻塞或者等待调度的线程
++ unjoinable： 默认构造的std::thread, 已move的std::thread, 已join的std::thread, 已经分离的std::thread
++ 如果某一个std::thread是joinable的，然后他被销毁了，会造成很严重的后果，（比如会造成隐式join（会造成难以调试的性能异常）和隐式detach（会造成难以调试的未定义行为）），所以我们要保证thread在所有路径上都是unjoinable的：
+  
+    class ThreadRAII{
+    public:
+        enum class DtorAction{join, detach};
+        ThreadRAII(std::thread&& t, DtorAction a):action(a), t(std::move(t)){} //把线程交给ThreadRAII处理
+        ~THreadRAII(){
+            if(t.joinable()){
+                if(action == DtorAction::join){
+                    t.join();
+                }
+                else{
+                    t.detach();                  //保证所有路径出去都是不可连接的
+                }
+            }
+        }
+    private:
+        DtorAction action;
+        std::thread t;    //成员变量最后声明thread
+    }
+
+**38. 知道不同线程句柄析构行为**
+
+     _____           ___返回值___  std::promise _______
+    |调用方|<--------|被调用方结果|<------------|被调用方|
+
+因为被调用函数的返回值有可能在调用方执行get前就执行完毕了，所以被调用线程的返回值会保存在一个地方，所以会存在一个"共享状态"
+
+所以在异步状态下启动的线程的共享状态的最后一个返回值是会保持阻塞的，知道该任务结束，返回值的析构函数在常规情况下，只会析构返回值的成员变量
+
+
+#### 考虑对于单次事件通信使用
+
+这段文本讨论了在多线程编程中，如何有效地进行单次事件通信。具体来说，它比较了使用标志位、线程锁和`std::promise`三种不同的方法来实现线程间的同步和通信。
+
+1. **使用标志位(flag)**:
+   - 代码示例中没有直接展示，但提到了一种常见的做法，即在一个线程中使用`while(!flag){}`循环等待另一个线程改变`flag`的值。这种方法简单，但它会导致忙等待（busy-waiting），浪费CPU资源，因为等待的线程会持续检查`flag`而不做任何有用的工作。
+
+2. **使用线程锁**:
+   - 文本提到可以使用线程锁来代替标志位，以避免忙等待。示例代码中，`std::lock_guard<std::mutex>`用于自动管理互斥锁，但示例似乎有误，因为它没有展示如何正确使用互斥锁来等待某个条件。正确的做法通常涉及到`std::condition_variable`，它可以与互斥锁一起使用，让线程在条件不满足时休眠，直到条件被另一个线程改变并通知。
+
+3. **使用`std::promise`**:
+   - 最后，文本推荐使用`std::promise`来进行单次事件通信。`std::promise`是一种同步机制，可以在一个线程中存储一个值或异常，然后在另一个线程中通过与之对应的`std::future`对象来检索这个值或异常。示例中，`detect`函数创建了一个线程`t`，这个线程会等待`std::promise`对象`p`的状态被设置。当`detect`函数调用`p.set_value()`时，`p`的状态被设置，`t`中的等待操作完成，`react`函数随后被执行。这种方法避免了忙等待，且只适用于一次性通信，但需要注意的是，它可能涉及到堆内存的使用。
+
+总的来说，这段文本强调了在设计多线程程序时，应该避免使用忙等待策略，而应该考虑使用更高级的同步机制，如`std::promise`，来高效地进行线程间的单次事件通信。
+
 ## threads
 
 - 作者以[NonRecurisiveMutest.cc](https://github.com/chenshuo/recipes/tree/master/thread/test)这个为例子,如果mutex是递归的话,push_back()可能(但不总是)导致迭代器失效,程序偶尔会crash,这种错误不好debug.

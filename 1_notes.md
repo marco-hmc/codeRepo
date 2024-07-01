@@ -1,3 +1,171 @@
+**44. 将与参数无关的代码抽离templates （Factor parameter-independent code out of templates)**
+
+主要是会让编译器编译出很长的臃肿的二进制码，所以要把参数抽离，看以下代码：
+    
+    template<typename T, std::size_t n>
+    class SquareMatrix{
+        public:
+        void invert();    //求逆矩阵
+    }
+    
+    SquareMatrix<double, 5> sm1;
+    SquareMatrix<double, 10> sm2;
+    sm1.invert(); 
+    sm2.invert(); //会具现出两个invert并且基本完全相同
+
+修改后的代码：
+    
+    template<typename T>
+    class SquareMatrixBase{
+        protected:
+        void invert(std::size_t matrixSize);
+    }
+    
+    template<typename T, std::size_t n>
+    class SquareMatrix:private SquareMatrixBase<T>{
+        private:
+        using SquareMatrixBase<T>::invert;  //避免遮掩base版的invert
+        public:
+        void invert(){ this->invert(n); }   //一个inline调用，调用base class版的invert
+    }
+
+当然因为矩阵数据可能会不一样，例如5x5的矩阵和10x10的矩阵计算方式会不一样，输入的矩阵数据也会不一样，采用指针指向矩阵数据的方法会比较好：
+    
+    template<typename T, std::size_t n>
+    class SquareMatrix:: private SquareMatrixBase<T>{
+        public:
+        SquareMatrix():SquareMatrixBase<T>(n, 0), pData(new T[n*n]){
+            this->setDataPtr(pData.get());
+        }
+        private:
+        boost::scoped_array<T> pData; //存在heap里面
+    };
+
+总结：
++ templates生成多个classes和多个函数，所以任何template代码都不该与某个造成膨胀的template参数产生依赖关系
++ 因非类型模板参数（non-type template parameters）而造成的代码膨胀，往往可以消除，做法是以函数参数后者class成员变量替换template参数
++ 因类型参数（type parameters）而造成的代码膨胀，往往可以降低，做法是让带有完全相同的二进制表述的具现类型，共享实现码
+
+---
+
+* 虚函数可以是模板的吗？
+
+不，虚函数不能是模板函数。虚函数依赖于虚函数表（vtable）来实现运行时多态，而模板函数在编译时根据模板参数的不同实例化为不同的函数。因为模板实例化发生在编译时，而虚函数的动态绑定发生在运行时，所以二者的机制不兼容。
+
+简而言之，虚函数的多态性是在运行时通过虚函数表解析的，而模板函数的多态性是在编译时通过生成不同的函数实例来实现的。因此，虚函数不能是模板函数。
+
+**39. 明智而审慎地使用private继承  （Use private inheritance judiciously)**
+
+因为private继承并不是is-a的关系，即有一部分父类的private成员是子类无法访问的，而且经过private继承以后，子类的所有成员都是private的，意思是is implemented in terms of（根据某物实现出），有点像38条的复合。所以大部分时间都可以用复合代替private继承。
+
+当我们需要两个并不存在“is a”关系的类，同时一个类需要访问另一个类的protected成员的时候，我们可以使用private继承
+
+总结：
++ private 继承意味着is implemented in terms of， 通常比复合的级别低，但是当derived class 需要访问protect base class 的成员，或者需要重新定义继承而来的virtual函数时，这么设计是合理的。
++ 和复合不同，private继承可以造成empty base最优化，这对致力于“对象尺寸最小化”的程序库开发者而言，可能很重要
+
+
+#### 为什么会由函数遮蔽这个东西？如果参数列表不同的时候，不是应该是不同的函数，不应该被遮蔽吗
+函数遮蔽（Function Hiding）的存在主要是由于C++的名称查找规则导致的。在C++中，当派生类定义了一个与基类同名的成员函数时，派生类的这个函数会遮蔽掉基类中所有同名函数，不论参数列表是否相同。这种行为的根本原因在于C++的名称解析机制优先于类型匹配。
+
+* 名称查找与类型匹配
+
+C++在处理函数调用时，首先进行名称查找（Name Lookup），然后才是类型匹配（Type Matching）：
+
+1. **名称查找**：编译器首先查找与函数调用匹配的函数名。这一步不考虑函数的参数类型。如果在派生类中找到了同名函数，名称查找就会停止，不再继续到基类中查找。
+2. **类型匹配**：一旦找到了同名函数，编译器接下来会根据函数调用的实参类型，从找到的函数中选择最合适的一个进行调用。
+
+* 设计原因
+
+- **清晰的覆盖意图**：C++设计者可能认为，如果派生类想要引入一个与基类同名的函数（不论参数列表是否相同），那么派生类应该有意覆盖（或隐藏）基类中的所有同名函数，以避免潜在的歧义。
+- **避免意外的行为**：这种设计可以防止派生类无意中改变基类行为。如果派生类中的函数不会自动遮蔽基类中的同名函数，那么基类的行为可能会因为派生类的修改而意外改变，这可能导致代码难以理解和维护。
+
+* 解决方法
+
+虽然函数遮蔽可能导致一些混淆，但C++提供了解决方法，如使用`using`声明或者在派生类中定义转发函数（Forwarding Functions）来显式地调用基类的函数。
+
+   总结
+
+函数遮蔽是C++名称解析规则的直接结果，它强制程序员在派生类中显式地表达对基类同名函数的处理意图，从而避免潜在的歧义和意外行为。尽管这可能在某些情况下导致不便，但它也促使了更加清晰和可控的代码设计。
+
+**29. 为“异常安全”而努力是值得的  （Strive for exception-safe code)**
+
+异常安全函数具有以下三个特征之一：
++ 如果异常被抛出，程序内的任何事物仍然保持在有效状态下，没有任何对象或者数据结构被损坏，前后一致。在任何情况下都不泄露资源，在任何情况下都不允许破坏数据，一个比较典型的反例：
++ 如果异常被抛出，则程序的状态不被改变，程序会回到调用函数前的状态
++ 承诺绝不抛出异常
+
+总结：
++ 异常安全函数的三个特征
++ 第二个特征往往能够通过copy-and-swap实现出来，但是并非对所有函数都可实现或具备现实意义
++ 函数提供的异常安全保证，通常最高只等于其所调用各个函数的“异常安全保证”中最弱的那个。即函数的异常安全保证具有连带性
+
+
+函数遮蔽和静态绑定
+
+#### 1.2 enum hack
+应该让编译器代替预处理器定义，因为预处理器定义的变量并没有进入到symbol table里面。编译器有时候会看不到预处理器定义
+
+```c++
+// c11前
+class MyClass {
+public:
+    enum { MaxSize = 100 };
+    // ...
+};
+
+//////////////////////
+// c11及以后
+class MyClass {
+public:
+    static constexpr int MaxSize = 100;
+    // ...
+};
+```
+在 C++11 之前，"enum hack" 是一种常用的创建类常量的方法，有三个特点常量，编译器确定，所有类只有一份。
+在 C++11 及其后续版本中，我们可以直接在类中定义静态常量整数，这种方法更直观，也更符合 C++ 的风格。因此，"enum hack" 在现代 C++ 代码中的使用已经变得不那么常见。
+
+
+
+**4. 避免不必要的默认构造函数**
+
+这里主要是为了防止出现有了对象但是却没有必要的数据，例如：没有id的人
+但是主要还是在关键词 *不必要* 上面，必要的默认构造函数，不会造成数据出现遗漏的话，还是可以用的
+当然，如果不提供缺省构造函数的话，例如：
+    
+    class EP{
+    public:
+        EP(int ID);
+    }
+
+这样的代码会让使用者在某些时候非常的难受，特别是当EP类是虚类的时候。
+
+这时可以通过让用户使用
+
+    EP bestP[] = {
+        EP(ID1),
+        EP(ID2),
+        ......
+    }
+函数数组的方法，或者是指针：
+    
+    typedef EP* PEP;
+    PEP bestPieces[10];
+    PEP *bestPieces = new PEP[10];然后使用的时候再重新new来进行初始化
+
+
+#### 区分指针和引用
+
+引用必须指向一个对象，而不是空值，下面是一个危险的例子：
+    
+    char* pc = 0;  //设置指针为空值
+    char& rc = *pc;//让引用指向空值，很危险！！！
+
+下面的情况下使用指针：
++ 存在不指向任何对象的可能
++ 需要能够在不同的时刻指向不同的对象
+其他情况应该使用引用
+
 #### 1.7 绝不在构造和析构过程中调用virtual函数
 
 在C++中,构造函数和析构函数中调用虚函数时,不会有动态绑定.也就是说,调用的虚函数是当前正在执行的构造函数或析构函数所在的类版本,而不是对象的动态类型版本.

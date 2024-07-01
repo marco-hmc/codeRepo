@@ -1,3 +1,104 @@
+**28. 智能(smart)指针**
+
+auto_ptr：会把值给传出去，原来的指针作废掉
+实现dereference（取出指针所指东西的内容）：
+    template<class T>
+    T& SmartPtr<T>::operaotr*()const{
+        return *pointee;
+    }
+
+    template<class T>
+    T* SmartPtr<T>::operator->()const{
+        return pointee;
+    }
+
+测试smart pointer是否是NULL：
+如果直接使用下面的代码是错误的：
+    
+    SmartPtr<TreeNode> ptn;
+    if(ptn == 0)... //error
+    if(ptn)... //error
+    if(!ptn)... //error
+所以需要进行隐式类型转换操作符，才能够进行上面的操作
+    
+    template<class T>
+    class SmartPtr{
+    public:
+        operator void*();
+    };
+    SmartPtr<TreeNode> ptn;
+    if(ptn == 0) //现在正确
+    if(ptn) //现在正确
+    if(!ptn) //现在正确
+
+smart pointer 和继承类/基类的类型转换:
+
+    class MusicProduct{....};
+    class Cassette:public MusicProduct{....};
+    class CD:public MusicProduct{....};
+    displayAndPlay(const SmartPtr<MusicProduct>& pmp, int numTimes);
+    
+    SmartPtr<Cassette> funMusic(new Cassette("1234"));
+    SmartPtr<CD> nightmareMusic(new CD("143"));
+    displayAndPlay(funMusic, 10); // 错误!
+    displayAndPlay(nightmareMusic, 0); // 错误!
+我们可以看到的是，如果没有隐式转换操作符的话，是没有办法进行转换的，那么解决方法就是添加一个操作符,：
+    
+    class SmartPtr<Cassette>{//或者用模板来代替
+    public:
+        operator SmartPtr<MusicProduct>(){
+            return SmartPtr<MusicProduct>(pointee);
+        }
+    };
+smart pointer 和 const：
+    
+    SmartPtr<CD> p; //non-const 对象 non-const 指针
+    SmartPtr<const CD> p; //const 对象 non-const 指针
+    const SmartPtr<CD> p = &goodCD; //non-const 对象 const 指针
+    const SmartPtr<const CD> p = &goodCD; //const 对象 const 指针
+    
+    template<class T>      // 指向const对象的
+    class SmartPtrToConst{ //灵巧指针
+        ...                // 灵巧指针通常的成员函数
+    protected:
+        union {
+            const T* constPointee; // 让 SmartPtrToConst 访问
+            T* pointee; // 让 SmartPtr 访问
+        };
+    };
+    
+    template<class T> // 指向 non-const 对象的灵巧指针
+    class SmartPtr: public SmartPtrToConst<T> {
+        ... // 没有数据成员
+    };
+
+
+**20. 对于类似于std::shared_ptr的指针使用std::weak_ptr可能造成悬置**
+
+weak_ptr通常由一个std::shared_ptr来创建，他们指向相同的地方，但是weak_ptr并不会影响到shared_ptr的引用计数：
+    
+    auto spw = std::make_shared<Widget>();//spw 被构造之后被指向的Widget对象的引用计数为1(欲了解std::make_shared详情，请看Item21)
+    std::weak_ptr<Widget> wpw(spw);//wpw和spw指向了同一个Widget,但是RC(这里指引用计数，下同)仍旧是1
+    spw = nullptr;//RC变成了0，Widget也被析构，wpw现在处于悬挂状态
+    if(wpw.expired())... //如果wpw悬挂...
+那么虽然weak_ptr看起来没什么用，但是他其实也有一个应用场合（用来做缓存）：
+    
+    std::unique_ptr<const Widget> loadWidget(WidgetID id); //假设loadWidget是一个很繁重的方法，需要对这个方法进行缓存的话，就需要用到weak_ptr了：
+    
+    std::shared_ptr<const Widget> fastLoadWidget(WidgetId id){
+        static std::unordered_map<WidgetID,
+        std::weak_ptr<const Widget>> cache;
+        auto objPtr = cache[id].lock();//objPtr是std::shared_ptr类型指向了被缓存的对象(如果对象不在缓存中则是null)
+        if(!objPtr){
+            objPtr = loadWidget(id);
+            cache[id] = objPtr;
+        }   //如果不在缓存中，载入并且缓存它
+        return objPtr;
+    }
++ std::weak_ptr 用来模仿类似std::shared_ptr的可悬挂指针
++ 潜在的使用 std::weak_ptr 的场景包括缓存，观察者列表，以及阻止 std::shared_ptr 形成的环
+
+
 ## smartPtr
 
 ### 1. concepts

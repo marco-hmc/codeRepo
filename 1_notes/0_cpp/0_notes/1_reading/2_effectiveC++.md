@@ -1,118 +1,4 @@
- _tags: c++, constructing, reading notes
-
-
-
-#### 1.3 多用const
-应该让编译器代替预处理器定义，因为预处理器定义的变量并没有进入到symbol table里面。编译器有时候会看不到预处理器定义
-* const出现在星号左边， 被指物是常量
-* const出现在星号右边，指针自身是常量
-
-#### 1.4 如何在C++中正确处理非局部静态对象的初始化顺序问题？
-在 C++ 中，非局部静态对象的初始化顺序问题可以通过 "Initialization on Demand Idiom" 或 "Singleton Pattern" 来解决。这种方法的基本思想是将非局部静态对象封装在函数内部，这样可以确保它们在首次使用时被初始化。
-
-以下是一个示例：
-
-```c++
-class FileSystem {
-public:
-    std::size_t numDisks() const;
-    // 其他成员...
-};
-
-// 将非局部静态对象封装在函数内部
-FileSystem& tfs() {
-    static FileSystem fs; // 在首次使用时初始化
-    return fs; // 返回引用
-}
-```
-
-在这个例子中，`tfs` 函数包含了一个静态的 `FileSystem` 对象 `fs`。这个对象只有在 `tfs` 函数首次被调用时才会被初始化。因此，我们可以确保 `fs` 在首次使用前已经被正确初始化。
-
-这种方法的一个优点是它可以确保非局部静态对象的初始化顺序。因为这些对象是在它们所在的函数首次被调用时初始化的，所以我们可以通过控制函数调用的顺序来控制对象的初始化顺序。
-
-此外，这种方法还可以避免 "static deinitialization order fiasco"。这是因为在程序结束时，静态对象的析构函数会按照与构造函数相反的顺序被调用。如果一个对象的析构函数依赖于另一个对象，而那个对象已经被析构，就会出现问题。但是，如果我们将静态对象封装在函数内部，就可以确保它们在程序结束时仍然存在。
-
-#### 1.6 了解C++ 那些自动生成和调用的函数
-编译器自动生成的默认构造函数/拷贝构造函数/拷贝赋值操作符和析构函数对成员变量的处理方式如下:
-
-1. 默认构造函数:如果你没有为类定义一个构造函数,编译器会生成一个默认构造函数.这个默认构造函数不会对成员变量进行任何初始化操作.对于内置类型的成员变量,如果你没有在类体中显式初始化它们,它们的值将是未定义的.对于类类型的成员变量,它们将使用其类的默认构造函数进行初始化.
-
-2. 拷贝构造函数:如果你没有为类定义一个拷贝构造函数,编译器会生成一个默认拷贝构造函数.这个默认拷贝构造函数会对每个成员变量进行拷贝初始化.对于内置类型的成员变量,它们的值将被直接拷贝.对于类类型的成员变量,它们将使用其类的拷贝构造函数进行初始化.
-
-3. 拷贝赋值操作符:如果你没有为类定义一个拷贝赋值操作符,编译器会生成一个默认拷贝赋值操作符.这个默认拷贝赋值操作符会对每个成员变量进行拷贝赋值.对于内置类型的成员变量,它们的值将被直接拷贝.对于类类型的成员变量,它们将使用其类的拷贝赋值操作符进行赋值.
-
-4. 析构函数:如果你没有为类定义一个析构函数,编译器会生成一个默认析构函数.这个默认析构函数不会对成员变量进行任何操作.但是,当对象被销毁时,它的成员变量也会被销毁.对于类类型的成员变量,它们将使用其类的析构函数进行销毁.
-
-#### 1.8 return this和return *this的区别是什么
-`return this` 和 `return *this` 的主要区别在于它们返回的类型:
-
-- `return this` 返回的是一个指向当前对象的指针.这意味着,如果你有一个对象 `obj`,并且你有一个函数 `func` 返回 `this`,那么 `obj.func()` 将返回一个指向 `obj` 的指针.
-
-- `return *this` 返回的是当前对象的一个引用.这意味着,如果你有一个对象 `obj`,并且你有一个函数 `func` 返回 `*this`,那么 `obj.func()` 将返回一个引用到 `obj`.
-
-在某些情况下,你可能希望返回一个指向当前对象的指针,例如,如果你正在实现一个链式调用.在其他情况下,你可能希望返回一个引用,例如,如果你正在实现一个赋值运算符,通常你会希望返回一个引用,以便支持连续赋值(例如 `a = b = c`).
-
-#### 1.10 设计class犹如设计type
-
-如何设计class:
-+ 新的class对象应该被如何创建和构造
-+ 对象的初始化和赋值应该有什么样的差别(不同的函数调用,构造函数和赋值操作符)
-+ 新的class如果被pass by value(以值传递),意味着什么(copy构造函数)
-+ 什么是新type的"合法值"(成员变量通常只有某些数值是有效的,这些值决定了class必须维护的约束条件)
-+ 新的class需要配合某个继承图系么(会受到继承类的约束)
-+ 新的class需要什么样的转换(和其他类型的类型变换)
-+ 什么样的操作符和函数对于此type而言是合理的(决定声明哪些函数,哪些是成员函数)
-+ 什么样的函数必须为private的 
-+ 新的class是否还有相似的其他class,如果是的话就应该定义一个class template
-+ 你真的需要一个新type么?如果只是定义新的derived class或者为原来的class添加功能,说不定定义non-member函数或者templates更好
-
-**8. 别让异常逃离析构函数（Prevent exceptions from leaving destructors)**
-
-这里主要是因为如果循环析构10个Widgets，如果每一个Widgets都在析构的时候抛出异常，就会出现多个异常同时存在的情况，这里如果把每个异常控制在析构的话就可以解决这个问题：解决方法为：
-
-因为C++标准规定程序必须立即调用 std::terminate 函数来终止程序.这是因为C++不允许在同一时间处理两个异常.
-
-违反RAII原则：C++中的资源获取即初始化（RAII）原则是通过对象的生命周期管理资源的。对象的析构函数负责释放对象持有的资源。如果析构函数抛出异常，可能会导致资源没有被正确释放，从而导致资源泄露。
-
-**10. 令operator= 返回一个reference to *this （Have assignment operators return a reference to *this)**
-
-主要是为了支持连读和连写，例如：
-    
-    class Widget{
-    public:
-        Widget& operator=(int rhs){return *this;}
-    }
-    a = b = c;
-
-**11. 在operator= 中处理“自我赋值” （Handle assignment to self in operator=)**
-
-主要是要处理 a[i] = a[j] 或者 *px = *py这样的自我赋值。有可能会出现一场安全性问题，或者在使用之前就销毁了原来的对象
-
-
 #### 三、资源管理 (Resource Management)
-
-**15. 在资源管理类中提供对原始资源的访问（Provide access to raw resources in resource-managing classes)**
-
-例如：shared_ptr<>.get()这样的方法，或者->和*方法来进行取值。但是这样的方法可能稍微有些麻烦，有些人会使用一个隐式转换，但是经常会出错：
-    
-    class Font; class FontHandle;
-    void changeFontSize(FontHandle f, int newSize){    }//需要调用的API
-    
-    Font f(getFont());
-    int newFontSize = 3;
-    changeFontSize(f.get(), newFontSize);//显式的将Font转换成FontHandle
-    
-    class Font{
-        operator FontHandle()const { return f; }//隐式转换定义
-    }
-    changeFontSize(f, newFontSize)//隐式的将Font转换成FontHandle
-    但是容易出错，例如
-    Font f1(getFont());
-    FontHandle f2 = f1;就会把Font对象换成了FontHandle才能复制
-
-总结：
-+ 每一个资源管理类RAII都应该有一个直接获得资源的方法
-+ 隐式转换对客户比较方便，显式转换比较安全，具体看需求
 
 **17. 以独立语句将new的对象置入智能指针 （Store newed objects in smart pointers in standalone statements)**
 
@@ -240,254 +126,7 @@ const Rational operator*(const Rational& lhs, const Rational& rhs);
 + 调用swap时应该针对std::swap使用using std::swap声明，然后调用swap并且不带任何命名空间修饰符
 + 不要再std内加对于std而言是全新的东西（不符合C++标准）
 
-#### 五、实现 (Implementations)
-
-**28. 避免返回handles指向对象内部成分  （Avoid returning "handles" to object internals)**
-
-主要是为了防止用户误操作返回的值：
-    
-    修改前代码：
-    class Rectangle{
-        public:
-        Point& upperLeft() const { return pData->ulhc; }
-        Point& lowerRight() const { return pData->lrhc; }
-    }
-    如果修改成：
-    class Rectangle{
-        public:
-        const Point& upperLeft() const { return pData->ulhc; }
-        const Point& lowerRight() const { return pData->lrhc; }
-    }
-    则仍然会出现悬吊的变量，例如：
-    const Point* pUpperLeft = &(boundingBox(*pgo).upperLeft());
-boundingBox会返回一个temp的新的，暂时的Rectangle对象，在这一整行语句执行完以后，temp就变成空的了，就成了悬吊的变量
-
-总结：
-+ 尽量不要返回指向private变量的指针引用等
-+ 如果真的要用，尽量使用const进行限制，同时尽量避免悬吊的可能性
-
-**29. 为“异常安全”而努力是值得的  （Strive for exception-safe code)**
-
-异常安全函数具有以下三个特征之一：
-+ 如果异常被抛出，程序内的任何事物仍然保持在有效状态下，没有任何对象或者数据结构被损坏，前后一致。在任何情况下都不泄露资源，在任何情况下都不允许破坏数据，一个比较典型的反例：
-+ 如果异常被抛出，则程序的状态不被改变，程序会回到调用函数前的状态
-+ 承诺绝不抛出异常
-
-    原函数：
-    class PrettyMenu{
-        public:
-        void changeBackground(std::istream& imgSrc); //改变背景图像
-        private:
-        Mutex mutex; // 互斥器
-    };
-
-    void changeBackground(std::istream& imgSrc){
-        lock(&mutex);               //取得互斥器
-        delete bgImage;             //摆脱旧的背景图像
-        ++imageChanges;             //修改图像的变更次数
-        bgImage = new Image(imgSrc);//安装新的背景图像
-        unlock(&mutex);             //释放互斥器
-    }
-当异常抛出的时候，这个函数就存在很大的问题：
-+ 不泄露任何资源：当new Image(imgSrc)发生异常的时候，对unlock的调用就绝不会执行，于是互斥器就永远被把持住了
-+ 不允许数据破坏：如果new Image(imgSrc)发生异常，bgImage就是空的，而且imageChanges也已经加上了
-  
-    修改后代码：
-    void PrettyMenu::changeBackground(std::istream& imgSrc){
-        Lock ml(&mutex);    //Lock是第13条中提到的用对象管理资源的类
-        bgImage.reset(new Image(imgSrc));
-        ++imageChanges; //放在后面
-    }
-
-总结：
-+ 异常安全函数的三个特征
-+ 第二个特征往往能够通过copy-and-swap实现出来，但是并非对所有函数都可实现或具备现实意义
-+ 函数提供的异常安全保证，通常最高只等于其所调用各个函数的“异常安全保证”中最弱的那个。即函数的异常安全保证具有连带性
-
-**31. 将文件间的编译依存关系降至最低  （Minimize compilation dependencies between files)**
-
-这个关系其实指的是一个文件包含另外一个文件的类定义等
-
-那么如何实现解耦呢,通常是将实现定义到另外一个类里面，如下：
-    
-    原代码：
-    class Person{
-    private
-        Dates m_data;
-        Addresses m_addr;
-    }
-    
-    添加一个Person的实现类，定义为PersonImpl，修改后的代码：
-    class PersonImpl;
-    class Person{
-        private:
-        shared_ptr<PersonImpl> pImpl;
-    }
-
-在上面的设计下,就实现了解耦，即“实现和接口分离”
-
-与此相似的接口类还可以使用全虚函数
-    
-    class Person{
-        public:
-        virtual ~Person();
-        virtual std::string name() const = 0;
-        virtual std::string birthDate() const = 0;
-    }
-然后通过继承的子类来实现相关的方法
-
-这种情况下这些virtual函数通常被成为factory工厂函数
-
-总结：
-+ 应该让文件依赖于声明而不依赖于定义，可以通过上面两种方法实现
-+ 程序头文件应该有且仅有声明
-
 #### 六、继承与面向对象设计 (Inheritance and Object-Oriented Design)
-
-**32. 确定你的public继承塑模出is-a关系  （Make sure public inheritance models "is-a.")**
-
-public类继承指的是单向的更一般化的，例如：
-    
-    class Student : public Person{...};
-
-其意义指的是student是一个person，但是person不一定是一个student。
-
-这里经常会出的错误是，将父类可能不存在的功能实现出来，例如：
-    
-    class Bird{
-        virtual void fly();
-    }
-    class Penguin:public Bird{...};//企鹅是不会飞的
-
-这个时候就需要通过设计来排除这种错误，例如通过定义一个FlyBird
-
-总结：
-+ public继承中，意味着每一个Base class的东西一定适用于他的derived class
-
-**33. 避免遮掩继承而来的名称  （Avoid hiding inherited names)**
-
-举例：
-    class Base{
-        public:
-        virtual void mf1() = 0;
-        virtual void mf1(int);
-        virtual void mf2();
-        void         mf3();
-        void         mf3(double);
-    }
-    class Derived:public Base{
-        public:
-        virtual void mf1();
-        void         mf3();
-    }
-
-这种问题可以通过 
-    
-    using Base::mf1;
-    或者
-    virtual void mf1(){//转交函数
-        Base::mf1();
-    }
-    来解决，但是尽量不要出现这种遮蔽的行为
-
-总结：
-+ derived class 会遮蔽Base class的名称
-+ 可以通过using 或者转交函数来解决
-
-**34. 区分接口继承和实现继承  （Differentiate between inheritance of interface and inheritance of implementation)**
-
-pure virtual 函数式提供了一个接口继承，当一个函数式pure virtual的时候，意味着所有的实现都在子类里面实现。不过pure virtual也是可以有实现的，调用他的实现的方法是在调用前加上基类的名称：
-    
-    class Shape{
-        virtual void draw() const = 0;
-    }
-    ps->Shape::draw();
-总结：
-+ 接口继承和实现继承不同，在public继承下，derived classes总是继承base的接口
-+ pure virtual函数只具体指定接口继承
-+ 简朴的（非纯）impure virtual函数具体指定接口继承以及缺省实现继承
-+ non-virtual函数具体指定接口继承以及强制性的实现继承
-
-**35. 考虑virtual函数以外的其他选择  （Consider alternatives to virtual functions)**
-
-NVI手法：通过public non-virtual成员函数间接调用private virtual函数，即所谓的template method设计模式：
-
-    class GameCharacter{
-    public:
-        int healthValue() const{
-            //做一些事前工作
-            int retVal = doHealthValue();
-            //做一些事后工作
-            return retVal;
-        }
-    private:
-        virtual int doHealthValue() const{
-            ...                   //缺省算法，计算健康函数
-        }
-    }
-这种方法的优点在于事前工作和事后工作，这些工作能够保证virtual函数在真正工作之前之后被单独调用
-
-但是这种方法只是一种替代方法，另外的方法还有：函数指针（strategy设计模式
-
-    class GameCharacter; // 前置声明
-    int defaultHealthCalc(const GameCharacter& gc);
-    class GameCharacter{
-    public:
-        typedef int (*HealthCalcFunc)(const GameCharacter&);//函数指针
-        explicit GameCHaracter(HealthCalcFunc hcf = defaultHealthCalc):healthFunc(hcf){}//可以换一个函数的
-        int healthValue()const{return healthFunc(*this);}
-    private:
-        HealthCalcFunc healthFunc;
-    }
-    
-    如果将函数指针换成函数对象的话，会有更具有弹性的效果：
-    
-    typedef std::tr1::function<int (const GameCharacter&)> HealthCalcFunc;
-    在这种情况下，HealthCalcFunc是一个typedef，他的行为更像一个函数指针，表示“接受一个reference指向const GameCharacter，并且返回int*”，
-
-总结：这一节表示当我们为了解决问题而寻找某个特定设计方法时，不妨考虑virtual函数的替代方案
-+ 使用NVI手法，他是用public non-virtual成员函数包裹较低访问性（private和protected）的virtual函数
-+ 将virtual函数替换成“函数指针成员变量”，这是strategy设计模式的一种表现形式
-+ 以tr1::function成员变量替换virtual函数，因而允许使用任何可调用物（callable entity）搭配一个兼容与需求的签名式
-+ 将继承体系内的virtual函数替换成另一个继承体系内的virtual函数
-
-+ 将机能从成员函数移到class外部函数，带来的一个缺点是：非成员函数无法访问class的non-public成员
-+ tr1::function对象就像一般函数指针，这样的对象可接纳“与给定之目标签名式兼容”的所有可调用物（callable entities）
-
-**36. 绝不重新定义继承而来的non-virtual函数  （Never redefine an inherited non-virtual function)**
-
-主要是考虑一下的代码：
-    class B{
-    public:
-        void mf();
-    }
-    class D : public B{
-    public:
-        void mf();
-    };
-
-    D x;
-    
-    B *pB = &x; pB->mf(); //调用B版本的mf
-    D *pD = &x; pD->mf(); // 调用D版本的mf
-
-即使不考虑这种代码层的差异，如果这样重定义的话，也不符合之前的“每一个D都是一个B”的定义
-
-**37. 绝不重新定义继承而来的缺省参数值  （Never redefine a function's inherited default parameter value)**
-
-原代码：
-    
-    class Shape{
-    public:
-        enum ShapeColor {Red, Green, Blue};
-        virtual void draw(ShapeColor color=Red)const = 0;
-    };
-    class Rectangle : public Shape{
-    public:
-        virtual void draw(ShapeColor color=Green)const;//和父类的默认参数不同
-    }
-    Shape* pr = new Rectangle; // 注意此时pr的静态类型是Shape，但是他的动态类型是Rectangle
-    pr->draw(); //virtual函数是动态绑定，而缺省参数值是静态绑定，所以会调用Red
 
 **38. 通过复合塑模出has-a或"根据某物实现出"  （Model "has-a" or "is-implemented-in-terms-of" through composition)**
 
@@ -509,15 +148,6 @@ NVI手法：通过public non-virtual成员函数间接调用private virtual函�
 + 复合（composition）的意义和public继承完全不同
 + 在应用域（application domain），复合意味着has a，在实现域（implementation domain），复合意味着 is implemented-in-terms-of
 
-**39. 明智而审慎地使用private继承  （Use private inheritance judiciously)**
-
-因为private继承并不是is-a的关系，即有一部分父类的private成员是子类无法访问的，而且经过private继承以后，子类的所有成员都是private的，意思是is implemented in terms of（根据某物实现出），有点像38条的复合。所以大部分时间都可以用复合代替private继承。
-
-当我们需要两个并不存在“is a”关系的类，同时一个类需要访问另一个类的protected成员的时候，我们可以使用private继承
-
-总结：
-+ private 继承意味着is implemented in terms of， 通常比复合的级别低，但是当derived class 需要访问protect base class 的成员，或者需要重新定义继承而来的virtual函数时，这么设计是合理的。
-+ 和复合不同，private继承可以造成empty base最优化，这对致力于“对象尺寸最小化”的程序库开发者而言，可能很重要
 
 **40. 明智而审慎地使用多重继承  （Use multiple inheritance judiciously)**
 
@@ -674,53 +304,7 @@ NVI手法：通过public non-virtual成员函数间接调用private virtual函�
 
 上面那些做法都是对编译器说：base class template的任何特例化版本都支持其一般版本所提供的接口
 
-**44. 将与参数无关的代码抽离templates （Factor parameter-independent code out of templates)**
 
-主要是会让编译器编译出很长的臃肿的二进制码，所以要把参数抽离，看以下代码：
-    
-    template<typename T, std::size_t n>
-    class SquareMatrix{
-        public:
-        void invert();    //求逆矩阵
-    }
-    
-    SquareMatrix<double, 5> sm1;
-    SquareMatrix<double, 10> sm2;
-    sm1.invert(); 
-    sm2.invert(); //会具现出两个invert并且基本完全相同
-
-修改后的代码：
-    
-    template<typename T>
-    class SquareMatrixBase{
-        protected:
-        void invert(std::size_t matrixSize);
-    }
-    
-    template<typename T, std::size_t n>
-    class SquareMatrix:private SquareMatrixBase<T>{
-        private:
-        using SquareMatrixBase<T>::invert;  //避免遮掩base版的invert
-        public:
-        void invert(){ this->invert(n); }   //一个inline调用，调用base class版的invert
-    }
-
-当然因为矩阵数据可能会不一样，例如5x5的矩阵和10x10的矩阵计算方式会不一样，输入的矩阵数据也会不一样，采用指针指向矩阵数据的方法会比较好：
-    
-    template<typename T, std::size_t n>
-    class SquareMatrix:: private SquareMatrixBase<T>{
-        public:
-        SquareMatrix():SquareMatrixBase<T>(n, 0), pData(new T[n*n]){
-            this->setDataPtr(pData.get());
-        }
-        private:
-        boost::scoped_array<T> pData; //存在heap里面
-    };
-
-总结：
-+ templates生成多个classes和多个函数，所以任何template代码都不该与某个造成膨胀的template参数产生依赖关系
-+ 因非类型模板参数（non-type template parameters）而造成的代码膨胀，往往可以消除，做法是以函数参数后者class成员变量替换template参数
-+ 因类型参数（type parameters）而造成的代码膨胀，往往可以降低，做法是让带有完全相同的二进制表述的具现类型，共享实现码
 
 **45. 运用成员函数模板接受所有兼容类型 （Use member function templates to accept "all compatible types.")**
 
@@ -900,18 +484,6 @@ static void operator delete(void* pMemory) throw();     //palcement delete，此
 
 ## More Effective C++
 
-#### 区分指针和引用
-
-引用必须指向一个对象，而不是空值，下面是一个危险的例子：
-    
-    char* pc = 0;  //设置指针为空值
-    char& rc = *pc;//让引用指向空值，很危险！！！
-
-下面的情况下使用指针：
-+ 存在不指向任何对象的可能
-+ 需要能够在不同的时刻指向不同的对象
-其他情况应该使用引用
-
 #### ??决不要把多态用于数组
 
 主要是考虑以下写法：
@@ -929,32 +501,6 @@ static void operator delete(void* pMemory) throw();     //palcement delete，此
     printBSTArray(bBSTArray);
 
 由于我们之前说的，这种情况下编译器是毫无警告的，而对象在传递过程中是按照声明的大小来传递的，所以每一个元素的间隔是sizeof(BST)此时指针就指向了错误的地方
-
-**4. 避免不必要的默认构造函数**
-
-这里主要是为了防止出现有了对象但是却没有必要的数据，例如：没有id的人
-但是主要还是在关键词 *不必要* 上面，必要的默认构造函数，不会造成数据出现遗漏的话，还是可以用的
-当然，如果不提供缺省构造函数的话，例如：
-    
-    class EP{
-    public:
-        EP(int ID);
-    }
-
-这样的代码会让使用者在某些时候非常的难受，特别是当EP类是虚类的时候。
-
-这时可以通过让用户使用
-
-    EP bestP[] = {
-        EP(ID1),
-        EP(ID2),
-        ......
-    }
-函数数组的方法，或者是指针：
-    
-    typedef EP* PEP;
-    PEP bestPieces[10];
-    PEP *bestPieces = new PEP[10];然后使用的时候再重新new来进行初始化
 
 #### 二、运算符
 
@@ -1048,55 +594,6 @@ new[]和delete[]就相当于对每一个数组元素调用构造和析构函数
 
 #### 三、异常
 
-**10. 防止构造函数里的资源泄漏**
-
-这一条主要是防止在构造函数中出现异常导致资源泄露：
-    
-    BookEntry::BookEntry(){
-        theImage     = new Image(imageFileName);
-        theAudioClip = new AudioClip(audioClipFileName);
-    }
-    BookEntry::~BookEntry(){
-        delete theImage;
-    }
-
-如果在构造函数new AudioClip里面出现异常的话，那么~BookEntry析构函数就不会执行，那么NewImage就永远不会被删除，而且因为new BookEntry失败，导致delete BookEntry也无法释放theImage，那么只能在构造函数里面使用异常来避免这个问题
-    
-    BookEntry::BookEntry(){
-        try{
-            theImage     = new Image(imageFileName);
-            theAudioClip = new AudioClip(audioClipFileName);
-        }
-        catch(...){
-            delete theImage;
-            delete theAudioClip;
-            //上面一段代码和析构函数里面的一样，所以可以直接封装成一个成员函数cleanup：
-            cleanup();
-            throw;
-        }
-    }
-
-更好的做法是将theImage和theAudioClip做成成员来进行封装：
-    
-    class BookEntry{
-    public:......
-    private:
-        const auto_ptr<Image> theImage;
-        const auto_ptr<AudioClip> theAudioClip;
-    }
-
-
-**11. 阻止异常传递到析构函数以外**
-
-如果析构函数抛出异常的话，会导致程序直接调用terminate函数，中止程序而不释放对象，所以不应该让异常传递到析构函数外面，而是应该在析构函数里面直接catch并且处理掉
-
-另外，如果析构函数抛出异常的话，那么析构函数就不会完全运行，就无法完成希望做的一些其他事情例如：
-    
-    Session::~Session(){
-        logDestruction(this);
-        endTransaction(); //结束database transaction,如果上面一句失败的话，下面这句就没办法正确执行了
-    }
-
 **12. 理解“抛出异常”，“传递参数”和“调用虚函数”之间的不同**
 
 传递参数的函数：
@@ -1177,46 +674,6 @@ catch子句：
         }
     }
 
-**14. 审慎地使用异常规格（exception specifications）**
-
-异常规格指的是函数指定只能抛出异常的类型：
-    
-    extern void f1();    //f1可以抛出任意类型的异常
-    void f2() throw(int);//f2只能抛出int类型的异常
-    void f2() throw(int){ 
-         f1();           //编译器会因为f1和f2的异常规格不同而在发出异常的时候调用unexpected
-    }
-
-在用模板的时候，会让这种情况更为明显：
-    
-    template<class T>
-    bool operator==(const T& lhs, const T&rhs) throw(){
-        return &lhs == &rhs;
-    }
-这个模板为所有的类型定义了一个操作符函数operator==对于任意一对相同类型的对象，如果有一样的地址，则返回true，否则返回false，单单这么一个函数可能不会抛出异常，但是如果有operator&重载时，operator&可能会抛出异常，这样就违反了异常规则，让程序跳转到unexpected
-
-阻止程序跳转到unexpected的三种方法：
-将所有的unexpected异常都替换成UnexpectedException对象：
-    
-    class UnexpectedException{}; //所有的unexpected异常对象都被替换成这种对象
-    void convertUnexpected(){       //如果一个unexpected异常被抛出，这个函数就会被调用
-        throw UnexpectedException();
-    }
-    set_unexpected(convertUnexpected);
-替换unexpected函数：
-
-    void convertUnexpected(){ //如果一个unexpected异常被抛出，这个函数被调用
-        throw;                //只是重新抛出当前的异常
-    }
-    set_unexpected(convertUnexpected);//安装convertUnexpected作为unexpected的替代品，此方法应该在所有的异常规格里面包含bad_exception
-
-总结：异常规格应该在加入之前谨慎的考虑它带来的行为是否是我们所希望的
-
-
-**15. 理解异常处理所付出的代价**
-
-编译器带来的开销（很难消除，因为所有的编译器都是支持异常的
-try块语句的开销：大概会降低5%-10%的速度和增加相应的代码尺寸
 
 **17. 考虑使用延迟计算**
 
@@ -1241,6 +698,26 @@ try块语句的开销：大概会降低5%-10%的速度和增加相应的代码�
     Matrix<int> m1(1000, 1000), m2(1000, 1000);
     m3 = m1 + m2;
     因为矩阵的加法计算量太大（1000*1000）次计算，所以可以先用表达式表示m3是m1和m2的和，然后真正需要计算出值的时候再真的进行计算（甚至计算的时候也只计算m3[3][2]这样某一个位置的值）
+
+**21. 通过函数重载避免隐式类型转换**
+
+改代码之前：
+
+    class UPInt{
+        public:
+        UPInt();
+        UPInt(int value);
+    }
+    const UPInt operator+(const UPInt& lhs, const UPInt& rhs);
+    upi3 = upi1 + upi2;
+    upi3 = 10 + upi1;  // 会产生隐式类型转换，转换过程中会出现临时对象
+    upi3 = upi1 + 10;
+
+改代码之后：
+    
+    const UPInt operator+(const UPInt& lhs, const UPInt& rhs);
+    const UPInt operator+(const UPInt& lhs, int rhs);
+    const UPInt operator+(int lhs, const UPInt& rhs);
 
 **22. 考虑使用op=来取代单独的op运算符**
 
@@ -1398,108 +875,7 @@ clone() 叫做虚拟拷贝构造函数,相当于拷贝一个新的对象
         using Counted<Printer>::objectCount;
         using Counted<Printer>::TooManyObjects;
     }
-**27. 要求或禁止对象分配在堆上**
 
-必须在堆中建立对象（程序有自我管理对象的需求）：
-禁用隐式的构造函数和析构函数，例如声明成private，或者仅仅让析构函数成为private（副作用小一些），然后创建一个public的destory()方法来调用析构。
-遇到继承析构的问题的话(现在的做法无法继承)，也可以将析构函数声明成protected的
-
-判断一个对象是否在堆中：
-在构造函数中无法区分是否在堆中，但是在new里面可以做些事情：
-    
-    class UPNumber{
-    public:
-        class HeapConstraintViolation{};
-        static void* operator new(size_t size);
-        UPNumber();
-    private:
-        static bool onTheHeap;
-    };
-实际上上面这段代码是跑不了的，因为如果使用new[]创造数组的话就没有办法用了
-
-另一种方法是判断变量所在的地址，因为stack是从高位地址向下的，heap是从地位地址向上的：
-    
-    bool onHeap(const void *address) { 
-        char onTheStack; // 局部栈变量，因为他是新的变量，所以比他小的都在堆或者静态空间里面，比他大的都在栈里面
-        return address < &onTheStack; 
-    }
-
-禁止堆对象：
-重写operator new就行了，例如弄成private
-
-**28. 智能(smart)指针**
-
-auto_ptr：会把值给传出去，原来的指针作废掉
-实现dereference（取出指针所指东西的内容）：
-    template<class T>
-    T& SmartPtr<T>::operaotr*()const{
-        return *pointee;
-    }
-
-    template<class T>
-    T* SmartPtr<T>::operator->()const{
-        return pointee;
-    }
-
-测试smart pointer是否是NULL：
-如果直接使用下面的代码是错误的：
-    
-    SmartPtr<TreeNode> ptn;
-    if(ptn == 0)... //error
-    if(ptn)... //error
-    if(!ptn)... //error
-所以需要进行隐式类型转换操作符，才能够进行上面的操作
-    
-    template<class T>
-    class SmartPtr{
-    public:
-        operator void*();
-    };
-    SmartPtr<TreeNode> ptn;
-    if(ptn == 0) //现在正确
-    if(ptn) //现在正确
-    if(!ptn) //现在正确
-
-smart pointer 和继承类/基类的类型转换:
-
-    class MusicProduct{....};
-    class Cassette:public MusicProduct{....};
-    class CD:public MusicProduct{....};
-    displayAndPlay(const SmartPtr<MusicProduct>& pmp, int numTimes);
-    
-    SmartPtr<Cassette> funMusic(new Cassette("1234"));
-    SmartPtr<CD> nightmareMusic(new CD("143"));
-    displayAndPlay(funMusic, 10); // 错误!
-    displayAndPlay(nightmareMusic, 0); // 错误!
-我们可以看到的是，如果没有隐式转换操作符的话，是没有办法进行转换的，那么解决方法就是添加一个操作符,：
-    
-    class SmartPtr<Cassette>{//或者用模板来代替
-    public:
-        operator SmartPtr<MusicProduct>(){
-            return SmartPtr<MusicProduct>(pointee);
-        }
-    };
-smart pointer 和 const：
-    
-    SmartPtr<CD> p; //non-const 对象 non-const 指针
-    SmartPtr<const CD> p; //const 对象 non-const 指针
-    const SmartPtr<CD> p = &goodCD; //non-const 对象 const 指针
-    const SmartPtr<const CD> p = &goodCD; //const 对象 const 指针
-    
-    template<class T>      // 指向const对象的
-    class SmartPtrToConst{ //灵巧指针
-        ...                // 灵巧指针通常的成员函数
-    protected:
-        union {
-            const T* constPointee; // 让 SmartPtrToConst 访问
-            T* pointee; // 让 SmartPtr 访问
-        };
-    };
-    
-    template<class T> // 指向 non-const 对象的灵巧指针
-    class SmartPtr: public SmartPtrToConst<T> {
-        ... // 没有数据成员
-    };
 
 **30. 代理类**
 
@@ -1631,58 +1007,6 @@ smart pointer 和 const：
 
 #### 六、杂项
 
-**33. 将非尾端类设计为抽象类**
-
-如果采用这样的代码：
-
-    class Animal{
-    public:
-        virtual Animal& operator=(const Animal& rhs);
-        ....
-    };
-    class Lizard:public Animal{
-    public:
-        virtual Lizard& operator=(const Animal& rhs);
-    };
-    class Chicken:public Animal{
-    public:
-        virtual Chicken& operator=(const Animal& rhs);
-    }
-则会出现我们不愿意出现的类型转换和赋值：
-    
-    Animal *pAnimal1 = &liz;
-    Animal *pAnimal2 = &chick;
-    *pAnimal1 = *pAnimal2;      //把一个chick赋值给了一个lizard
-
-但是我们又希望下面的操作是可行的：
-    Animal *pAnimal1 = &liz1;
-    Animal *pAnimal2 = &liz2;
-    *pAnimal1 = *pAnimal2;      //正确，把一个lizard赋值给了一个lizard
-
-解决这个问题最简单的方法是使用dynamic_cast进行类型检测，但是还有一个方法就是把Animal设成抽象类或者创建一个抽象Animal类：
-
-    class AbstractAnimal{
-    protected:
-        AbstractAnimal& operator=(const AbstractAnimal& rhs);
-    public:
-        virtual ~AbstractAnimal() = 0;
-    };
-    
-    class Animal: public AbstractAnimal{
-    public:
-        Animal& operator=(const Animal& rhs);
-    };
-    class Lizard:public AbstractAnimal{
-    public:
-        virtual Lizard& operator=(const Animal& rhs);
-    };
-    class Chicken:public AbstractAnimal{
-    public:
-        virtual Chicken& operator=(const Animal& rhs);
-    }
-
-感觉这个方法以后会非常有用。。。。
-
 **34. 理解如何在同一程序中混合使用C**
 
 名字变换：就是在编译器分别给C++和C不同的前缀，在C语言中，因为没有函数重载，所以编译器没有专门给函数改变名字，但是在C++里面，编译器是要给函数不同的名字的。
@@ -1778,39 +1102,6 @@ decltype的一些让人意外的应用：
 
 #### 四、智能指针
 
-**20. 对于类似于std::shared_ptr的指针使用std::weak_ptr可能造成悬置**
-
-weak_ptr通常由一个std::shared_ptr来创建，他们指向相同的地方，但是weak_ptr并不会影响到shared_ptr的引用计数：
-    
-    auto spw = std::make_shared<Widget>();//spw 被构造之后被指向的Widget对象的引用计数为1(欲了解std::make_shared详情，请看Item21)
-    std::weak_ptr<Widget> wpw(spw);//wpw和spw指向了同一个Widget,但是RC(这里指引用计数，下同)仍旧是1
-    spw = nullptr;//RC变成了0，Widget也被析构，wpw现在处于悬挂状态
-    if(wpw.expired())... //如果wpw悬挂...
-那么虽然weak_ptr看起来没什么用，但是他其实也有一个应用场合（用来做缓存）：
-    
-    std::unique_ptr<const Widget> loadWidget(WidgetID id); //假设loadWidget是一个很繁重的方法，需要对这个方法进行缓存的话，就需要用到weak_ptr了：
-    
-    std::shared_ptr<const Widget> fastLoadWidget(WidgetId id){
-        static std::unordered_map<WidgetID,
-        std::weak_ptr<const Widget>> cache;
-        auto objPtr = cache[id].lock();//objPtr是std::shared_ptr类型指向了被缓存的对象(如果对象不在缓存中则是null)
-        if(!objPtr){
-            objPtr = loadWidget(id);
-            cache[id] = objPtr;
-        }   //如果不在缓存中，载入并且缓存它
-        return objPtr;
-    }
-+ std::weak_ptr 用来模仿类似std::shared_ptr的可悬挂指针
-+ 潜在的使用 std::weak_ptr 的场景包括缓存，观察者列表，以及阻止 std::shared_ptr 形成的环
-
-**21. 优先考虑使用std::make_unique和std::make_shared而非new**
-
-+ 和直接使用new相比，使用make函数减少了代码的重复量，提升了异常安全度，并且，对于std::make_shared以及std::allocate_shared来说，产生的代码更加简洁快速
-+ 也会存在使用make函数不合适的场景：包含指定自定义的deleter,以及传递大括号initializer的需要
-+ 对于std::shared_ptr来说，使用make函数的额外的不使用场景还包含
-
-    (1)带有自定义内存管理的class
-    (2)内存非常紧俏的系统，非常大的对象以及比对应的std::shared_ptr活的还要长的std::weak_ptr
 
 **22. 当使用Pimpl惯用法，请在实现文件中定义特殊成员函数**
 
@@ -1842,249 +1133,3 @@ impl类的做法：之前写到过，就是把对象的成员变量替换成一�
 的实现文件中定义它们。即使默认的实现方式(编译器生成的方式)可以胜任也要这么做
 + 上述建议适用于 std::unique_ptr ,对 std::shared_ptr 无用
 
-
-#### 五、右值引用，移动语意，完美转发
-
-**23. 理解std::move和std::forward**
-
-首先move不move任何东西，forward也不转发任何东西，在运行时，不产生可执行代码，这两个只是执行转换的函数（模板），std::move无条件的将他的参数转换成一个右值，forward只有当特定的条件满足时才会执行他的转换，下面是std::move的伪代码：
-    
-    template<typename T>
-    typename remove_reference<T>::type&& move(T&& param){
-        using ReturnType = typename remove_reference<T>::type&&; //see Item 9
-        return static_cast<ReturnType>(param);
-    }
-
-**24. 区别通用引用和右值引用**
-
-    void f(Widget&& param);       //rvalue reference
-    Widget&& var1 = Widget();     //rvalue reference
-    auto&& var2 = var1;           //not rvalue reference
-    template<typename T>
-    void f(std::vector<T>&& param) //rvalue reference
-    template<typename T>
-    void f(T&& param);             //not rvalue reference
-
-+ 如果一个函数的template parameter有着T&&的格式，且有一个deduce type T.或者一个对象被生命为auto&&,那么这个parameter或者object就是一个universal reference.
-+ 如果type的声明的格式不完全是type&&,或者type deduction没有发生，那么type&&表示的是一个rvalue reference.
-+ universal reference如果被rvalue初始化，它就是rvalue reference.如果被lvalue初始化，他就是lvaue reference.
-
-**25. 对于右值引用使用std::move，对于通用引用使用std::forward**
-
-右值引用仅会绑定在可以移动的对象上，如果形参类型是右值引用，则他绑定的对象应该是可以移动的
-
-+ 通用引用在转发的时候，应该进行向右值的有条件强制类型转换（用std::forward）
-+ 右值引用在转发的时候，应该使用向右值的无条件强制类型转换（用std::move)
-+ 如果上面两个方法使用反的话，可能会导致很麻烦的事情（代码冗余或者运行期错误）
-
-在书中一直在强调“move”和"copy"两个操作的区别，因为move在一定程度上会效率更高一些
-
-但是在局部对象中这种想法是错误的：
-    
-    Widget MakeWidget(){
-        Widget w;
-        return w; //复制，需要调用一次拷贝构造函数
-    }
-    
-    Widget MakeWidget(){
-        Widget w;
-        return std::move(w);//错误！！！！！！！会造成负优化
-    }
-
-因为在第一段代码中，编译器会启用返回值优化（return value optimization RVO）,这个优化的启动需要满足两个条件：
-+ 局部对象类型和函数的返回值类型相同
-+ 返回的就是局部对象本身
-
-而下面一段代码是不满足RVO优化的，所以会带来负优化
-
-所以：如果局部对象可以使用返回值优化的时候，不应该使用std::move 和std:forward
-
-**26. 避免重载通用引用**
-
-主要是因为通用引用（特别是模板），会产生和调用函数精确匹配的函数，例如现在有一个：
-    
-    template<typename T>
-    void log(T&& name){}
-    
-    void log(int name){}
-    
-    short a;
-    log(a);
-
-这个时候如果调用log的话，就会产生精确匹配的log方法，然后调用模板函数
-
-而且在重载过程当中，通用引用模板还会和拷贝构造函数，复制构造函数竞争（这里其实有太多种情况了），只举书上的一个例子：
-    
-    class Person{
-    public:
-        template<typename T> explicit Person(T&& n): name(std::forward<T>(n)){} //完美转发构造函数
-        explicit Person(int idx); //形参为int的构造函数
-    
-        Person(const Person& rhs) //默认拷贝构造函数（编译器自动生成）
-        Person(Person&& rhs); //默认移动构造函数（编译器生成）
-    };
-    
-    Person p("Nancy");
-    auto cloneOfP(p);  //会编译失败，因为p并不是const的，所以在和拷贝构造函数匹配的时候，并不是最优解，而会调用完美转发的构造函数
-
-**27. 熟悉重载通用引用的替代品**
-
-这一条主要是为了解决26点的通用引用重载问题提的几个观点，特别是对构造函数（完美构造函数）进行解决方案
-
-+ 放弃重载，采用替换名字的方案
-+ 用传值来替代引用（可以提升性能但却不用增加一点复杂度
-+ 采用impl方法：
-  
-    template<typename T>
-    void logAndAdd(T&& name){
-        logAndAddImpl(
-            std::forward<T>(name), 
-            std::is_integral<typename std::remove_reference<T>::type>() //这一句只是为了区分是否是整形
-        ); 
-    }
-+ 对通用引用模板加以限制（使用enable_if）
-  
-    class Person{
-    public:
-        template<typename T,
-                 typename = typename std::enable_if<condition>::type>//这里的condition只是一个代号，condition可以是：!std::is_same<Person, typename std::decay<T>::type>::value,或者是：!std::is_base_of<Person, typename std::decay<T>::type>::value&&!std::is_integral<std::remove_reference_t<T>>::value
-        explicit Person(T&& n);
-    }
-//说实话这个代码的可读性emmmmmmmm，大概还是我太菜了。。。。
-
-**28. 理解引用折叠**
-
-在实参传递给函数模板的时候，推导出来的模板形参会把实参是左值还是右值的信息编码到结果里面：
-    
-    template<typename T>
-    void func(T&& param);
-    
-    Widget WidgetFactory() //返回右值
-    Widget w;
-    
-    func(w);               //T的推到结果是左值引用类型，T的结果推倒为Widget&
-    func(WidgetFactory);   //T的推到结果是非引用类型（注意这个时候不是右值），T的结果推到为Widget
-C++中，“引用的引用”是违法的，但是上面T的推到结果是Widget&时，就会出现 void func(Widget& && param);左值引用+右值引用
-
-所以事实说明，编译器自己确实会出现引用的引用（虽然我们并不能用），所以会有一个规则（我记得C++ primer note里面也讲到过）
-+ 如果任一引用是左值引用，则结果是左值引用，否则就是右值引用
-+ 引用折叠会在四种语境中发生：模板实例化，auto类型生成、创建和运用typedef和别名声明，以及decltype
-
-**29. 认识移动操作的缺点**
-
-+ 假设移动操作不存在，成本高，未使用
-+ 对于那些类型或对于移动语义的支持情况已知的代码，则无需做上述假定
-
-原因在于C++11以下的move确实是低效的，但是C++11及以上的支持让move操作快了一些，但是更多时候编写代码并不知道代码对C++版本的支持，所以要做以上假定
-
-**30. 熟悉完美转发失败的情况**
-
-    template<typename T>
-    void fwd(T&& param){           //接受任意实参
-        f(std::forward<T>(param)); //转发该实参到f
-    }
-    
-    template<typename... Ts>
-    void fwd(Ts&&... param){        //接受任意变长实参
-        f(std::forward<Ts>(param)...);
-    }
-
-完美转发失败的情况：
-    
-    （大括号初始化物）
-    f({1, 2, 3}); //没问题，{1, 2, 3}会隐式转换成std::vector<int>
-    fwd({1, 2, 3}) //错误，因为向为生命为std::initializer_list类型的函数模板形参传递了大括号初始化变量，但是之前说如果是auto的话，会推到为std::initializer_list,就没问题了。。。
-    
-    （0和NULL空指针）
-    （仅仅有声明的整形static const 成员变量）：
-    class Widget{
-    public:
-        static const std::size_t MinVals = 28; //仅仅给出了声明没有给出定义
-    };
-    fwd(Widget::MinVals);      //错误，应该无法链接，因为通常引用是当成指针处理的，而也需要指定某一块内存来让指针指涉
-    
-    （重载的函数名字和模板名字）
-    void f(int (*fp)(int));
-    int processValue(int value);
-    int processValue(int value, int priority);
-    fwd(processVal); //错误，光秃秃的processVal并没有类型型别
-    
-    （位域）
-    struct IPv4Header{
-        std::uint32_t version:4,
-        IHL:4,
-        DSCP:6,
-        ECN:2,
-        totalLength:16;
-    };
-    
-    void f(std::size_t sz); IPv4Header h;
-    fwd(h.totalLength); //错误
-+ 最后，所有的失败情形实际上都归结于模板类型推到失败，或者推到结果是错误的。
-
-**37. 从各个方面使得std::threads unjoinable**
-
-每一个std::thread类型的对象都处于两种状态：joinable和unjoinable
-
-+ joinable：对应底层已运行、可运行或者运行结束的出于阻塞或者等待调度的线程
-+ unjoinable： 默认构造的std::thread, 已move的std::thread, 已join的std::thread, 已经分离的std::thread
-+ 如果某一个std::thread是joinable的，然后他被销毁了，会造成很严重的后果，（比如会造成隐式join（会造成难以调试的性能异常）和隐式detach（会造成难以调试的未定义行为）），所以我们要保证thread在所有路径上都是unjoinable的：
-  
-    class ThreadRAII{
-    public:
-        enum class DtorAction{join, detach};
-        ThreadRAII(std::thread&& t, DtorAction a):action(a), t(std::move(t)){} //把线程交给ThreadRAII处理
-        ~THreadRAII(){
-            if(t.joinable()){
-                if(action == DtorAction::join){
-                    t.join();
-                }
-                else{
-                    t.detach();                  //保证所有路径出去都是不可连接的
-                }
-            }
-        }
-    private:
-        DtorAction action;
-        std::thread t;    //成员变量最后声明thread
-    }
-
-**38. 知道不同线程句柄析构行为**
-
-     _____           ___返回值___  std::promise _______
-    |调用方|<--------|被调用方结果|<------------|被调用方|
-
-因为被调用函数的返回值有可能在调用方执行get前就执行完毕了，所以被调用线程的返回值会保存在一个地方，所以会存在一个"共享状态"
-
-所以在异步状态下启动的线程的共享状态的最后一个返回值是会保持阻塞的，知道该任务结束，返回值的析构函数在常规情况下，只会析构返回值的成员变量
-
-
-#### volatile和线程安全无关
-volatile的作用:告诉编译器正在处理的变量使用的是特殊内存,不要在这个变量上做任何优化,即让cpu每次都从内存去取.
-和多线程无关,改用atomic就用atomic
-
-
-#### ??考虑对于单次事件通信使用
-
-对于我们在线程中经常使用的flag标志位:
-    
-    while(!flag){}
-
-可以用线程锁来代替,这个时候等待,不会占用本该进行计算的某一个线程资源:
-    
-    bool flag(false);
-    std::lock_guard<std::mutex> g(m);
-    flag = true;
-
-不过使用标志位的话也不太好,如果使用std::promise类型的对象的话就可以解决上面的问题,但是这个途径为了共享状态需要使用堆内存,而且只限于一次性通信
-    
-    std::promise<void> p;
-    void react();    //反应任务
-    void detect(){  //检测任务
-        std::thread t([]{
-            p.get_future().wait();
-            react();           //在调用react之前t是暂停状态
-        });
-        p.set_value();  //取消暂停t
-        t.join();       //把t置为unjoinable状态
-    }   
