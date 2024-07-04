@@ -1,4 +1,4 @@
-# include<iostream>
+#include <iostream>
 
 template<typename T>
 struct has_type {
@@ -14,30 +14,37 @@ struct has_type {
 struct A { typedef int type; };
 struct B {};
 
-int main() {
-    std::cout << std::boolalpha;
-    std::cout << has_type<A>::value << std::endl; // 输出true
-    std::cout << has_type<B>::value << std::endl; // 输出false
-    return 0;
+void test_1() {
+  std::cout << std::boolalpha;
+  std::cout << has_type<A>::value << std::endl; // 输出true
+  std::cout << has_type<B>::value << std::endl; // 输出false
 }
 
-// template<typename T>
-// struct has_function {
-//     template<typename C>
-//     static char test(decltype(&C::function));
+//////////////////////////////////////////////////////
 
-//     template<typename C>
-//     static int test(...);
+template <typename T> struct has_function {
+  template <typename C> static char test(decltype(&C::function));
 
-//     static const bool value = sizeof(test<T>(0)) == sizeof(char);
-// };
+  template <typename C> static int test(...);
 
-// struct C { void function() {} };
-// struct D { };
+  static const bool value = sizeof(test<T>(0)) == sizeof(char);
+};
 
-// int main() {
-//     std::cout << std::boolalpha;
-//     std::cout << has_function<C>::value << std::endl; // 输出true
-//     std::cout << has_function<D>::value << std::endl; // 输出false
-//     return 0;
-// }
+struct C {
+  void function() {}
+};
+struct D {};
+
+void test_2() {
+  std::cout << std::boolalpha;
+  std::cout << has_function<C>::value << std::endl; // 输出true
+  std::cout << has_function<D>::value << std::endl; // 输出false
+}
+
+/////////////////////////////////////////////////////
+
+int main() {
+  test_1();
+  test_2();
+  return 0;
+}

@@ -3,11 +3,6 @@
 
 章节目录由VSCode插件[Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)生成。
 - [1. 前言](#1-前言)
-- [2. Template的基本语法](#2-template的基本语法)
-  - [2.1. 什么是模板(Template)](#21-什么是模板template)
-  - [2.2. 类模板 (Class Template) 的基本语法](#22-类模板-class-template-的基本语法)
-    - [2.2.1. “模板类”还是“类模板”](#221-模板类还是类模板)
-    - [2.2.2. Class Template的与成员变量定义](#222-class-template的与成员变量定义)
     - [2.2.3. 模板的使用](#223-模板的使用)
     - [2.3.1. 函数模板的声明和定义](#231-函数模板的声明和定义)
     - [2.3.2. 函数模板的使用](#232-函数模板的使用)
@@ -40,19 +35,6 @@
 |特性|标准|
 |---|---|
 | std::decay_t<T> | C++ 14 |
-
-# 2. Template的基本语法
-
-## 2.1. 什么是模板(Template)
-
-## 2.2. 类模板 (Class Template) 的基本语法
-
-### 2.2.1. “模板类”还是“类模板”
-
-### 2.2.2. Class Template的与成员变量定义
-``` C++
-void foo(int a);
-```
 
 ### 2.2.3. 模板的使用
 ### 2.3.1. 函数模板的声明和定义
@@ -119,24 +101,6 @@ foo(v);	// 它能准确地猜到 T 是 int.
 
 下面轮到你的练习时间了。你试着写了很多的例子，但是其中一个你还是犯了疑惑：
 
-``` C++
-float data[1024];
-
-template <typename T> T GetValue(int i)
-{
-    return static_cast<T>(data[i]);
-}
-
-float a = GetValue(0);	// 出错了！
-int b = GetValue(1);	// 也出错了！
-```
-
-为什么会出错呢？你仔细想了想，原来编译器是没办法去根据返回值推断类型的。函数调用的时候，返回值被谁接受还不知道呢。如下修改后，就一切正常了：
-
-``` C++
-float a = GetValue<float>(0);
-int b = GetValue<int>(1);
-```
 
 嗯，是不是so easy啊？嗯，你又信心满满的做了一个练习：
 
