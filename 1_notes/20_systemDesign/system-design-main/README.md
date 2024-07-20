@@ -1,9 +1,5 @@
 # System Design
 
-Hey, welcome to the course. I hope this course provides a great learning experience.
-
-_This course is also available on my [website](https://karanpratapsingh.com/courses/system-design) and as an ebook on [leanpub](https://leanpub.com/systemdesign). Please leave a ⭐ as motivation if this was helpful!_
-
 # Table of contents
 
 - **Getting Started**
@@ -85,50 +81,11 @@ _This course is also available on my [website](https://karanpratapsingh.com/cour
   - [Next Steps](#next-steps)
   - [References](#references)
 
-# What is system design?
-
-Before we start this course, let's talk about what even is system design.
-
-System design is the process of defining the architecture, interfaces, and data
-for a system that satisfies specific requirements. System design meets the needs
-of your business or organization through coherent and efficient systems. It requires
-a systematic approach to building and engineering systems. A good system design requires
-us to think about everything, from infrastructure all the way down to the data and how it's stored.
-
-## Why is System Design so important?
-
-System design helps us define a solution that meets the business requirements. It is
-one of the earliest decisions we can make when building a system. Often it is essential
-to think from a high level as these decisions are very difficult to correct later. It
-also makes it easier to reason about and manage architectural changes as the system evolves.
-
-# IP
-
-An IP address is a unique address that identifies a device on the internet or a local network. IP stands for _"Internet Protocol"_, which is the set of rules governing the format of data sent via the internet or local network.
-
-In essence, IP addresses are the identifier that allows information to be sent between devices on a network. They contain location information and make devices accessible for communication. The internet needs a way to differentiate between different computers, routers, and websites. IP addresses provide a way of doing so and form an essential part of how the internet works.
-
-## Versions
-
-Now, let's learn about the different versions of IP addresses:
-
-### IPv4
-
-The original Internet Protocol is IPv4 which uses a 32-bit numeric dot-decimal notation that only allows for around 4 billion IP addresses. Initially, it was more than enough but as internet adoption grew, we needed something better.
-
-_Example: `102.22.192.181`_
-
 ### IPv6
-
-IPv6 is a new protocol that was introduced in 1998. Deployment commenced in the mid-2000s and since the internet users have grown exponentially, it is still ongoing.
 
 This new protocol uses 128-bit alphanumeric hexadecimal notation. This means that IPv6 can provide about ~340e+36 IP addresses. That's more than enough to meet the growing demand for years to come.
 
 _Example: `2001:0db8:85a3:0000:0000:8a2e:0370:7334`_
-
-## Types
-
-Let's discuss types of IP addresses:
 
 ### Public
 
@@ -156,24 +113,7 @@ _Example: They are more commonly used for consumer equipment and personal use._
 
 # OSI Model
 
-The OSI Model is a logical and conceptual model that defines network communication used by systems open to interconnection and communication with other systems. The Open System Interconnection (OSI Model) also defines a logical network and effectively describes computer packet transfer by using various layers of protocols.
-
-The OSI Model can be seen as a universal language for computer networking. It's based on the concept of splitting up a communication system into seven abstract layers, each one stacked upon the last.
-
-## Why does the OSI model matter?
-
-The Open System Interconnection (OSI) model has defined the common terminology used in networking discussions and documentation. This allows us to take a very complex communications process apart and evaluate its components.
-
-While this model is not directly implemented in the TCP/IP networks that are most common today, it can still help us do so much more, such as:
-
-- Make troubleshooting easier and help identify threats across the entire stack.
-- Encourage hardware manufacturers to create networking products that can communicate with each other over the network.
-- Essential for developing a security-first mindset.
-- Separate a complex function into simpler components.
-
 ## Layers
-
-The seven abstraction layers of the OSI model can be defined as follows, from top to bottom:
 
 ![osi-model](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/osi-model/osi-model.png)
 
@@ -195,29 +135,14 @@ The transport layer (also known as layer 4) is responsible for end-to-end commun
 
 ### Network
 
-The network layer is responsible for facilitating data transfer between two different networks. The network layer breaks up segments from the transport layer into smaller units, called packets, on the sender's device, and reassembles these packets on the receiving device. The network layer also finds the best physical path for the data to reach its destination this is known as routing. If the two devices communicating are on the same network, then the network layer is unnecessary.
+The network layer breaks up segments from the transport layer into smaller units, called packets, on the sender's device, and reassembles these packets on the receiving device. The network layer also finds the best physical path for the data to reach its destination this is known as routing. If the two devices communicating are on the same network, then the network layer is unnecessary.
 
-### Data Link
-
-The data link layer is very similar to the network layer, except the data link layer facilitates data transfer between two devices on the same network. The data link layer takes packets from the network layer and breaks them into smaller pieces called frames.
-
-### Physical
-
-This layer includes the physical equipment involved in the data transfer, such as the cables and switches. This is also the layer where the data gets converted into a bit stream, which is a string of 1s and 0s. The physical layer of both devices must also agree on a signal convention so that the 1s can be distinguished from the 0s on both devices.
 
 # TCP and UDP
 
-## TCP
-
-Transmission Control Protocol (TCP) is connection-oriented, meaning once a connection has been established, data can be transmitted in both directions. TCP has built-in systems to check for errors and to guarantee data will be delivered in the order it was sent, making it the perfect protocol for transferring information like still images, data files, and web pages.
-
-![tcp](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/tcp-and-udp/tcp.png)
-
-But while TCP is instinctively reliable, its feedback mechanisms also result in a larger overhead, translating to greater use of the available bandwidth on the network.
-
 ## UDP
 
-User Datagram Protocol (UDP) is a simpler, connectionless internet protocol in which error-checking and recovery services are not required. With UDP, there is no overhead for opening a connection, maintaining a connection, or terminating a connection. Data is continuously sent to the recipient, whether or not they receive it.
+UserWith UDP, there is no overhead for opening a connection, maintaining a connection, or terminating a connection. Data is continuously sent to the recipient, whether or not they receive it.
 
 ![udp](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/tcp-and-udp/udp.png)
 

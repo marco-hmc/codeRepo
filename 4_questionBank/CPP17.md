@@ -1,81 +1,6 @@
 # C++17
 
-## Overview
-Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
-
-C++17 includes the following new language features:
-- [C++17](#c17)
-  - [Overview](#overview)
-  - [C++17 Language Features](#c17-language-features)
-    - [Template argument deduction for class templates](#template-argument-deduction-for-class-templates)
-    - [Declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
-    - [Folding expressions](#folding-expressions)
-    - [New rules for auto deduction from braced-init-list](#new-rules-for-auto-deduction-from-braced-init-list)
-    - [constexpr lambda](#constexpr-lambda)
-    - [Lambda capture `this` by value](#lambda-capture-this-by-value)
-    - [Inline variables](#inline-variables)
-    - [Nested namespaces](#nested-namespaces)
-    - [Structured bindings](#structured-bindings)
-    - [Selection statements with initializer](#selection-statements-with-initializer)
-    - [constexpr if](#constexpr-if)
-    - [UTF-8 character literals](#utf-8-character-literals)
-    - [Direct list initialization of enums](#direct-list-initialization-of-enums)
-    - [\[\[fallthrough\]\], \[\[nodiscard\]\], \[\[maybe\_unused\]\] attributes](#fallthrough-nodiscard-maybe_unused-attributes)
-    - [\_\_has\_include](#__has_include)
-    - [Class template argument deduction](#class-template-argument-deduction)
-  - [C++17 Library Features](#c17-library-features)
-    - [std::variant](#stdvariant)
-    - [std::optional](#stdoptional)
-    - [std::any](#stdany)
-    - [std::string\_view](#stdstring_view)
-    - [std::invoke](#stdinvoke)
-    - [std::apply](#stdapply)
-    - [std::filesystem](#stdfilesystem)
-    - [std::byte](#stdbyte)
-    - [Splicing for maps and sets](#splicing-for-maps-and-sets)
-    - [Parallel algorithms](#parallel-algorithms)
-    - [std::sample](#stdsample)
-    - [std::clamp](#stdclamp)
-    - [std::reduce](#stdreduce)
-    - [Prefix sum algorithms](#prefix-sum-algorithms)
-    - [GCD and LCM](#gcd-and-lcm)
-    - [std::not\_fn](#stdnot_fn)
-    - [String conversion to/from numbers](#string-conversion-tofrom-numbers)
-
-C++17 includes the following new library features:
-- [std::variant](#stdvariant)
-- [std::optional](#stdoptional)
-- [std::any](#stdany)
-- [std::string_view](#stdstring_view)
-- [std::invoke](#stdinvoke)
-- [std::apply](#stdapply)
-- [std::filesystem](#stdfilesystem)
-- [std::byte](#stdbyte)
-- [splicing for maps and sets](#splicing-for-maps-and-sets)
-- [parallel algorithms](#parallel-algorithms)
-- [std::sample](#stdsample)
-- [std::clamp](#stdclamp)
-- [std::reduce](#stdreduce)
-- [prefix sum algorithms](#prefix-sum-algorithms)
-- [gcd and lcm](#gcd-and-lcm)
-- [std::not_fn](#stdnot_fn)
-- [string conversion to/from numbers](#string-conversion-tofrom-numbers)
-
 ## C++17 Language Features
-
-### Template argument deduction for class templates
-Automatic template argument deduction much like how it's done for functions, but now including class constructors.
-```c++
-template <typename T = float>
-struct MyContainer {
-  T val;
-  MyContainer() : val{} {}
-  MyContainer(T val) : val{val} {}
-  // ...
-};
-MyContainer c1 {1}; // OK MyContainer<int>
-MyContainer c2; // OK MyContainer<float>
-```
 
 ### Declaring non-type template parameters with auto
 Following the deduction rules of `auto`, while respecting the non-type template parameter list of allowable types[\*], template arguments can be deduced from the types of its arguments:
@@ -91,29 +16,6 @@ auto seq = std::integer_sequence<int, 0, 1, 2>();
 auto seq2 = my_integer_sequence<0, 1, 2>();
 ```
 \* - For example, you cannot use a `double` as a template parameter type, which also makes this an invalid deduction using `auto`.
-
-### Folding expressions
-A fold expression performs a fold of a template parameter pack over a binary operator.
-* An expression of the form `(... op e)` or `(e op ...)`, where `op` is a fold-operator and `e` is an unexpanded parameter pack, are called _unary folds_.
-* An expression of the form `(e1 op ... op e2)`, where `op` are fold-operators, is called a _binary fold_. Either `e1` or `e2` is an unexpanded parameter pack, but not both.
-```c++
-template <typename... Args>
-bool logicalAnd(Args... args) {
-    // Binary folding.
-    return (true && ... && args);
-}
-bool b = true;
-bool& b2 = b;
-logicalAnd(b, b2, true); // == true
-```
-```c++
-template <typename... Args>
-auto sum(Args... args) {
-    // Unary folding.
-    return (... + args);
-}
-sum(1.0, 2.0f, 3); // == 6.0
-```
 
 ### New rules for auto deduction from braced-init-list
 Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x {3};` deduces a `std::initializer_list<int>`, which now deduces to `int`.
@@ -147,26 +49,6 @@ constexpr int addOne(int n) {
 static_assert(addOne(1) == 2);
 ```
 
-### Lambda capture `this` by value
-Capturing `this` in a lambda's environment was previously reference-only. An example of where this is problematic is asynchronous code using callbacks that require an object to be available, potentially past its lifetime. `*this` (C++17) will now make a copy of the current object, while `this` (C++11) continues to capture by reference.
-```c++
-struct MyObj {
-  int value {123};
-  auto getValueCopy() {
-    return [*this] { return value; };
-  }
-  auto getValueRef() {
-    return [this] { return value; };
-  }
-};
-MyObj mo;
-auto valueCopy = mo.getValueCopy();
-auto valueRef = mo.getValueRef();
-mo.value = 321;
-valueCopy(); // 123
-valueRef(); // 321
-```
-
 ### Inline variables
 The inline specifier can be applied to variables as well as to functions. A variable declared inline has the same semantics as a function declared inline.
 ```c++
@@ -190,49 +72,6 @@ struct S {
 };
 ```
 
-### Nested namespaces
-Using the namespace resolution operator to create nested namespace definitions.
-```c++
-namespace A {
-  namespace B {
-    namespace C {
-      int i;
-    }
-  }
-}
-```
-
-The code above can be written like this:
-```c++
-namespace A::B::C {
-  int i;
-}
-```
-
-### Structured bindings
-A proposal for de-structuring initialization, that would allow writing `auto [ x, y, z ] = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include [`std::tuple`](README.md#tuples), `std::pair`, [`std::array`](README.md#stdarray), and aggregate structures.
-```c++
-using Coordinate = std::pair<int, int>;
-Coordinate origin() {
-  return Coordinate{0, 0};
-}
-
-const auto [ x, y ] = origin();
-x; // == 0
-y; // == 0
-```
-```c++
-std::unordered_map<std::string, int> mapping {
-  {"a", 1},
-  {"b", 2},
-  {"c", 3}
-};
-
-// Destructure by reference.
-for (const auto& [key, value] : mapping) {
-  // Do something with key and value
-}
-```
 
 ### Selection statements with initializer
 New versions of the `if` and `switch` statements which simplify common code patterns and help users keep scopes tight.
@@ -257,30 +96,6 @@ switch (Foo gadget(args); auto s = gadget.status()) {
   case OK: gadget.zip(); break;
   case Bad: throw BadFoo(s.message());
 }
-```
-
-### constexpr if
-Write code that is instantiated depending on a compile-time condition.
-```c++
-template <typename T>
-constexpr bool isIntegral() {
-  if constexpr (std::is_integral<T>::value) {
-    return true;
-  } else {
-    return false;
-  }
-}
-static_assert(isIntegral<int>() == true);
-static_assert(isIntegral<char>() == true);
-static_assert(isIntegral<double>() == false);
-struct S {};
-static_assert(isIntegral<S>() == false);
-```
-
-### UTF-8 character literals
-A character literal that begins with `u8` is a character literal of type `char`. The value of a UTF-8 character literal is equal to its ISO 10646 code point value.
-```c++
-char x = u8'x';
 ```
 
 ### Direct list initialization of enums
@@ -507,33 +322,6 @@ auto add = [](int x, int y) {
 std::apply(add, std::make_tuple(1, 2)); // == 3
 ```
 
-### std::filesystem
-The new `std::filesystem` library provides a standard way to manipulate files, directories, and paths in a filesystem.
-
-Here, a big file is copied to a temporary path if there is available space:
-```c++
-const auto bigFilePath {"bigFileToCopy"};
-if (std::filesystem::exists(bigFilePath)) {
-  const auto bigFileSize {std::filesystem::file_size(bigFilePath)};
-  std::filesystem::path tmpPath {"/tmp"};
-  if (std::filesystem::space(tmpPath).available > bigFileSize) {
-    std::filesystem::create_directory(tmpPath.append("example"));
-    std::filesystem::copy_file(bigFilePath, tmpPath.append("newFile"));
-  }
-}
-```
-
-### std::byte
-The new `std::byte` type provides a standard way of representing data as a byte. Benefits of using `std::byte` over `char` or `unsigned char` is that it is not a character type, and is also not an arithmetic type; while the only operator overloads available are bitwise operations.
-```c++
-std::byte a {0};
-std::byte b {0xFF};
-int i = std::to_integer<int>(b); // 0xFF
-std::byte c = a & b;
-int j = std::to_integer<int>(c); // 0
-```
-Note that `std::byte` is simply an enum, and braced initialization of enums become possible thanks to [direct-list-initialization of enums](#direct-list-initialization-of-enums).
-
 ### Splicing for maps and sets
 Moving nodes and merging containers without the overhead of expensive copies, moves, or heap allocations/deallocations.
 
@@ -597,17 +385,6 @@ std::sample(ALLOWED_CHARS.begin(), ALLOWED_CHARS.end(), std::back_inserter(guid)
 std::cout << guid; // e.g. G1fW2
 ```
 
-### std::clamp
-Clamp given value between a lower and upper bound.
-```c++
-std::clamp(42, -1, 1); // == 1
-std::clamp(-42, -1, 1); // == -1
-std::clamp(0, -1, 1); // == 0
-
-// `std::clamp` also accepts a custom comparator:
-std::clamp(0, -1, 1, std::less<>{}); // == 0
-```
-
 ### std::reduce
 Fold over a given range of elements. Conceptually similar to `std::accumulate`, but `std::reduce` will perform the fold in parallel. Due to the fold being done in parallel, if you specify a binary operation, it is required to be associative and commutative. A given binary operation also should not change any element or invalidate any iterators within the given range.
 
@@ -646,63 +423,4 @@ std::transform_inclusive_scan(std::cbegin(a), std::cend(a),
 
 std::transform_exclusive_scan(std::cbegin(a), std::cend(a),
     std::ostream_iterator<int>{ std::cout, " " }, 0, std::plus<>{}, times_ten); // 0 10 30
-```
-
-### GCD and LCM
-Greatest common divisor (GCD) and least common multiple (LCM).
-```c++
-const int p = 9;
-const int q = 3;
-std::gcd(p, q); // == 3
-std::lcm(p, q); // == 9
-```
-
-### std::not_fn
-Utility function that returns the negation of the result of the given function.
-```c++
-const std::ostream_iterator<int> ostream_it{ std::cout, " " };
-const auto is_even = [](const auto n) { return n % 2 == 0; };
-std::vector<int> v{ 0, 1, 2, 3, 4 };
-
-// Print all even numbers.
-std::copy_if(std::cbegin(v), std::cend(v), ostream_it, is_even); // 0 2 4
-// Print all odd (not even) numbers.
-std::copy_if(std::cbegin(v), std::cend(v), ostream_it, std::not_fn(is_even)); // 1 3
-```
-
-### String conversion to/from numbers
-Convert integrals and floats to a string or vice-versa. Conversions are non-throwing, do not allocate, and are more secure than the equivalents from the C standard library.
-
-Users are responsible for allocating enough storage required for `std::to_chars`, or the function will fail by setting the error code object in its return value.
-
-These functions allow you to optionally pass a base (defaults to base-10) or a format specifier for floating type input.
-
-* `std::to_chars` returns a (non-const) char pointer which is one-past-the-end of the string that the function wrote to inside the given buffer, and an error code object.
-* `std::from_chars` returns a const char pointer which on success is equal to the end pointer passed to the function, and an error code object.
-
-Both error code objects returned from these functions are equal to the default-initialized error code object on success.
-
-Convert the number `123` to a `std::string`:
-```c++
-const int n = 123;
-
-// Can use any container, string, array, etc.
-std::string str;
-str.resize(3); // hold enough storage for each digit of `n`
-
-const auto [ ptr, ec ] = std::to_chars(str.data(), str.data() + str.size(), n);
-
-if (ec == std::errc{}) { std::cout << str << std::endl; } // 123
-else { /* handle failure */ }
-```
-
-Convert from a `std::string` with value `"123"` to an integer:
-```c++
-const std::string str{ "123" };
-int n;
-
-const auto [ ptr, ec ] = std::from_chars(str.data(), str.data() + str.size(), n);
-
-if (ec == std::errc{}) { std::cout << n << std::endl; } // 123
-else { /* handle failure */ }
 ```
