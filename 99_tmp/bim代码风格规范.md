@@ -6,7 +6,7 @@
 3. 个人经验分享
 
 ### 1. BIM代码规范
-#### 1.1 命名规范
+#### 1. 命名规范
 * 不要乱用缩写,如果用了缩写，确保是英文语境下通用的缩写，而不是自己创造的缩写
 ```c++
     class ObjectId;
@@ -156,7 +156,7 @@ void useFoo()
 
 * 什么时候使用多继承？什么时候继承是非pubic的？
 
-* 成员函数形参，如果可以就是`const T&`类型
+* 成员函数形参，如果不涉及所有权，能用`const T&`或者`T&`就这引用类型的
 
 * 不改变成员变量的，且意图也是不能修改成员变量的成员函数，用`const`修饰
 
@@ -233,7 +233,6 @@ void useFoo()
     if (curObj == myMap[idx])
     ```
 
-
 6. **常量的表示方法**
     ```c++
     // A. 宏定义方法
@@ -296,13 +295,11 @@ void useFoo()
   while (0)
 
   // 但是对于宏函数内部有变量声明的，最好还是使用括号括起来。
-  #define BIM_Bar_BLOCK(block) \
+  #define BIM_BAR_BLOCK(block) \
   {                                  \
     ...                              \
   }                                  
 
-  // 对于宏变量，规范一般都会认为用constexpr类型代替，但bim一般还是选择用宏变量的方式。
-  #define BIM_DEFAULT_VIEW_SCALE 100
   ```
 
 #### 7. 杂项
@@ -316,7 +313,6 @@ void useFoo()
 * 异常安全
    编写异常安全的代码意味着即使在面对异常抛出的情况下，程序也能保持一致的状态，不会泄露资源或导致数据损坏。
    实现异常安全通常涉及到三个级别：
-   
     * 基本保证：出现异常不影响
     * 强保证：出现了异常通过guard, transaction等操作会回滚到初始状态
     * 不抛出：不会出现异常
@@ -366,6 +362,7 @@ void useFoo()
     * 不存在不会被修改和删除的代码，修改重复代码的时候，如何避免遗漏是很头疼的。
     * 只能事先尽可能降低重复代码
   * 圈复杂度低
+    
     * 多层嵌套if-else很难读的
   * 代码可读（代码可维护）
     ```c++
@@ -584,7 +581,70 @@ if (dev)
 4. 给一个正确使用多继承的例子，如果不用多继承的话，是怎么设计的？
 5. private继承的意义是什么？protected继承的意义是什么？
 6. const T&作为形参的时候，可以输入右值吗？
-7. 
+7. 下面代码有什么问题？
+```c++
+std::vector<int> vec;
+vec.push_back(1);
+for (auto idx = vec.size(); idx >= 0; idx--) {
+    cout << "===== \n";
+}
+```
+
+```c++
+void erase(std::vector<int> &vec, int a) {
+    for (auto iter = vec.begin(); iter != vec.end();) { // 这个正确
+        if (*iter == a) {
+            iter = vec.erase(iter);
+        } else {
+            ++iter;
+        }
+    }
+
+    for (auto iter = vec.begin(); iter != vec.end(); ++iter) {  // error
+        if (*iter == a) {
+            vec.erase(iter); // error
+        }
+    }
+}
+```
+
+#### 4. 重构练习
+```c++
+bool isEligibleForDiscount(int age, bool hasCoupon) {
+    if (age > 60 || hasCoupon) {
+        return true;
+    } else {
+        return false;
+    }
+}
+```
+
+```c++
+void printUserDetails(int userId) {
+    if (userId == 1) {
+        cout << "User 1: Alice" << endl;
+        cout << "Age: 30" << endl;
+        cout << "Email: alice@example.com" << endl;
+    } else if (userId == 2) {
+        cout << "User 2: Bob" << endl;
+        cout << "Age: 25" << endl;
+        cout << "Email: bob@example.com" << endl;
+    }
+}
+```
+
+```c++
+void processMatrix(vector<vector<int>>& matrix) {
+    for (int i = 0; i < matrix.size(); i++) {
+        for (int j = 0; j < matrix[i].size(); j++) {
+            // ...
+            if (matrix[j][i] % 2 == 0) {
+                // ...
+            }
+        }
+    }
+}
+```
 
 ### 100. 语法补充
 
@@ -617,10 +677,10 @@ if (dev)
     Foo myFoo3 = 10; // 如果没有explicit，也会构造出来
     ```
 
-2. **对于构造函数接受`std::initializer_list`作为参数**：
+3. **对于构造函数接受`std::initializer_list`作为参数**：
+   
    - 类似地，防止通过花括号初始化语法隐式转换。
-
-3. **对于类型转换运算符**：
+4. **对于类型转换运算符**：
    - 防止类的对象被隐式转换为其他类型。
 
    ```c++

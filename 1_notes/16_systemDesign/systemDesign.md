@@ -18,3 +18,9 @@ MVC模式在概念上强调 Model, View, Controller 的分离,各个模块也遵
 - View 负责显示数据,这个部分多为前端应用,而 Controller 会有一个机制将处理的结果 (可能是 Model,  集合或是状态等) 交给 View,然后由 View 来决定怎么显示.例如 Spring Framework 使用 JSP  或相应技术,ASP.NET MVC 则使用 Razor 处理数据的显示.
 - Controller 负责处理消息,较高端的 Framework 会有一个默认的实现来作为 Controller 的基础,例如  Spring 的 DispatcherServlet 或是 ASP.NET MVC 的 Controller 等,在职责分离原则的基础上,每个  Controller 负责的部分不同,因此会将各个 Controller 切割成不同的文件以利维护.
 
+1. https://github.com/karanpratapsingh/system-design
+2. https://github.com/checkcheckzz/system-design-interview
+3. https://github.com/InterviewReady/system-design-resources
+4. https://github.com/ByteByteGoHq/system-design-101?tab=readme-ov-file#how-git-commands-work
+5. https://github.com/donnemartin/system-design-primer/blob/master/README-zh-Hans.md#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E4%B8%BB%E9%A2%98%E4%BB%8E%E8%BF%99%E9%87%8C%E5%BC%80%E5%A7%8B
+6. mvc
