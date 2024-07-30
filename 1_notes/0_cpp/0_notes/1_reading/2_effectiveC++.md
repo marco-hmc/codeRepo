@@ -1,62 +1,5 @@
 #### 三、资源管理 (Resource Management)
 
-**17. 以独立语句将new的对象置入智能指针 （Store newed objects in smart pointers in standalone statements)**
-
-主要是会造成内存泄漏，考虑下面的代码：
-    
-    int priority();
-    void processWidget(shared_ptr<Widget> pw, int priority);
-    processWidget(new Widget, priority());// 错误，这里函数是explicit的，不允许隐式转换（shared_ptr需要给他一个普通的原始指针
-    processWidget(shared_ptr<Widget>(new Widget), priority()) // 可能会造成内存泄漏
-    
-    内存泄漏的原因为：先执行new Widget，再调用priority， 最后执行shared_ptr构造函数，那么当priority的调用发生异常的时候，new Widget返回的指针就会丢失了。当然不同编译器对上面这个代码的执行顺序不一样。所以安全的做法是：
-    
-    shared_ptr<Widget> pw(new Widget)
-    processWidget(pw, priority())
-
-总结：
-+ 凡是有new语句的，尽量放在单独的语句当中，特别是当使用new出来的对象放到智能指针里面的时候
-
-**23. 以non-member、non-friend替换member函数  （Prefer non-member non-friend functions to member functions)**
-
-区别如下：
-    
-    class WebBrowser{
-        public:
-        void clearCache();
-        void clearHistory();
-        void removeCookies();
-    }
-    
-    member 函数：
-    class WebBrowser{
-        public:
-        ......
-        void clearEverything(){ clearCache(); clearHistory();removeCookies();}
-    }
-    
-    non-member non-friend函数：
-    void clearBrowser(WebBrowser& wb){
-        wb.clearCache();
-        wb.clearHistory();
-        wb.removeCookies();
-    }
-
-这里的原因是：member可以访问class的private函数，enums，typedefs等，但是non-member函数则无法访问上面这些东西，所以non-member non-friend函数更好
-
-这里还提到了namespace的用法，namespace可以用来对某些便利函数进行分割，将同一个命名空间中的不同类型的方法放到不同文件中(这也是C++标准库的组织方式，例如：
-    
-    "webbrowser.h"
-    namespace WebBrowserStuff{
-        class WebBrowser{...};
-        //所有用户需要的non-member函数
-    }
-    
-    "webbrowserbookmarks.h"
-    namespace WebBrowserStuff{
-        //所有与书签相关的便利函数
-    }
-
 #### 1.12 若所有参数皆需类型转换，请为此采用non-member函数 
 在C++中,当你定义一个类的成员函数时,只有第一个参数(在这个例子中是`rhs`)可以进行隐式类型转换.这是因为成员函数的第一个参数实际上是`this`指针,它指向调用该成员函数的对象.
 
@@ -1005,33 +948,6 @@ clone() 叫做虚拟拷贝构造函数,相当于拷贝一个新的对象
     }
 
 
-#### 六、杂项
-
-**34. 理解如何在同一程序中混合使用C**
-
-名字变换：就是在编译器分别给C++和C不同的前缀，在C语言中，因为没有函数重载，所以编译器没有专门给函数改变名字，但是在C++里面，编译器是要给函数不同的名字的。
-
-C++的extern‘C’可以禁止进行名字变换，例如：
-    
-    extern 'C'
-    void drawLine(int x1, int y1, int x2, int y2);
-
-静态初始化：在C++中，静态的类对象和定义会在main执行前执行。
-在编译器中，这种处理方法通常是在main里面默认调用某个函数：
-    
-    int main(int argc, char *argv[]){
-        performStaticInitialization();
-    
-        realmain();
-    
-        performStaticDestruction();
-    }
-动态内存分配：C++时候new和delete，C是malloc和free
-
-数据结构的兼容性：C无法知道C++的特性
-
-总结下来就是：确保C++和C编译器产生兼容的obj文件，将在两种语言下都是用的函数声明为extern'C'，只要可能，应该用C++写main(),delete，new成对使用，malloc和free成对使用，
-
 ## Effective Modern C++
 
 some note copy from [EffectiveModernCppChinese](https://github.com/racaljk/EffectiveModernCppChinese)
@@ -1091,14 +1007,6 @@ decltype的一些让人意外的应用：
 
 
 #### 三、移步现代C++
-
-**17. 理解特殊成员函数函数的生成**
-
-特殊成员函数包括默认构造函数，析构函数，拷贝构造函数，拷贝赋值运算符（这些函数只有在需要的时候才会生成），以及最新的移动构造函数和移动赋值运算符
-
-三大律：如果你声明了拷贝构造函数，赋值运算符重载，析构函数中的任何一个，都需要把其他几个补全，如果不想自己写的话，也要写上=default（如果不声明的话，编译器很有可能不会生成另外几个函数的默认函数）
-
-对于成员函数模板来说，在任何情况下都不会抑制特殊成员函数的生成
 
 #### 四、智能指针
 

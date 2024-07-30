@@ -48,6 +48,23 @@
 
 ---
 
+* 虚函数可以是模板的吗？
+
+不，虚函数不能是模板函数。虚函数依赖于虚函数表（vtable）来实现运行时多态，而模板函数在编译时根据模板参数的不同实例化为不同的函数。因为模板实例化发生在编译时，而虚函数的动态绑定发生在运行时，所以二者的机制不兼容。
+
+简而言之，虚函数的多态性是在运行时通过虚函数表解析的，而模板函数的多态性是在编译时通过生成不同的函数实例来实现的。因此，虚函数不能是模板函数。
+
+**39. 明智而审慎地使用private继承  （Use private inheritance judiciously)**
+
+因为private继承并不是is-a的关系，即有一部分父类的private成员是子类无法访问的，而且经过private继承以后，子类的所有成员都是private的，意思是is implemented in terms of（根据某物实现出），有点像38条的复合。所以大部分时间都可以用复合代替private继承。
+
+当我们需要两个并不存在“is a”关系的类，同时一个类需要访问另一个类的protected成员的时候，我们可以使用private继承
+
+总结：
++ private 继承意味着is implemented in terms of， 通常比复合的级别低，但是当derived class 需要访问protect base class 的成员，或者需要重新定义继承而来的virtual函数时，这么设计是合理的。
++ 和复合不同，private继承可以造成empty base最优化，这对致力于“对象尺寸最小化”的程序库开发者而言，可能很重要
+
+
 #### 为什么会由函数遮蔽这个东西？如果参数列表不同的时候，不是应该是不同的函数，不应该被遮蔽吗
 函数遮蔽（Function Hiding）的存在主要是由于C++的名称查找规则导致的。在C++中，当派生类定义了一个与基类同名的成员函数时，派生类的这个函数会遮蔽掉基类中所有同名函数，不论参数列表是否相同。这种行为的根本原因在于C++的名称解析机制优先于类型匹配。
 
@@ -134,7 +151,6 @@ C++在处理函数调用时，首先进行名称查找（Name Lookup），然后
 prefetching是另一种方法，例如从磁盘读取数据的时候，一次读取一整块或者整个扇区的数据，因为一次读取一大块要比不同时间读取几个小块要快
 
 **21. 通过函数重载避免隐式类型转换**
-
 改代码之前：
 
     class UPInt{
@@ -148,15 +164,12 @@ prefetching是另一种方法，例如从磁盘读取数据的时候，一次读
     upi3 = upi1 + 10;
 
 改代码之后：
-    
     const UPInt operator+(const UPInt& lhs, const UPInt& rhs);
     const UPInt operator+(const UPInt& lhs, int rhs);
     const UPInt operator+(int lhs, const UPInt& rhs);
 
-
 **19. 了解临时对象的来源**
 
-通常意义的临时对象指的是 temp = a; a = b; b = temp;中的temp
 但是在C++中的临时对象指的是那些看不见的东西，例如：
 
     size_t countChar(const string& str, char ch);

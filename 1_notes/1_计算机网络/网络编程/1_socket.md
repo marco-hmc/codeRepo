@@ -1,6 +1,3 @@
- _tags: 计算机网络
-
-
 ## Socket
 
 ### 1. Socket基础知识
@@ -116,3 +113,38 @@ Socket地址是用于标识网络上的一个端点的。在Internet协议（IP�
 
   注意，这是一个只可以获取，不可以设置的选项。
 
+https://blog.csdn.net/qq_37964547/article/details/81429627
+
+```cpp
+#include <sys/socket.h>
+// 1. **创建Socket**：使用`socket()`函数创建一个新的Socket。
+int sockFd = socket(AF_INET, SOCK_STREAM, 0);
+
+// 2. **绑定Socket到地址**：使用`bind()`函数将Socket绑定到一个特定的地址和端口。
+#include <netinet/in.h>
+//...
+struct sockaddr_in servAddr;
+servAddr.sin_family = AF_INET;
+servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+servAddr.sin_port = htons(8080);
+bind(sockFd, (struct sockaddr*)&servAddr, sizeof(servAddr));
+
+// 3. **监听连接**：使用`listen()`函数让Socket开始监听连接请求。
+listen(sockFd, 5);
+
+// 4. **接受连接**：使用`accept()`函数接受一个连接请求。
+struct sockaddr_in cliAddr;
+socklen_t len = sizeof(cliAddr);
+int connFd = accept(sockFd, (struct sockaddr*)&cliAddr, &len);
+
+// 5. **发送数据**：使用`send()`函数发送数据。
+const char* message = "Hello, World!";
+send(connFd, message, strlen(message), 0);
+
+// 6. **接收数据**：使用`recv()`函数接收数据。
+char buffer[1024];
+recv(connFd, buffer, sizeof(buffer), 0);
+
+// 7. **关闭Socket**：使用`close()`函数关闭Socket。
+close(sockFd);
+```

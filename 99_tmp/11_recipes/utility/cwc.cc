@@ -44,9 +44,13 @@ string readFile(const char* file)
   return result;
 }
 
-enum Encoding
-{
-  kUnknown, kUnicode, kGBK, kUTF8,
+enum Encoding {
+  kUnknown,
+  kUnicode,
+  kUTF16LE,
+  kUTF16BE,
+  kGBK,
+  kUTF8,
 };
 
 const char* getEncodingName(Encoding enc)
@@ -54,6 +58,10 @@ const char* getEncodingName(Encoding enc)
   switch (enc) {
     case kUnicode:
       return "Unicode";
+    case kUTF16BE:
+      return "UTF16BE";
+    case kUTF16LE:
+      return "UTF16LE";
     case kUTF8:
       return "UTF-8";
     case kGBK:
@@ -63,41 +71,46 @@ const char* getEncodingName(Encoding enc)
   }
 }
 
-Encoding detectEncoding(const string& content)
-{
+Encoding detectEncoding(const string &content) {
   if (content.size() < 2)
     return kGBK;
 
   if (content[0] == '\xFF' && content[1] == '\xFE') {
-    return kUnicode;
+    return kUTF16LE; // UTF-16LE
+  } else if (content[0] == '\xFE' && content[1] == '\xFF') {
+    return kUTF16BE; // UTF-16BE, 如果需要支持
   } else {
-    for (size_t i = 0; i < content.size()-2;) {
+    for (size_t i = 0; i < content.size();) {
       if (content[i] & 0x80) {
-        if ((content[i+1] & 0x80) == 0) {
-          return kGBK;
-        } else if ((content[i] & 0xE0) == 0xC0) {
-          if ((content[i+1] & 0xC0) == 0x80) {
-            return kGBK;
+        if ((content[i] & 0xF8) == 0xF0) { // 4-byte UTF-8
+          if (i + 3 < content.size() && (content[i + 1] & 0xC0) == 0x80 &&
+              (content[i + 2] & 0xC0) == 0x80 &&
+              (content[i + 3] & 0xC0) == 0x80) {
+            i += 4; // Skip 4-byte character
+            continue;
           } else {
-            i += 2;
+            return kGBK;
           }
-        } else if ((content[i] & 0xF0) == 0xE0) {
-          if ((content[i+1] & 0xC0) == 0x80) {
-            if ((content[i+2] & 0xC0) == 0x80) {
-              //printf("UTF-8 !!!\n");
-              return kUTF8;
-            } else {
-              return kGBK;
-            }
+        } else if ((content[i] & 0xF0) == 0xE0) { // 3-byte UTF-8
+          if (i + 2 < content.size() && (content[i + 1] & 0xC0) == 0x80 &&
+              (content[i + 2] & 0xC0) == 0x80) {
+            i += 3; // Skip 3-byte character
+            continue;
+          } else {
+            return kGBK;
+          }
+        } else if ((content[i] & 0xE0) == 0xC0) { // 2-byte UTF-8
+          if (i + 1 < content.size() && (content[i + 1] & 0xC0) == 0x80) {
+            i += 2; // Skip 2-byte character
+            continue;
           } else {
             return kGBK;
           }
         } else {
-          // FIXME: 4-byte UTF-8, x & 0xF8 == 0xF0
           return kGBK;
         }
       } else {
-        ++i;
+        ++i; // ASCII character, move to next
       }
     }
     return kUTF8;
@@ -181,6 +194,7 @@ int main(int argc, char* argv[])
         lines, chinese, content.size(), file, getEncodingName(enc));
     return 0;
   }
+
   for (int i = 1; i < argc; ++i) {
     const char* file = argv[i];
     string content = readFile(file);

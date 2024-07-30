@@ -9,3 +9,5 @@ tmp
 **/*.exe
 blog
 **/__pycache__/
+**/.cache
+**/CMakeFiles

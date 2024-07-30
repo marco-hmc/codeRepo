@@ -11,7 +11,7 @@
   * `git config --global https.proxy https://127.0.0.1:7890`
 * 查看设置
   * `git config --global -l`
-
+gitjk
 
 ### 1. git基本操作
 
