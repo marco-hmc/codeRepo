@@ -6,13 +6,19 @@
 
 class DBTest : public ::testing::Test {
 protected:
-    std::string fileName = "part1.db";
-    std::string testCommand = "insert 1 1 1\nselect\n.exit\n";
+    std::string fileName = "test.db";
+    std::string initialCommands = "insert 1 1 1\ninsert 2 2 2\n.exit\n";
+    std::string selectCommand = "select\n.exit\n";
 
     // 在每个测试前执行
     virtual void SetUp() {
         // 确保测试开始前，文件不存在
         std::remove(fileName.c_str());
+        std::ofstream file(fileName, std::ios::out);
+        if (!file) {
+            throw std::system_error(errno, std::system_category(), "Failed to create " + fileName);
+        }
+        file.close();
     }
 
     // 在每个测试后执行
@@ -22,10 +28,10 @@ protected:
     }
 
     // 执行测试命令
-    void executeTestCommand() {
-        std::string command = "echo \"" + testCommand + "\" | ./test " + fileName;
-        int result = system(command.c_str());
-        ASSERT_EQ(result, 0) << "Command failed: " << command;
+    void executeTestCommand(const std::string& command) {
+        std::string fullCommand = "echo \"" + command + "\" | ../demo_0 " + fileName;
+        int result = system(fullCommand.c_str());
+        ASSERT_EQ(result, 0) << "Command failed: " << fullCommand;
     }
 
     // 读取文件内容
@@ -42,9 +48,17 @@ protected:
 };
 
 TEST_F(DBTest, InsertSelectExit) {
-    // executeTestCommand();
-    // std::string fileContents = readFileContents();
-    // ASSERT_FALSE(fileContents.empty())
-    //     << "Database file should not be empty after insert and select commands";
-    ASSERT_TRUE(true);
+    std::string fileContents = readFileContents();
+    ASSERT_TRUE(fileContents.empty());
+
+    // 第一次执行插入命令并退出
+    executeTestCommand(initialCommands);
+
+    // 第二次打开数据库并执行选择命令
+    executeTestCommand(selectCommand);
+
+    // 读取文件内容并验证
+    fileContents = readFileContents();
+    ASSERT_FALSE(fileContents.empty())
+        << "Database file should not be empty after insert and select commands";
 }

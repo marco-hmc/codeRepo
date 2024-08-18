@@ -13,4 +13,5 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(${PROJECT_NAME} main.cpp ${SOURCES})
 
 # 添加测试目录
+enable_testing()
 add_subdirectory(test)

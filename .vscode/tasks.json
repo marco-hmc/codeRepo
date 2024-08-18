@@ -30,8 +30,10 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "-std=c17",
+                "-std=c++17",
                 "${file}",
+                "-lboost_coroutine",
+                "-lboost_context",
                 "-o",
                 "${workspaceFolder}/bin/${fileBasenameNoExtension}"
             ],

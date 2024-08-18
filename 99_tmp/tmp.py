@@ -1,24 +1,17 @@
-import os
+import asyncio
 
+async def task1():
+    print("Task 1 started")
+    await asyncio.sleep(5)  # 非阻塞等待5秒
+    print("Task 1 finished")
 
-def generate_summary(directory):
-    summary = "# Summary\n\n"
+async def task2():
+    print("Task 2 started")
+    await asyncio.sleep(2)  # 非阻塞等待2秒
+    print("Task 2 finished")
 
-    for root, dirs, files in os.walk(directory):
-        level = root.replace(directory, "").count(os.sep)
-        indent = "  " * level
-        summary += f"{indent}* [{os.path.basename(root)}/]({root}/)\n"
-        sub_indent = "  " * (level + 1)
-        for file in files:
-            if file.endswith(".md") and file != "README.md":
-                summary += f"{sub_indent}* [{file[:-3]}]({os.path.join(root, file)})\n"
+async def main():
+    await asyncio.gather(task1(), task2())  # 并发执行task1和task2
 
-    with open("summary.md", "w") as f:
-        f.write(summary)
-
-
-# 指定你的代码仓库目录
-directory = (
-    r"C:\Users\marco\Documents\1_codeRepo\codeRepoProject\codeRepo\99_tmp\testMd"
-)
-generate_summary(directory)
+# 运行主协程
+asyncio.run(main())
