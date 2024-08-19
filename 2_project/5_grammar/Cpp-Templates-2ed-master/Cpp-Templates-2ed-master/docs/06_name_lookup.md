@@ -1,81 +1,5 @@
 ## [ADL（Argument-Dependent Lookup，Koenig Lookup）](https://en.cppreference.com/w/cpp/language/adl)
 
-* [Name lookup](https://en.cppreference.com/w/cpp/language/lookup) 是当程序中出现一个名称时，将其与引入它的声明联系起来的过程，它分为 [qualified name lookup](https://en.cppreference.com/w/cpp/language/qualified_lookup) 和 [unqualified name lookup](https://en.cppreference.com/w/cpp/language/lookup)，[unqualified name lookup](https://en.cppreference.com/w/cpp/language/lookup) 对于函数名查找会使用 [ADL](https://en.cppreference.com/w/cpp/language/adl)
-
-```cpp
-namespace jc {
-
-struct A {};
-struct B {};
-void f1(int) {}
-void f2(A) {}
-
-}  // namespace jc
-
-namespace jd {
-
-void f1(int i) {
-  f1(i);  // 调用 jd::f1()，造成无限递归
-}
-
-void f2(jc::A t) {
-  f2(t);  // 通过 t 的类型 jc::A 看到 jc，通过 jc 看到 jc::f2()
-          // 因为 jd::f2() 也可见，此处产生二义性调用错误
-}
-
-void f3(jc::B t) {
-  f3(t);  // 通过 t 的类型 jc::B 看到 jc，但 jc 中无 jc::f3()
-          // 此处调用 jd::f3()，造成无限递归
-}
-
-}  // namespace jd
-
-int main() {}
-```
-
-* [Qualified name lookup](https://en.cppreference.com/w/cpp/language/qualified_lookup) 即对使用了作用域运算符的名称做查找，查找在受限的作用域内进行
-
-```cpp
-namespace jc {
-
-int x;
-
-struct Base {
-  int i;
-};
-
-struct Derived : Base {};
-
-void f(Derived* p) {
-  p->i = 0;        // 找到 Base::i
-  Derived::x = 0;  // 错误：在受限作用域中找不到 ::x
-}
-
-}  // namespace jc
-
-int main() {}
-```
-
-* [Unqualified name lookup](https://en.cppreference.com/w/cpp/language/lookup) 即对不指定作用域的名称做查找，先查找当前作用域，若找不到再继续查找外围作用域
-
-```cpp
-namespace jc {
-
-extern int x;  // 1
-
-int f(int x) {  // 2
-  if (x < 0) {
-    int x = 1;  // 3
-    f(x);       // 使用 3
-  }
-  return x + ::x;  // 分别使用 2、1
-}
-
-}  // namespace jc
-
-int main() {}
-```
-
 * [ADL](https://en.cppreference.com/w/cpp/language/adl) 即实参依赖查找，对于一个类，其成员函数与使用了它的非成员函数，都是该类的逻辑组成部分，如果函数接受一个类作为参数，编译器查找函数名时，不仅会查找局部作用域，还会查找类所在的命名空间
 
 ```cpp
@@ -98,25 +22,6 @@ int main() {
   std::cout << s;  // std::operator<<() 是 std::string 的逻辑组成部分
   // 如果没有 ADL，就要写成 std::operator<<(std::cout, s)
 }
-```
-
-* ADL 是通过实参查找，对于函数模板，查找前无法先得知其为函数，也就无法确定实参，因此不会使用 ADL
-
-```cpp
-namespace jc {
-
-class A {};
-
-template <typename>
-void f(A*) {}
-
-}  // namespace jc
-
-void g(jc::A* p) {
-  f<int>(p);  // 错误，不知道 f<int> 是函数，所以不知道 p 是实参，不会用 ADL
-}
-
-int main() {}
 ```
 
 * ADL 会忽略 using 声明
@@ -298,70 +203,6 @@ int main() {
 ```
 
 ### typename 消歧义符
-
-* 模板名称的问题主要是不能有效确定名称，模板中不能引用其他模板的名称，因为其他模板可能有使原名称失效的特化
-
-```cpp
-namespace jc {
-
-template <typename T>
-struct A {
-  static constexpr int x = 0;  // x 是值
-};
-
-template <typename T>
-struct B {
-  int y;
-
-  void f() {
-    A<T>::x* y;  // 默认被看作乘法表达式
-  }
-};
-
-template <>
-struct A<int> {
-  using x = int;  // x 是类型
-};
-
-}  // namespace jc
-
-int main() {
-  jc::B<int>{}.f();   // A<int>::x* y 是声明，int* y
-  jc::B<void>{}.f();  // A<void>::x* y 是乘法，0 * y
-}
-```
-
-* Dependent name 默认不会被看作类型，如果要表明是类型则需要加上 typename 消歧义符
-
-```cpp
-namespace jc {
-
-template <typename T>
-struct A {
-  static constexpr int x = 0;  // x 是值
-};
-
-template <typename T>
-struct B {
-  int y;
-
-  void f() {
-    typename A<T>::x* y;  // 默认被看作声明
-  }
-};
-
-template <>
-struct A<int> {
-  using x = int;  // x 是类型
-};
-
-}  // namespace jc
-
-int main() {
-  jc::B<int>{}.f();   // A<int>::x* y 是声明，int* y
-  jc::B<void>{}.f();  // A<void>::x* y 是乘法，0 * y
-}
-```
 
 * typename 消歧义符只能用于不在基类列表和初始化列表中的 dependent name，用作用域运算符访问 dependent name 中的成员类型时，必须指定 typename 消歧义符
 

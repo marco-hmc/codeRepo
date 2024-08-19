@@ -479,167 +479,9 @@ void test() {
 
 int main() { jc::test::test(); }
 ```
-
-## 友元
-
-* 如果将类模板实例声明为友元，则类模板必须已声明并可见
-
-```cpp
-namespace jc {
-
-template <typename T>
-struct Node;
-
-template <typename T>
-struct Tree {
-  friend class Node<T>;  // 友元类模板必须已声明并可见
-  friend class A;        // 友元类可以未声明
-};
-
-}  // namespace jc
-
-int main() {}
-```
-
 ## [偏特化（Partial Specialization）](https://en.cppreference.com/w/cpp/language/partial_specialization)
 
-
-
-* 偏特化常用于元编程
-
-```cpp
-#include <tuple>
-#include <type_traits>
-
-namespace jc {
-
-template <typename T, typename Tuple>
-struct is_among;
-
-template <typename T, template <typename...> class Tuple, typename... List>
-struct is_among<T, Tuple<List...>>
-    : std::disjunction<std::is_same<T, List>...> {};
-
-template <typename T, typename Tuple>
-inline constexpr bool is_among_v = is_among<T, Tuple>::value;
-
-}  // namespace jc
-
-static_assert(jc::is_among_v<int, std::tuple<char, int, double>>);
-static_assert(!jc::is_among_v<float, std::tuple<char, int, double>>);
-
-int main() {}
-```
-
-* 偏特化遍历 [std::tuple](https://en.cppreference.com/w/cpp/utility/tuple)
-
-```cpp
-#include <cstddef>
-#include <iostream>
-#include <tuple>
-
-namespace jc {
-
-template <std::size_t Index, std::size_t N, typename... List>
-struct PrintImpl {
-  static void impl(const std::tuple<List...>& t) {
-    std::cout << std::get<Index>(t) << " ";
-    PrintImpl<Index + 1, N, List...>::impl(t);
-  }
-};
-
-template <std::size_t N, typename... List>
-struct PrintImpl<N, N, List...> {
-  static void impl(const std::tuple<List...>& t) {}
-};
-
-template <typename... List>
-void Print(const std::tuple<List...>& t) {
-  PrintImpl<0, sizeof...(List), List...>::impl(t);
-}
-
-}  // namespace jc
-
-int main() {
-  auto t = std::make_tuple(3.14, 42, "hello world");
-  jc::Print(t);  // 3.14 42 hello world
-}
-```
-
-* [成员模板](https://en.cppreference.com/w/cpp/language/member_template)也能特化或偏特化
-
-```cpp
-#include <cassert>
-#include <string>
-
-namespace jc {
-
-struct A {
-  template <typename T = std::string>
-  T as() const {
-    return s;
-  }
-
-  std::string s;
-};
-
-template <>
-inline bool A::as<bool>() const {
-  return s == "true";
-}
-
-}  // namespace jc
-
-int main() {
-  jc::A a{"hello"};
-  assert(a.as() == "hello");
-  assert(!a.as<bool>());
-  jc::A b{"true"};
-  assert(b.as<bool>());
-}
-```
-
-* 成员函数模板不能为虚函数，因为虚函数表的大小是固定的，而成员函数模板的实例化个数要编译完成后才能确定
-
-```cpp
-
-namespace jc {
-
-template <typename T>
-class Dynamic {
- public:
-  virtual ~Dynamic() {}  // OK，每个 Dynamic<T> 对应一个析构函数
-
-  template <typename U>
-  virtual void f(const U&) {}  // 错误，编译器不知道一个 Dynamic<T> 中 f() 个数
-};
-
-}  // namespace jc
-
-int main() {}
-```
-
 ## 模板的模板参数（Template Template Parameter）
-
-* 如果模板参数的类型是类模板，则需要使用模板的模板参数。对于模板的模板参数，C++11 之前只能用 class 关键字修饰，C++11 及其之后可以用别名模板的名称来替代，C++17 可以用 typename 修饰
-
-```cpp
-#include <set>
-#include <vector>
-
-namespace jc {
-
-template <typename T, template <typename...> class Container>
-void f(const Container<T>&) {}
-
-}  // namespace jc
-
-int main() {
-  jc::f(std::vector<int>{});
-  jc::f(std::vector<double>{});
-  jc::f(std::set<int>{});
-}
-```
 
 * 实际上容器还有一个模板参数，即内存分配器 allocator
 
@@ -726,7 +568,7 @@ inline bool Stack<T, Container>::empty() const {
 }  // namespace jc
 
 int main() {
-  jc::Stack<std::string> s;
+  jc::Stack<std::string, std::allocator<std::string>> s;
   s.push("hello");
   s.push("world");
   assert(s.size() == 2);

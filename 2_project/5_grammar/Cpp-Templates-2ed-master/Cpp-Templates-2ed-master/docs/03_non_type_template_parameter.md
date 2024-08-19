@@ -161,42 +161,6 @@ int main() {
 }
 ```
 
-* C++14 允许 auto 作返回类型
-
-```cpp
-namespace jc {
-
-template <typename T, typename U>
-constexpr auto add(const T& a, const U& b) {
-  return a + b;
-}
-
-}  // namespace jc
-
-static_assert(jc::add('A', 2) == 'C');
-
-int main() {}
-```
-
-## 限制
-
-* C++20 之前，非类型模板参数不能是浮点数
-
-```cpp
-namespace jc {
-
-template <auto N>
-struct A {
-  static constexpr auto f() { return N; }
-};
-
-}  // namespace jc
-
-static_assert(jc::A<42>::f() == 42);
-static_assert(jc::A<3.14>::f() == 3.14);  // C++20
-
-int main() {}
-```
 
 * 不能用字符串字面值常量、临时对象、数据成员或其他子对象作模板实参。C++ 标准演进过程中逐渐放宽了对字符数组作为模板实参的限制，C++11 仅允许外链接（external linkage，不定义于单一的文件作用域，链接到全局符号表），C++14 允许外链接或内链接（internal linkage，只能在单个文件内部看到，不能被其他文件访问，不暴露给链接器），C++17 不要求链接
 
@@ -218,35 +182,7 @@ int main() {
   jc::A<s1>{};                      // 错误
   jc::A<s2>{};                      // C++11 允许
   jc::A<s3>{};                      // C++14 允许
-  jc::A<s4>{};                      // C++17 允许
-}
-```
-
-* 非类型模板参数可以是左值引用，此时实参必须是静态常量
-
-```cpp
-#include <cassert>
-
-namespace jc {
-
-template <int& N>
-struct A {
-  A() { ++N; }
-  ~A() { --N; }
-};
-
-void test() {
-  static int n = 0;
-  {
-    A<n> a;
-    assert(n == 1);
-  }
-  assert(n == 0);
-}
-
-}  // namespace jc
-
-int main() { jc::test(); }
+  jc::A<s4>{};                      // C++17 允许}
 ```
 
 * 函数和数组类型作为非类型模板参数会退化为指针类型
@@ -284,48 +220,4 @@ struct A {
 }  // namespace jc
 
 int main() { static_assert(jc::A<(sizeof(int) > 0)>::value); }
-```
-
-## [变量模板（Variable Template）](https://en.cppreference.com/w/cpp/language/variable_template)
-
-* C++14 提供了变量模板
-
-```cpp
-namespace jc {
-
-template <typename T = double>
-constexpr T pi{static_cast<T>(3.1415926535897932385)};
-
-static_assert(pi<bool> == true);
-static_assert(pi<int> == 3);
-static_assert(pi<double> == 3.1415926535897932385);
-static_assert(pi<> == 3.1415926535897932385);
-
-}  // namespace jc
-
-int main() {}
-```
-
-* 变量模板可以由非类型参数参数化
-
-```cpp
-#include <array>
-#include <cassert>
-
-namespace jc {
-
-template <int N>
-std::array<int, N> arr{};
-
-template <auto N>
-constexpr decltype(N) x = N;
-
-}  // namespace jc
-
-static_assert(jc::x<'c'> == 'c');
-
-int main() {
-  jc::arr<10>[0] = 42;
-  assert(jc::arr<10>[0] == 42);
-}
 ```

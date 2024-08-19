@@ -1,3 +1,26 @@
+
+* 成员函数模板不能为虚函数，因为虚函数表的大小是固定的，而成员函数模板的实例化个数要编译完成后才能确定
+
+```cpp
+
+namespace jc {
+
+template <typename T>
+class Dynamic {
+ public:
+  virtual ~Dynamic() {}  // OK，每个 Dynamic<T> 对应一个析构函数
+
+  template <typename U>
+  virtual void f(const U&) {}  // 错误，编译器不知道一个 Dynamic<T> 中 f() 个数
+};
+
+}  // namespace jc
+
+int main() {}
+```
+
+
+
 **44. 将与参数无关的代码抽离templates （Factor parameter-independent code out of templates)**
 
 主要是会让编译器编译出很长的臃肿的二进制码，所以要把参数抽离，看以下代码：

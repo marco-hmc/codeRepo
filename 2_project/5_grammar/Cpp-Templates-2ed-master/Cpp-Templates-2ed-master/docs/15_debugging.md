@@ -1,66 +1,5 @@
 ## 浅实例化（Shallow Instantiation）
 
-* 模板的报错会跟踪导致问题的所有层次，冗长的报错信息使调试变得更为繁琐，真正的问题一般出现在一长串实例化之后
-
-```cpp
-template <typename T>
-void f1(T& i) {
-  *i = 0;  // 假设 T 为指针类型
-}
-
-template <typename T>
-void f2(T& i) {
-  f1(i);
-}
-
-template <typename T>
-void f3(typename T::Type i) {
-  f2(i);
-}
-
-template <typename T>
-void f4(const T&) {
-  typename T::Type i = 42;
-  f3<T>(i);
-}
-
-struct A {
-  using Type = int;
-};
-
-int main() {
-  f4(A{});  // 错误，只能在实例化时被检测到
-            // 实例化 f4<A>(const A&)
-            // 实例化 f3<A>(int)
-            // 实例化 f2<int>(int&)
-            // 实例化 f1<int>(int&)，解引用 int 出错
-}
-
-/*
- * error C2100: 非法的间接寻址
- * message : 查看对正在编译的函数 模板 实例化“void f1<T>(T &)”的引用
- *         with
- *         [
- *             T=A::Type
- *         ]
- * message : 查看对正在编译的函数 模板 实例化“void f2<A::Type>(T &)”的引用
- *         with
- *         [
- *             T=A::Type
- *         ]
- * message : 查看对正在编译的函数 模板 实例化“void f3<T>(A::Type)”的引用
- *         with
- *         [
- *             T=A
- *         ]
- * message : 查看对正在编译的函数 模板 实例化“void f4<A>(const T &)”的引用
- *         with
- *         [
- *             T=A
- *         ]
- */
-```
-
 * 一种简单的减少报错信息长度的方式是提前使用参数
 
 ```cpp
@@ -107,48 +46,6 @@ int main() {
 ```
 
 ## 静态断言（Static Assertion）
-
-* C++11 引入了[static_assert](https://en.cppreference.com/w/cpp/language/static_assert)，在编译期进行断言，比如下列静态断言确保编译平台带 64 位指针
-
-```cpp
-static_assert(sizeof(void*) * CHAR_BIT == 64, "Not a 64-bit platform");
-```
-
-* 创建一个检查解引用的 traits，用 [static_assert](https://en.cppreference.com/w/cpp/language/static_assert) 提供更明确的诊断信息
-
-```cpp
-#include <type_traits>
-
-template <typename T>
-class has_dereference {
- private:
-  template <typename U>
-  struct Identity;
-
-  template <typename U>
-  static std::true_type test(Identity<decltype(*std::declval<U>())>*);
-
-  template <typename U>
-  static std::false_type test(...);
-
- public:
-  static constexpr bool value = decltype(test<T>(nullptr))::value;
-};
-
-template <typename T>
-inline constexpr bool has_dereference_v = has_dereference<T>::value;
-
-template <typename T>
-void f(T& i) {
-  static_assert(has_dereference_v<T>, "T is not dereferenceable");
-  *i = 0;
-}
-
-int main() {
-  int i = 42;
-  f(i);  // static_assert 报错：T is not dereferenceable
-}
-```
 
 * C++17 可以用 [std::void_t](https://en.cppreference.com/w/cpp/types/void_t) 简化 traits 的实现
 

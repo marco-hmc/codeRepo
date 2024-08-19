@@ -407,5 +407,9 @@ Ubuntu下使用GDB断点Go程序 http://www.linuxidc.com/Linux/2012-06/62941.htm
 
 使用GDB命令行调试器调试C/C++程序 http://www.linuxidc.com/Linux/2014-11/109845.htm
 
+https://cs.baylor.edu/~donahoo/tools/gdb/tutorial.html
+
+https://www.cs.toronto.edu/~krueger/csc209h/tut/gdb_tutorial.html
+
 GDB 的详细介绍:请点这里
 GDB 的下载地址:请点这里
