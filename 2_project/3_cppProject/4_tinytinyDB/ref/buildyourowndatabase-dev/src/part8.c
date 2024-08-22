@@ -349,6 +349,7 @@ Cursor* internal_node_find(Table* table, uint32_t page_num, uint32_t key) {
             return leaf_node_find(table, child_page_num, key);
     }
 }
+
 Cursor* table_find(Table* table, uint32_t key) {
     uint32_t root_page_num = table->root_page_num;
     void* root_node = get_page(table->pager, root_page_num);

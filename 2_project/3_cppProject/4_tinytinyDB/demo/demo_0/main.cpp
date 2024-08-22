@@ -5,17 +5,32 @@
 #include "include/InputBuffer.h"
 #include "include/Statement.h"
 #include "include/Table.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/spdlog.h"
 
 int main(int argc, char *argv[]) {
+    std::ofstream ofs("logs/logfile.log", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
+
+    auto file_logger = spdlog::basic_logger_mt("file_logger", "logs/logfile.log");
+    spdlog::set_default_logger(file_logger);
+    spdlog::set_level(spdlog::level::info);  // 设置日志级别
+
     std::string filename;
+    std::string exportPath;
     if (argc == 1) {
         filename =
             "/home/marco/0_codeRepo/2_project/3_cppProject/4_tinytinyDB/demo/demo_0/build/"
             "demo_debug.db";
+        exportPath =
+            "/home/marco/0_codeRepo/2_project/3_cppProject/4_tinytinyDB/demo/demo_0/test/bin/"
+            "export_debug.csv";
     } else {
         filename = argv[1];
+        exportPath = argv[2];
     }
 
+    spdlog::info("<filename>: {}, <exportPath>: {}", filename, exportPath);
     auto table = std::make_unique<Table>(filename);
     bool isRun = true;
     while (isRun) {
@@ -34,11 +49,11 @@ int main(int argc, char *argv[]) {
                 case MetaCommandResult::META_COMMAND_BTREE_PRINT:
                     table->printBtree();
                     continue;
-                case MetaCommandResult::META_COMMAND_CONST_PRINT:
-                    table->printConst();
+                case MetaCommandResult::META_COMMAND_CONST_EXPORT:
+                    table->exportToCsvFile(exportPath);
                     continue;
                 case MetaCommandResult::META_COMMAND_UNRECOGNIZED:
-                    std::cout << "Unrecognized command '" << inputBuffer->buffer() << "'." << '\n';
+                    spdlog::error("Unrecognized command '{}'.", inputBuffer->buffer());
                     continue;
             }
         }
@@ -46,7 +61,7 @@ int main(int argc, char *argv[]) {
         Statement statement;
         switch (auto parseState = inputBuffer->parseStatement(statement)) {
             case StatementResult::PREPARE_SUCCESS:
-                std::cout << "Statement parse successfully." << '\n';
+                spdlog::info("  Statement parse successfully.");
                 break;
             default:
                 Statement::statementWarnMap()[parseState]();
@@ -55,7 +70,7 @@ int main(int argc, char *argv[]) {
 
         switch (auto executeState = table->execute_statement(statement)) {
             case ExecuteResult::EXECUTE_SUCCESS:
-                std::cout << "Executed." << '\n';
+                spdlog::info("  Executed.");
                 break;
             default:
                 Statement::executeWarnMap()[executeState]();

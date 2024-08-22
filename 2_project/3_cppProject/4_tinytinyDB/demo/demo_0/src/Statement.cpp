@@ -6,25 +6,30 @@
 
 #include "../include/InputBuffer.h"
 #include "../include/Macros.h"
+#include "EnumClass.h"
+#include "spdlog/spdlog.h"
 
 std::map<StatementResult, std::function<void()>> Statement::statementWarnMap() {
     return {
-        {StatementResult::PREPARE_SUCCESS, []() { std::cout << "Prepare success" << '\n'; }},
-        {StatementResult::PREPARE_SYNTAX_ERROR, []() { std::cout << "SYNTAX_ERROR" << '\n'; }},
-        {StatementResult::PREPARE_STRING_TOO_LONG,
-         []() { std::cout << "STRING_TOO_LONG" << '\n'; }},
-        {StatementResult::PREPARE_NEGATIVE_ID, []() { std::cout << "NEGATIVE_ID" << '\n'; }},
+        {StatementResult::PREPARE_SUCCESS, []() { spdlog::info("Statement parse successfully."); }},
+        {StatementResult::PREPARE_SYNTAX_ERROR,
+         []() { spdlog::error("Syntax error. Could not parse statement."); }},
+        {StatementResult::PREPARE_STRING_TOO_LONG, []() { spdlog::error("String is too long."); }},
+        {StatementResult::PREPARE_NEGATIVE_ID, []() { spdlog::error("ID must be positive."); }},
         {StatementResult::PREPARE_UNRECOGNIZED_STATEMENT,
-         []() { std::cout << "UNRECOGNIZED_STATEMENT" << '\n'; }},
+         []() {
+             //  spdlog::error("Unrecognized keyword at start of '{}'.", InputBuffer::buffer());
+             spdlog::error("Unrecognized keyword");
+         }},
     };
 }
 
 std::map<ExecuteResult, std::function<void()>> Statement::executeWarnMap() {
     return {
-        {ExecuteResult::EXECUTE_SUCCESS, []() { std::cout << "Prepare success" << '\n'; }},
-        {ExecuteResult::EXECUTE_DUPLICATE_KEY, []() { std::cout << "DUPLICATE_KEY" << '\n'; }},
-        {ExecuteResult::EXECUTE_FULL_TABLE, []() { std::cout << "FULL TABLE" << '\n'; }},
-        {ExecuteResult::EXECUTE_UNKNOWN, []() { std::cout << "UNKNOWN ERROR" << '\n'; }},
+        {ExecuteResult::EXECUTE_SUCCESS, []() { spdlog::info("Executed."); }},
+        {ExecuteResult::EXECUTE_DUPLICATE_KEY, []() { spdlog::error("Error: Duplicate key."); }},
+        {ExecuteResult::EXECUTE_FULL_TABLE, []() { spdlog::error("Error: Table full."); }},
+        {ExecuteResult::EXECUTE_UNKNOWN, []() { spdlog::error("Error: Unknown error."); }},
 
     };
 }
@@ -34,7 +39,12 @@ StatementResult Statement::init(std::string &bufferString, StatementType type) {
         case StatementType::STATEMENT_INSERT:
             return initInsert(bufferString);
         case StatementType::STATEMENT_SELECT:
+        case StatementType::STATEMENT_RANGED_SELECT:
             return initSelect(bufferString);
+        case StatementType::STATEMENT_UPDATE:
+            return initUpdate(bufferString);
+        case StatementType::STATEMENT_DELETE:
+            return initDelete(bufferString);
         default:
             return StatementResult::PREPARE_UNRECOGNIZED_STATEMENT;
     }
@@ -47,22 +57,21 @@ StatementResult Statement::initInsert(std::string &bufferString) {
 
     pos = bufferString.find(token, startPos);
     std::string command = bufferString.substr(startPos, pos - startPos);
-    std::cout << "command: " << command << '\n';
+    spdlog::info("  command: {}", command);
     startPos = pos + token.length();
 
     pos = bufferString.find(token, startPos);
     std::string idStr = bufferString.substr(startPos, pos - startPos);
-    std::cout << "idStr: " << idStr << '\n';
+    spdlog::info("      idStr: {}", idStr);
     startPos = pos + token.length();
 
     pos = bufferString.find(token, startPos);
     std::string username = bufferString.substr(startPos, pos - startPos);
-    std::cout << "username: " << username << '\n';
+    spdlog::info("      username: {}", username);
     startPos = pos + token.length();
 
     std::string email = bufferString.substr(startPos);
-    std::cout << "email: " << email << '\n';
-
+    spdlog::info("      email: {}", email);
     if (idStr.empty() || username.empty() || email.empty()) {
         return StatementResult::PREPARE_SYNTAX_ERROR;
     }
@@ -92,6 +101,19 @@ StatementResult Statement::initInsert(std::string &bufferString) {
 }
 
 StatementResult Statement::initSelect(std::string &bufferString) {
+    // judge if it is a ranged select
+    // if()
+    // m_type = StatementType::STATEMENT_RANGED_SELECT;
     m_type = StatementType::STATEMENT_SELECT;
+    return StatementResult::PREPARE_SUCCESS;
+}
+
+StatementResult Statement::initUpdate(std::string &bufferString) {
+    m_type = StatementType::STATEMENT_UPDATE;
+    return StatementResult::PREPARE_SUCCESS;
+}
+
+StatementResult Statement::initDelete(std::string &bufferString) {
+    m_type = StatementType::STATEMENT_DELETE;
     return StatementResult::PREPARE_SUCCESS;
 }

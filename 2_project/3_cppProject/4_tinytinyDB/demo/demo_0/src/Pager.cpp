@@ -1,5 +1,7 @@
 #include "../include/Pager.h"
 
+#include <spdlog/spdlog.h>
+
 #include <cassert>
 #include <cstring>
 #include <iostream>
@@ -9,7 +11,7 @@
 Pager::Pager(const std::string& filename) {
     m_file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
     if (m_file.fail()) {
-        std::cerr << "Failed to open file: " << filename << ".\n";
+        spdlog::error("Failed to open file: {}.", filename);
         std::exit(EXIT_FAILURE);
     }
 
@@ -18,7 +20,7 @@ Pager::Pager(const std::string& filename) {
     m_file.seekg(0, std::ios::beg);
     m_pages_size = m_file_bytes_length / PAGE_SIZE;
     if (m_file_bytes_length % PAGE_SIZE != 0) {
-        std::cout << "Db file is not a whole number of pages. Corrupt file.\n";
+        spdlog::error("Db file is not a whole number of pages. Corrupt file.");
         std::exit(EXIT_FAILURE);
     }
     m_pages.resize(TABLE_MAX_PAGES, nullptr);
@@ -37,25 +39,26 @@ Pager::~Pager() {
 size_t Pager::pageSize() const { return m_pages_size; }
 
 void* Pager::getPage(uint32_t page_num, bool needToReadFromFile /*= true*/) {
-    if (m_pages.size() <= page_num) {
-        std::cerr << "out of limitation: " << std::strerror(errno) << ".\n";
-        std::exit(EXIT_FAILURE);
-    }
+    // if (m_pages.size() <= page_num) {
+    //     std::cerr << "out of limitation: " << std::strerror(errno) << ".\n";
+    //     std::exit(EXIT_FAILURE);
+    // }
 
     if (needToReadFromFile && m_pages[page_num] == nullptr) {
         void* page = malloc(PAGE_SIZE);
 
-        assert(m_file_bytes_length > 0 && m_file_bytes_length >= page_num * PAGE_SIZE);
-        m_file.seekg(page_num * PAGE_SIZE, std::ios::beg);
-        if (m_file.fail()) {
-            std::cerr << "get page error seek: \n";
-            std::exit(EXIT_FAILURE);
-        }
+        if (m_file_bytes_length > 0 && m_file_bytes_length >= page_num * PAGE_SIZE) {
+            m_file.seekg(page_num * PAGE_SIZE, std::ios::beg);
+            if (m_file.fail()) {
+                std::cerr << "get page error seek: \n";
+                std::exit(EXIT_FAILURE);
+            }
 
-        m_file.read(static_cast<uint8_t*>(page), PAGE_SIZE);
-        if (m_file.fail() && !m_file.eof()) {
-            std::cerr << "get page error read: \n";
-            std::exit(EXIT_FAILURE);
+            m_file.read(static_cast<char*>(page), PAGE_SIZE);
+            if (m_file.fail() && !m_file.eof()) {
+                std::cerr << "get page error read: \n";
+                std::exit(EXIT_FAILURE);
+            }
         }
 
         m_pages[page_num] = page;
@@ -82,7 +85,7 @@ void Pager::pager_flush(uint32_t page_num) {
     }
 
     // 写入数据到文件
-    m_file.write(static_cast<uint8_t*>(m_pages[page_num]), PAGE_SIZE);
+    m_file.write(static_cast<char*>(m_pages[page_num]), PAGE_SIZE);
     if (m_file.fail()) {
         std::cerr << "flush write page at " << page_num << ", error: .\n";
         std::exit(EXIT_FAILURE);

@@ -1,5 +1,7 @@
 #include "../include/Table.h"
 
+#include <spdlog/spdlog.h>
+
 #include <cassert>
 #include <cstdint>
 #include <cstring>
@@ -98,7 +100,7 @@ uint32_t* Table::node_parent_key(void* node) {
     return reinterpret_cast<uint32_t*>(static_cast<uint8_t*>(node) + PARENT_POINTER_OFFSET);
 }
 
-void* Table::table_root_node() { return m_pager->getPage(m_table_root_key); }
+void* Table::table_root_node() const { return m_pager->getPage(m_table_root_key); }
 
 void Table::leaf_node_insert(Cursor* cursor, uint32_t key, Row* value) {
     void* node = cursor->curRootNode();
@@ -317,7 +319,7 @@ void Table::internal_node_insert(uint32_t parent_page_num, uint32_t child_page_n
     }
 }
 
-void* Table::getPage(uint32_t page_num) { return m_pager->getPage(page_num); }
+void* Table::getPage(uint32_t page_num) const { return m_pager->getPage(page_num); }
 
 void Table::serialize_row_insert(Row* source, void* destination) {
     memcpy(destination, &(source->m_id), ID_SIZE);
@@ -340,6 +342,29 @@ void Table::print_leaf_node(void* node) {
     }
 }
 
+void Table::exportToCsvFile(std::string csvPath) const {
+    std::ofstream csvFile(csvPath, std::ios::out | std::ios::trunc);
+    if (!csvFile.is_open()) {
+        throw std::runtime_error("无法打开CSV文件");
+    }
+
+    // 写入CSV文件头
+    csvFile << "ID,Username,Email\n";
+
+    Row row{};
+    auto cursor = std::make_unique<Cursor>(this, 0);
+
+    while (!cursor->isEndOfTable()) {
+        void* page = cursor->curPos();
+        deserialize_row_select(page, &row);
+        csvFile << row.m_id << "," << row.m_username << "," << row.m_email << "\n";
+        cursor->next();
+    }
+    csvFile.close();
+
+    spdlog::info("导出CSV文件成功");
+}
+
 void Table::printBtree() {
     auto cursor = std::make_unique<Cursor>(this, 0);
     while (!cursor->isEndOfTable()) {
@@ -347,13 +372,4 @@ void Table::printBtree() {
         print_leaf_node(page);
         cursor->next();
     }
-};
-
-void Table::printConst() {
-    std::cout << "ROW_SIZE: " << ROW_SIZE << "\n";
-    std::cout << "COMMON_NODE_HEADER_SIZE: " << COMMON_NODE_HEADER_SIZE << "\n";
-    std::cout << "LEAF_NODE_HEADER_SIZE: " << LEAF_NODE_HEADER_SIZE << "\n";
-    std::cout << "LEAF_NODE_CELL_SIZE: " << LEAF_NODE_CELL_SIZE << "\n";
-    std::cout << "LEAF_NODE_SPACE_FOR_CELLS: " << LEAF_NODE_SPACE_FOR_CELLS << "\n";
-    std::cout << "LEAF_NODE_MAX_CELLS: " << LEAF_NODE_MAX_CELLS << "\n";
 };
