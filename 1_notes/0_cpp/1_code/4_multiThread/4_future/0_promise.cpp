@@ -31,7 +31,7 @@ void print_int(std::future<int> &fut) {
   std::cout << "value: " << x << '\n';
 }
 
-void test_2() {
+void test_has_function() {
   std::promise<int> prom; // create promise
 
   std::future<int> fut = prom.get_future(); // engagement with future
@@ -44,7 +44,7 @@ void test_2() {
 
 int main() {
   test_1();
-  test_2();
+  test_has_function();
   return 0;
 }
 

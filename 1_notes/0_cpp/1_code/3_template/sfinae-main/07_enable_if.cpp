@@ -39,12 +39,12 @@ struct T {
 };
 
 int main() {
-    std::cout << enable_if_t<true, int>(3.14) << "\n";
-    std::cout << enable_if_t<true, float>(3.14) << "\n";
-    std::cout << enable_if_t<false, int>(3.14) << "\n";
+    // std::cout << enable_if_t<true, int>(3.14) << "\n";
+    // std::cout << enable_if_t<true, float>(3.14) << "\n";
+    // std::cout << enable_if_t<false, int>(3.14) << "\n"; // 会编译报错，因为enable_if_t<false, ...>没有type
     std::cout << T(1).type << "\n";
     std::cout << T(3.14f).type << "\n";
     std::cout << T(3.14).type << "\n";
-    std::cout << T("okey").type << "\n";
+    // std::cout << T("okey").type << "\n";
     return 0;
 }
