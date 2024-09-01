@@ -308,7 +308,8 @@ TEST(EncodingsTest, UTF8) {
 
                 EXPECT_EQ(UTF8_ACCEPT, state);
                 if (UTF8_ACCEPT != state)
-                    std::cout << std::hex << codepoint << " " << decodedCodepoint << std::endl;
+                  std::cout << std::hex << codepoint << " " << decodedCodepoint
+                            << '\n';
             }
 
             // Decode
@@ -319,7 +320,8 @@ TEST(EncodingsTest, UTF8) {
                 EXPECT_TRUE(result);
                 EXPECT_EQ(codepoint, decodedCodepoint);
                 if (!result || codepoint != decodedCodepoint)
-                    std::cout << std::hex << codepoint << " " << decodedCodepoint << std::endl;
+                  std::cout << std::hex << codepoint << " " << decodedCodepoint
+                            << '\n';
             }
 
             // Validate
@@ -379,7 +381,8 @@ TEST(EncodingsTest, UTF16) {
                 EXPECT_TRUE(result);
                 EXPECT_EQ(codepoint, decodedCodepoint);         
                 if (!result || codepoint != decodedCodepoint)
-                    std::cout << std::hex << codepoint << " " << decodedCodepoint << std::endl;
+                  std::cout << std::hex << codepoint << " " << decodedCodepoint
+                            << '\n';
             }
 
             // Validate
@@ -410,7 +413,8 @@ TEST(EncodingsTest, UTF32) {
                 EXPECT_TRUE(result);
                 EXPECT_EQ(codepoint, decodedCodepoint);         
                 if (!result || codepoint != decodedCodepoint)
-                    std::cout << std::hex << codepoint << " " << decodedCodepoint << std::endl;
+                  std::cout << std::hex << codepoint << " " << decodedCodepoint
+                            << '\n';
             }
 
             // Validate
@@ -436,7 +440,8 @@ TEST(EncodingsTest, ASCII) {
             unsigned decodedCodepoint;
             bool result = ASCII<>::Decode(is, &decodedCodepoint);
             if (!result || codepoint != decodedCodepoint)
-                std::cout << std::hex << codepoint << " " << decodedCodepoint << std::endl;
+              std::cout << std::hex << codepoint << " " << decodedCodepoint
+                        << '\n';
         }
 
         // Validate

@@ -15,5 +15,6 @@ target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
 target_link_libraries(runTests gtest gtest_main)
 target_link_libraries(runTests spdlog::spdlog)
 
-add_test(NAME Case1Test COMMAND runTests --gtest_filter=Case1Test.*)
-add_test(NAME Case2Test COMMAND runTests --gtest_filter=Case2Test.*)
+add_test(NAME Case1Test COMMAND runTests --gtest_filter=Case1Test.* --gtest_output=xml:Case1TestReport.xml)
+add_test(NAME Case2Test COMMAND runTests --gtest_filter=Case2Test.* --gtest_output=xml:Case2TestReport.xml)
+add_test(NAME Case3Test COMMAND runTests --gtest_filter=Case3Test.* --gtest_output=xml:Case3TestReport.xml)

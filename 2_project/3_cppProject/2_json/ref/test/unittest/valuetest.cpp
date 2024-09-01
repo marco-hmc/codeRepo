@@ -40,7 +40,7 @@ TEST(Value, DefaultConstructor) {
     EXPECT_EQ(kNullType, x.GetType());
     EXPECT_TRUE(x.IsNull());
 
-    //std::cout << "sizeof(Value): " << sizeof(x) << std::endl;
+    // std::cout << "sizeof(Value): " << sizeof(x) << '\n';
 }
 
 // Should not pass compilation

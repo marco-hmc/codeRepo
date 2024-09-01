@@ -35,7 +35,7 @@ namespace Catch {
         }
 
         void noMatchingTestCases( std::string const& spec ) override {
-            stream << "# No test cases matched '" << spec << "'" << std::endl;
+            stream << "# No test cases matched '" << spec << "'" << '\n';
         }
 
         void assertionStarting( AssertionInfo const& ) override {}
@@ -43,17 +43,17 @@ namespace Catch {
         bool assertionEnded( AssertionStats const& _assertionStats ) override {
             ++counter;
 
-            stream << "# " << currentTestCaseInfo->name << std::endl;
+            stream << "# " << currentTestCaseInfo->name << '\n';
             AssertionPrinter printer( stream, _assertionStats, counter );
             printer.print();
 
-            stream << std::endl;
+            stream << '\n';
             return true;
         }
 
         void testRunEnded( TestRunStats const& _testRunStats ) override {
             printTotals( _testRunStats.totals );
-            stream << "\n" << std::endl;
+            stream << "\n" << '\n';
             StreamingReporterBase::testRunEnded( _testRunStats );
         }
 

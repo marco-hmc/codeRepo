@@ -47,13 +47,13 @@ int main() {
   LRUCache cache(2);
   cache.put(1, 1);
   cache.put(2, 2);
-  std::cout << cache.get(1) << std::endl; // Output: 1
+  std::cout << cache.get(1) << '\n'; // Output: 1
   cache.put(3, 3);
-  std::cout << cache.get(2) << std::endl; // Output: -1
+  std::cout << cache.get(2) << '\n'; // Output: -1
   cache.put(4, 4);
-  std::cout << cache.get(1) << std::endl; // Output: -1
-  std::cout << cache.get(3) << std::endl; // Output: 3
-  std::cout << cache.get(4) << std::endl; // Output: 4
+  std::cout << cache.get(1) << '\n'; // Output: -1
+  std::cout << cache.get(3) << '\n'; // Output: 3
+  std::cout << cache.get(4) << '\n'; // Output: 4
 
   return 0;
 }

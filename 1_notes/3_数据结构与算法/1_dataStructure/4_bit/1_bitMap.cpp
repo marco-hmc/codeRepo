@@ -19,7 +19,7 @@ public:
 
   void set(int index) {
     if (index < 0 || index >= size) {
-      std::cout << "Invalid index" << std::endl;
+      std::cout << "Invalid index" << '\n';
       return;
     }
 
@@ -30,7 +30,7 @@ public:
 
   void clear(int index) {
     if (index < 0 || index >= size) {
-      std::cout << "Invalid index" << std::endl;
+      std::cout << "Invalid index" << '\n';
       return;
     }
 
@@ -41,7 +41,7 @@ public:
 
   bool get(int index) {
     if (index < 0 || index >= size) {
-      std::cout << "Invalid index" << std::endl;
+      std::cout << "Invalid index" << '\n';
       return false;
     }
 
@@ -57,14 +57,13 @@ int main() {
   bitmap.set(10);
   bitmap.set(20);
 
-  std::cout << "Bit at index 5: " << bitmap.get(5) << std::endl;
-  std::cout << "Bit at index 10: " << bitmap.get(10) << std::endl;
-  std::cout << "Bit at index 20: " << bitmap.get(20) << std::endl;
+  std::cout << "Bit at index 5: " << bitmap.get(5) << '\n';
+  std::cout << "Bit at index 10: " << bitmap.get(10) << '\n';
+  std::cout << "Bit at index 20: " << bitmap.get(20) << '\n';
 
   bitmap.clear(10);
 
-  std::cout << "Bit at index 10 after clearing: " << bitmap.get(10)
-            << std::endl;
+  std::cout << "Bit at index 10 after clearing: " << bitmap.get(10) << '\n';
 
   return 0;
 }

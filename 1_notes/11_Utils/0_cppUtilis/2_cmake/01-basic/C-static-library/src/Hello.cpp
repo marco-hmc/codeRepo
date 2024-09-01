@@ -2,7 +2,4 @@
 
 #include "static/Hello.h"
 
-void Hello::print()
-{
-    std::cout << "Hello Static Library!" << std::endl;
-}
+void Hello::print() { std::cout << "Hello Static Library!" << '\n'; }

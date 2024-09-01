@@ -82,17 +82,17 @@ int main() {
   int value;
 
   if (myMap.find("two", value)) {
-    std::cout << "Value for key 'two': " << value << std::endl;
+    std::cout << "Value for key 'two': " << value << '\n';
   } else {
-    std::cout << "Key 'two' not found." << std::endl;
+    std::cout << "Key 'two' not found." << '\n';
   }
 
   myMap.remove("two");
 
   if (myMap.find("two", value)) {
-    std::cout << "Value for key 'two': " << value << std::endl;
+    std::cout << "Value for key 'two': " << value << '\n';
   } else {
-    std::cout << "Key 'two' not found." << std::endl;
+    std::cout << "Key 'two' not found." << '\n';
   }
 
   return 0;

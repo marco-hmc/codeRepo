@@ -11,7 +11,7 @@ public:
 class ConcreteSubscriber : public Subscriber {
 public:
     void update(const std::string& message) override {
-        std::cout << "收到消息: " << message << std::endl;
+      std::cout << "收到消息: " << message << '\n';
     }
 };
 

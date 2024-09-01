@@ -11,7 +11,7 @@ void RunPrintfTest()
     int i = 0;
     for(i = 0;i < 10;i++)
     {
-		std::cout << "I am run,Times:" << i << std::endl;
+      std::cout << "I am run,Times:" << i << '\n';
     }
 }
 
@@ -24,7 +24,7 @@ void RunPrintfTestCanBreak(void* pParam)
     for(i = 0;i < 10;i++)
     {
         a += 10;
-		std::cout << "I am run,Times:" << i << ",the a is:"<< a << std::endl;
+        std::cout << "I am run,Times:" << i << ",the a is:" << a << '\n';
         COROUTINE_YIELD;
     }
     COROUTINE_END;

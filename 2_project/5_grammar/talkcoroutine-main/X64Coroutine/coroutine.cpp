@@ -41,9 +41,10 @@ void coroutine::UpdateFun()
 			continue;
 		}
 		m_iCurrentFuncIndex = iter->first;
-		std::cout << "main enterty function index:" << iter->first << std::endl;
+                std::cout << "main enterty function index:" << iter->first
+                          << '\n';
 
-		// change from main context to virtual stack context 
+                // change from main context to virtual stack context 
 		const corcontext corFuncContext =  jump_fcontext(iter->second.pkCorContext, nullptr).fcont;
 		if (iter->second.pkCorContext != nullptr)
 		{

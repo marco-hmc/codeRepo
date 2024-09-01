@@ -24,6 +24,6 @@ int main() {
     d.Accept(writer);
 
     // Output {"project":"rapidjson","stars":11}
-    std::cout << buffer.GetString() << std::endl;
+    std::cout << buffer.GetString() << '\n';
     return 0;
 }

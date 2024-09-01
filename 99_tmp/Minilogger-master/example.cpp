@@ -33,7 +33,7 @@ void myFunction() {
 int main() {
     //log with no args.
     myLog.Log("this is log.");
-    std::cout << "do something" << std::endl;
+    std::cout << "do something" << '\n';
     // log with args and function name and line number.
     LOG("test for LOG,args: number:[%d], string:[%s]", 1, "YoYo");
 

@@ -962,7 +962,7 @@ TEST(Reader, ParseString_Error) {
             ParseErrorCode error = TestString<UTF8<> >(e);
             EXPECT_EQ(kParseErrorStringInvalidEncoding, error);
             if (error != kParseErrorStringInvalidEncoding)
-                std::cout << static_cast<unsigned>(c) << std::endl;
+              std::cout << static_cast<unsigned>(c) << '\n';
          }
     }
 

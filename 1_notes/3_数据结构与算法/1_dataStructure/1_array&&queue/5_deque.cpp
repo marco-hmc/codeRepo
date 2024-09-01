@@ -22,7 +22,7 @@ public:
 
   void push_front(T data) {
     if (isFull()) {
-      std::cout << "Deque is full. Cannot push front." << std::endl;
+      std::cout << "Deque is full. Cannot push front." << '\n';
       return;
     }
 
@@ -41,7 +41,7 @@ public:
 
   void push_back(T data) {
     if (isFull()) {
-      std::cout << "Deque is full. Cannot push back." << std::endl;
+      std::cout << "Deque is full. Cannot push back." << '\n';
       return;
     }
 
@@ -60,7 +60,7 @@ public:
 
   void pop_front() {
     if (isEmpty()) {
-      std::cout << "Deque is empty. Cannot pop front." << std::endl;
+      std::cout << "Deque is empty. Cannot pop front." << '\n';
       return;
     }
 
@@ -78,7 +78,7 @@ public:
 
   void pop_back() {
     if (isEmpty()) {
-      std::cout << "Deque is empty. Cannot pop back." << std::endl;
+      std::cout << "Deque is empty. Cannot pop back." << '\n';
       return;
     }
 
@@ -96,7 +96,7 @@ public:
 
   T getFront() {
     if (isEmpty()) {
-      std::cout << "Deque is empty. Cannot get front." << std::endl;
+      std::cout << "Deque is empty. Cannot get front." << '\n';
       return T();
     }
 
@@ -105,7 +105,7 @@ public:
 
   T getBack() {
     if (isEmpty()) {
-      std::cout << "Deque is empty. Cannot get back." << std::endl;
+      std::cout << "Deque is empty. Cannot get back." << '\n';
       return T();
     }
 
@@ -134,7 +134,7 @@ int main() {
   assert(deque.getFront() == 1);
   assert(deque.getBack() == 3);
 
-  std::cout << "All assertions passed!" << std::endl;
+  std::cout << "All assertions passed!" << '\n';
 
   return 0;
 }

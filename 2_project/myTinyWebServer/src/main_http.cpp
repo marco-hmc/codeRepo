@@ -7,7 +7,7 @@ using namespace Web;
 
 int main() {
   Server<HTTP> server(12345, 4);
-  std::cout << "Server starting at port: 12345" << std::endl;
+  std::cout << "Server starting at port: 12345" << '\n';
   start_server<Server<HTTP>>(server);
   spdlog::info("Welcome to spdlog!");
   return 0; // resources

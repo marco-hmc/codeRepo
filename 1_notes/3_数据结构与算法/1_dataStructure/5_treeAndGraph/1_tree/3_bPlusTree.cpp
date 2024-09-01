@@ -48,7 +48,7 @@ private:
       for (int i = 0; i < node->keys.size(); i++) {
         std::cout << node->keys[i] << " ";
       }
-      std::cout << std::endl;
+      std::cout << '\n';
 
       if (!node->isLeaf) {
         for (int i = 0; i < node->children.size(); i++) {

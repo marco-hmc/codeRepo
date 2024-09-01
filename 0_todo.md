@@ -1,6 +1,8 @@
 function-call-principle-master
 
 ## 1. doing
+1. 为什么thread不是默认detach的？
+2. 
   1. github: 1_sl_threadPool
   2. github: 2_sl_memoryPool
   3. github: 3_sl_webServer
@@ -10,20 +12,20 @@ function-call-principle-master
   7. flutter
   8. GPU 渲染管线与着色器 大白话总结 ---- 一篇就够
     原文链接:https://blog.csdn.net/newchenxf/article/details/119803489
-  11. https://github.com/raphaelpor/electron-adventures
-  12. https://github.com/taw/electron-adventures
-  14. 渲染管线
-  15. 汇编
-  16. flutterEngine，electron
-  15. https://github.com/CnTransGroup/EffectiveModernCppChinese?tab=readme-ov-file
-  16. cmake
-  17. sql语句
-  19. webServer
-  20. connectionPool
-  22. rapidJson
-  23. rpc
-  24. levelDb
-  25. spdlog
+  9.  https://github.com/raphaelpor/electron-adventures
+  10. https://github.com/taw/electron-adventures
+  11. 渲染管线
+  12. 汇编
+  13. flutterEngine，electron
+  14. https://github.com/CnTransGroup/EffectiveModernCppChinese?tab=readme-ov-file
+  15. cmake
+  16. sql语句
+  17. webServer
+  18. connectionPool
+  19. rapidJson
+  20. rpc
+  21. levelDb
+  22. spdlog
   26. cs144
 
 ### 1.1 trivals

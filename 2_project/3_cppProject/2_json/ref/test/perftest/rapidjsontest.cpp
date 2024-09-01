@@ -305,8 +305,8 @@ TEST_F(RapidJson, DocumentTraverse) {
     for (size_t i = 0; i < kTrialCount; i++) {
         size_t count = Traverse(doc_);
         EXPECT_EQ(4339u, count);
-        //if (i == 0)
-        //  std::cout << count << std::endl;
+        // if (i == 0)
+        //   std::cout << count << '\n';
     }
 }
 
@@ -367,8 +367,8 @@ TEST_F(RapidJson, Writer_NullStream) {
         NullStream s;
         Writer<NullStream> writer(s);
         doc_.Accept(writer);
-        //if (i == 0)
-        //  std::cout << s.length_ << std::endl;
+        // if (i == 0)
+        //   std::cout << s.length_ << '\n';
     }
 }
 
@@ -379,8 +379,8 @@ TEST_F(RapidJson, SIMD_SUFFIX(Writer_StringBuffer)) {
         doc_.Accept(writer);
         const char* str = s.GetString();
         (void)str;
-        //if (i == 0)
-        //  std::cout << strlen(str) << std::endl;
+        // if (i == 0)
+        //   std::cout << strlen(str) << '\n';
     }
 }
 
@@ -413,8 +413,8 @@ TEST_F(RapidJson, SIMD_SUFFIX(PrettyWriter_StringBuffer)) {
         doc_.Accept(writer);
         const char* str = s.GetString();
         (void)str;
-        //if (i == 0)
-        //  std::cout << strlen(str) << std::endl;
+        // if (i == 0)
+        //   std::cout << strlen(str) << '\n';
     }
 }
 

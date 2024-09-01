@@ -153,15 +153,16 @@ int main() {
     }
 
     if (d.HasParseError()) {
-        std::cout << "Error at offset " << d.GetErrorOffset() << ": " << GetParseError_En(d.GetParseError()) << std::endl;
-        return EXIT_FAILURE;
+      std::cout << "Error at offset " << d.GetErrorOffset() << ": "
+                << GetParseError_En(d.GetParseError()) << '\n';
+      return EXIT_FAILURE;
     }
     
     // Stringify the JSON to cout
     OStreamWrapper os(std::cout);
     Writer<OStreamWrapper> writer(os);
     d.Accept(writer);
-    std::cout << std::endl;
+    std::cout << '\n';
 
     return EXIT_SUCCESS;
 }
@@ -169,8 +170,6 @@ int main() {
 #else // Not supporting C++11 
 
 #include <iostream>
-int main() {
-    std::cout << "This example requires C++11 compiler" << std::endl;
-}
+int main() { std::cout << "This example requires C++11 compiler" << '\n'; }
 
 #endif

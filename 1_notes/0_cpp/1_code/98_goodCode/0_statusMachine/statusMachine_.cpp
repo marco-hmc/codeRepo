@@ -19,37 +19,37 @@ public:
     case ElevatorState::IDLE:
       if (event == 'u') {
         setState(ElevatorState::MOVING_UP);
-        std::cout << "Elevator is moving up" << std::endl;
+        std::cout << "Elevator is moving up" << '\n';
       } else if (event == 'd') {
         setState(ElevatorState::MOVING_DOWN);
-        std::cout << "Elevator is moving down" << std::endl;
+        std::cout << "Elevator is moving down" << '\n';
       }
       break;
 
     case ElevatorState::MOVING_UP:
       if (event == 's') {
         setState(ElevatorState::IDLE);
-        std::cout << "Elevator has reached floor " << currentFloor << std::endl;
+        std::cout << "Elevator has reached floor " << currentFloor << '\n';
       } else if (event == 'd') {
         setState(ElevatorState::MOVING_DOWN);
-        std::cout << "Elevator is changing direction to move down" << std::endl;
+        std::cout << "Elevator is changing direction to move down" << '\n';
       }
       break;
 
     case ElevatorState::MOVING_DOWN:
       if (event == 's') {
         setState(ElevatorState::IDLE);
-        std::cout << "Elevator has reached floor " << currentFloor << std::endl;
+        std::cout << "Elevator has reached floor " << currentFloor << '\n';
       } else if (event == 'u') {
         setState(ElevatorState::MOVING_UP);
-        std::cout << "Elevator is changing direction to move up" << std::endl;
+        std::cout << "Elevator is changing direction to move up" << '\n';
       }
       break;
 
     case ElevatorState::DOORS_OPEN:
       if (event == 'c') {
         setState(ElevatorState::IDLE);
-        std::cout << "Elevator doors are closing" << std::endl;
+        std::cout << "Elevator doors are closing" << '\n';
       }
       break;
     }

@@ -31,7 +31,7 @@ AssertException::~AssertException() throw() {}
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
 
-    std::cout << "RapidJSON v" << RAPIDJSON_VERSION_STRING << std::endl;
+    std::cout << "RapidJSON v" << RAPIDJSON_VERSION_STRING << '\n';
 
 #ifdef _MSC_VER
     _CrtMemState memoryState = { 0 };

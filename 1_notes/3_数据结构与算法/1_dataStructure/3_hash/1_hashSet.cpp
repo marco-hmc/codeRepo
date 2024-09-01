@@ -90,9 +90,9 @@ int main() {
   // Check if the set contains a specific element
   bool containsElement = mySet.contains(10);
   if (containsElement) {
-    std::cout << "The set contains the element 10." << std::endl;
+    std::cout << "The set contains the element 10." << '\n';
   } else {
-    std::cout << "The set does not contain the element 10." << std::endl;
+    std::cout << "The set does not contain the element 10." << '\n';
   }
 
   // Remove an element from the set
@@ -101,10 +101,9 @@ int main() {
   // Check if the set still contains the removed element
   containsElement = mySet.contains(10);
   if (containsElement) {
-    std::cout << "The set still contains the element 10." << std::endl;
+    std::cout << "The set still contains the element 10." << '\n';
   } else {
-    std::cout << "The set does not contain the element 10 anymore."
-              << std::endl;
+    std::cout << "The set does not contain the element 10 anymore." << '\n';
   }
 
   return 0;

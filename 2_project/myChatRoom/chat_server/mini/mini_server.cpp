@@ -27,7 +27,7 @@ public:
   Server(int port) : port_(port) { init(); }
 
   void init() {
-    std::cout << "Server initialized" << std::endl;
+    std::cout << "Server initialized" << '\n';
     createSocket();
     listenPort();
   }
@@ -35,7 +35,7 @@ public:
   void createSocket() {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
-      std::cerr << "Failed to create socket" << std::endl;
+      std::cerr << "Failed to create socket" << '\n';
       return;
     }
 
@@ -81,7 +81,7 @@ public:
   }
 
   void Start() {
-    std::cout << "Server started on port " << port_ << std::endl;
+    std::cout << "Server started on port " << port_ << '\n';
     while (1) {
       struct sockaddr_in client_addr;
       socklen_t addrlen = sizeof(client_addr);
@@ -160,7 +160,7 @@ public:
   }
 
   void Stop() {
-    std::cout << "Server stopped" << std::endl;
+    std::cout << "Server stopped" << '\n';
     // TODO: Implement server shutdown logic here
   }
 

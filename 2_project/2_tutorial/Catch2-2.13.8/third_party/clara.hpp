@@ -1141,7 +1141,7 @@ namespace detail {
                     os << "]";
                 if( !m_options.empty() )
                     os << " options";
-                os << "\n\nwhere options are:" << std::endl;
+                os << "\n\nwhere options are:" << '\n';
             }
 
             auto rows = getHelpColumns();
@@ -1157,7 +1157,7 @@ namespace detail {
                         TextFlow::Column( cols.left ).width( optWidth ).indent( 2 ) +
                         TextFlow::Spacer(4) +
                         TextFlow::Column( cols.right ).width( consoleWidth - 7 - optWidth );
-                os << row << std::endl;
+                os << row << '\n';
             }
         }
 

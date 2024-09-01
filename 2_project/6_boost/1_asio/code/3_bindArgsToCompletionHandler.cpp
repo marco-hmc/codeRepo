@@ -15,7 +15,7 @@
 void print(const boost::system::error_code & /*e*/,
            boost::asio::steady_timer *t, int *count) {
   if (*count < 5) {
-    std::cout << *count << std::endl;
+    std::cout << *count << '\n';
     ++(*count);
 
     t->expires_at(t->expiry() + boost::asio::chrono::seconds(1));
@@ -34,7 +34,7 @@ int main() {
 
   io.run();
 
-  std::cout << "Final count is " << count << std::endl;
+  std::cout << "Final count is " << count << '\n';
 
   return 0;
 }

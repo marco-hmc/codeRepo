@@ -221,7 +221,7 @@ void* MyReactor::worker_thread_proc(void* args)
         pReactor->m_clientlist.pop_front();
         pthread_mutex_unlock(&pReactor->m_client_mutex);
 
-        std::cout << std::endl;
+        std::cout << '\n';
 
         time_t now = time(NULL);
         struct tm* nowstr = localtime(&now);
@@ -269,7 +269,7 @@ void* MyReactor::worker_thread_proc(void* args)
                 const char *name = rec.substr(1, it-1).c_str();
                 const char *password = rec.substr(it+1, rec.size()-1).c_str();
 
-                //std::cout << name << '\t' << password << std::endl;
+                // std::cout << name << '\t' << password << '\n';
                 char query[100];
                 sprintf(query, "select password from UserInfo where username = '%s'", name);
                 int ret = pReactor->sqlQuery(query);
@@ -321,7 +321,7 @@ void* MyReactor::worker_thread_proc(void* args)
                 char query[100];
                 sprintf(query, "select password from UserInfo where username = '%s'", name);
                 int ret = pReactor->sqlQuery(query);
-                /* std::cout << "ret = " << ret << std::endl; */
+                /* std::cout << "ret = " << ret << '\n'; */
                 if(ret == -1)
                 {
                     my_logger->error("select error {}", mysql_error(pReactor->mysql));
@@ -332,7 +332,7 @@ void* MyReactor::worker_thread_proc(void* args)
                     if(pReactor->res_ptr)
                     {
                         pReactor->sqlrow = mysql_fetch_row(pReactor->res_ptr);
-                        /* std::cout << pReactor->sqlrow << std::endl; */
+                        /* std::cout << pReactor->sqlrow << '\n'; */
                         if(pReactor->sqlrow)
                         {
                             if(strcmp(pReactor->sqlrow[0], password) == 0)
@@ -424,8 +424,7 @@ void* MyReactor::send_thread_proc(void *args)
         pReactor->m_msgs.pop_front();
         pthread_mutex_unlock(&pReactor->m_send_mutex);
 
-        std::cout << std::endl;
-
+        std::cout << '\n';
 
         while(1)
         {

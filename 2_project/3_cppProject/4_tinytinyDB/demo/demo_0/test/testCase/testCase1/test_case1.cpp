@@ -38,7 +38,7 @@ std::string readCsvFile(const std::string& fileName) {
 }
 }  // namespace
 
-class DBTest : public ::testing::Test {
+class Case1Test : public ::testing::Test {
 protected:
     const std::string outputDir =
         "/home/marco/0_codeRepo/2_project/3_cppProject/4_tinytinyDB/demo/demo_0/test/bin/";
@@ -102,17 +102,17 @@ protected:
     }
 };
 
-TEST_F(DBTest, InsertCommand) {
+TEST_F(Case1Test, InsertCommand) {
     std::string insertCommands = readCmdFile("insertCmd");
     executeTestCommand(insertCommands);
 }
 
-TEST_F(DBTest, SelectCommand) {
+TEST_F(Case1Test, SelectCommand) {
     std::string selectCommand = readCmdFile("selectCmd");
     executeTestCommand(selectCommand);
 }
 
-TEST_F(DBTest, ExportCommand) {
+TEST_F(Case1Test, ExportCommand) {
     std::string exportCommand = readCmdFile("exportCmd");
     executeTestCommand(exportCommand);
 

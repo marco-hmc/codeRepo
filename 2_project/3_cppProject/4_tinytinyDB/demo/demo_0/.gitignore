@@ -1,2 +1,5 @@
 .cache
 build
+.vscode
+tmp
+config.json

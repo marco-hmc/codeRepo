@@ -26,7 +26,8 @@ public:
 
     void printTransactions() const {
         for (const auto& transaction : transactions) {
-            std::cout << "Transaction ID: " << transaction.getId() << ", Amount: " << transaction.getAmount() << std::endl;
+          std::cout << "Transaction ID: " << transaction.getId()
+                    << ", Amount: " << transaction.getAmount() << '\n';
         }
     }
 

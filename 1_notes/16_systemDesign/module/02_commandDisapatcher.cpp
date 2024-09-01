@@ -10,16 +10,12 @@ public:
 // Step 2: 创建具体的命令类
 class ConcreteCommand1 : public Command {
 public:
-    void execute() override {
-        std::cout << "执行具体命令1" << std::endl;
-    }
+  void execute() override { std::cout << "执行具体命令1" << '\n'; }
 };
 
 class ConcreteCommand2 : public Command {
 public:
-    void execute() override {
-        std::cout << "执行具体命令2" << std::endl;
-    }
+  void execute() override { std::cout << "执行具体命令2" << '\n'; }
 };
 
 // Step 3: 创建CommandDispatcher类

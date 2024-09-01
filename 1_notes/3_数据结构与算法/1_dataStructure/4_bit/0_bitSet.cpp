@@ -21,8 +21,8 @@ int main() {
   bitSet.set(5);
   bitSet.reset(2);
 
-  std::cout << bitSet.test(2) << std::endl; // Output: 0
-  std::cout << bitSet.test(5) << std::endl; // Output: 1
+  std::cout << bitSet.test(2) << '\n'; // Output: 0
+  std::cout << bitSet.test(5) << '\n'; // Output: 1
 
   return 0;
 }

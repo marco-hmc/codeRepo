@@ -446,15 +446,15 @@ void test_ebco() {
   struct A {};
   struct B {};
   // different results may be output on different platforms
-  std::cout << sizeof(std::tuple<>) << std::endl;                        // 1
-  std::cout << sizeof(std::tuple<A>) << std::endl;                       // 1
-  std::cout << sizeof(std::tuple<A, B>) << std::endl;                    // 1
-  std::cout << sizeof(std::tuple<A, A, B>) << std::endl;                 // 2
-  std::cout << sizeof(std::tuple<A, B, A>) << std::endl;                 // 2
-  std::cout << sizeof(std::tuple<A, A, B, B, char>) << std::endl;        // 3
-  std::cout << sizeof(std::tuple<A, A, A, A>) << std::endl;              // 4
-  std::cout << sizeof(std::tuple<A, B, A, A>) << std::endl;              // 3
-  std::cout << sizeof(std::tuple<A, char, B, char, A, B>) << std::endl;  // 3
+  std::cout << sizeof(std::tuple<>) << '\n';                       // 1
+  std::cout << sizeof(std::tuple<A>) << '\n';                      // 1
+  std::cout << sizeof(std::tuple<A, B>) << '\n';                   // 1
+  std::cout << sizeof(std::tuple<A, A, B>) << '\n';                // 2
+  std::cout << sizeof(std::tuple<A, B, A>) << '\n';                // 2
+  std::cout << sizeof(std::tuple<A, A, B, B, char>) << '\n';       // 3
+  std::cout << sizeof(std::tuple<A, A, A, A>) << '\n';             // 4
+  std::cout << sizeof(std::tuple<A, B, A, A>) << '\n';             // 3
+  std::cout << sizeof(std::tuple<A, char, B, char, A, B>) << '\n'; // 3
 }
 
 int main() {

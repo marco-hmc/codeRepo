@@ -2,7 +2,4 @@
 
 #include "shared/Hello.h"
 
-void Hello::print()
-{
-    std::cout << "Hello Shared Library!" << std::endl;
-}
+void Hello::print() { std::cout << "Hello Shared Library!" << '\n'; }

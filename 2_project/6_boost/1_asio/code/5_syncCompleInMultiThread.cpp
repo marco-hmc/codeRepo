@@ -26,11 +26,11 @@ public:
         strand_, boost::bind(&printer::print2, this)));
   }
 
-  ~printer() { std::cout << "Final count is " << count_ << std::endl; }
+  ~printer() { std::cout << "Final count is " << count_ << '\n'; }
 
   void print1() {
     if (count_ < 10) {
-      std::cout << "Timer 1: " << count_ << std::endl;
+      std::cout << "Timer 1: " << count_ << '\n';
       ++count_;
 
       timer1_.expires_at(timer1_.expiry() + boost::asio::chrono::seconds(1));
@@ -42,7 +42,7 @@ public:
 
   void print2() {
     if (count_ < 10) {
-      std::cout << "Timer 2: " << count_ << std::endl;
+      std::cout << "Timer 2: " << count_ << '\n';
       ++count_;
 
       timer2_.expires_at(timer2_.expiry() + boost::asio::chrono::seconds(1));

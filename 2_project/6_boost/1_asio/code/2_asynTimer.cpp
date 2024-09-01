@@ -12,7 +12,7 @@
 #include <iostream>
 
 void print(const boost::system::error_code & /*e*/) {
-  std::cout << "Hello, world!" << std::endl;
+  std::cout << "Hello, world!" << '\n';
 }
 
 int main() {

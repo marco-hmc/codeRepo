@@ -41,7 +41,7 @@ int main() {
 
   int result = putApples(n, m);
   std::cout << "Number of different ways to distribute " << m
-            << " apples among " << n << " plates: " << result << std::endl;
+            << " apples among " << n << " plates: " << result << '\n';
 
   return 0;
 }

@@ -9,7 +9,7 @@ using namespace rapidjson;
 void traverse(const Value& v, const Pointer& p) {
     StringBuffer sb;
     p.Stringify(sb);
-    std::cout << sb.GetString() << std::endl;
+    std::cout << sb.GetString() << '\n';
 
     switch (v.GetType()) {
     case kArrayType:

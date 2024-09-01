@@ -150,6 +150,6 @@ TEST_F(FileStreamTest, FileWriteStream) {
     EXPECT_EQ(length_, is.Tell());
     fclose(fp);
 
-    //std::cout << filename << std::endl;
+    // std::cout << filename << '\n';
     remove(filename);
 }

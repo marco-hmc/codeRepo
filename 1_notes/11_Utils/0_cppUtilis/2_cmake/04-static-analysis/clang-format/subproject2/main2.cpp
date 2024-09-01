@@ -11,8 +11,8 @@ TestClass::TestClass() {
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Hello Main2!" << std::endl;
+    std::cout << "Hello Main2!" << '\n';
     int* x = NULL;
-    std::cout << *x << std::endl;
+    std::cout << *x << '\n';
     return 0;
 }

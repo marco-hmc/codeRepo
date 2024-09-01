@@ -27,8 +27,8 @@ int main() {
   filter.insert("banana");
   filter.insert("orange");
 
-  std::cout << "Contains apple: " << filter.contains("apple") << std::endl;
-  std::cout << "Contains grape: " << filter.contains("grape") << std::endl;
+  std::cout << "Contains apple: " << filter.contains("apple") << '\n';
+  std::cout << "Contains grape: " << filter.contains("grape") << '\n';
 
   return 0;
 }

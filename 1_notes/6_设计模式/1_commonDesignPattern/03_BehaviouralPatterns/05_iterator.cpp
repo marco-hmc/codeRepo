@@ -65,7 +65,9 @@ class Data {
 };
 
 void ClientCode() {
-  std::cout << "________________Iterator with int______________________________________" << std::endl;
+  std::cout << "________________Iterator with "
+               "int______________________________________"
+            << '\n';
   Container<int> cont;
 
   for (int i = 0; i < 10; i++) {
@@ -74,7 +76,7 @@ void ClientCode() {
 
   Iterator<int, Container<int>> *it = cont.CreateIterator();
   for (it->First(); !it->IsDone(); it->Next()) {
-    std::cout << *it->Current() << std::endl;
+    std::cout << *it->Current() << '\n';
   }
 
   Container<Data> cont2;
@@ -83,10 +85,12 @@ void ClientCode() {
   cont2.Add(b);
   cont2.Add(c);
 
-  std::cout << "________________Iterator with custom Class______________________________" << std::endl;
+  std::cout << "________________Iterator with custom "
+               "Class______________________________"
+            << '\n';
   Iterator<Data, Container<Data>> *it2 = cont2.CreateIterator();
   for (it2->First(); !it2->IsDone(); it2->Next()) {
-    std::cout << it2->Current()->data() << std::endl;
+    std::cout << it2->Current()->data() << '\n';
   }
   delete it;
   delete it2;

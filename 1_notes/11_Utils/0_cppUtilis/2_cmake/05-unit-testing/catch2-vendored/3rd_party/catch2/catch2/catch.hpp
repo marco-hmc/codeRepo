@@ -7089,7 +7089,7 @@ namespace detail {
                     os << "]";
                 if( !m_options.empty() )
                     os << " options";
-                os << "\n\nwhere options are:" << std::endl;
+                os << "\n\nwhere options are:" << '\n';
             }
 
             auto rows = getHelpColumns();
@@ -7105,7 +7105,7 @@ namespace detail {
                         TextFlow::Column( cols.left ).width( optWidth ).indent( 2 ) +
                         TextFlow::Spacer(4) +
                         TextFlow::Column( cols.right ).width( consoleWidth - 7 - optWidth );
-                os << row << std::endl;
+                os << row << '\n';
             }
         }
 
@@ -7884,8 +7884,10 @@ namespace Catch {
 
             size = sizeof(info);
             if( sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, nullptr, 0) != 0 ) {
-                Catch::cerr() << "\n** Call to sysctl failed - unable to determine if debugger is active **\n" << std::endl;
-                return false;
+              Catch::cerr() << "\n** Call to sysctl failed - unable to "
+                               "determine if debugger is active **\n"
+                            << '\n';
+              return false;
             }
 
             // We're being debugged if the P_TRACED flag is set.
@@ -8573,20 +8575,28 @@ namespace Catch {
 
             Catch::cout() << Column( testCaseInfo.name ).initialIndent( 2 ).indent( 4 ) << "\n";
             if( config.verbosity() >= Verbosity::High ) {
-                Catch::cout() << Column( Catch::Detail::stringify( testCaseInfo.lineInfo ) ).indent(4) << std::endl;
-                std::string description = testCaseInfo.description;
-                if( description.empty() )
-                    description = "(NO DESCRIPTION)";
-                Catch::cout() << Column( description ).indent(4) << std::endl;
+              Catch::cout()
+                  << Column(Catch::Detail::stringify(testCaseInfo.lineInfo))
+                         .indent(4)
+                  << '\n';
+              std::string description = testCaseInfo.description;
+              if (description.empty())
+                description = "(NO DESCRIPTION)";
+              Catch::cout() << Column(description).indent(4) << '\n';
             }
             if( !testCaseInfo.tags.empty() )
                 Catch::cout() << Column( testCaseInfo.tagsAsString() ).indent( 6 ) << "\n";
         }
 
         if( !config.hasTestFilters() )
-            Catch::cout() << pluralise( matchedTestCases.size(), "test case" ) << '\n' << std::endl;
+          Catch::cout() << pluralise(matchedTestCases.size(), "test case")
+                        << '\n'
+                        << '\n';
         else
-            Catch::cout() << pluralise( matchedTestCases.size(), "matching test case" ) << '\n' << std::endl;
+          Catch::cout() << pluralise(matchedTestCases.size(),
+                                     "matching test case")
+                        << '\n'
+                        << '\n';
         return matchedTestCases.size();
     }
 
@@ -8602,7 +8612,7 @@ namespace Catch {
                Catch::cout() << testCaseInfo.name;
             if ( config.verbosity() >= Verbosity::High )
                 Catch::cout() << "\t@" << testCaseInfo.lineInfo;
-            Catch::cout() << std::endl;
+            Catch::cout() << '\n';
         }
         return matchedTests;
     }
@@ -8650,7 +8660,7 @@ namespace Catch {
                                                     .width( CATCH_CONFIG_CONSOLE_WIDTH-10 );
             Catch::cout() << str << wrapper << '\n';
         }
-        Catch::cout() << pluralise( tagCounts.size(), "tag" ) << '\n' << std::endl;
+        Catch::cout() << pluralise(tagCounts.size(), "tag") << '\n' << '\n';
         return tagCounts.size();
     }
 
@@ -8672,7 +8682,7 @@ namespace Catch {
                             .width( CATCH_CONFIG_CONSOLE_WIDTH - maxNameLen-8 )
                     << "\n";
         }
-        Catch::cout() << std::endl;
+        Catch::cout() << '\n';
         return factories.size();
     }
 
@@ -10403,17 +10413,20 @@ namespace Catch {
     }
 
     void Session::showHelp() const {
-        Catch::cout()
-                << "\nCatch v" << libraryVersion() << "\n"
-                << m_cli << std::endl
-                << "For more detailed usage please see the project docs\n" << std::endl;
+      Catch::cout() << "\nCatch v" << libraryVersion() << "\n"
+                    << m_cli << std::endl
+                    << "For more detailed usage please see the project docs\n"
+                    << '\n';
     }
     void Session::libIdentify() {
-        Catch::cout()
-                << std::left << std::setw(16) << "description: " << "A Catch test executable\n"
-                << std::left << std::setw(16) << "category: " << "testframework\n"
-                << std::left << std::setw(16) << "framework: " << "Catch Test\n"
-                << std::left << std::setw(16) << "version: " << libraryVersion() << std::endl;
+      Catch::cout() << std::left << std::setw(16) << "description: "
+                    << "A Catch test executable\n"
+                    << std::left << std::setw(16) << "category: "
+                    << "testframework\n"
+                    << std::left << std::setw(16) << "framework: "
+                    << "Catch Test\n"
+                    << std::left << std::setw(16)
+                    << "version: " << libraryVersion() << '\n';
     }
 
     int Session::applyCommandLine( int argc, char const * const * argv ) {
@@ -10427,7 +10440,7 @@ namespace Catch {
                 << "\nError(s) in input:\n"
                 << Column( result.errorMessage() ).indent( 2 )
                 << "\n\n";
-            Catch::cerr() << "Run with -? for usage\n" << std::endl;
+            Catch::cerr() << "Run with -? for usage\n" << '\n';
             return MaxExitCode;
         }
 
@@ -10470,13 +10483,16 @@ namespace Catch {
 
     int Session::run() {
         if( ( m_configData.waitForKeypress & WaitForKeypress::BeforeStart ) != 0 ) {
-            Catch::cout() << "...waiting for enter/ return before starting" << std::endl;
-            static_cast<void>(std::getchar());
+          Catch::cout() << "...waiting for enter/ return before starting"
+                        << '\n';
+          static_cast<void>(std::getchar());
         }
         int exitCode = runInternal();
         if( ( m_configData.waitForKeypress & WaitForKeypress::BeforeExit ) != 0 ) {
-            Catch::cout() << "...waiting for enter/ return before exiting, with code: " << exitCode << std::endl;
-            static_cast<void>(std::getchar());
+          Catch::cout()
+              << "...waiting for enter/ return before exiting, with code: "
+              << exitCode << '\n';
+          static_cast<void>(std::getchar());
         }
         return exitCode;
     }
@@ -10524,8 +10540,8 @@ namespace Catch {
         }
 #if !defined(CATCH_CONFIG_DISABLE_EXCEPTIONS)
         catch( std::exception& ex ) {
-            Catch::cerr() << ex.what() << std::endl;
-            return MaxExitCode;
+          Catch::cerr() << ex.what() << '\n';
+          return MaxExitCode;
         }
 #endif
     }
@@ -12377,7 +12393,7 @@ namespace {
         else {
             m_os << m_indent << "</" << m_tags.back() << ">";
         }
-        m_os << std::endl;
+        m_os << '\n';
         m_tags.pop_back();
         return *this;
     }
@@ -12424,8 +12440,8 @@ namespace {
 
     void XmlWriter::ensureTagClosed() {
         if( m_tagIsOpen ) {
-            m_os << ">" << std::endl;
-            m_tagIsOpen = false;
+          m_os << ">" << '\n';
+          m_tagIsOpen = false;
         }
     }
 
@@ -12435,8 +12451,8 @@ namespace {
 
     void XmlWriter::newlineIfNecessary() {
         if( m_needsNewline ) {
-            m_os << std::endl;
-            m_needsNewline = false;
+          m_os << '\n';
+          m_needsNewline = false;
         }
     }
 }
@@ -12729,7 +12745,7 @@ private:
         }
 
         void CompactReporter::noMatchingTestCases( std::string const& spec ) {
-            stream << "No test cases matched '" << spec << '\'' << std::endl;
+          stream << "No test cases matched '" << spec << '\'' << '\n';
         }
 
         void CompactReporter::assertionStarting( AssertionInfo const& ) {}
@@ -12749,19 +12765,20 @@ private:
             AssertionPrinter printer( stream, _assertionStats, printInfoMessages );
             printer.print();
 
-            stream << std::endl;
+            stream << '\n';
             return true;
         }
 
         void CompactReporter::sectionEnded(SectionStats const& _sectionStats) {
             if (m_config->showDurations() == ShowDurations::Always) {
-                stream << getFormattedDuration(_sectionStats.durationInSeconds) << " s: " << _sectionStats.sectionInfo.name << std::endl;
+              stream << getFormattedDuration(_sectionStats.durationInSeconds)
+                     << " s: " << _sectionStats.sectionInfo.name << '\n';
             }
         }
 
         void CompactReporter::testRunEnded( TestRunStats const& _testRunStats ) {
             printTotals( stream, _testRunStats.totals );
-            stream << '\n' << std::endl;
+            stream << '\n' << '\n';
             StreamingReporterBase::testRunEnded( _testRunStats );
         }
 
@@ -13050,7 +13067,7 @@ public:
     void close() {
         if (m_isOpen) {
             *this << RowBreak();
-            m_os << std::endl;
+            m_os << '\n';
             m_isOpen = false;
         }
     }
@@ -13109,7 +13126,7 @@ std::string ConsoleReporter::getDescription() {
 }
 
 void ConsoleReporter::noMatchingTestCases(std::string const& spec) {
-    stream << "No test cases matched '" << spec << '\'' << std::endl;
+  stream << "No test cases matched '" << spec << '\'' << '\n';
 }
 
 void ConsoleReporter::assertionStarting(AssertionInfo const&) {}
@@ -13127,7 +13144,7 @@ bool ConsoleReporter::assertionEnded(AssertionStats const& _assertionStats) {
 
     ConsoleAssertionPrinter printer(stream, _assertionStats, includeResults);
     printer.print();
-    stream << std::endl;
+    stream << '\n';
     return true;
 }
 
@@ -13144,10 +13161,11 @@ void ConsoleReporter::sectionEnded(SectionStats const& _sectionStats) {
             stream << "\nNo assertions in section";
         else
             stream << "\nNo assertions in test case";
-        stream << " '" << _sectionStats.sectionInfo.name << "'\n" << std::endl;
+        stream << " '" << _sectionStats.sectionInfo.name << "'\n" << '\n';
     }
     if (m_config->showDurations() == ShowDurations::Always) {
-        stream << getFormattedDuration(_sectionStats.durationInSeconds) << " s: " << _sectionStats.sectionInfo.name << std::endl;
+      stream << getFormattedDuration(_sectionStats.durationInSeconds)
+             << " s: " << _sectionStats.sectionInfo.name << '\n';
     }
     if (m_headerPrinted) {
         m_headerPrinted = false;
@@ -13188,14 +13206,14 @@ void ConsoleReporter::testGroupEnded(TestGroupStats const& _testGroupStats) {
         printSummaryDivider();
         stream << "Summary for group '" << _testGroupStats.groupInfo.name << "':\n";
         printTotals(_testGroupStats.totals);
-        stream << '\n' << std::endl;
+        stream << '\n' << '\n';
     }
     StreamingReporterBase::testGroupEnded(_testGroupStats);
 }
 void ConsoleReporter::testRunEnded(TestRunStats const& _testRunStats) {
     printTotalsDivider(_testRunStats.totals);
     printTotals(_testRunStats.totals);
-    stream << std::endl;
+    stream << '\n';
     StreamingReporterBase::testRunEnded(_testRunStats);
 }
 
@@ -13256,7 +13274,7 @@ void ConsoleReporter::printTestCaseAndSectionHeader() {
         Colour colourGuard(Colour::FileName);
         stream << lineInfo << '\n';
     }
-    stream << getLineOfChars<'.'>() << '\n' << std::endl;
+    stream << getLineOfChars<'.'>() << '\n' << '\n';
 }
 
 void ConsoleReporter::printClosedHeader(std::string const& _name) {

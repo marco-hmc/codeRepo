@@ -2,6 +2,6 @@
 
 int main(int argc, char *argv[])
 {
-   std::cout << "Hello Build Type!" << std::endl;
-   return 0;
+  std::cout << "Hello Build Type!" << '\n';
+  return 0;
 }

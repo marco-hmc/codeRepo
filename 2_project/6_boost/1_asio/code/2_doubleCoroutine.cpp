@@ -6,7 +6,7 @@ int main() {
       [](boost::coroutines2::coroutine<int>::push_type &apush) {
         for (int i = 0; i < 10; i++) {
           std::cout << "---------------------"
-                    << "coroutine 1" << std::endl;
+                    << "coroutine 1" << '\n';
           apush(1);
         }
       });
@@ -15,18 +15,18 @@ int main() {
       [](boost::coroutines2::coroutine<int>::push_type &apush) {
         for (int i = 0; i < 10; i++) {
           std::cout << "---------------------"
-                    << "coroutine 2" << std::endl;
+                    << "coroutine 2" << '\n';
           apush(2);
         }
       });
 
   for (int i = 0; i < 10; ++i) {
-    std::cout << apull.get() << std::endl;
+    std::cout << apull.get() << '\n';
     apull();
-    std::cout << apull2.get() << std::endl;
+    std::cout << apull2.get() << '\n';
     apull2();
   }
-  std::cout << "continue>>>" << std::endl;
+  std::cout << "continue>>>" << '\n';
 
   return 0;
 }

@@ -33,16 +33,14 @@ public:
     // C++17 Any类型
     Any run()  // run方法最终就在线程池分配的线程中去做执行了!
     {
-        std::cout << "tid:" << std::this_thread::get_id()
-            << "begin!" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(3));
-        uLong sum = 0;
-        for (uLong i = begin_; i <= end_; i++)
-            sum += i;
-        std::cout << "tid:" << std::this_thread::get_id()
-            << "end!" << std::endl;
+      std::cout << "tid:" << std::this_thread::get_id() << "begin!" << '\n';
+      std::this_thread::sleep_for(std::chrono::seconds(3));
+      uLong sum = 0;
+      for (uLong i = begin_; i <= end_; i++)
+        sum += i;
+      std::cout << "tid:" << std::this_thread::get_id() << "end!" << '\n';
 
-        return sum;
+      return sum;
     }
 
 private:

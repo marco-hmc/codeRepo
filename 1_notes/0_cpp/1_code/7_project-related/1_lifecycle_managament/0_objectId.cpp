@@ -59,8 +59,8 @@ int main() {
     ObjectPointer objPtr(obj);
 
     // 获取对象指针和标识符并打印
-    std::cout << "Object Pointer: " << objPtr.getObjectPtr() << std::endl;
-    std::cout << "Object ID: " << objPtr.getObjectId() << std::endl;
+    std::cout << "Object Pointer: " << objPtr.getObjectPtr() << '\n';
+    std::cout << "Object ID: " << objPtr.getObjectId() << '\n';
 
     // 释放对象指针
     delete obj;

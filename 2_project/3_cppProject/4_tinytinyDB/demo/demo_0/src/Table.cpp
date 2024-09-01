@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <stdexcept>
 
 #include "../include/Macros.h"
 #include "Cursor.h"
@@ -172,14 +173,14 @@ uint32_t* Table::internal_node_cell(void* node, uint32_t cell_num) {
 uint32_t* Table::internal_node_child(void* node, uint32_t child_num) {
     uint32_t num_keys = *internal_node_num_keys(node);
     if (child_num > num_keys) {
-        std::cerr << "Tried to access child_num " << child_num << " > num_keys " << num_keys
-                  << '\n';
-        std::exit(EXIT_FAILURE);
-    } else if (child_num == num_keys) {
-        return internal_node_right_child(node);
-    } else {
-        return internal_node_cell(node, child_num);
+        spdlog::error("Tried to access child_num: {},    num_keys: {}", child_num, num_keys);
+        throw std::runtime_error("An error occurred");
     }
+
+    if (child_num == num_keys) {
+        return internal_node_right_child(node);
+    }
+    return internal_node_cell(node, child_num);
 }
 
 uint32_t* Table::internal_node_key(void* node, uint32_t key_num) {
@@ -199,6 +200,9 @@ uint32_t Table::get_node_max_key(void* node) {
             return *internal_node_key(node, *internal_node_num_keys(node) - 1);
         case NodeType::LEAF:
             return *leaf_node_key(node, *leaf_node_num_cells(node) - 1);
+        default:
+            assert(false);
+            return 0;
     }
 }
 
@@ -323,14 +327,14 @@ void* Table::getPage(uint32_t page_num) const { return m_pager->getPage(page_num
 
 void Table::serialize_row_insert(Row* source, void* destination) {
     memcpy(destination, &(source->m_id), ID_SIZE);
-    memcpy((char*)destination + USERNAME_OFFSET, source->m_username, USERNAME_SIZE);
-    memcpy((char*)destination + EMAIL_OFFSET, source->m_email, EMAIL_SIZE);
+    memcpy(static_cast<char*>(destination) + USERNAME_OFFSET, source->m_username, USERNAME_SIZE);
+    memcpy(static_cast<char*>(destination) + EMAIL_OFFSET, source->m_email, EMAIL_SIZE);
 };
 
 void Table::deserialize_row_select(void* source, Row* destination) {
     memcpy(&(destination->m_id), source, ID_SIZE);
-    memcpy(destination->m_username, (char*)source + USERNAME_OFFSET, USERNAME_SIZE);
-    memcpy(destination->m_email, (char*)source + EMAIL_OFFSET, EMAIL_SIZE);
+    memcpy(destination->m_username, static_cast<char*>(source) + USERNAME_OFFSET, USERNAME_SIZE);
+    memcpy(destination->m_email, static_cast<char*>(source) + EMAIL_OFFSET, EMAIL_SIZE);
 };
 
 void Table::print_leaf_node(void* node) {
@@ -342,7 +346,7 @@ void Table::print_leaf_node(void* node) {
     }
 }
 
-void Table::exportToCsvFile(std::string csvPath) const {
+void Table::exportToCsvFile(const std::string& csvPath) const {
     std::ofstream csvFile(csvPath, std::ios::out | std::ios::trunc);
     if (!csvFile.is_open()) {
         throw std::runtime_error("无法打开CSV文件");

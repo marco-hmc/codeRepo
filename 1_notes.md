@@ -1,3 +1,7 @@
+tools: 
+* office:
+  * https://zhuanlan.zhihu.com/p/677120662#%E6%BF%80%E6%B4%BBOffice2024%20LTSC
+* 
 
 * 成员函数模板不能为虚函数，因为虚函数表的大小是固定的，而成员函数模板的实例化个数要编译完成后才能确定
 

@@ -22,7 +22,7 @@ public:
       for (int j = 0; j < numVertices; j++) {
         std::cout << adjMatrix[i][j] << " ";
       }
-      std::cout << std::endl;
+      std::cout << '\n';
     }
   }
 };

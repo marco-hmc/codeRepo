@@ -2,7 +2,4 @@
 
 #include "Hello.h"
 
-void Hello::print()
-{
-    std::cout << "Hello Install!" << std::endl;
-}
+void Hello::print() { std::cout << "Hello Install!" << '\n'; }

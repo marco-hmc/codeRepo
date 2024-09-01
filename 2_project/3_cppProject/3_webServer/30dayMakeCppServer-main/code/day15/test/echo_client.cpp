@@ -16,7 +16,7 @@ int main() {
       break;
     }
     conn->Read();
-    std::cout << "Message from server: " << conn->ReadBuffer() << std::endl;
+    std::cout << "Message from server: " << conn->ReadBuffer() << '\n';
   }
 
   delete conn;

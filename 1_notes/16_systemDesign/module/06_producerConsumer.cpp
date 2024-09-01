@@ -14,7 +14,7 @@ void producer() {
 
         std::lock_guard<std::mutex> lock(mtx);
         messageQueue.push(i);
-        std::cout << "Producer: Produced message " << i << std::endl;
+        std::cout << "Producer: Produced message " << i << '\n';
 
         cv.notify_one(); // 通知消费者线程有新消息可用
     }
@@ -27,7 +27,7 @@ void consumer() {
 
         int message = messageQueue.front();
         messageQueue.pop();
-        std::cout << "Consumer: Consumed message " << message << std::endl;
+        std::cout << "Consumer: Consumed message " << message << '\n';
 
         lock.unlock();
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // 模拟消费消息的耗时操作

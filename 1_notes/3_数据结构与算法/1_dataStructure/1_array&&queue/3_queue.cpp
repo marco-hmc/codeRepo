@@ -19,7 +19,7 @@ public:
 
   void enqueue(int value) {
     if (isFull()) {
-      std::cout << "Queue is full. Cannot enqueue." << std::endl;
+      std::cout << "Queue is full. Cannot enqueue." << '\n';
       return;
     }
 
@@ -35,7 +35,7 @@ public:
 
   void dequeue() {
     if (isEmpty()) {
-      std::cout << "Queue is empty. Cannot dequeue." << std::endl;
+      std::cout << "Queue is empty. Cannot dequeue." << '\n';
       return;
     }
 
@@ -49,7 +49,7 @@ public:
 
   int getFront() {
     if (isEmpty()) {
-      std::cout << "Queue is empty." << std::endl;
+      std::cout << "Queue is empty." << '\n';
       return -1;
     }
 
@@ -58,7 +58,7 @@ public:
 
   int getRear() {
     if (isEmpty()) {
-      std::cout << "Queue is empty." << std::endl;
+      std::cout << "Queue is empty." << '\n';
       return -1;
     }
 
@@ -71,12 +71,12 @@ int main() {
   queue.enqueue(10);
   queue.enqueue(20);
   queue.enqueue(30);
-  std::cout << "Front: " << queue.getFront() << std::endl;
-  std::cout << "Rear: " << queue.getRear() << std::endl;
+  std::cout << "Front: " << queue.getFront() << '\n';
+  std::cout << "Rear: " << queue.getRear() << '\n';
 
   queue.dequeue();
-  std::cout << "Front: " << queue.getFront() << std::endl;
-  std::cout << "Rear: " << queue.getRear() << std::endl;
+  std::cout << "Front: " << queue.getFront() << '\n';
+  std::cout << "Rear: " << queue.getRear() << '\n';
 
   return 0;
 }

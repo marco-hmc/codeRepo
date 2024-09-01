@@ -5,9 +5,9 @@ MyReactor g_reactor;
 
 void prog_exit(int signo)
 {
-    std::cout << "program recv signal " << signo << " to exit." << std::endl;
+  std::cout << "program recv signal " << signo << " to exit." << '\n';
 
-    g_reactor.uninit();
+  g_reactor.uninit();
 }
 
 void daemon_run()
@@ -20,8 +20,8 @@ void daemon_run()
     pid = fork();
     if (pid < 0)
     {
-        std:: cout << "fork error" << std::endl;
-        exit(-1);
+      std::cout << "fork error" << '\n';
+      exit(-1);
     }
     //父进程退出，子进程独立运行
     else if (pid > 0) {
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 
     g_reactor.main_loop(&g_reactor);
 
-    std::cout << "main exit" << std::endl;
+    std::cout << "main exit" << '\n';
 
     return 0;
 }

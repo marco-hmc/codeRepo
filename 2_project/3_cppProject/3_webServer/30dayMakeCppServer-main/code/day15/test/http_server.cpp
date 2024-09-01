@@ -8,14 +8,12 @@ int main() {
   Signal::signal(SIGINT, [&] {
     delete server;
     delete loop;
-    std::cout << "\nServer exit!" << std::endl;
+    std::cout << "\nServer exit!" << '\n';
     exit(0);
   });
 
-
-
   server->OnMessage([](Connection *conn) {
-    std::cout << "Message from client " << conn->ReadBuffer() << std::endl;
+    std::cout << "Message from client " << conn->ReadBuffer() << '\n';
     if (conn->GetState() == Connection::State::Connected) {
       conn->Send(conn->ReadBuffer());
     }

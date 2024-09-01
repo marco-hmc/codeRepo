@@ -14,7 +14,7 @@ int main() {
       conn->Close();
       return;
     }
-    std::cout << "Message from client " << conn->GetSocket()->GetFd() << ": " << conn->ReadBuffer() << std::endl;
+    std::cout << "Message from client " << conn->GetSocket()->GetFd() << ": " << conn->ReadBuffer() << '\n';
     conn->SetSendBuffer(conn->ReadBuffer());
     conn->Write();
   });

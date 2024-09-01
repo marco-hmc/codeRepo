@@ -17,7 +17,7 @@ void reader(int id) {
     lock.unlock();
 
     // 读取共享资源
-    std::cout << "Reader " << id << " is reading" << std::endl;
+    std::cout << "Reader " << id << " is reading" << '\n';
 
     lock.lock();
     readers--;
@@ -35,7 +35,7 @@ void writer(int id) {
     lock.unlock();
 
     // 写入共享资源
-    std::cout << "Writer " << id << " is writing" << std::endl;
+    std::cout << "Writer " << id << " is writing" << '\n';
 
     lock.lock();
     writing = false;

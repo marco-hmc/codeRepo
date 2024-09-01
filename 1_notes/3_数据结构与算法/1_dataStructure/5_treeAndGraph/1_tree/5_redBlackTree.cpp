@@ -162,7 +162,7 @@ public:
 
   void printInorderTraversal() {
     inorderTraversal(root);
-    std::cout << std::endl;
+    std::cout << '\n';
   }
 };
 

@@ -56,7 +56,7 @@ int main() {
   // Get the node responsible for a given key
   std::string key = "Key1";
   std::string node = ch.getNode(key);
-  std::cout << "Node responsible for key " << key << ": " << node << std::endl;
+  std::cout << "Node responsible for key " << key << ": " << node << '\n';
 
   return 0;
 }

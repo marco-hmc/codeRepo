@@ -59,12 +59,12 @@ struct ProxyParam {
 };
 
 int main() {
-  std::cout << "socket init failed" << std::endl;
+  std::cout << "socket init failed" << '\n';
   if (!InitSocket()) {
-    std::cout << "socket init failed" << std::endl;
+    std::cout << "socket init failed" << '\n';
     return -1;
   }
-  std::cout << "init success, listen port: " << ProxyPort << std::endl;
+  std::cout << "init success, listen port: " << ProxyPort << '\n';
   SOCKET acceptSocket = INVALID_SOCKET;
   ProxyParam *lpProxyParam;
   HANDLE hThread;
@@ -94,18 +94,18 @@ BOOL InitSocket() {
   err = WSAStartup(wVersionRequested, &wsaData);
   if (err != 0) {
     std::cout << "init winsock failed, error code: " << WSAGetLastError()
-              << std::endl;
+              << '\n';
     return FALSE;
   }
   if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2) {
-    std::cout << "winsock version error" << std::endl;
+    std::cout << "winsock version error" << '\n';
     WSACleanup();
     return FALSE;
   }
   ProxyServer = socket(AF_INET, SOCK_STREAM, 0);
   if (ProxyServer == INVALID_SOCKET) {
     std::cout << "create socket failed, error code: " << WSAGetLastError()
-              << std::endl;
+              << '\n';
     return FALSE;
   }
   ProxyServerAddr.sin_family = AF_INET;
@@ -113,11 +113,11 @@ BOOL InitSocket() {
   ProxyServerAddr.sin_addr.S_un.S_addr = INADDR_ANY;
   if (bind(ProxyServer, (SOCKADDR *)&ProxyServerAddr, sizeof(SOCKADDR)) ==
       SOCKET_ERROR) {
-    std::cout << "bind port " << ProxyPort << " failed" << std::endl;
+    std::cout << "bind port " << ProxyPort << " failed" << '\n';
     return FALSE;
   }
   if (listen(ProxyServer, SOMAXCONN) == SOCKET_ERROR) {
-    std::cout << "listen port " << ProxyPort << " failed" << std::endl;
+    std::cout << "listen port " << ProxyPort << " failed" << '\n';
     return FALSE;
   }
   return TRUE;
@@ -134,7 +134,7 @@ unsigned int __stdcall ProxyThread(LPVOID lpParameter) {
   recvSize =
       recv(((ProxyParam *)lpParameter)->clientSocket, Buffer, MAXSIZE, 0);
   if (recvSize <= 0) {
-    std::cout << "recv failed" << std::endl;
+    std::cout << "recv failed" << '\n';
     goto error;
   }
   HttpHeader *httpHeader = new HttpHeader();
@@ -144,27 +144,27 @@ unsigned int __stdcall ProxyThread(LPVOID lpParameter) {
   delete CacheBuffer;
   if (!ConnectToServer(&((ProxyParam *)lpParameter)->serverSocket,
                        httpHeader->host)) {
-    std::cout << "connect to server failed" << std::endl;
+    std::cout << "connect to server failed" << '\n';
     goto error;
   }
-  std::cout << "proxy" << httpHeader->host << "success" << std::endl;
+  std::cout << "proxy" << httpHeader->host << "success" << '\n';
   ret = send(((ProxyParam *)lpParameter)->serverSocket, Buffer,
              strlen(Buffer) + 1, 0);
   recvSize =
       recv(((ProxyParam *)lpParameter)->serverSocket, Buffer, MAXSIZE, 0);
   if (recvSize <= 0) {
-    std::cout << "recv from server failed" << std::endl;
+    std::cout << "recv from server failed" << '\n';
     goto error;
   }
   ret = send(((ProxyParam *)lpParameter)->clientSocket, Buffer, sizeof(Buffer),
              0);
   if (recvSize <= 0) {
-    std::cout << "send to client failed" << std::endl;
+    std::cout << "send to client failed" << '\n';
     goto error;
   }
 
 error:
-  std::cout << "close socket" << std::endl;
+  std::cout << "close socket" << '\n';
   Sleep(200);
   closesocket(((ProxyParam *)lpParameter)->clientSocket);
   closesocket(((ProxyParam *)lpParameter)->serverSocket);

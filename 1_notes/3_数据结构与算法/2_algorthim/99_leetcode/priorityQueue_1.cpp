@@ -69,7 +69,7 @@ int main() {
     for (int num : smallestNumbers) {
         std::cout << num << " ";
     }
-    std::cout << std::endl;
+    std::cout << '\n';
 
     return 0;
 }

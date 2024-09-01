@@ -27,12 +27,12 @@ int main() {
   stack.push(2);
   stack.push(3);
 
-  std::cout << "Stack size: " << stack.size() << std::endl;
-  std::cout << "Top element: " << stack.top() << std::endl;
+  std::cout << "Stack size: " << stack.size() << '\n';
+  std::cout << "Top element: " << stack.top() << '\n';
 
   stack.pop();
-  std::cout << "Stack size after pop: " << stack.size() << std::endl;
-  std::cout << "Top element after pop: " << stack.top() << std::endl;
+  std::cout << "Stack size after pop: " << stack.size() << '\n';
+  std::cout << "Top element after pop: " << stack.top() << '\n';
 
   return 0;
 }

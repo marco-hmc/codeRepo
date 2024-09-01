@@ -17,8 +17,8 @@ std::vector<int> findClosestNumbers(const std::vector<int>& arr, int k, int m) {
     }
 
     if (kIndex == -1) {
-        std::cout << "Error: kth number not found in the array." << std::endl;
-        return closestNumbers;
+      std::cout << "Error: kth number not found in the array." << '\n';
+      return closestNumbers;
     }
 
     int left = kIndex - 1;
@@ -65,7 +65,7 @@ int main() {
     for (int num : closestNumbers) {
         std::cout << num << " ";
     }
-    std::cout << std::endl;
+    std::cout << '\n';
 
     return 0;
 }

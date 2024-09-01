@@ -78,12 +78,14 @@ static void HandleError(const char* errorName, const ValueType& error, size_t de
     }
     // Output error message, references, context
     std::string indent(depth * 2, ' ');
-    std::cout << indent << "Error Name: " << errorName << std::endl;
-    std::cout << indent << "Message: " << message.c_str() << std::endl;
-    std::cout << indent << "Instance: " << error["instanceRef"].GetString() << std::endl;
-    std::cout << indent << "Schema: " << error["schemaRef"].GetString() << std::endl;
-    if (depth > 0) std::cout << indent << "Context: " << context << std::endl;
-    std::cout << std::endl;
+    std::cout << indent << "Error Name: " << errorName << '\n';
+    std::cout << indent << "Message: " << message.c_str() << '\n';
+    std::cout << indent << "Instance: " << error["instanceRef"].GetString()
+              << '\n';
+    std::cout << indent << "Schema: " << error["schemaRef"].GetString() << '\n';
+    if (depth > 0)
+      std::cout << indent << "Context: " << context << '\n';
+    std::cout << '\n';
 
     // If child errors exist, apply the process recursively to each error structure.
     // This occurs for "oneOf", "allOf", "anyOf" and "dependencies" errors, so pass the error name as context.

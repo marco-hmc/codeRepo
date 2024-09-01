@@ -107,7 +107,7 @@ public:
 
   // Print the skip list
   void print() {
-    std::cout << "Skip List:" << std::endl;
+    std::cout << "Skip List:" << '\n';
     for (int i = 0; i <= level; i++) {
       Node *current = header->forward[i];
       std::cout << "Level " << i << ": ";
@@ -115,7 +115,7 @@ public:
         std::cout << current->value << " ";
         current = current->forward[i];
       }
-      std::cout << std::endl;
+      std::cout << '\n';
     }
   }
 };
@@ -137,10 +137,9 @@ int main() {
   // Search for a value in the skip list
   int value = 6;
   if (skipList.search(value)) {
-    std::cout << "Value " << value << " found in the skip list." << std::endl;
+    std::cout << "Value " << value << " found in the skip list." << '\n';
   } else {
-    std::cout << "Value " << value << " not found in the skip list."
-              << std::endl;
+    std::cout << "Value " << value << " not found in the skip list." << '\n';
   }
 
   return 0;

@@ -20,13 +20,13 @@ void workerThread(int id) {
         tasks.pop();
 
         // 执行任务
-        std::cout << "Worker " << id << " processing task: " << task << std::endl;
+        std::cout << "Worker " << id << " processing task: " << task << '\n';
 
         // 模拟任务执行时间
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // 返回结果给主线程
-        std::cout << "Worker " << id << " finished task: " << task << std::endl;
+        std::cout << "Worker " << id << " finished task: " << task << '\n';
     }
 }
 

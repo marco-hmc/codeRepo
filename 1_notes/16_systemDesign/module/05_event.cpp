@@ -1,9 +1,7 @@
 #include <iostream>
 
 // 定义事件处理函数
-void onButtonClick() {
-    std::cout << "Button clicked!" << std::endl;
-}
+void onButtonClick() { std::cout << "Button clicked!" << '\n'; }
 
 // 定义事件触发器类
 class Button {

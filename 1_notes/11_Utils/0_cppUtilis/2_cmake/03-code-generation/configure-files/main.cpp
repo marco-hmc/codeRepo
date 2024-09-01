@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Hello Version " << ver << "!" << std::endl;
-    std::cout << "Path is " << path << std::endl;
-   return 0;
+  std::cout << "Hello Version " << ver << "!" << '\n';
+  std::cout << "Path is " << path << '\n';
+  return 0;
 }

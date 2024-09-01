@@ -1,3 +1,14 @@
+* java-history
+  * 因为C++需要有不同的编译器才能实现跨平台的效果，而为不同的家庭设备开发一种跨平台通用的系统，才有了java。
+  * java实现跨平台是通过jvm
+  * 后来因为java适合跨平台项目，就用java前身语言oak写了一个浏览器webRunner，除了支持渲染html，还可以跑oak，即java applet。
+  * 这个举动大获成功，引得各个公司都加入java。
+  * java同时也发布了一个java jdk1.0，方便网页嵌入java，写一些类似flash的东西。
+  * java是免费的，引起吸引了很多用户，然后sun公司再推出了商业服务，发布了j2se（标准版），后面又陆续发布了j2ee（企业版）,j2me（迷你版本）。
+  * 后面借鉴php等，发布了jsp，类似于js，发布做java web   
+  * 后面有能力推出了spring framework
+
+
 ### 什么是对象关系映射框架(ORM)?
 
 #### 1.1 MyBatis

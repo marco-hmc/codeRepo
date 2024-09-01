@@ -16,7 +16,7 @@ int main() {
       });
 
   for (auto i : source) {
-    std::cout << i << " " << std::endl;
+    std::cout << i << " " << '\n';
   }
 
   return 0;

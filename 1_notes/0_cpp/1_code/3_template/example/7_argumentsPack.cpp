@@ -1,7 +1,7 @@
 #include <iostream>
 
 template <typename T> void print(const T &t) {
-  std::cout << t << std::endl; // 基本情况
+  std::cout << t << '\n'; // 基本情况
 }
 
 template <typename T, typename... Args>
@@ -16,11 +16,11 @@ template <typename... Args> void print(Args &&...args) {
 }
 
 template <typename... Args> void print2(Args &&...args) {
-  (std::cout << ... << args) << std::endl; // 右折叠打印所有参数
+  (std::cout << ... << args) << '\n'; // 右折叠打印所有参数
 }
 
 template <typename... Args> void countArgs(Args &&...args) {
-  std::cout << "Number of arguments: " << sizeof...(args) << std::endl;
+  std::cout << "Number of arguments: " << sizeof...(args) << '\n';
 }
 
 // C++11 引入了变参模板，用省略号表示一个，类型名后接省略号表示任意数量给定类型的参数。

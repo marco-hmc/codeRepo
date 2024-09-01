@@ -9,15 +9,15 @@ int main() {
   Connection *conn = new Connection(nullptr, sock);
   while(true){
     conn->Read();
-    std::cout << "Message from server: " << conn->ReadBuffer() << std::endl;
+    std::cout << "Message from server: " << conn->ReadBuffer() << '\n';
   }
   // conn->Read();
 
-//  if (conn->GetState() == Connection::State::Connected) {
-  //  std::cout << conn->ReadBuffer() << std::endl;
+  //  if (conn->GetState() == Connection::State::Connected) {
+  //  std::cout << conn->ReadBuffer() << '\n';
   //}
-  //conn->SetSendBuffer("Hello server!");
-  //conn->Write();
+  // conn->SetSendBuffer("Hello server!");
+  // conn->Write();
 
   delete conn;
   return 0;

@@ -64,15 +64,14 @@ void* MyReactor::main_loop(void *p)
 
     while(!pReactor->m_bStop)
     {
-        /* std::cout << "main loop" << std::endl; */
-        struct epoll_event ev[1024];
-        int n = epoll_wait(pReactor->m_epollfd, ev, 1024, 10);
-        if(n == 0)
-            continue;
-        else if(n < 0)
-        {
-            my_logger->error("epoll_wait error");
-            continue;
+      /* std::cout << "main loop" << '\n'; */
+      struct epoll_event ev[1024];
+      int n = epoll_wait(pReactor->m_epollfd, ev, 1024, 10);
+      if (n == 0)
+        continue;
+      else if (n < 0) {
+        my_logger->error("epoll_wait error");
+        continue;
         }
 
         int m = std::min(n, 1024);
@@ -214,8 +213,7 @@ void* MyReactor::worker_thread_proc(void* args)
         pReactor->m_clientlist.pop_front();
         pthread_mutex_unlock(&pReactor->m_client_mutex);
 
-        std::cout << std::endl;
-
+        std::cout << '\n';
 
         std::string strclientmsg;
         char buff[256];
@@ -300,8 +298,7 @@ void* MyReactor::send_thread_proc(void *args)
         pReactor->m_msgs.pop_front();
         pthread_mutex_unlock(&pReactor->m_send_mutex);
 
-        std::cout << std::endl;
-
+        std::cout << '\n';
 
         while(1)
         {

@@ -7,7 +7,7 @@ class UndoController {
 public:
     void AddOperation(const std::string& operation) {
         // 将操作添加到流中
-        stream_ << operation << std::endl;
+        stream_ << operation << '\n';
         // 清空重做栈
         redoStack_ = std::stack<std::string>();
     }
@@ -30,7 +30,7 @@ public:
             std::string operation = redoStack_.top();
             redoStack_.pop();
             // 将操作添加到流中
-            stream_ << operation << std::endl;
+            stream_ << operation << '\n';
         }
     }
 

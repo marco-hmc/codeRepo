@@ -22,7 +22,7 @@ void OneClient(int msgs, int wait) {
       break;
     }
     conn->Read();
-    std::cout << "msg count " << count++ << ": " << conn->ReadBuffer() << std::endl;
+    std::cout << "msg count " << count++ << ": " << conn->ReadBuffer() << '\n';
   }
   delete conn;
 }

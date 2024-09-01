@@ -27,9 +27,9 @@ public:
       Model currentModel = undoStack.top();
       undoStack.pop();
       redoStack.push(currentModel);
-      std::cout << "Undo: Data restored to " << currentModel.getData() << std::endl;
+      std::cout << "Undo: Data restored to " << currentModel.getData() << '\n';
     } else {
-      std::cout << "Undo: No more operations to undo" << std::endl;
+      std::cout << "Undo: No more operations to undo" << '\n';
     }
   }
 
@@ -38,9 +38,9 @@ public:
       Model currentModel = redoStack.top();
       redoStack.pop();
       undoStack.push(currentModel);
-      std::cout << "Redo: Data restored to " << currentModel.getData() << std::endl;
+      std::cout << "Redo: Data restored to " << currentModel.getData() << '\n';
     } else {
-      std::cout << "Redo: No more operations to redo" << std::endl;
+      std::cout << "Redo: No more operations to redo" << '\n';
     }
   }
 
@@ -48,7 +48,7 @@ public:
     undoStack.push(model);
     model.setData(newData);
     redoStack = std::stack<Model>(); // Clear redo stack after performing a new operation
-    std::cout << "Performed operation: Data set to " << newData << std::endl;
+    std::cout << "Performed operation: Data set to " << newData << '\n';
   }
 };
 

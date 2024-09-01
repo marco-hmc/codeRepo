@@ -16,8 +16,8 @@ struct B {};
 
 void test_has_type() {
   std::cout << std::boolalpha;
-  std::cout << has_type<A>::value << std::endl; // 输出true
-  std::cout << has_type<B>::value << std::endl; // 输出false
+  std::cout << has_type<A>::value << '\n'; // 输出true
+  std::cout << has_type<B>::value << '\n'; // 输出false
 }
 } // namespace Method1
 
@@ -59,8 +59,8 @@ struct D {};
 
 void test_has_function() {
   std::cout << std::boolalpha;
-  std::cout << has_function<C>::value << std::endl; // 输出true
-  std::cout << has_function<D>::value << std::endl; // 输出false
+  std::cout << has_function<C>::value << '\n'; // 输出true
+  std::cout << has_function<D>::value << '\n'; // 输出false
 }
 } // namespace Method1
 

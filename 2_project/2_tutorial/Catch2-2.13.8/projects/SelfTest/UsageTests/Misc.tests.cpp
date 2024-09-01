@@ -157,9 +157,9 @@ TEST_CASE( "looped tests", "[.][failing]" ) {
 }
 
 TEST_CASE( "Sends stuff to stdout and stderr", "[.]" ) {
-    std::cout << "A string sent directly to stdout" << std::endl;
-    std::cerr << "A string sent directly to stderr" << std::endl;
-    std::clog << "A string sent to stderr via clog" << std::endl;
+    std::cout << "A string sent directly to stdout" << '\n';
+    std::cerr << "A string sent directly to stderr" << '\n';
+    std::clog << "A string sent to stderr via clog" << '\n';
 }
 
 TEST_CASE( "null strings" ) {

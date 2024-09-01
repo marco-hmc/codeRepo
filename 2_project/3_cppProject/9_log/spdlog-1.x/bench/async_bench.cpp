@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
         }
         spdlog::shutdown();
     } catch (std::exception &ex) {
-        std::cerr << "Error: " << ex.what() << std::endl;
+        std::cerr << "Error: " << ex.what() << '\n';
         perror("Last error");
         return 1;
     }

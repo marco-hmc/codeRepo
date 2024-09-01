@@ -72,7 +72,7 @@ int main() {
     for (int num : output) {
         std::cout << num << " ";
     }
-    std::cout << std::endl;
+    std::cout << '\n';
 
     return 0;
 }

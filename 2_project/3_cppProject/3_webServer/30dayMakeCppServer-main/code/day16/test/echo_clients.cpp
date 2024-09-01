@@ -19,7 +19,7 @@ void OneClient(int msgs, int wait) {
       break;
     }
     conn->Read();
-    std::cout << "msg count " << count++ << ": " << conn->read_buf()->c_str() << std::endl;
+    std::cout << "msg count " << count++ << ": " << conn->read_buf()->c_str() << '\n';
   }
   delete sock;
   delete conn;

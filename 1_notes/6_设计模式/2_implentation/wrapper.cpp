@@ -18,6 +18,6 @@ int main() {
   IntWrapper myNumber(10);
   myNumber.add(5);
   myNumber.subtract(3);
-  std::cout << "The value is: " << myNumber.getValue() << std::endl;
+  std::cout << "The value is: " << myNumber.getValue() << '\n';
   return 0;
 }

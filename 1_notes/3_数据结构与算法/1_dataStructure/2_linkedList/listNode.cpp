@@ -75,7 +75,7 @@ int main() {
     std::cout << result1->val << " ";
     result1 = result1->next;
   }
-  std::cout << std::endl;
+  std::cout << '\n';
 
   // Test method2
   Solution2 solution2;
@@ -85,7 +85,7 @@ int main() {
     std::cout << result2->val << " ";
     result2 = result2->next;
   }
-  std::cout << std::endl;
+  std::cout << '\n';
 
   return 0;
 }

@@ -17,11 +17,11 @@ bool MyReactor::init(const char* ip, short nport)
 {
     if(!create_server_listener(ip, nport))
     {
-        std::cout << "Unable to bind:" << ip << ":" << nport << "." << std::endl;
-        return false;
+      std::cout << "Unable to bind:" << ip << ":" << nport << "." << '\n';
+      return false;
     }
 
-    std::cout << "main thread id = " << pthread_self() << std::endl;
+    std::cout << "main thread id = " << pthread_self() << '\n';
 
     ARG *arg = new ARG();
     arg->pThis = this;
@@ -30,7 +30,7 @@ bool MyReactor::init(const char* ip, short nport)
 
     pthread_create(&m_send_threadid, NULL, send_thread_proc, (void*)arg);
 
-    std::cout << "accept thread " << std::endl;
+    std::cout << "accept thread " << '\n';
 
     for(int i = 0; i < WORKER_THREAD_NUM; i++)
     {
@@ -57,45 +57,38 @@ bool MyReactor::uninit()
 
 void* MyReactor::main_loop(void *p)
 {
-    std::cout << "main thread id = " << pthread_self() << std::endl;
+  std::cout << "main thread id = " << pthread_self() << '\n';
 
-    MyReactor* pReactor = static_cast<MyReactor*>(p);
+  MyReactor *pReactor = static_cast<MyReactor *>(p);
 
-
-
-    while(!pReactor->m_bStop)
-    {
-        /* std::cout << "main loop" << std::endl; */
-        struct epoll_event ev[1024];
-        int n = epoll_wait(pReactor->m_epollfd, ev, 1024, 10);
-        if(n == 0)
-            continue;
-        else if(n < 0)
-        {
-            std::cout << "epoll_wait error" << std::endl;
-            continue;
-        }
-
-        int m = std::min(n, 1024);
-        for(int i = 0; i < m; i++)
-        {
-            /* 有新连接 */
-            if(ev[i].data.fd == pReactor->m_listenfd)
-                pthread_cond_signal(&pReactor->m_accept_cond);
-            /* 有数据 */
-            else
-            {
-                pthread_mutex_lock(&pReactor->m_client_mutex);
-                pReactor->m_clientlist.push_back(ev[i].data.fd);
-                pthread_mutex_unlock(&pReactor->m_client_mutex);
-
-
-                pthread_cond_signal(&pReactor->m_client_cond);
-            }
-        }
+  while (!pReactor->m_bStop) {
+    /* std::cout << "main loop" << '\n'; */
+    struct epoll_event ev[1024];
+    int n = epoll_wait(pReactor->m_epollfd, ev, 1024, 10);
+    if (n == 0)
+      continue;
+    else if (n < 0) {
+      std::cout << "epoll_wait error" << '\n';
+      continue;
     }
 
-    std::cout << "main loop exit ..." << std::endl;
+    int m = std::min(n, 1024);
+    for (int i = 0; i < m; i++) {
+      /* 有新连接 */
+      if (ev[i].data.fd == pReactor->m_listenfd)
+        pthread_cond_signal(&pReactor->m_accept_cond);
+      /* 有数据 */
+      else {
+        pthread_mutex_lock(&pReactor->m_client_mutex);
+        pReactor->m_clientlist.push_back(ev[i].data.fd);
+        pthread_mutex_unlock(&pReactor->m_client_mutex);
+
+        pthread_cond_signal(&pReactor->m_client_cond);
+      }
+    }
+  }
+
+    std::cout << "main loop exit ..." << '\n';
     return NULL;
 }
 
@@ -104,7 +97,8 @@ bool MyReactor::close_client(int clientfd)
 {
     if(epoll_ctl(m_epollfd, EPOLL_CTL_DEL, clientfd, NULL) == -1)
     {
-        std::cout << "release client socket failed as call epoll_ctl fail" << std::endl;
+      std::cout << "release client socket failed as call epoll_ctl fail"
+                << '\n';
     }
 
     close(clientfd);
@@ -173,16 +167,16 @@ void* MyReactor::accept_thread_proc(void* args)
         pReactor->m_fds.insert(newfd);
         pthread_mutex_unlock(&pReactor->m_cli_mutex);
 
-        std::cout << "new client connected: " << std::endl;
-
+        std::cout << "new client connected: " << '\n';
 
         /* 将新socket设置为non-blocking */
         int oldflag = fcntl(newfd, F_GETFL, 0);
         int newflag = oldflag | O_NONBLOCK;
         if(fcntl(newfd, F_SETFL, newflag) == -1)
         {
-            std::cout << "fcntl error, oldflag = " << oldflag << ", newflag = " << newflag << std::endl;
-            continue;
+          std::cout << "fcntl error, oldflag = " << oldflag
+                    << ", newflag = " << newflag << '\n';
+          continue;
         }
 
         struct epoll_event e;
@@ -192,7 +186,7 @@ void* MyReactor::accept_thread_proc(void* args)
         /* 添加进epoll的兴趣列表 */
         if(epoll_ctl(pReactor->m_epollfd, EPOLL_CTL_ADD, newfd, &e) == -1)
         {
-            std::cout << "epoll_ctl error, fd = " << newfd << std::endl;
+          std::cout << "epoll_ctl error, fd = " << newfd << '\n';
         }
     }
 
@@ -217,8 +211,7 @@ void* MyReactor::worker_thread_proc(void* args)
         pReactor->m_clientlist.pop_front();
         pthread_mutex_unlock(&pReactor->m_client_mutex);
 
-        std::cout << std::endl;
-
+        std::cout << '\n';
 
         std::string strclientmsg;
         char buff[256];
@@ -233,10 +226,12 @@ void* MyReactor::worker_thread_proc(void* args)
                     break;
                 else
                 {
-                    std::cout << "recv error, client disconnected, fd = " << clientfd << std::endl;
-                    pReactor->close_client(clientfd);
-                    bError = true;
-                    break;
+                  std::cout
+                      << "recv error, client disconnected, fd = " << clientfd
+                      << '\n';
+                  pReactor->close_client(clientfd);
+                  bError = true;
+                  break;
                 }
             }
             /* 对端关闭了socket，这端也关闭 */
@@ -246,8 +241,8 @@ void* MyReactor::worker_thread_proc(void* args)
                 pReactor->m_fds.erase(clientfd);
                 pthread_mutex_unlock(&pReactor->m_cli_mutex);
 
-
-                std::cout << "peer clised, client disconnected, fd = " << clientfd << std::endl;
+                std::cout << "peer clised, client disconnected, fd = "
+                          << clientfd << '\n';
                 pReactor->close_client(clientfd);
                 bError = true;
                 break;
@@ -305,8 +300,7 @@ void* MyReactor::send_thread_proc(void *args)
         pReactor->m_msgs.pop_front();
         pthread_mutex_unlock(&pReactor->m_send_mutex);
 
-        std::cout << std::endl;
-
+        std::cout << '\n';
 
         while(1)
         {
@@ -325,14 +319,14 @@ void* MyReactor::send_thread_proc(void *args)
                     }
                     else
                     {
-                        std::cout << "send error, fd = " << clientfd << std::endl;
-                        pReactor->close_client(clientfd);
-                        break;
+                      std::cout << "send error, fd = " << clientfd << '\n';
+                      pReactor->close_client(clientfd);
+                      break;
                     }
                 }
             }
 
-            std::cout << "send: " << strclientmsg << std::endl;
+            std::cout << "send: " << strclientmsg << '\n';
             /* 发送完把缓冲区清干净 */
             /* strclientmsg.erase(0, nSend); */
             strclientmsg.clear();

@@ -60,17 +60,17 @@ int main() {
 
   // Check if elements are connected
   std::cout << "Is 0 connected to 1? " << (uf.isConnected(0, 1) ? "Yes" : "No")
-            << std::endl;
+            << '\n';
   std::cout << "Is 2 connected to 3? " << (uf.isConnected(2, 3) ? "Yes" : "No")
-            << std::endl;
+            << '\n';
   std::cout << "Is 4 connected to 5? " << (uf.isConnected(4, 5) ? "Yes" : "No")
-            << std::endl;
+            << '\n';
   std::cout << "Is 6 connected to 7? " << (uf.isConnected(6, 7) ? "Yes" : "No")
-            << std::endl;
+            << '\n';
   std::cout << "Is 8 connected to 9? " << (uf.isConnected(8, 9) ? "Yes" : "No")
-            << std::endl;
+            << '\n';
   std::cout << "Is 0 connected to 2? " << (uf.isConnected(0, 2) ? "Yes" : "No")
-            << std::endl;
+            << '\n';
 
   return 0;
 }

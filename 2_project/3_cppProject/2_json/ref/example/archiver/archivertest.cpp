@@ -41,7 +41,7 @@ void test1() {
         JsonWriter writer;
         writer & s;
         json = writer.GetString();
-        std::cout << json << std::endl;
+        std::cout << json << '\n';
     }
 
     // Deserialize
@@ -49,7 +49,7 @@ void test1() {
         Student s;
         JsonReader reader(json.c_str());
         reader & s;
-        std::cout << s << std::endl;
+        std::cout << s << '\n';
     }
 }
 
@@ -84,10 +84,11 @@ Archiver& operator&(Archiver& ar, Group& g) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Group& g) {
-    os << g.groupName << std::endl;
-    for (std::vector<Student>::const_iterator itr = g.students.begin(); itr != g.students.end(); ++itr)
-        os << *itr << std::endl;
-    return os;
+  os << g.groupName << '\n';
+  for (std::vector<Student>::const_iterator itr = g.students.begin();
+       itr != g.students.end(); ++itr)
+    os << *itr << '\n';
+  return os;
 }
 
 void test2() {
@@ -106,7 +107,7 @@ void test2() {
         JsonWriter writer;
         writer & g;
         json = writer.GetString();
-        std::cout << json << std::endl;
+        std::cout << json << '\n';
     }
 
     // Deserialize
@@ -114,7 +115,7 @@ void test2() {
         Group g;
         JsonReader reader(json.c_str());
         reader & g;
-        std::cout << g << std::endl;
+        std::cout << g << '\n';
     }
 }
 
@@ -214,7 +215,7 @@ public:
     void Print(std::ostream& os) {
         for (std::vector<Shape*>::iterator itr = shapes_.begin(); itr != shapes_.end(); ++itr) {
             (*itr)->Print(os);
-            std::cout << std::endl;
+            std::cout << '\n';
         }
     }
 
@@ -266,7 +267,7 @@ void test3() {
         JsonWriter writer;
         writer & c;
         json = writer.GetString();
-        std::cout << json << std::endl;
+        std::cout << json << '\n';
     }
 
     // Deserialize
