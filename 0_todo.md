@@ -1,18 +1,4 @@
-function-call-principle-master
-
 ## 1. doing
-  2. https://github.com/wuyongch/-Student-management-system/tree/main/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9Fhttps://github.com/wuyongch/-Student-management-system/tree/main/%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F
-  3. https://github.com/parallel101/course/tree/master
-  4. https://github.com/jiayaozhang/OpenVDB_and_TBB
-  6. GPU 渲染管线与着色器 大白话总结 ---- 一篇就够
-    原文链接:https://blog.csdn.net/newchenxf/article/details/119803489
-  7.  https://github.com/raphaelpor/electron-adventures
-  8.  https://github.com/taw/electron-adventures
-  9.  渲染管线
-  10. flutterEngine，electron
-  11. https://github.com/CnTransGroup/EffectiveModernCppChinese?tab=readme-ov-file
-  16. spdlog
-  17. cs144
 
 ### 1.1 trivals
   1. podcast
