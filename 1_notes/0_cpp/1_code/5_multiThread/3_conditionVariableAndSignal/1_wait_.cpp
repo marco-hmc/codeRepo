@@ -4,6 +4,26 @@
 #include <mutex>
 #include <thread>
 
+namespace {
+void printFirst() {
+  for (int i = 0; i < 5; i++) {
+    std::cout << "first" << '\n';
+  }
+}
+
+void printSecond() {
+  for (int i = 0; i < 5; i++) {
+    std::cout << "second" << '\n';
+  }
+}
+
+void printThird() {
+  for (int i = 0; i < 5; i++) {
+    std::cout << "third" << '\n';
+  }
+}
+} // namespace
+
 class Foo {
 public:
   void first(std::function<void()> printFirst) {
@@ -31,22 +51,6 @@ private:
   std::mutex mtx;
   int k = 0;
 };
-
-void printFirst() {
-  for (int i = 0; i < 5; i++) {
-    std::cout << "first" << '\n';
-  }
-}
-void printSecond() {
-  for (int i = 0; i < 5; i++) {
-    std::cout << "second" << '\n';
-  }
-}
-void printThird() {
-  for (int i = 0; i < 5; i++) {
-    std::cout << "third" << '\n';
-  }
-}
 
 int main() {
   Foo f;

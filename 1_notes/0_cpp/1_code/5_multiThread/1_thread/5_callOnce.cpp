@@ -3,17 +3,17 @@
 #include <thread>
 #include <vector>
 
-namespace {
+namespace identifier1 {
+std::once_flag callflag;
+
 void once_print() { std::cout << '!'; }
 
-std::once_flag callflag;
 void print(size_t x) {
   std::call_once(callflag, once_print);
   std::cout << x;
 }
-} // namespace
 
-int main() {
+void test1() {
   std::vector<std::thread> v;
   for (size_t i{0}; i < 10; ++i) {
     v.emplace_back(print, i);
@@ -23,6 +23,41 @@ int main() {
     t.join();
   }
   std::cout << '\n';
+}
+} // namespace identifier1
+
+namespace identifier2 {
+
+int winner;
+std::once_flag winner_flag;
+
+void set_winner(int x) { winner = x; }
+
+void wait_1000ms(int id) {
+  for (int i = 0; i < 1000; ++i) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+  std::call_once(winner_flag, set_winner, id);
+}
+
+void test2() {
+  std::vector<std::thread> threads;
+  threads.reserve(10);
+  for (int i = 0; i < 10; ++i) {
+    threads.emplace_back(wait_1000ms, i + 1);
+  }
+  std::cout << "waiting for the first among 10 threads to count 1000ms...\n";
+
+  for (auto &th : threads) {
+    th.join();
+  }
+  std::cout << "winner thread: " << winner << '\n';
+}
+} // namespace identifier2
+
+int main() {
+  identifier1::test1();
+  identifier2::test2();
 }
 
 /*

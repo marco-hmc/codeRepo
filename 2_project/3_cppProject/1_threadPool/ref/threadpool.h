@@ -167,7 +167,7 @@ public:
     for (int i = 0; i < initThreadSize_; i++) {
       // 创建thread线程对象的时候,把线程函数给到thread线程对象
       auto ptr = std::make_unique<Thread>(
-          std::bind(&ThreadPool::threadFunc, this, std::placeholders::_1));
+          [this](auto &&PH1) { threadFunc(std::forward<decltype(PH1)>(PH1)); });
       int threadId = ptr->getId();
       threads_.emplace(threadId, std::move(ptr));
       // threads_.emplace_back(std::move(ptr));

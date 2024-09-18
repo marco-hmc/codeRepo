@@ -7,7 +7,7 @@ std::atomic<int> foo(0);
 void set_foo(int x) { foo.store(x, std::memory_order_relaxed); }
 
 void print_foo() {
-  int x;
+  int x = 0;
   do {
     x = foo.load(std::memory_order_relaxed);
   } while (x == 0);

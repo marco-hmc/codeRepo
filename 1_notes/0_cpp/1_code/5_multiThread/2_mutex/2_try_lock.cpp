@@ -52,6 +52,7 @@ void test_2() {
   for (int i = 0; i < 10; ++i) {
     threads.emplace_back(fireworks);
   }
+
   for (auto &th : threads) {
     th.join();
   }
@@ -98,8 +99,8 @@ void test_3() {
 } // namespace identifier3
 
 int main() {
-  // identifier1::test_1();
-  // identifier2::test_2();
+  identifier1::test_1();
+  identifier2::test_2();
   identifier3::test_3();
   return 0;
 }
