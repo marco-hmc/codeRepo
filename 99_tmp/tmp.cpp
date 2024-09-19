@@ -1,63 +1,72 @@
 #include <iostream>
+#include <vector>
 
-template <bool B, class T = void> struct enable_if {};
+#include <algorithm>
+#include <iostream>
+#include <vector>
 
-template <class T> struct enable_if<true, T> {
-  typedef T type;
+// 定义协程上下文结构
+struct CoroutineContext {
+  int state;    // 状态机的当前状态
+  int localVar; // 局部变量
 };
 
-template <bool B, class T> using enable_if_t = typename enable_if<B, T>::type;
+// 定义协程入口函数类型
+using CoroutineEntry = void (*)(CoroutineContext *);
 
-template <class T> struct is_integral {};
+// 协程函数1
+void coroutineFunction1(CoroutineContext *context) {
+  switch (context->state) {
+  case 0:
+    std::cout << "Coroutine 1 started" << std::endl;
+    context->localVar = 42;
+    context->state = 1;
+    return;
+  case 1:
+    std::cout << "Coroutine 1 resumed, localVar = " << context->localVar
+              << std::endl;
+    context->state = 2;
+    return;
+  case 2:
+    std::cout << "Coroutine 1 finished" << std::endl;
+    return;
+  }
+}
 
-template <> struct is_integral<int> {
-  const static bool value = true;
-};
-
-template <class T> struct is_floating_point {};
-
-template <> struct is_floating_point<float> {
-  const static bool value = true;
-};
-
-struct T {
-  enum { INT, FLOAT } type;
-
-  template <typename Integer,
-            enable_if_t<is_integral<Integer>::value, bool> = true>
-  T(Integer) : type(INT) {}
-
-  template <typename Floating,
-            enable_if_t<is_floating_point<Floating>::value, bool> = true>
-  T(Floating) : type(FLOAT) {}
-};
+// 协程函数2
+void coroutineFunction2(CoroutineContext *context) {
+  switch (context->state) {
+  case 0:
+    std::cout << "Coroutine 2 started" << std::endl;
+    context->localVar = 84;
+    context->state = 1;
+    return;
+  case 1:
+    std::cout << "Coroutine 2 resumed, localVar = " << context->localVar
+              << std::endl;
+    context->state = 2;
+    return;
+  case 2:
+    std::cout << "Coroutine 2 finished" << std::endl;
+    return;
+  }
+}
 
 int main() {
-  boost::coroutines2::coroutine<int>::pull_type apull(
-      [](boost::coroutines2::coroutine<int>::push_type &apush) {
-        for (int i = 0; i < 10; i++) {
-          std::cout << "---------------------"
-                    << "coroutine 1" << '\n';
-          apush(1);
-        }
-      });
+  std::vector<int> source = {1, 2, 3, 4, 5};
 
-  boost::coroutines2::coroutine<int>::pull_type apull2(
-      [](boost::coroutines2::coroutine<int>::push_type &apush) {
-        for (int i = 0; i < 10; i++) {
-          std::cout << "---------------------"
-                    << "coroutine 2" << '\n';
-          apush(2);
-        }
-      });
-
-  for (int i = 0; i < 10; ++i) {
-    std::cout << apull.get() << '\n';
-    apull();
-    std::cout << apull2.get() << '\n';
-    apull2();
+  {
+    std::vector<int> target(source.size());
+    std::transform(source.begin(), source.end(), target.begin(),
+                   [](const auto &x) { return x * 2; });
   }
-  std::cout << "continue>>>" << '\n';
+
+  {
+    std::vector<int> target;
+    target.reserve(source.size());
+    std::transform(source.begin(), source.end(), target.begin(),
+                   [](const auto &x) { return x * 2; });
+  }
 
   return 0;
 }

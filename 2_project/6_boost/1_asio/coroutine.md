@@ -1,208 +1,199 @@
-Boost C++ Libraries
-...one of the most highly regarded and expertly designed C++ library projects in the world.
-— Herb Sutter and Andrei Alexandrescu, C++ Coding Standards
+## coroutine了解
 
-Search...
-This is the documentation for an old version of Boost. Click here to view this page for the latest version.
-PrevUpHomeNext
-coroutine
+### 1. 基础概念
 
-Provides support for implementing stackless coroutines.
+#### 1.1 携程是什么？
 
-class coroutine
-Member Functions
-Name
+携程（Coroutine）是一种比线程更轻量级的并发单元。与线程不同，携程不依赖于操作系统的线程调度，而是由程序自身控制的。携程可以在一个线程内实现多任务的切换，避免了线程上下文切换的开销。携程的主要特点是可以在执行过程中暂停，并在稍后恢复执行。
 
-Description
+#### 1.2 协程有什么用？
 
-coroutine [constructor]
+协程主要用于实现并发编程，特别是在 I/O 密集型任务中。以下是协程的一些主要用途：
 
-Constructs a coroutine in its initial state.
+1. **异步编程**：协程可以在等待 I/O 操作（如网络请求、文件读写）时暂停执行，释放 CPU 资源给其他任务，从而提高程序的并发性能。
+2. **生成器**：协程可以用作生成器，逐步生成数据，而不是一次性生成所有数据。这对于处理大数据集或流式数据非常有用。
+3. **协作多任务**：协程可以在多个任务之间切换，模拟多任务处理，而不需要多线程或多进程的开销。
+4. **简化代码**：协程可以使异步代码看起来像同步代码，简化了编写和维护异步代码的复杂性。
 
-is_child
+通过这些用途，协程在现代编程中变得越来越重要，特别是在需要高并发和高性能的应用程序中。
 
-Returns true if the coroutine is the child of a fork.
+#### 1.3 协程的优缺点是什么？
+优点
+* 轻量级：协程比线程更轻量级，创建和切换的开销更小。
+* 无锁并发：协程可以避免多线程编程中的锁和竞态条件问题。
+* 简化异步编程：协程可以使异步代码看起来像同步代码，简化了编写和维护异步代码的复杂性。
+缺点
+* 不适用于多核并行：协程在单个线程内运行，不能利用多核 CPU 的并行计算能力。
+* 手动调度：协程的调度需要手动管理，增加了编程复杂性。
+* 栈大小限制：协程的栈大小通常是固定的，可能会限制递归深度和局部变量的使用。
 
-is_complete
+#### 1.4 协程的应用场景
+网络编程（当成异步使用，提高可读性）：协程可以简化异步网络编程，使代码更易读。
+数据处理（生成器，逐步处理数据）：协程可以用于处理大数据集，逐步生成和处理数据。
+用户界面（ui协程和业务协程切换）：协程可以用于实现响应式用户界面，避免界面卡顿。
 
-Returns true if the coroutine has reached its terminal state.
+#### 1.5 协程实现的基本原理是什么？
+协程的实现的关键在于上下文切换。 而上下文切换涉及到三个过程：保存状态、切换上下文、恢复状态。
 
-is_parent
+保存状态主要涉及保存当前协程的执行上下文，包括以下内容：
+* 程序计数器（PC）：指示当前执行的指令地址。
+* 栈指针（SP）：指示当前栈顶的位置。
+* 寄存器：保存当前协程的寄存器状态，包括通用寄存器和特殊寄存器。
 
-Returns true if the coroutine is the parent of a fork.
+恢复状态是指将之前保存的执行上下文恢复到当前协程中，使其能够继续执行。恢复状态的过程包括：
+* 恢复程序计数器：将程序计数器恢复到保存时的值。
+* 恢复栈指针：将栈指针恢复到保存时的值。
+* 恢复寄存器：将寄存器恢复到保存时的状态。
 
-The coroutine class may be used to implement stackless coroutines. The class itself is used to store the current state of the coroutine.
+而切换上下文就是保存当前协程状态，恢复到目标协程状态。
 
-Coroutines are copy-constructible and assignable, and the space overhead is a single int. They can be used as a base class:
+### 2. 协程使用的一般例子
 
-class session : coroutine
-{
-  ...
-};
-or as a data member:
+#### 2.1 协程的切换
+```c++
+#include <boost/coroutine/coroutine.hpp>
+#include <iostream>
 
-class session
-{
-  ...
-  coroutine coro_;
-};
-or even bound in as a function argument using lambdas or bind(). The important thing is that as the application maintains a copy of the object for as long as the coroutine must be kept alive.
-
-Pseudo-keywords
-A coroutine is used in conjunction with certain "pseudo-keywords", which are implemented as macros. These macros are defined by a header file:
-
-#include <boost/asio/yield.hpp>
-and may conversely be undefined as follows:
-
-#include <boost/asio/unyield.hpp>
-reenter
-
-The reenter macro is used to define the body of a coroutine. It takes a single argument: a pointer or reference to a coroutine object. For example, if the base class is a coroutine object you may write:
-
-reenter (this)
-{
-  ... coroutine body ...
+void coroutine_function(boost::coroutines::coroutine<void>::push_type &yield) {
+  std::cout << "Hello from coroutine!" << std::endl;
+  yield();
+  std::cout << "Back in coroutine!" << std::endl;
 }
-and if a data member or other variable you can write:
 
-reenter (coro_)
-{
-  ... coroutine body ...
+int main() {
+  boost::coroutines::coroutine<void>::pull_type source(coroutine_function);
+  std::cout << "Hello from main!" << std::endl;
+  source();
+  std::cout << "Back in main!" << std::endl;
+  return 0;
 }
-When reenter is executed at runtime, control jumps to the location of the last yield or fork.
+/*
+Hello from coroutine!
+Hello from main!
+Back in coroutine!
+Back in main!
+*/
+```
+* push_type和pull_type怎么理解？
+  * push_type
+    定义：push_type 是一个类型，用于将控制权推送到协程中。
+    作用：在协程函数中，push_type 对象用于暂停协程的执行并返回到调用者。它通常作为协程函数的参数传递。
+    使用场景：当协程需要暂停执行并返回到主程序或其他协程时，使用 push_type 对象的 operator() 来实现这一点。
+  * pull_type
+    定义：pull_type 是一个类型，用于从协程中拉取控制权。
+    作用：在主程序或调用者中，pull_type 对象用于启动和恢复协程的执行。它通常在主程序中创建，并与协程函数关联。
+    使用场景：当主程序或其他协程需要启动或恢复协程的执行时，使用 pull_type 对象的 operator() 来实现这一点。
 
-The coroutine body may also be a single statement, such as:
+#### 2.2 带返回值的协程
+```c++
+#include <boost/coroutine2/all.hpp>
+#include <iostream>
 
-reenter (this) for (;;)
-{
-  ...
-}
-Limitation: The reenter macro is implemented using a switch. This means that you must take care when using local variables within the coroutine body. The local variable is not allowed in a position where reentering the coroutine could bypass the variable definition.
-
-yield statement
-
-This form of the yield keyword is often used with asynchronous operations:
-
-yield socket_->async_read_some(buffer(*buffer_), *this);
-This divides into four logical steps:
-
-yield saves the current state of the coroutine.
-The statement initiates the asynchronous operation.
-The resume point is defined immediately following the statement.
-Control is transferred to the end of the coroutine body.
-When the asynchronous operation completes, the function object is invoked and reenter causes control to transfer to the resume point. It is important to remember to carry the coroutine state forward with the asynchronous operation. In the above snippet, the current class is a function object object with a coroutine object as base class or data member.
-
-The statement may also be a compound statement, and this permits us to define local variables with limited scope:
-
-yield
-{
-  mutable_buffers_1 b = buffer(*buffer_);
-  socket_->async_read_some(b, *this);
-}
-yield return expression ;
-
-This form of yield is often used in generators or coroutine-based parsers. For example, the function object:
-
-struct interleave : coroutine
-{
-  istream& is1;
-  istream& is2;
-  char operator()(char c)
-  {
-    reenter (this) for (;;)
-    {
-      yield return is1.get();
-      yield return is2.get();
-    }
+void coroutine_function(boost::coroutines2::coroutine<int>::push_type &yield) {
+  for (int i = 0; i < 5; ++i) {
+    std::cout << "Coroutine yields: " << i << std::endl;
+    yield(i);
   }
-};
-defines a trivial coroutine that interleaves the characters from two input streams.
+}
 
-This type of yield divides into three logical steps:
+int main() {
+  boost::coroutines2::coroutine<int>::pull_type source(coroutine_function);
 
-yield saves the current state of the coroutine.
-The resume point is defined immediately following the semicolon.
-The value of the expression is returned from the function.
-yield ;
-
-This form of yield is equivalent to the following steps:
-
-yield saves the current state of the coroutine.
-The resume point is defined immediately following the semicolon.
-Control is transferred to the end of the coroutine body.
-This form might be applied when coroutines are used for cooperative threading and scheduling is explicitly managed. For example:
-
-struct task : coroutine
-{
-  ...
-  void operator()()
-  {
-    reenter (this)
-    {
-      while (... not finished ...)
-      {
-        ... do something ...
-        yield;
-        ... do some more ...
-        yield;
-      }
-    }
+  while (source) {
+    int value = source.get();
+    std::cout << "Main received: " << value << std::endl;
+    source();
   }
-  ...
-};
-...
-task t1, t2;
-for (;;)
-{
-  t1();
-  t2();
+
+  return 0;
 }
-yield break ;
+```
 
-The final form of yield is used to explicitly terminate the coroutine. This form is comprised of two steps:
+### 98. 习题
+```c++
+#include <boost/coroutine2/all.hpp>
+#include <iostream>
 
-yield sets the coroutine state to indicate termination.
-Control is transferred to the end of the coroutine body.
-Once terminated, calls to is_complete() return true and the coroutine cannot be reentered.
+int main() {
+  boost::coroutines2::coroutine<int>::pull_type source(
+      [&](boost::coroutines2::coroutine<int>::push_type &sink) {
+        int first = 1, second = 1;
+        sink(first);
+        sink(second);
+        for (int i = 0; i < 8; ++i) {
+          int third = first + second;
+          first = second;
+          second = third;
+          sink(third);
+        }
+      });
 
-Note that a coroutine may also be implicitly terminated if the coroutine body is exited without a yield, e.g. by return, throw or by running to the end of the body.
+  for (auto i : source) {
+    std::cout << i << std::endl;
+  }
 
-fork statement
-
-The fork pseudo-keyword is used when "forking" a coroutine, i.e. splitting it into two (or more) copies. One use of fork is in a server, where a new coroutine is created to handle each client connection:
-
-reenter (this)
-{
-  do
-  {
-    socket_.reset(new tcp::socket(my_context_));
-    yield acceptor->async_accept(*socket_, *this);
-    fork server(*this)();
-  } while (is_parent());
-  ... client-specific handling follows ...
+  return 0;
 }
-The logical steps involved in a fork are:
+```
 
-fork saves the current state of the coroutine.
-The statement creates a copy of the coroutine and either executes it immediately or schedules it for later execution.
-The resume point is defined immediately following the semicolon.
-For the "parent", control immediately continues from the next line.
-The functions is_parent() and is_child() can be used to differentiate between parent and child. You would use these functions to alter subsequent control flow.
+### 99. quiz
+#### 1. yield_type和call_type是什么？和push_type还有pull_type的联系是什么？
+yield_type 和 call_type 是旧版本 Boost.Coroutine 库中的类型，而 push_type 和 pull_type 是新的 Boost.Coroutine2 库中的类型。
+它们在功能和目的上有相似之处，都是用于在协程中暂停执行并返回到调用者，但它们的内部实现和对外使用方式有所不同。
+```c++
+#include <boost/coroutine/coroutine.hpp>
+#include <iostream>
 
-Note that fork doesn't do the actual forking by itself. It is the application's responsibility to create a clone of the coroutine and call it. The clone can be called immediately, as above, or scheduled for delayed execution using something like post.
+void coroutine_function(boost::coroutines::yield_type &yield) {
+  std::cout << "Hello from coroutine!" << std::endl;
+  yield();
+  std::cout << "Back in coroutine!" << std::endl;
+}
 
-Alternate macro names
-If preferred, an application can use macro names that follow a more typical naming convention, rather than the pseudo-keywords. These are:
+int main() {
+  boost::coroutines::call_type coroutine(coroutine_function);
+  std::cout << "Hello from main!" << std::endl;
+  coroutine();
+  std::cout << "Back in main!" << std::endl;
+  return 0;
+}
+```
 
-BOOST_ASIO_CORO_REENTER instead of reenter
-BOOST_ASIO_CORO_YIELD instead of yield
-BOOST_ASIO_CORO_FORK instead of fork
-Requirements
-Header: boost/asio/coroutine.hpp
+#### 2. 什么是对称协程？什么是非对称协程？
+非对称协程：
+  * 使用 boost::coroutines2::asymmetric_coroutine 实现。
+  * 非对称协程只能从主程序或调度器中启动和恢复，而不能直接相互调用。
 
-Convenience header: boost/asio.hpp
+对称协程：
+  * 使用 boost::coroutines2::coroutine 实现。
+  * 对称协程允许协程之间相互切换，而不需要返回到主调度器。
 
-Copyright © 2003-2022 Christopher M. Kohlhoff
-Distributed under the Boost Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+对称协程可以当成非对称协程使用。对称协程提供了更灵活的控制流，可以在协程之间相互切换，但也可以像非对称协程一样，从主程序中启动和恢复协程。
+具体什么时候建议使用非对称协程欢迎补充。
 
-PrevUpHomeNext
+#### 3. 有栈协程和无栈协程的实现是什么？
+协程的实现的关键在于上下文切换。 而上下文切换涉及到三个过程：保存状态、切换上下文、恢复状态。
+而有栈协程实现和无栈协程的实现区别就在于状态保存在哪里。
+有栈实现：每一个协程有一个独立的栈空间。受到栈空间大小约束，有空间损耗
+无栈实现：将协程的状态存储在堆（Heap）空间中，通过状态机的方式去管理。不受栈空间大小约束，没有空间损耗。实现麻烦。
+
+而协程的状态包含以下三个方面
+* 程序计数器（PC）：指示当前执行的指令地址。
+* 栈指针（SP）：指示当前栈顶的位置。
+* 寄存器：保存当前协程的寄存器状态，包括通用寄存器和特殊寄存器。
+
+* boost的是有栈协程
+* c++20的是无栈协程
+
+协程的实现涉及到底层的上下文切换和状态保存，这些操作通常需要使用汇编语言来直接操作寄存器和栈指针。高级语言通常不直接提供这些底层接口，因此实现协程通常依赖于库（调用一些其他类似接口去模拟）或语言特性（编译器层面直接操作）。
+
+
+#### 4. 堆空间和栈空间概念
+不同线程：
+* 栈空间：每个线程都有自己的栈空间，用于存储该线程的局部变量、函数调用的参数、返回地址等。这意味着栈空间是线程私有的。
+* 堆空间：同一进程内的所有线程共享同一个堆空间。这意味着线程之间可以通过指针或引用共享堆上分配的数据。
+
+不同进程：
+* 栈空间：每个进程都有自己的虚拟地址空间，其中包括独立的栈空间。进程间的栈空间是完全隔离的。
+* 堆空间：每个进程也有自己独立的堆空间。进程间的堆空间不共享，因此进程之间不能直接访问对方的堆数据。
+
