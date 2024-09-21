@@ -1,7 +1,5 @@
 # C++17
 
-## C++17 Language Features
-
 ### Declaring non-type template parameters with auto
 Following the deduction rules of `auto`, while respecting the non-type template parameter list of allowable types[\*], template arguments can be deduced from the types of its arguments:
 ```c++
@@ -16,15 +14,6 @@ auto seq = std::integer_sequence<int, 0, 1, 2>();
 auto seq2 = my_integer_sequence<0, 1, 2>();
 ```
 \* - For example, you cannot use a `double` as a template parameter type, which also makes this an invalid deduction using `auto`.
-
-### New rules for auto deduction from braced-init-list
-Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x {3};` deduces a `std::initializer_list<int>`, which now deduces to `int`.
-```c++
-auto x1 {1, 2, 3}; // error: not a single element
-auto x2 = {1, 2, 3}; // x2 is std::initializer_list<int>
-auto x3 {3}; // x3 is int
-auto x4 {3.0}; // x4 is double
-```
 
 ### constexpr lambda
 Compile-time lambdas using `constexpr`.
@@ -70,32 +59,6 @@ struct S {
   int id;
   static inline int count{0}; // declare and initialize count to 0 within the class
 };
-```
-
-
-### Selection statements with initializer
-New versions of the `if` and `switch` statements which simplify common code patterns and help users keep scopes tight.
-```c++
-{
-  std::lock_guard<std::mutex> lk(mx);
-  if (v.empty()) v.push_back(val);
-}
-// vs.
-if (std::lock_guard<std::mutex> lk(mx); v.empty()) {
-  v.push_back(val);
-}
-```
-```c++
-Foo gadget(args);
-switch (auto s = gadget.status()) {
-  case OK: gadget.zip(); break;
-  case Bad: throw BadFoo(s.message());
-}
-// vs.
-switch (Foo gadget(args); auto s = gadget.status()) {
-  case OK: gadget.zip(); break;
-  case Bad: throw BadFoo(s.message());
-}
 ```
 
 ### Direct list initialization of enums
@@ -232,36 +195,6 @@ container c{ 5, 6 }; // ERROR: std::iterator_traits<int>::value_type is not a ty
 
 ## C++17 Library Features
 
-### std::variant
-The class template `std::variant` represents a type-safe `union`. An instance of `std::variant` at any given time holds a value of one of its alternative types (it's also possible for it to be valueless).
-```c++
-std::variant<int, double> v{ 12 };
-std::get<int>(v); // == 12
-std::get<0>(v); // == 12
-v = 12.0;
-std::get<double>(v); // == 12.0
-std::get<1>(v); // == 12.0
-```
-
-### std::optional
-The class template `std::optional` manages an optional contained value, i.e. a value that may or may not be present. A common use case for optional is the return value of a function that may fail.
-```c++
-std::optional<std::string> create(bool b) {
-  if (b) {
-    return "Godzilla";
-  } else {
-    return {};
-  }
-}
-
-create(false).value_or("empty"); // == "empty"
-create(true).value(); // == "Godzilla"
-// optional-returning factory functions are usable as conditions of while and if
-if (auto str = create(true)) {
-  // ...
-}
-```
-
 ### std::any
 A type-safe container for single values of any type.
 ```c++
@@ -311,53 +244,4 @@ public:
 const auto add = [](int x, int y) { return x + y; };
 Proxy p{ add };
 p(1, 2); // == 3
-```
-
-### std::apply
-Invoke a `Callable` object with a tuple of arguments.
-```c++
-auto add = [](int x, int y) {
-  return x + y;
-};
-std::apply(add, std::make_tuple(1, 2)); // == 3
-```
-
-### Splicing for maps and sets
-Moving nodes and merging containers without the overhead of expensive copies, moves, or heap allocations/deallocations.
-
-Moving elements from one map to another:
-```c++
-std::map<int, string> src {{1, "one"}, {2, "two"}, {3, "buckle my shoe"}};
-std::map<int, string> dst {{3, "three"}};
-dst.insert(src.extract(src.find(1))); // Cheap remove and insert of { 1, "one" } from `src` to `dst`.
-dst.insert(src.extract(2)); // Cheap remove and insert of { 2, "two" } from `src` to `dst`.
-// dst == { { 1, "one" }, { 2, "two" }, { 3, "three" } };
-```
-
-Inserting an entire set:
-```c++
-std::set<int> src {1, 3, 5};
-std::set<int> dst {2, 4, 5};
-dst.merge(src);
-// src == { 5 }
-// dst == { 1, 2, 3, 4, 5 }
-```
-
-Inserting elements which outlive the container:
-```c++
-auto elementFactory() {
-  std::set<...> s;
-  s.emplace(...);
-  return s.extract(s.begin());
-}
-s2.insert(elementFactory());
-```
-
-Changing the key of a map element:
-```c++
-std::map<int, string> m {{1, "one"}, {2, "two"}, {3, "three"}};
-auto e = m.extract(2);
-e.key() = 4;
-m.insert(std::move(e));
-// m == { { 1, "one" }, { 3, "three" }, { 4, "two" } }
 ```

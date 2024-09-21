@@ -20,7 +20,7 @@ int main() {
   std::list<int> l;
   std::vector<int> v;
 
-  const std::vector<std::function<void(int)>> consumers{
+  const std::vector<std::function<void(size_t)>> consumers{
       consumer(d), consumer(l), consumer(v)};
 
   for (size_t i{0}; i < 10; ++i) {
@@ -28,6 +28,7 @@ int main() {
       consume(i);
     }
   }
+
   print(d);
   print(l);
   print(v);
