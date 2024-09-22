@@ -238,3 +238,100 @@ int B::s_value = 0;
 
 在这个例子中，`s_value`是类B的一个静态成员变量。所有的B对象都共享同一个`s_value`变量。
 
+好的，以下是对这两个问题的逐点解释：
+
+#### 10. 为什么要声明 `virtual`?
+
+1. **实现多态**
+   - `virtual` 关键字用于声明虚函数，允许派生类重写基类中的函数，从而实现多态。
+   - 通过基类指针或引用调用虚函数时，会根据实际对象的类型调用相应的派生类函数，而不是基类函数。
+
+2. **确保正确的析构**
+   - 当基类的析构函数被声明为虚函数时，通过基类指针删除派生类对象时，会正确调用派生类的析构函数，避免资源泄漏。
+   - 示例：
+     ```cpp
+     class Base {
+     public:
+         virtual ~Base() {}
+     };
+
+     class Derived : public Base {
+     public:
+         ~Derived() {}
+     };
+
+     Base* obj = new Derived();
+     delete obj; // 正确调用 Derived 和 Base 的析构函数
+     ```
+
+3. **动态绑定**
+   - `virtual` 关键字使得函数调用在运行时进行动态绑定，而不是在编译时进行静态绑定。
+   - 这允许程序在运行时决定调用哪个函数，实现更灵活的设计。
+
+4. **接口设计**
+   - 在设计接口或抽象基类时，通常将函数声明为虚函数，以便派生类提供具体实现。
+   - 示例：
+     ```cpp
+     class Shape {
+     public:
+         virtual void draw() = 0; // 纯虚函数，必须在派生类中实现
+     };
+
+     class Circle : public Shape {
+     public:
+         void draw() override {
+             // Circle 的具体实现
+         }
+     };
+     ```
+
+#### 11. 如果父类声明了虚析构，那么拷贝，移动也需要是虚的吗？
+不需要。
+
+#### 12. 为什么要声明 `override`?
+
+1. **明确意图**
+   - `override` 关键字明确表示派生类中的函数是重写基类中的虚函数。
+   - 这有助于代码的可读性和可维护性，使得代码意图更加清晰。
+   - `override` 关键字本身不会改变程序的运行时行为，它的主要作用是提升代码的可读性和可维护性，并且提供编译器检查功能。
+    以下是详细解释：
+
+2. **编译器检查**
+   - 使用 `override` 关键字可以让编译器检查函数签名是否正确匹配基类中的虚函数。
+   - 如果函数签名不匹配，编译器会报错，避免潜在的错误。
+   - 示例：
+     ```cpp
+     class Base {
+     public:
+         virtual void func(int) {}
+     };
+
+     class Derived : public Base {
+     public:
+         void func(int) override { // 正确匹配基类函数
+             // Derived 的具体实现
+         }
+     };
+     ```
+
+3. **防止意外重载**
+   - 如果派生类中的函数签名与基类中的虚函数不匹配，编译器会将其视为新的函数，而不是重写基类函数。
+   - 使用 `override` 可以防止这种意外重载的情况。
+   - 示例：
+     ```cpp
+     class Base {
+     public:
+         virtual void func(int) {}
+     };
+
+     class Derived : public Base {
+     public:
+         void func(double) override { // 编译错误，签名不匹配
+             // Derived 的具体实现
+         }
+     };
+     ```
+
+4. **提高代码质量**
+   - 使用 `override` 关键字可以提高代码质量，减少错误，提高代码的健壮性和可维护性。
+

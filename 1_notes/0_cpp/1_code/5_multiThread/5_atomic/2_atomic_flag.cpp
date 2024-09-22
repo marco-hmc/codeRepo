@@ -8,23 +8,23 @@ std::atomic_flag lock_stream = ATOMIC_FLAG_INIT;
 std::stringstream stream;
 
 void append_number(int x) {
-  while (lock_stream.test_and_set()) {
-  }
-  stream << "thread #" << x << '\n';
-  lock_stream.clear();
+    while (lock_stream.test_and_set()) {
+    }
+    stream << "thread #" << x << '\n';
+    lock_stream.clear();
 }
 
 int main() {
-  std::vector<std::thread> threads;
-  for (int i = 1; i <= 10; ++i) {
-    threads.emplace_back(append_number, i);
-  }
-  for (auto &th : threads) {
-    th.join();
-  }
+    std::vector<std::thread> threads;
+    for (int i = 1; i <= 10; ++i) {
+        threads.emplace_back(append_number, i);
+    }
+    for (auto &th : threads) {
+        th.join();
+    }
 
-  std::cout << stream.str();
-  return 0;
+    std::cout << stream.str();
+    return 0;
 }
 
 /*
@@ -53,6 +53,8 @@ int main() {
 
 - **常见的成员函数**：
   -[`test_and_set()`]：设置标志位为 `true`，并返回之前的值。
+    用于设置atomic_flag对象的值为true，并返回之前的值。
+    如果之前的值为true，则返回true，否则返回false。
   -[`clear()`]：清除标志位，将其设置为 `false`。
 
 */

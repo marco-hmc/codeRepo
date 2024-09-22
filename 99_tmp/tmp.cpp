@@ -1,72 +1,51 @@
 #include <iostream>
+#include <map>
+#include <string>
 #include <vector>
 
-#include <algorithm>
-#include <iostream>
-#include <vector>
-
-// 定义协程上下文结构
-struct CoroutineContext {
-  int state;    // 状态机的当前状态
-  int localVar; // 局部变量
-};
-
-// 定义协程入口函数类型
-using CoroutineEntry = void (*)(CoroutineContext *);
-
-// 协程函数1
-void coroutineFunction1(CoroutineContext *context) {
-  switch (context->state) {
-  case 0:
-    std::cout << "Coroutine 1 started" << std::endl;
-    context->localVar = 42;
-    context->state = 1;
-    return;
-  case 1:
-    std::cout << "Coroutine 1 resumed, localVar = " << context->localVar
-              << std::endl;
-    context->state = 2;
-    return;
-  case 2:
-    std::cout << "Coroutine 1 finished" << std::endl;
-    return;
-  }
+// Map 函数
+std::vector<std::pair<std::string, int>> map(const std::string& text) {
+    std::vector<std::pair<std::string, int>> result;
+    std::string word;
+    for (char ch : text) {
+        if (std::isalpha(ch)) {
+            word += std::tolower(ch);
+        } else if (!word.empty()) {
+            result.emplace_back(word, 1);
+            word.clear();
+        }
+    }
+    if (!word.empty()) {
+        result.emplace_back(word, 1);
+    }
+    return result;
 }
 
-// 协程函数2
-void coroutineFunction2(CoroutineContext *context) {
-  switch (context->state) {
-  case 0:
-    std::cout << "Coroutine 2 started" << std::endl;
-    context->localVar = 84;
-    context->state = 1;
-    return;
-  case 1:
-    std::cout << "Coroutine 2 resumed, localVar = " << context->localVar
-              << std::endl;
-    context->state = 2;
-    return;
-  case 2:
-    std::cout << "Coroutine 2 finished" << std::endl;
-    return;
-  }
+// Reduce 函数
+std::map<std::string, int> reduce(
+    const std::vector<std::pair<std::string, int>>& mapped_data) {
+    std::map<std::string, int> result;
+    for (const auto& pair : mapped_data) {
+        result[pair.first] += pair.second;
+    }
+    return result;
 }
 
 int main() {
-  std::vector<int> source = {1, 2, 3, 4, 5};
+    std::string text = "Hello world, hello MapReduce!";
 
-  {
-    std::vector<int> target(source.size());
-    std::transform(source.begin(), source.end(), target.begin(),
-                   [](const auto &x) { return x * 2; });
-  }
+    // Map 阶段
+    auto mapped_data = map(text);
 
-  {
-    std::vector<int> target;
-    target.reserve(source.size());
-    std::transform(source.begin(), source.end(), target.begin(),
-                   [](const auto &x) { return x * 2; });
-  }
+    // Shuffle 和 Sort 阶段（在这个简单示例中省略）
 
-  return 0;
+    // Reduce 阶段
+    auto reduced_data = reduce(mapped_data);
+
+    // 输出结果
+    for (const auto& pair : reduced_data) {
+        std::cout << pair.first << ": " << pair.second << std::endl;
+    }
+
+    return 0;
 }

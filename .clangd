@@ -25,5 +25,6 @@ Diagnostics:
         readability-redundant-access-specifiers, # 关闭冗余访问说明符警告
         cppcoreguidelines-pro-type-reinterpret-cast, # 关闭 reinterpret_cast 警告
         cppcoreguidelines-pro-bounds-pointer-arithmetic, # 关闭指针算术警告
+        performance-avoid-endl, # 关闭使用 std::endl 的警告
       ]
 ...

@@ -1,6 +1,3 @@
-#include <iostream>
-using namespace std;
-
 // lazy
 // 懒汉式单例模式在第一次调用 getInstance
 // 方法时才会创建实例.在懒汉式中,实例是在静态方法内部创建的,通常使用静态局部变量,保证只有在第一次调用时才会创建实例.
@@ -9,10 +6,10 @@ using namespace std;
 // 在多线程环境下,需要考虑线程安全性,以确保只创建一个实例.
 class Singleton {
 private:
-  Singleton(){};
-  ~Singleton(){};
-  Singleton(const Singleton &);
-  Singleton &operator=(const Singleton &);
+ Singleton() = default;
+ ~Singleton(){};
+ Singleton(const Singleton &) = delete;
+ Singleton &operator=(const Singleton &);
 
 public:
   static Singleton &getInstance() {
