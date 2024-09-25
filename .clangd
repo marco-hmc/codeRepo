@@ -26,5 +26,8 @@ Diagnostics:
         cppcoreguidelines-pro-type-reinterpret-cast, # 关闭 reinterpret_cast 警告
         cppcoreguidelines-pro-bounds-pointer-arithmetic, # 关闭指针算术警告
         performance-avoid-endl, # 关闭使用 std::endl 的警告
+        hicpp-avoid-c-arrays,   # 关闭使用C数组警告
+        cppcoreguidelines-pro-bounds-array-to-pointer-decay, # 关闭数组到指针衰减警告
+        
       ]
 ...

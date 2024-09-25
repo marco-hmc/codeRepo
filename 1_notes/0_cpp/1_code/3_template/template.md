@@ -184,3 +184,52 @@ int main() {
    将类型转换为它的“衰减”类型，模拟通过值传递参数时的类型转换。
 
 这些工具和类型特征在模板元编程中非常有用，它们可以帮助开发者编写出更通用、更灵活的模板代码。
+
+
+**44. 将与参数无关的代码抽离templates （Factor parameter-independent code out of templates)**
+
+主要是会让编译器编译出很长的臃肿的二进制码，所以要把参数抽离，看以下代码：
+    
+    template<typename T, std::size_t n>
+    class SquareMatrix{
+        public:
+        void invert();    //求逆矩阵
+    }
+    
+    SquareMatrix<double, 5> sm1;
+    SquareMatrix<double, 10> sm2;
+    sm1.invert(); 
+    sm2.invert(); //会具现出两个invert并且基本完全相同
+
+修改后的代码：
+    
+    template<typename T>
+    class SquareMatrixBase{
+        protected:
+        void invert(std::size_t matrixSize);
+    }
+    
+    template<typename T, std::size_t n>
+    class SquareMatrix:private SquareMatrixBase<T>{
+        private:
+        using SquareMatrixBase<T>::invert;  //避免遮掩base版的invert
+        public:
+        void invert(){ this->invert(n); }   //一个inline调用，调用base class版的invert
+    }
+
+当然因为矩阵数据可能会不一样，例如5x5的矩阵和10x10的矩阵计算方式会不一样，输入的矩阵数据也会不一样，采用指针指向矩阵数据的方法会比较好：
+    
+    template<typename T, std::size_t n>
+    class SquareMatrix:: private SquareMatrixBase<T>{
+        public:
+        SquareMatrix():SquareMatrixBase<T>(n, 0), pData(new T[n*n]){
+            this->setDataPtr(pData.get());
+        }
+        private:
+        boost::scoped_array<T> pData; //存在heap里面
+    };
+
+总结：
++ templates生成多个classes和多个函数，所以任何template代码都不该与某个造成膨胀的template参数产生依赖关系
++ 因非类型模板参数（non-type template parameters）而造成的代码膨胀，往往可以消除，做法是以函数参数后者class成员变量替换template参数
++ 因类型参数（type parameters）而造成的代码膨胀，往往可以降低，做法是让带有完全相同的二进制表述的具现类型，共享实现码

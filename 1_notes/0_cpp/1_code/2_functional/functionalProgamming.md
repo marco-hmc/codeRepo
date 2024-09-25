@@ -121,11 +121,18 @@ int main() {
   **方便数据处理**：
    - 高阶函数如 `map`、`filter` 和 `reduce` 在处理数据时非常有用。它们提供了简洁的语法来进行数据转换、过滤和聚合操作，提高了代码的效率和可读性。
 
+#### 2.2 纯粹的函数式编程
+对于一些教条主义者来说，这是简单把函数作为参数，是不能够算函数式变成的。
+函数式变成，必须是纯函数，即没有状态变量，或者说不会修改状态变量。
+因此`[&]()[xxx]`就不会是函数式编程。
+
+更加严格的教条主义还会要求函数是单参数的，使用柯里化方式将函数调整成单参数的，并且会使用一些函数算子。
+这里在附录形式给出。不另外说明。
 
 ### 97. 例子
 
+#### 1. 基本例子
 ```c++
-// 简单的体现不可变特点的函数式编程
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -147,49 +154,86 @@ int main() {
 ```
 
 ```c++
-```
-
-```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
 
-void applyFunction(const std::vector<int>& data, const std::function<void(int)>& func) {
-    for (const auto& val : data) {
-        func(val);
-    }
-}
-
 int main() {
     std::vector<int> data{1, 2, 3, 4, 5};
-    applyFunction(data, [](int x) {
+    auto printDoubleValue = [](int x){
         std::cout << x * 2 << " ";
-    });
+    };
+
+    // 相较于传统的 `for` 循环写法，loop执行的意图可以通过函数命名表达
+    // 使得不需要阅读整个循环体就能理解代码的意图。    
+    std::for_each(data.begin(), data.end(), printDoubleValue);
     std::cout << std::endl;
 
     return 0;
 }
-/*
-`applyFunction` 实际上等同于 `std::for_each`。`std::for_each` 的参数之一就是一个函数。
+```
 
-相较于传统的 `for` 循环写法，使用 `std::for_each` 可以让代码更加简洁和易读。你不需要阅读整个循环体就能理解代码的意图。
+#### 2. 函数式编程
 
-### `for` 循环的灵活性
+```c++
+// 严格-函数式编程
+// 1. 无状态变量，或者不修改状态变量。
+// 2. 单参数
+// 3. 使用函数算子
+auto Y = [](auto f) {
+  return [f](auto x) -> std::function<int(int)> {
+    return f([x](auto v) { return x(x)(v); });
+  }([f](auto x) -> std::function<int(int)> {
+           return f([x](auto v) { return x(x)(v); });
+         });
+};
 
-`for` 循环具有很高的自由度，可以使用 `continue` 和 `break` 控制循环流程，也可以对数据进行变形操作，或者从数据中判断是否存在特定元素。
+auto factorial = Y(
+    [](auto f) { return [f](int n) { return (n == 0) ? 1 : n * f(n - 1); }; });
 
-### 函数式编程的限制
+void test_y_combinator() {
+  std::cout << "Factorial of 5: " << factorial(5) << '\n';
+}
+```
 
-函数式编程在某些方面限制了这种灵活性：
-- **没有 `continue` 和 `break`**：函数式编程中没有直接对应的 `continue` 和 `break` 语句。
-- **统一的操作方式**：如果需要对数据进行变形操作，使用 `std::transform`；如果需要判断数据中是否存在特定元素，使用 `std::any_of` 或 `std::all_of`。
+```c++
+// 柯里化的调用两次的算子
+auto callTwice = [](auto func) {
+    return [func](auto value) {
+        return func(func(value));
+    };
+};
 
-### 优点
+// 示例函数：将整数加倍
+auto doubleValue = [](int x) {
+    return x * 2;
+};
 
-尽管函数式编程限制了一些灵活性，但它也带来了许多优点：
-- **提高可读性**：通过使用标准库提供的高阶函数（如 `std::transform` 和 `std::any_of`），代码的意图更加明确，提升了可读性。
+```
 
-*/
+#### 3. 其他的函数式编程用法
+```c++
+template <typename T, typename ...Ts>
+auto concat(T t, Ts ...ts) {
+    if constexpr (sizeof...(ts) > 0) {
+        return [=](auto ...parameters) {
+            return t(concat(ts...)(parameters...));
+            };
+    }
+    else {
+        return [=](auto ...parameters) {
+            return t(parameters...);
+            };
+    }
+}
+
+void test_concat() {
+    auto twice = [](int i) { return i * 2; };
+    auto thrice = [](int i) { return i * 3; };
+    auto combined = concat(twice, thrice, std::plus<int>{});
+
+    std::cout << combined(2, 3) << '\n';
+}
 ```
 
 ### 98. 总结
@@ -241,4 +285,41 @@ int main() {
 
 总的来说，函数对象、lambda 表达式和普通函数在性能上的差异通常可以忽略不计。你应该根据你的具体需求和编程风格来选择使用哪一种。在考虑性能时，你应该首先关注算法的复杂性，然后再考虑这些低级的优化。
 
+#### 3. 什么是柯里化？柯里化的目的和意义是什么？
 
+柯里化（Currying）是函数式编程中的一种技术，它将一个接受多个参数的函数转换为一系列接受单一参数的函数。换句话说，柯里化将一个多参数函数转换为多个嵌套的一元函数（即每个函数只接受一个参数）。
+
+假设有一个普通的多参数函数：
+
+```cpp
+int add(int a, int b) {
+    return a + b;
+}
+```
+
+通过柯里化，这个函数可以转换为：
+
+```cpp
+auto curriedAdd = [](int a) {
+    return [a](int b) {
+        return a + b;
+    };
+};
+
+// 使用柯里化函数
+int result = curriedAdd(2)(3); // result = 5
+```
+
+* **柯里化的目的和意义**
+
+1. **提高函数的复用性**：
+   - 柯里化使得函数可以部分应用（Partial Application），即你可以固定函数的一部分参数，生成一个新的函数。这提高了代码的复用性和灵活性。
+
+2. **简化函数组合**：
+   - 柯里化使得函数组合更加简单和直观。你可以将多个小函数组合成一个复杂的函数，而不需要显式地传递所有参数。
+
+3. **增强代码的可读性和可维护性**：
+   - 柯里化使得代码更加模块化，每个函数只处理一个参数，逻辑更加清晰。这提高了代码的可读性和可维护性。
+
+4. **支持函数式编程范式**：
+   - 柯里化是函数式编程的重要特性之一，它使得函数式编程中的高阶函数、函数组合等技术更加容易实现。

@@ -30,6 +30,13 @@ auto concat(T t, Ts ...ts) {
     }
 }
 
+void test_concat() {
+    auto twice = [](int i) { return i * 2; };
+    auto thrice = [](int i) { return i * 3; };
+    auto combined = concat(twice, thrice, std::plus<int>{});
+
+    std::cout << combined(2, 3) << '\n';
+}
 int main() {
   auto twice = [](int i) { return i * 2; };
   auto thrice = [](int i) { return i * 3; };

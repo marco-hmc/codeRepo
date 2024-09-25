@@ -1,5 +1,4 @@
 #include <iostream>
-using namespace std;
 
 void swap(int *&arr, int &j) {
   int temp = arr[j];
@@ -22,9 +21,9 @@ int main() {
   int n = sizeof(arr) / sizeof(arr[0]);
 
   bubbleSort(arr, n);
-  cout << "排序后的数组:\n";
+  std::cout << "排序后的数组:\n";
   for (int i = 0; i < n; i++) {
-    cout << arr[i] << " ";
+      std::cout << arr[i] << " ";
   }
   
   return 0;

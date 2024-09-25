@@ -177,59 +177,6 @@ static void operator delete(void* pMemory) throw();     //palcement delete，此
 
 #### 二、运算符
 
-**5. 小心用户自定义的转换函数**
-
-因为可能会出现一些无法理解的并且也是无能为力的运算，而且在不需要这些类型转换函数的时候，仍然可能会调用这些转换，例如下面的代码：
-```c++
-    // 有理数类
-    class Rational{
-    public:
-        Rational(int numerator = 0, int denominator = 1)
-        operator double() const;
-    }
-    
-    Rational r(1, 2);
-    double d = 0.5 * r; //将r转换成了double进行计算
-    
-    cout << r; //会调用最接近的类型转换函数double，将r转换成double打印出来，而不是想要的1/2，
-```
-上面问题的解决方法是，把double变成
-    
-    double asDouble() const;这样就可以直接用了
-
-但是即使这样做还有可能会出现隐式转换的现象：
-```c++
-    template<class T>
-    class Array{
-    public:
-        Array(int size);
-        T& operator[](int index);
-    };
-    
-    bool operator==(const Array<int> &lhs, const Array<int> & rhs);
-    Array<int> a(10), b(10);
-    if(a == b[3]) //想要写 a[3] == b[3]，但是这时候编译器并不会报错，解决方法是使用explicit关键字
-    
-    explicit Array(int size); 
-    if(a == b[3]) // 错误，无法进行隐式转换
-```
-其实还有一种很骚的操作：
-```c++
-    class Array { 
-    public:  
-        class ArraySize {                    // 这个类是新的 
-            public: 
-            ArraySize(int numElements):theSize(numElements){}
-            int size() const { return theSize;}
-        private: 
-            int theSize;
-        };
-        Array(int lowBound, int highBound); 
-        Array(ArraySize size);                  // 注意新的声明
-        ... 
-    }; 
-```
-这样写的代码在Array<int> a(10);的时候，编译器会先通过类型转换转换成ArraySize，然后再进行构造，虽然麻烦很多，效率也低了很多，但是在一定程度上可以避免隐式转换带来的问题
 
 **8. 理解new和delete在不同情形下的含义**
 
@@ -348,31 +295,6 @@ catch子句：
     }
 
 
-**17. 考虑使用延迟计算**
-
-一个延迟计算的例子：
-
-    class String{....}
-    String s1 = "Hello";
-    String s2 = s1;  //在正常的情况下，这一句需要调用new操作符分配堆内存，然后调用strcpy将s1内的数据拷贝到s2里面。但是我们此时s2并没有被使用，所以我们不需要s2，这个时候如果让s2和s1共享一个值，就可以减小这些开销
-
-使用延迟计算进行读操作和写操作：
-
-    String s = "Homer's Iliad";
-    cout << s[3];
-    s[3] = 'x';
-首先调用operator[] 用来读取string的部分值，但是第二次调用该函数式为了完成写操作。读取效率较高，写入因为需要拷贝，所以效率较低，这个时候可以推迟作出是读操作还是写操作的决定。
-
-延迟策略进行数据库操作：有点类似之前写web 的时候，把数据放在内存和数据库两份，更新的时候只更新内存，然后隔一段时间（或者等到使用的时候）去更新数据库。
-在effective c++里面，则是更加专业的将这个操作封装成了一个类，然后把是否更新数据库弄成一个flag。以及使用了mutable关键字，来修改数据
-
-延迟表达式：
-    
-    Matrix<int> m1(1000, 1000), m2(1000, 1000);
-    m3 = m1 + m2;
-    因为矩阵的加法计算量太大（1000*1000）次计算，所以可以先用表达式表示m3是m1和m2的和，然后真正需要计算出值的时候再真的进行计算（甚至计算的时候也只计算m3[3][2]这样某一个位置的值）
-
-
 #### 五、技巧
 
 **25. 使构造函数和非成员函数具有虚函数的行为**
@@ -410,87 +332,3 @@ clone() 叫做虚拟拷贝构造函数,相当于拷贝一个新的对象
 ```
 这样每一个TextBlock都可以调用他自己的clone，其他的子类也可以调用他们自己对应的clone()
 
-
-**31. 基于多个对象的虚函数**
-
-考虑两个对象碰撞的问题：
-    
-    class GameObject{....};
-    class SpaceShip : public GameObject{....};
-    class SpaceStation : public GameObject{....};
-    class Asteroid : public GameObject{....};
-    
-    void checkForCollision(GameObject& object1, GameObject& object2){
-        processCollision(object1, object2);
-    }
-
-当我们调用processCollision的时候，该函数取决于两个不同的对象，但是这个函数并不知道其object1和object2的真实类型，这个时候就要基于多个对象设计虚函数 
-
-解决方法有很多：
-    
-使用虚函数+RTTI：
-
-    class GameObject{
-    public:
-        virtual void collide(GameObject& otherObject) = 0;
-    };
-    class SpaceShip:public GameObject{
-    public:
-        virtual void collide(GameObject& otherObject);
-    };
-    
-    void SpaceShip:collide(GameObject& otherObject){
-        const type_info& objectType = typeid(otherObject);
-        if(objectType == typeid(SpaceShip)){
-            SpaceShip& ss = static_cast<SpaceShip&>(otherObject);
-        }
-        else if(objectType == typeid(SpaceStation)).......
-    }
-只使用虚函数：
-    
-    class SpaceShip; // forward declaration
-    class SpaceStation;
-    class Asteroid;
-    class GameObject { 
-    public:
-        virtual void collide(GameObject&   otherObject) = 0;
-        virtual void collide(SpaceShip&    otherObject) = 0;
-        virtual void collide(SpaceStation& otherObject) = 0;
-        virtual void collide(Asteroid&     otherObject) = 0;
-        ...
-    };
-模拟虚函数表（对继承体系中的函数做一些修改）：
-
-    class SpaceShip : public GameObject { 
-    public:
-        virtual void collide(GameObject&   otherObject);
-        virtual void hitSpaceShip(SpaceShip&    otherObject);
-        virtual void hitSpaceStation(SpaceStation& otherObject);
-        virtual void hitAsteroid(Asteroid&     otherObject);
-        ...
-    };
-初始化模拟虚函数表：
-    
-    class GameObject { // this is unchanged 
-    public: 
-        virtual void collide(GameObject& otherObject) = 0;
-        ...
-    };
-    
-    class SpaceShip: public GameObject {
-    public:
-        virtual void collide(GameObject& otherObject);
-        // these functions now all take a GameObject parameter
-        virtual void hitSpaceShip(GameObject& spaceShip);
-        virtual void hitSpaceStation(GameObject& spaceStation);
-        virtual void hitAsteroid(GameObject& asteroid);
-        ...
-    };
-    
-    SpaceShip::HitMap * SpaceShip::initializeCollisionMap(){
-        HitMap *phm = new HitMap;
-        (*phm)["SpaceShip"] = &hitSpaceShip;
-        (*phm)["SpaceStation"]= &hitSpaceStation;
-        (*phm)["Asteroid"] = &hitAsteroid;
-        return phm; 
-    

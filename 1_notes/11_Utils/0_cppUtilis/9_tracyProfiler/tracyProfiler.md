@@ -1,5 +1,10 @@
-marco-hmc: tracyProfiler如何使用?需要配置什么嘛
-GitHub Copilot: 使用Tracy Profiler进行性能分析,你需要在你的代码中插入Tracy的宏,并在你的项目中链接Tracy的库.以下是一些基本步骤:
+## tracy-profiler
+
+### 1. concepts
+
+#### 1.1 tracy-profiler是什么？
+
+#### 1.2 tracyProfiler如何使用？需要配置什么？
 
 1. **下载并编译Tracy**:你可以从Tracy的GitHub页面下载源代码,并使用你的编译器编译它.编译完成后,你会得到一个名为`libtracy.a`的静态库文件.
 
@@ -29,8 +34,8 @@ void FunctionToProfile()
 以上就是使用Tracy Profiler的基本步骤.需要注意的是,Tracy Profiler的设计目标是实时性能分析,所以它对性能的影响非常小,可以在开发和测试阶段持续使用.
 
 
-marco-hmc: tracyProfiler的工作原理是什么
-GitHub Copilot: Tracy Profiler的工作原理主要基于插桩(Instrumentation)和数据可视化两个方面.
+#### 1.3 tracyProfiler的工作原理是什么
+Tracy Profiler的工作原理主要基于插桩(Instrumentation)和数据可视化两个方面.
 
 1. **插桩**:Tracy Profiler通过在代码中插入特殊的宏来收集性能数据.这些宏在运行时会记录相关的性能信息,如函数调用的开始和结束时间,线程的状态等.这种方法被称为插桩,它是性能分析的常用技术.
 
@@ -40,29 +45,3 @@ GitHub Copilot: Tracy Profiler的工作原理主要基于插桩(Instrumentation)
 
 这就是Tracy Profiler的基本工作原理.需要注意的是,Tracy Profiler的设计目标是实时性能分析,所以它对性能的影响非常小,可以在开发和测试阶段持续使用.
 
-
-marco-hmc: 我不想看官方文档,你告诉我具体怎么用,给一个demo给
-GitHub Copilot: 好的,以下是一个简单的使用Tracy Profiler的C++示例:
-
-首先,你需要在你的代码中包含Tracy的头文件,并在你想要分析的代码段前后添加Tracy的宏.
-
-```cpp
-#include "Tracy.hpp"
-
-void FunctionToProfile()
-{
-    ZoneScoped;  // 开始一个新的分析区域
-
-    // 这里是你想要分析的代码
-    for(int i = 0; i < 1000000; ++i)
-    {
-        // ...
-    }
-}
-```
-
-在这个例子中,`ZoneScoped`宏会在当前的代码块(在这个例子中是`FunctionToProfile`函数)开始一个新的分析区域.当代码块结束时,分析区域也会自动结束.
-
-然后,你需要启动Tracy的服务器程序(Tracy Profiler),并运行你的程序.Tracy Profiler会收集你的程序的性能数据,并在其用户界面中显示.
-
-这只是一个基本的使用示例,Tracy还有许多其他的功能,例如分析内存使用,跟踪多线程,自定义分析区域的名称和颜色等.你可以查看Tracy的官方文档以了解更多信息.
