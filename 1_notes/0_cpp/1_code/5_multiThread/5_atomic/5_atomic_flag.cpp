@@ -4,6 +4,7 @@
 #include <thread>
 #include <vector>
 
+namespace identifier1 {
 std::atomic_flag lock_stream = ATOMIC_FLAG_INIT;
 std::stringstream stream;
 
@@ -14,7 +15,7 @@ void append_number(int x) {
     lock_stream.clear();
 }
 
-int main() {
+void test_1() {
     std::vector<std::thread> threads;
     for (int i = 1; i <= 10; ++i) {
         threads.emplace_back(append_number, i);
@@ -24,6 +25,11 @@ int main() {
     }
 
     std::cout << stream.str();
+}
+}  // namespace identifier1
+
+int main() {
+    identifier1::test_1();
     return 0;
 }
 

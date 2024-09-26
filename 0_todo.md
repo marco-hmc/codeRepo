@@ -1,15 +1,12 @@
 ## 1. doing
 
 ### 1.1 trivals
-  1. podcast
-  2. multiThread的习题过完
   3. threadPool
 
 ### 1.5 readings
   1. multiThread
     - threadPool
   2. network
-    - socket
     - chatRoom
   3. tetris-AI
     - Thread-A(Game):

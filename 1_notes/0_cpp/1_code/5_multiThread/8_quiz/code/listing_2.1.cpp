@@ -1,11 +1,8 @@
 #include <thread>
-#include <iostream>
 
-unsing namespace std;
+using namespace std;
 
-void do_something(int& i) {
-    ++i;
-}
+void do_something(int& i) { ++i; }
 
 struct func {
     int& i;
@@ -26,6 +23,4 @@ void oops() {
     my_thread.detach();
 }
 
-int main() {
-    oops();
-}
+int main() { oops(); }
