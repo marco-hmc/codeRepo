@@ -176,3 +176,15 @@ int main() {
   std::cout << '\n';
 }
 ```
+
+### 100. range-based loop和迭代器
+范围基于循环（range-based loop）的本质就是通过迭代器来迭代容器中的元素。
+```c++
+for (auto& element : container) {
+}
+
+/* 等价于 */
+for(auto it = container.begin(); it != container.end(); ++it) {
+
+}
+```
