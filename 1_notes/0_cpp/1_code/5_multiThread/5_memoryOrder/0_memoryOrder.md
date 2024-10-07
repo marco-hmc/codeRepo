@@ -92,3 +92,107 @@ int main() {
 - Full Barrier(全屏障):同时包含加载屏障和存储屏障,保证在屏障之前的所有内存操作,都在屏障之后的内存操作之前完成.
 
 在C++中,你可以使用`std::atomic_thread_fence`函数来创建一个内存屏障.例如,`std::atomic_thread_fence(std::memory_order_acquire)`会创建一个加载屏障,`std::atomic_thread_fence(std::memory_order_release)`会创建一个存储屏障,`std::atomic_thread_fence(std::memory_order_seq_cst)`会创建一个全屏障.
+
+
+
+### 1. 内存序的基本概念
+
+- **内存序**：指的是多线程程序中，内存操作的顺序和可见性。内存序定义了不同线程之间的内存操作如何排序和可见。
+
+### 2. C++ 中的内存序类型
+
+C++11 标准引入了内存序模型，并在 `<atomic>` 头文件中定义了几种内存序类型：
+
+- **`memory_order_relaxed`**：最弱的内存序，不提供任何同步或顺序保证。适用于不需要跨线程同步的场景。
+- **`memory_order_consume`**：比 `memory_order_acquire` 更弱，主要用于消费依赖关系。C++20 中已被弃用。
+- **`memory_order_acquire`**：保证在此操作之前的所有读写操作不会被重排序到此操作之后。适用于获取锁等场景。
+- **`memory_order_release`**：保证在此操作之后的所有读写操作不会被重排序到此操作之前。适用于释放锁等场景。
+- **`memory_order_acq_rel`**：结合了 `memory_order_acquire` 和 `memory_order_release` 的效果。适用于读-修改-写操作。
+- **`memory_order_seq_cst`**：最强的内存序，提供全局的顺序一致性。所有操作都按照程序中的顺序执行。
+
+### 3. 内存序的使用场景
+
+- **`memory_order_relaxed`**：适用于计数器等不需要同步的场景。
+- **`memory_order_acquire` 和 `memory_order_release`**：适用于锁的获取和释放。
+- **`memory_order_acq_rel`**：适用于需要同时进行获取和释放的操作，如读-修改-写。
+- **`memory_order_seq_cst`**：适用于需要严格顺序一致性的场景。
+
+### 4. 内存序的示例代码
+
+以下是一些示例代码，展示了不同内存序的使用：
+
+```cpp
+#include <atomic>
+#include <thread>
+#include <iostream>
+
+std::atomic<int> data(0);
+std::atomic<bool> ready(false);
+
+void producer() {
+    data.store(42, std::memory_order_relaxed); // 使用 relaxed 内存序
+    ready.store(true, std::memory_order_release); // 使用 release 内存序
+}
+
+void consumer() {
+    while (!ready.load(std::memory_order_acquire)) { // 使用 acquire 内存序
+        // 等待生产者准备好数据
+    }
+    std::cout << "Data: " << data.load(std::memory_order_relaxed) << std::endl; // 使用 relaxed 内存序
+}
+
+int main() {
+    std::thread t1(producer);
+    std::thread t2(consumer);
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+```
+
+### 5. 内存序的选择
+
+- **性能考虑**：较弱的内存序（如 `memory_order_relaxed`）通常性能更好，但需要确保正确性。
+- **正确性考虑**：较强的内存序（如 `memory_order_seq_cst`）提供更强的保证，但可能会影响性能。
+
+### 6. 内存序的常见问题
+
+- **指令重排**：编译器和 CPU 可能会对指令进行重排，内存序可以控制这种重排行为。
+- **可见性**：不同线程对共享变量的修改是否能及时被其他线程看到，内存序可以影响这种可见性。
+
+### 7. 内存序是谁在改变的？
+你的理解基本正确，但可以稍微调整和补充一些细节：
+
+### 1. 编译器层面
+
+- **指令重排**：编译器为了优化性能，可能会对代码中的指令进行重排。内存序通过内存屏障（Memory Barrier）指令来限制编译器的重排行为，确保特定的内存操作顺序。
+
+### 2. CPU 层面
+
+- **指令乱序执行**：CPU 为了提高性能，可能会对指令进行乱序执行。内存序通过插入内存屏障指令来限制 CPU 的乱序执行行为，确保特定的内存操作顺序。
+- **缓存一致性协议**：如 MESI 协议，用于确保多个 CPU 核心对共享内存的访问是一致的。内存序通过这些协议来实现跨核心的内存操作顺序保证。
+
+### 3. 内存和硬件层面
+
+- **内存模型**：不同的硬件架构有不同的内存模型，定义了内存操作的可见性和顺序性。内存序通过适配不同的内存模型来实现跨平台的一致性。
+- **内存屏障指令**：硬件层面的内存屏障指令（如 x86 架构的 `mfence`、`lfence`、`sfence`）用于确保特定的内存操作顺序。这些指令会阻止特定类型的内存操作重排。
+
+### 总结
+
+- **编译器**：通过内存屏障限制指令重排。
+- **CPU**：通过内存屏障和缓存一致性协议（如 MESI）限制指令乱序执行。
+- **内存和硬件**：通过内存模型和内存屏障指令确保内存操作的顺序和可见性。
+
+三个层面上都有可能改变指令的顺序，内存序通过不同的机制在这些层面上确保内存操作的正确性和一致性。
+
+了解和正确使用内存序是编写高效且正确的多线程程序的关键。选择合适的内存序可以在保证程序正确性的同时，提升程序的性能。
+
+4. 内存序类型的实现
+**memory_order_relaxed**：不插入任何内存屏障，允许最大程度的优化和重排。
+**memory_order_acquire**：在加载操作前插入内存屏障，确保之前的所有读写操作不会被重排到此操作之后。
+**memory_order_release**：在存储操作后插入内存屏障，确保之后的所有读写操作不会被重排到此操作之前。
+**memory_order_acq_rel**：结合了 memory_order_acquire 和 memory_order_release 的效果，确保加载和存储操作的顺序。
+**memory_order_seq_cst**：插入全局的内存屏障，确保所有操作按照程序中的顺序执行。
+

@@ -2,10 +2,6 @@
 
 # Table of contents
 
-- **Getting Started**
-
-  - [What is system design?](#what-is-system-design)
-
 - **Chapter I**
 
   - [IP](#ip)
@@ -83,8 +79,6 @@
 
 
 # Domain Name System (DNS)
-
-But as we know humans are more comfortable with names than numbers. It's easier to remember a name like `google.com` than something like `122.250.192.232`.
 
 This brings us to Domain Name System (DNS) which is a hierarchical and decentralized naming system used for translating human-readable domain names to IP addresses.
 

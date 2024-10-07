@@ -411,5 +411,8 @@ https://cs.baylor.edu/~donahoo/tools/gdb/tutorial.html
 
 https://www.cs.toronto.edu/~krueger/csc209h/tut/gdb_tutorial.html
 
-GDB 的详细介绍:请点这里
-GDB 的下载地址:请点这里
+#### **gdb**
+
+[gdb-tutorial-1](http://www.cs.toronto.edu/~krueger/csc209h/tut/gdb_tutorial.html)
+
+[gdb-tutorial-2](https://cs.baylor.edu/~donahoo/tools/gdb/tutorial.html)

@@ -18,9 +18,6 @@
     - [Why is Nginx called a “reverse” proxy?](#why-is-nginx-called-a-reverse-proxy)
     - [What are the common load-balancing algorithms?](#what-are-the-common-load-balancing-algorithms)
     - [URL, URI, URN - Do you know the differences?](#url-uri-urn---do-you-know-the-differences)
-  - [CI/CD](#cicd)
-    - [CI/CD Pipeline Explained in Simple Terms](#cicd-pipeline-explained-in-simple-terms)
-    - [Netflix Tech Stack (CI/CD Pipeline)](#netflix-tech-stack-cicd-pipeline)
   - [Architecture patterns](#architecture-patterns)
     - [MVC, MVP, MVVM, MVVM-C, and VIPER](#mvc-mvp-mvvm-mvvm-c-and-viper)
     - [18 Key Design Patterns Every Developer Should Know](#18-key-design-patterns-every-developer-should-know)
@@ -83,7 +80,6 @@
     - [How does Disney Hotstar capture 5 Billion Emojis during a tournament?](#how-does-disney-hotstar-capture-5-billion-emojis-during-a-tournament)
     - [How Discord Stores Trillions Of Messages](#how-discord-stores-trillions-of-messages)
     - [How do video live streamings work on YouTube, TikTok live, or Twitch?](#how-do-video-live-streamings-work-on-youtube-tiktok-live-or-twitch)
-  - [License](#license)
 
 ## Communication protocols
 
@@ -467,35 +463,6 @@ URN stands for Uniform Resource Name. It uses the urn scheme. URNs cannot be use
 
 If you would like to learn more detail on the subject, I would recommend [W3C’s clarification](https://www.w3.org/TR/uri-clarification/).
 
-## CI/CD
-
-### CI/CD Pipeline Explained in Simple Terms
-
-<p>
-  <img src="images/ci-cd-pipeline.jpg" style="width: 680px" />
-</p>
-
-### Netflix Tech Stack (CI/CD Pipeline)
-
-<p>
-  <img src="images/netflix-ci-cd.jpg" style="width: 720px" />
-</p>
-
-Planning: Netflix Engineering uses JIRA for planning and Confluence for documentation. 
-
-Coding: Java is the primary programming language for the backend service, while other languages are used for different use cases.  
-
-Build: Gradle is mainly used for building, and Gradle plugins are built to support various use cases.  
-
-Packaging: Package and dependencies are packed into an Amazon Machine Image (AMI) for release. 
-
-Testing: Testing emphasizes the production culture's focus on building chaos tools.  
-
-Deployment: Netflix uses its self-built Spinnaker for canary rollout deployment.  
-
-Monitoring: The monitoring metrics are centralized in Atlas, and Kayenta is used to detect anomalies.  
-
-Incident report: Incidents are dispatched according to priority, and PagerDuty is used for incident handling. 
 
 ## Architecture patterns
 
