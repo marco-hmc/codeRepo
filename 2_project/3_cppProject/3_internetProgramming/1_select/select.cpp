@@ -20,7 +20,6 @@ int main() {
 
   // 设置服务器地址和端口
   struct sockaddr_in address;
-  socklen_t addrlen = sizeof(address);
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = INADDR_ANY;
   address.sin_port = htons(PORT);
@@ -47,6 +46,7 @@ int main() {
   FD_SET(server_fd, &read_fds);
   int max_fd = server_fd;
 
+  socklen_t addrlen = sizeof(address);
   while (true) {
     fd_set temp_fds = read_fds; // 临时文件描述符集合，用于select调用
 

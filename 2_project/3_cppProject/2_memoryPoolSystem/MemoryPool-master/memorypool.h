@@ -5,9 +5,6 @@
 #include <pthread.h>
 #endif
 
-#include <stdlib.h>
-#include <string.h>
-
 #define mem_size_t unsigned long long
 #define KB (mem_size_t)(1 << 10)
 #define MB (mem_size_t)(1 << 20)

@@ -1,15 +1,15 @@
 #include "memorypool.h"
 
-#define MP_CHUNKHEADER sizeof(struct _mp_chunk)
-#define MP_CHUNKEND sizeof(struct _mp_chunk*)
+#define MP_CHUNK_HEADER sizeof(struct _mp_chunk)
+#define MP_CHUNK_END sizeof(struct _mp_chunk*)
 
-#define MP_LOCK(lockobj)                    \
+#define MP_LOCK(lockObj)                    \
     do {                                    \
-        pthread_mutex_lock(&lockobj->lock); \
+        pthread_mutex_lock(&lockObj->lock); \
     } while (0)
-#define MP_UNLOCK(lockobj)                    \
+#define MP_UNLOCK(lockObj)                    \
     do {                                      \
-        pthread_mutex_unlock(&lockobj->lock); \
+        pthread_mutex_unlock(&lockObj->lock); \
     } while (0)
 
 #define MP_ALIGN_SIZE(_n) (_n + sizeof(long) - ((sizeof(long) - 1) & (_n)))
@@ -27,15 +27,15 @@
         mm->alloc_list = NULL;                  \
     } while (0)
 
-#define MP_DLINKLIST_INS_FRT(head, x) \
-    do {                              \
-        x->prev = NULL;               \
-        x->next = head;               \
-        if (head) head->prev = x;     \
-        head = x;                     \
+#define MP_D_LINKLIST_INS_FRT(head, x) \
+    do {                               \
+        x->prev = NULL;                \
+        x->next = head;                \
+        if (head) head->prev = x;      \
+        head = x;                      \
     } while (0)
 
-#define MP_DLINKLIST_DEL(head, x)                 \
+#define MP_D_LINKLIST_DEL(head, x)                \
     do {                                          \
         if (!x->prev) {                           \
             head = x->next;                       \
@@ -62,10 +62,8 @@ void get_memory_list_count(MemoryPool* mp, mem_size_t* mlist_len) {
 #endif
 }
 
-void get_memory_info(MemoryPool* mp,
-                     _MP_Memory* mm,
-                     mem_size_t* free_list_len,
-                     mem_size_t* alloc_list_len) {
+void get_memory_info(MemoryPool* /*mp*/, _MP_Memory* mm,
+                     mem_size_t* free_list_len, mem_size_t* alloc_list_len) {
 #ifdef _Z_MEMORYPOOL_THREAD_
     MP_LOCK(mp);
 #endif
@@ -94,7 +92,7 @@ int get_memory_id(_MP_Memory* mm) {
 
 static _MP_Memory* extend_memory_list(MemoryPool* mp, mem_size_t new_mempool_sz) {
     char* s = (char*) malloc(sizeof(_MP_Memory) + new_mempool_sz * sizeof(char));
-    if (!s) return NULL;
+    if (!s) return nullptr;
 
     _MP_Memory* mm = (_MP_Memory*) s;
     mm->start = s + sizeof(_MP_Memory);
@@ -122,18 +120,18 @@ static int merge_free_chunk(MemoryPool* mp, _MP_Memory* mm, _MP_Chunk* c) {
     _MP_Chunk *p0 = c, *p1 = c;
     while (p0->is_free) {
         p1 = p0;
-        if ((char*) p0 - MP_CHUNKEND - MP_CHUNKHEADER <= mm->start) break;
-        p0 = *(_MP_Chunk**) ((char*) p0 - MP_CHUNKEND);
+        if ((char*)p0 - MP_CHUNK_END - MP_CHUNK_HEADER <= mm->start) break;
+        p0 = *(_MP_Chunk**)((char*)p0 - MP_CHUNK_END);
     }
 
     p0 = (_MP_Chunk*) ((char*) p1 + p1->alloc_mem);
     while ((char*) p0 < mm->start + mp->mempool_size && p0->is_free) {
-        MP_DLINKLIST_DEL(mm->free_list, p0);
+        MP_D_LINKLIST_DEL(mm->free_list, p0);
         p1->alloc_mem += p0->alloc_mem;
         p0 = (_MP_Chunk*) ((char*) p0 + p0->alloc_mem);
     }
 
-    *(_MP_Chunk**) ((char*) p1 + p1->alloc_mem - MP_CHUNKEND) = p1;
+    *(_MP_Chunk**)((char*)p1 + p1->alloc_mem - MP_CHUNK_END) = p1;
 #ifdef _Z_MEMORYPOOL_THREAD_
     MP_UNLOCK(mp);
 #endif
@@ -142,13 +140,11 @@ static int merge_free_chunk(MemoryPool* mp, _MP_Memory* mm, _MP_Chunk* c) {
 
 MemoryPool* MemoryPoolInit(mem_size_t max_mempool_size, mem_size_t mempool_size) {
     if (mempool_size > max_mempool_size) {
-        // printf("[MemoryPool_Init] MemPool Init ERROR! Mempoolsize is too big!
-        // \n");
-        return NULL;
+        return nullptr;
     }
 
     MemoryPool* mp = (MemoryPool*) malloc(sizeof(MemoryPool));
-    if (!mp) return NULL;
+    if (!mp) return nullptr;
 
     mp->last_id = 0;
     if (mempool_size < max_mempool_size) mp->auto_extend = 1;
@@ -163,7 +159,7 @@ MemoryPool* MemoryPoolInit(mem_size_t max_mempool_size, mem_size_t mempool_size)
                              sizeof(char) * mp->mempool_size);
     if (!s) {
         free(mp);
-        return NULL;
+        return nullptr;
     }
 
     mp->mlist = (_MP_Memory*) s;
@@ -176,10 +172,10 @@ MemoryPool* MemoryPoolInit(mem_size_t max_mempool_size, mem_size_t mempool_size)
 }
 
 void* MemoryPoolAlloc(MemoryPool* mp, mem_size_t wantsize) {
-    if (wantsize <= 0) return NULL;
+    if (wantsize <= 0) return nullptr;
     mem_size_t total_needed_size =
-            MP_ALIGN_SIZE(wantsize + MP_CHUNKHEADER + MP_CHUNKEND);
-    if (total_needed_size > mp->mempool_size) return NULL;
+        MP_ALIGN_SIZE(wantsize + MP_CHUNK_HEADER + MP_CHUNK_END);
+    if (total_needed_size > mp->mempool_size) return nullptr;
 
     _MP_Memory *mm = NULL;
     _MP_Chunk *_free = NULL, *_not_free = NULL;
@@ -201,7 +197,7 @@ FIND_FREE_CHUNK:
             if (_free->alloc_mem >= total_needed_size) {
                 // 如果free块分割后剩余内存足够大 则进行分割
                 if (_free->alloc_mem - total_needed_size >
-                    MP_CHUNKHEADER + MP_CHUNKEND) {
+                    MP_CHUNK_HEADER + MP_CHUNK_END) {
                     // 从free块头开始分割出alloc块
                     _not_free = _free;
 
@@ -209,8 +205,8 @@ FIND_FREE_CHUNK:
                                           total_needed_size);
                     *_free = *_not_free;
                     _free->alloc_mem -= total_needed_size;
-                    *(_MP_Chunk**) ((char*) _free + _free->alloc_mem -
-                                    MP_CHUNKEND) = _free;
+                    *(_MP_Chunk**)((char*)_free + _free->alloc_mem -
+                                   MP_CHUNK_END) = _free;
 
                     // update free_list
                     if (!_free->prev) {
@@ -223,24 +219,24 @@ FIND_FREE_CHUNK:
                     _not_free->is_free = 0;
                     _not_free->alloc_mem = total_needed_size;
 
-                    *(_MP_Chunk**) ((char*) _not_free + total_needed_size -
-                                    MP_CHUNKEND) = _not_free;
+                    *(_MP_Chunk**)((char*)_not_free + total_needed_size -
+                                   MP_CHUNK_END) = _not_free;
                 }
                 // 不够 则整块分配为alloc
                 else {
                     _not_free = _free;
-                    MP_DLINKLIST_DEL(mm->free_list, _not_free);
+                    MP_D_LINKLIST_DEL(mm->free_list, _not_free);
                     _not_free->is_free = 0;
                 }
-                MP_DLINKLIST_INS_FRT(mm->alloc_list, _not_free);
+                MP_D_LINKLIST_INS_FRT(mm->alloc_list, _not_free);
 
                 mm->alloc_mem += _not_free->alloc_mem;
                 mm->alloc_prog_mem +=
-                        (_not_free->alloc_mem - MP_CHUNKHEADER - MP_CHUNKEND);
+                    (_not_free->alloc_mem - MP_CHUNK_HEADER - MP_CHUNK_END);
 #ifdef _Z_MEMORYPOOL_THREAD_
                 MP_UNLOCK(mp);
 #endif
-                return (void*) ((char*) _not_free + MP_CHUNKHEADER);
+                return (void*)((char*)_not_free + MP_CHUNK_HEADER);
             }
             _free = _free->next;
         }
@@ -270,7 +266,7 @@ err_out:
 #ifdef _Z_MEMORYPOOL_THREAD_
     MP_UNLOCK(mp);
 #endif
-    return NULL;
+    return nullptr;
 }
 
 int MemoryPoolFree(MemoryPool* mp, void* p) {
@@ -281,20 +277,20 @@ int MemoryPoolFree(MemoryPool* mp, void* p) {
     _MP_Memory* mm = mp->mlist;
     if (mp->auto_extend) mm = find_memory_list(mp, p);
 
-    _MP_Chunk* ck = (_MP_Chunk*) ((char*) p - MP_CHUNKHEADER);
+    _MP_Chunk* ck = (_MP_Chunk*)((char*)p - MP_CHUNK_HEADER);
 
-    MP_DLINKLIST_DEL(mm->alloc_list, ck);
-    MP_DLINKLIST_INS_FRT(mm->free_list, ck);
+    MP_D_LINKLIST_DEL(mm->alloc_list, ck);
+    MP_D_LINKLIST_INS_FRT(mm->free_list, ck);
     ck->is_free = 1;
 
     mm->alloc_mem -= ck->alloc_mem;
-    mm->alloc_prog_mem -= (ck->alloc_mem - MP_CHUNKHEADER - MP_CHUNKEND);
+    mm->alloc_prog_mem -= (ck->alloc_mem - MP_CHUNK_HEADER - MP_CHUNK_END);
 
     return merge_free_chunk(mp, mm, ck);
 }
 
 MemoryPool* MemoryPoolClear(MemoryPool* mp) {
-    if (!mp) return NULL;
+    if (!mp) return nullptr;
 #ifdef _Z_MEMORYPOOL_THREAD_
     MP_LOCK(mp);
 #endif
@@ -372,10 +368,10 @@ float MemoryPoolGetProgUsage(MemoryPool* mp) {
     return (float) GetProgMemory(mp) / GetTotalMemory(mp);
 }
 
-#undef MP_CHUNKHEADER
-#undef MP_CHUNKEND
+#undef MP_CHUNK_HEADER
+#undef MP_CHUNK_END
 #undef MP_LOCK
 #undef MP_ALIGN_SIZE
 #undef MP_INIT_MEMORY_STRUCT
-#undef MP_DLINKLIST_INS_FRT
-#undef MP_DLINKLIST_DEL
+#undef MP_D_LINKLIST_INS_FRT
+#undef MP_D_LINKLIST_DEL

@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
         write(connFd, buff, n);
       }
       exit(0);
-    } // if
+    }
     close(connFd);
   } // for
 

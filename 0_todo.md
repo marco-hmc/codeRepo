@@ -1,13 +1,11 @@
 ## 1. doing
 
 ### 1.1 trivals
-  3. threadPool
+1. network
+    - chatRoom
+2. git subModule
 
 ### 1.5 readings
-  1. multiThread
-    - threadPool
-  2. network
-    - chatRoom
   3. tetris-AI
     - Thread-A(Game):
       作为游戏，同时发送数据到user
