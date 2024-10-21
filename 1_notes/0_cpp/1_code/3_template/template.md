@@ -233,3 +233,80 @@ int main() {
 + templates生成多个classes和多个函数，所以任何template代码都不该与某个造成膨胀的template参数产生依赖关系
 + 因非类型模板参数（non-type template parameters）而造成的代码膨胀，往往可以消除，做法是以函数参数后者class成员变量替换template参数
 + 因类型参数（type parameters）而造成的代码膨胀，往往可以降低，做法是让带有完全相同的二进制表述的具现类型，共享实现码
+
+
+#### 5. 学习处理模板化基类内的名称
+
+原代码：
+```c++    
+    class CompanyA{
+    public:
+        void sendCleartext(const std::string& msg);
+        ....
+    }
+    class CompanyB{....}
+    
+    template <typename Company>
+    class MsgSender{
+    public:
+        void sendClear(const MsgInfo& info){
+            std::string msg;
+            Company c;
+            c.sendCleartext(msg);
+        }
+    }
+    template<typename Company>//想要在发送消息的时候同时写入log，因此有了这个类
+    class LoggingMsgSender:public MsgSender<Company>{
+        public:
+        void sendClearMsg(const MsgInfo& info){
+            //记录log
+            sendClear(info);//无法通过编译，因为找不到一个特例化的MsgSender<company>
+        }
+    }
+```
+
+解决方法1（认为不是特别好）：
+```c++
+    template <> // 生成一个全特例化的模板
+    class MsgSender<CompanyZ>{  //和一般的template，但是没有sendClear,当Company==CompanyZ的时候就没有sendClear了
+    public:
+        void sendSecret(const MsgInfo& info){....}
+    }
+```
+解决方法2（使用this）：
+```c++
+    template<typename Company>
+    class LoggingMsgSender:public MsgSender<Company>{
+        public:
+        void sendClearMsg(const MsgInfo& info){
+            //记录log
+            this->sendClear(info);//假设sendClear将被继承
+        }
+    }
+```
+解决方法3（使用using）：
+```c++
+    template<typename Company>
+    class LoggingMsgSender:public MsgSender<Company>{
+        public:
+    
+        using MsgSender<Company>::sendClear; //告诉编译器，请他假设sendClear位于base class里面
+    
+        void sendClearMsg(const MsgInfo& info){
+            //记录log
+            sendClear(info);//假设sendClear将被继承
+        }
+    }
+```
+解决方法4（指明位置）：
+```c++
+    template<typename Company>
+    class LoggingMsgSender:public MsgSender<Company>{
+        public:
+        void sendClearMsg(const MsgInfo& info){
+            //记录log
+            MsgSender<Company>::sendClear(info);//假设sendClear将被继承
+        }
+    }
+```
+上面那些做法都是对编译器说：base class template的任何特例化版本都支持其一般版本所提供的接口

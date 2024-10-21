@@ -1,35 +1,25 @@
-#include "minilogger.h"
-#include<iostream>
-#include<string>
+#include <iostream>
+#include <string>
 
-using namespace std;
+#include "minilogger.h"
 
 // #define LOG(fmt, args...)	do{\
-// 			char _buf[1024] = {0};\
-// 			snprintf(_buf, sizeof(_buf), "[%s:%s:%d][LOG_NORMAL]"fmt"\n",__FILE__,__FUNCTION__,__LINE__, ##args);\
-// 			myLog.Log(string(_buf));\
-// 		}while(false)
-#define LOG(fmt, ...) do {\
-    char _buf[1024] = {0}; \
-    snprintf(_buf, sizeof(_buf), "[%s:%s:%d][LOG_NORMAL]" fmt "\n", __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
-    myLog.Log(std::string(_buf)); \
-} while (false)
+    // 			char _buf[1024] = {0};\
+    // 			snprintf(_buf, sizeof(_buf), "[%s:%s:%d][LOG_NORMAL]"fmt"\n",__FILE__,__FUNCTION__,__LINE__, ##args);\
+    // 			myLog.Log(string(_buf));\
+    // 		}while(false)
+#define LOG(fmt, ...)                                                   \
+    do {                                                                \
+        char _buf[1024] = {0};                                          \
+        snprintf(_buf, sizeof(_buf), "[%s:%s:%d][LOG_NORMAL]" fmt "\n", \
+                 __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);      \
+        myLog.Log(std::string(_buf));                                   \
+    } while (false)
 
-
-//you can define your own TextDecorator and use it.
 Logger<TextDecorator> myLog("myLogfile.txt", "this is title!", true, true);
 
-void myFunction() {
-    //test LOG in function
-    //
-    int a = 1;
-    int b = 2;
+void myFunction() { LOG("this is a log in function,a+b=%d", 1 + 2); }
 
-    LOG("this is a log in function,a+b=%d", a + b);
-}
-
-
-//this is some example for using miniLogger
 int main() {
     //log with no args.
     myLog.Log("this is log.");
@@ -40,5 +30,4 @@ int main() {
     myFunction();
     std::cin.get();
     return 0;
-
 }

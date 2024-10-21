@@ -1,127 +1,77 @@
-#include <string>
+
+// 假设我们有一个日志记录系统，需要根据日志级别（如 INFO、DEBUG、ERROR）来记录日志。
+// 我们可以使用责任链模式来实现不同级别的日志记录器，每个记录器处理特定级别的日志，并将其他级别的日志传递给下一个记录器。
+// 责任链（Chain of Responsibility）设计模式的本质是将请求沿着处理链传递，直到有一个处理器处理它。
+// 每个处理器都包含对下一个处理器的引用，如果当前处理器不能处理请求，它会将请求传递给下一个处理器。
+
 #include <iostream>
+#include <string>
 
-class AbstractProductA {
-public:
-    virtual ~AbstractProductA() {};
-    virtual std::string UsefulFunctionA() const = 0;
-};
+class Logger {
+   protected:
+    Logger* nextLogger;
 
-class ConcreteProductA1 : public AbstractProductA {
-public:
-    std::string UsefulFunctionA() const override {
-        return "The result of the product A1.";
-    }
-};
+   public:
+    Logger() : nextLogger(nullptr) {}
 
-class ConcreteProductA2 : public AbstractProductA {
-    std::string UsefulFunctionA() const override {
-        return "The result of the product A2.";
-    }
-};
+    void setNextLogger(Logger* nextLogger) { this->nextLogger = nextLogger; }
 
-class AbstractProductB {
-public:
-    virtual ~AbstractProductB() {};
-    virtual std::string UsefulFunctionB() const = 0;
-    virtual std::string AnotherUsefulFunctionB(const AbstractProductA& collaborator) const = 0;
-};
-
-class ConcreteProductB1 : public AbstractProductB {
-public:
-    std::string UsefulFunctionB() const override {
-        return "The result of the product B1.";
+    void logMessage(int level, const std::string& message) {
+        if (this->canHandle(level)) {
+            this->write(message);
+        }
+        if (this->nextLogger != nullptr) {
+            this->nextLogger->logMessage(level, message);
+        }
     }
 
-    std::string AnotherUsefulFunctionB(const AbstractProductA& collaborator) const override {
-        const std::string result = collaborator.UsefulFunctionA();
-        return "The result of the B1 collaborating with ( " + result + " )";
+    virtual bool canHandle(int level) = 0;
+    virtual void write(const std::string& message) = 0;
+};
+
+// 具体处理者类
+class InfoLogger : public Logger {
+   public:
+    bool canHandle(int level) override { return level == 1; }
+
+    void write(const std::string& message) override {
+        std::cout << "INFO: " << message << std::endl;
     }
 };
 
-class ConcreteProductB2 : public AbstractProductB {
-public:
-    std::string UsefulFunctionB() const override {
-        return "The result of the product B2.";
-    }
-    /**
-     * The variant, Product B2, is only able to work correctly with the variant,
-     * Product A2. Nevertheless, it accepts any instance of AbstractProductA as an
-     * argument.
-     */
-    std::string AnotherUsefulFunctionB(const AbstractProductA& collaborator) const override {
-        const std::string result = collaborator.UsefulFunctionA();
-        return "The result of the B2 collaborating with ( " + result + " )";
+class DebugLogger : public Logger {
+   public:
+    bool canHandle(int level) override { return level == 2; }
+
+    void write(const std::string& message) override {
+        std::cout << "DEBUG: " << message << std::endl;
     }
 };
 
-/**
- * The Abstract Factory interface declares a set of methods that return
- * different abstract products. These products are called a family and are
- * related by a high-level theme or concept. Products of one family are usually
- * able to collaborate among themselves. A family of products may have several
- * variants, but the products of one variant are incompatible with products of
- * another.
- */
-class AbstractFactory {
-public:
-    virtual AbstractProductA* CreateProductA() const = 0;
-    virtual AbstractProductB* CreateProductB() const = 0;
-};
+class ErrorLogger : public Logger {
+   public:
+    bool canHandle(int level) override { return level == 3; }
 
-/**
- * Concrete Factories produce a family of products that belong to a single
- * variant. The factory guarantees that resulting products are compatible. Note
- * that signatures of the Concrete Factory's methods return an abstract product,
- * while inside the method a concrete product is instantiated.
- */
-class ConcreteFactory1 : public AbstractFactory {
-public:
-    AbstractProductA* CreateProductA() const override {
-        return new ConcreteProductA1();
-    }
-    AbstractProductB* CreateProductB() const override {
-        return new ConcreteProductB1();
+    void write(const std::string& message) override {
+        std::cout << "ERROR: " << message << std::endl;
     }
 };
-
-/**
- * Each Concrete Factory has a corresponding product variant.
- */
-class ConcreteFactory2 : public AbstractFactory {
-public:
-    AbstractProductA* CreateProductA() const override {
-        return new ConcreteProductA2();
-    }
-    AbstractProductB* CreateProductB() const override {
-        return new ConcreteProductB2();
-    }
-};
-
-/**
- * The client code works with factories and products only through abstract
- * types: AbstractFactory and AbstractProduct. This lets you pass any factory or
- * product subclass to the client code without breaking it.
- */
-
-void ClientCode(const AbstractFactory& factory) {
-    const AbstractProductA* product_a = factory.CreateProductA();
-    const AbstractProductB* product_b = factory.CreateProductB();
-    std::cout << product_b->UsefulFunctionB() << "\n";
-    std::cout << product_b->AnotherUsefulFunctionB(*product_a) << "\n";
-    delete product_a;
-    delete product_b;
-}
 
 int main() {
-    std::cout << "Client: Testing client code with the first factory type:\n";
-    ConcreteFactory1* f1 = new ConcreteFactory1();
-    ClientCode(*f1);
-    delete f1;
-    std::cout << '\n';
-    std::cout << "Client: Testing the same client code with the second factory type:\n";
-    ConcreteFactory2* f2 = new ConcreteFactory2();
-    ClientCode(*f2);
-    delete f2;
+    Logger* errorLogger = new ErrorLogger();
+    Logger* debugLogger = new DebugLogger();
+    Logger* infoLogger = new InfoLogger();
+
+    infoLogger->setNextLogger(debugLogger);
+    debugLogger->setNextLogger(errorLogger);
+
+    infoLogger->logMessage(1, "This is an information.");
+    infoLogger->logMessage(2, "This is a debug level information.");
+    infoLogger->logMessage(3, "This is an error information.");
+
+    delete errorLogger;
+    delete debugLogger;
+    delete infoLogger;
+
     return 0;
 }

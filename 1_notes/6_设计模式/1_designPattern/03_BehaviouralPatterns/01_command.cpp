@@ -1,6 +1,4 @@
-#include <algorithm>
 #include <iostream>
-#include <list>
 #include <string>
 
 class Command {
@@ -9,6 +7,7 @@ public:
     }
     virtual void Execute() const = 0;
 };
+
 class SimpleCommand : public Command {
 private:
     std::string pay_load_;
@@ -77,9 +76,9 @@ public:
 };
 
 int main() {
-    Invoker* invoker = new Invoker;
+    auto* invoker = new Invoker;
     invoker->SetOnStart(new SimpleCommand("Say Hi!"));
-    Receiver* receiver = new Receiver;
+    auto* receiver = new Receiver;
     invoker->SetOnFinish(new ComplexCommand(receiver, "Send email", "Save report"));
     invoker->DoSomethingImportant();
 

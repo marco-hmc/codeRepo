@@ -1,3 +1,6 @@
+// 观察者（Observer）设计模式是一种行为型设计模式，其本质是定义对象间的一种一对多的依赖关系，使得每当一个对象的状态发生改变时，其相关依赖对象都会得到通知并自动更新。
+// 观察者模式常用于实现事件处理系统、订阅-发布系统等
+
 #include <iostream>
 #include <list>
 #include <string>
@@ -63,6 +66,7 @@ public:
         std::cout << "Hi, I'm the Observer \"" << ++Observer::static_number_ << "\".\n";
         this->number_ = Observer::static_number_;
     }
+
     virtual ~Observer() {
         std::cout << "Goodbye, I was the Observer \"" << this->number_ << "\".\n";
     }

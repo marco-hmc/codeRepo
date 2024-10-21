@@ -1,17 +1,10 @@
-import asyncio
+import math
 
-async def task1():
-    print("Task 1 started")
-    await asyncio.sleep(5)  # 非阻塞等待5秒
-    print("Task 1 finished")
+# 给定的边长
+a = 4000
+b = 2776
 
-async def task2():
-    print("Task 2 started")
-    await asyncio.sleep(2)  # 非阻塞等待2秒
-    print("Task 2 finished")
+# 计算勾股数 c
+c = math.sqrt(a**2 + b**2)
 
-async def main():
-    await asyncio.gather(task1(), task2())  # 并发执行task1和task2
-
-# 运行主协程
-asyncio.run(main())
+print(f"勾股数 c 为: {c}")

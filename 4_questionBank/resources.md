@@ -443,3 +443,5 @@ Wireshark网络分析就这么简单
 * [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
 * [Mercurial 使用教程](http://mercurial.selenic.com/wiki/ChineseTutorial)
 * [HgInit (中文版)](http://bucunzai.net/hginit/)
+
+《C++新经典:对象模型》
