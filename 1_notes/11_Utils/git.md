@@ -4,6 +4,9 @@
 
 [toc]
 
+
+`git push --force-with-lease`
+
 ### 0. 常用git指令
 
 * 代理设置
