@@ -31,3 +31,4 @@
     * OS-project
     * network-project
     * 自己做一个vs code插件,可以实现将词汇自动粘贴到某个给定路径,自己用来背单词用.
+    * https://learnopengl-cn.github.io/01%20Getting%20started/01%20OpenGL/
