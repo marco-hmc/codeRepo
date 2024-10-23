@@ -93,3 +93,10 @@ struct X {
 
 int main() { X x(); }
 ```
+
+### 6. 黑魔法
+```c++
+for (int i = 0; i < n; i++) {
+  cout << ans[i] << " \n"[i == n - 1];
+}
+```

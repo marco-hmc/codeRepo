@@ -1,20 +1,26 @@
-#include <iostream>
-#include <new>  // 用于 placement new
-#include <string>
+#include <cstdint>
 
-using namespace std;
-int main() {
-    // 预先分配一块内存
-    alignas(std::string) char buffer[sizeof(std::string)];
+#define WRONG_CODE_ENABLED 0
 
-    // 使用 placement new 在指定内存位置上构造 std::string 对象
-    std::string* strPtr = new (buffer) std::string("Hello, Placement New");
+namespace _2_2_3 {
+template <typename T>
+class TypeToID {
+   public:
+    static int const ID = -1;
+};
 
-    // 打印字符串值
-    std::cout << *strPtr << std::endl;
+class B {};
 
-    // 显式调用 std::string 的析构函数
-    strPtr->std::~string();
+template <>
+class TypeToID<void()>;  // 函数的TypeID
+template <>
+class TypeToID<int[3]>;  // 数组的TypeID
+template <>
+class TypeToID<int(int[3])>;  // 这是以数组为参数的函数的TypeID
+template <>
+class TypeToID<int (B::*[3])(
+    void*, float[2])>;  // 我也不知道这是什么了，自己看着办吧。
 
-    return 0;
-}
+template <>
+class TypeToID<int const* volatile* const volatile>;
+}  // namespace _2_2_3

@@ -443,3 +443,98 @@ int main() {
 - **未定义行为**：如果在同一块内存上多次使用 `placement new` 而不调用析构函数，可能会导致未定义行为。
 - **用途**：`placement new` 常用于内存池、联合体和自定义内存管理器等场景。
 
+**49. 了解new-handler的行为 （Understand the behavior of the new-handler)**
+
+当new无法申请到新的内存的时候，会不断的调用new-handler，直到找到足够的内存,new_handler是一个错误处理函数：
+```c++
+namespace std{
+    typedef void(*new_handler)();
+    new_handler set_new_handler(new_handler p) throw();
+}
+```
+
+一个设计良好的new-handler要做下面的事情：
++ 让更多内存可以被使用
++ 安装另一个new-handler，如果目前这个new-handler无法取得更多可用内存，或许他知道另外哪个new-handler有这个能力，然后用那个new-handler替换自己
++ 卸除new-handler
++ 抛出bad_alloc的异常
++ 不返回，调用abort或者exit
+
+new-handler无法给每个class进行定制，但是可以重写new运算符，设计出自己的new-handler
+此时这个new应该类似于下面的实现方式：
+```c++
+void* Widget::operator new(std::size_t size) throw(std::bad_alloc){
+    NewHandlerHolder h(std::set_new_handler(currentHandler));      // 安装Widget的new-handler
+    return ::operator new(size);                                   //分配内存或者抛出异常，恢复global new-handler
+}
+```
+
+总结：
++ set_new_handler允许客户制定一个函数，在内存分配无法获得满足时被调用
++ Nothrow new是一个没什么用的东西
+
+**52. 写了placement new也要写placement delete（Write placement delete if you write placement new)**
+
+如果operator new接受的参数除了一定会有的size_t之外还有其他的参数，这个就是所谓的palcement new
+
+void* operator new(std::size_t, void* pMemory) throw(); //placement new
+static void operator delete(void* pMemory) throw();     //palcement delete，此时要注意名称遮掩问题
+
+
+### 9. 尾回归类型
+```c++
+#include <iostream>
+
+void f(...) { std::cout << "fallback\n"; }
+
+template <class T>
+auto f(T t) -> decltype((void)(t.x), void()) {
+    std::cout << "has x member\n";
+}
+
+struct A {
+    int x;
+};
+struct B {};
+
+int main() {
+    f(A{});  // 输出 "has x member\n"
+    f(B{});  // 输出 "fallback\n"
+    return 0;
+}
+
+/*
+在现代C++中，尾置返回类型（trailing return type）主要用于以下几种情况：
+
+1. 当返回类型依赖于函数参数类型时，尤其是在模板函数中，这可以提供更清晰的语法。
+2. 在Lambda表达式中，尤其是当返回类型不容易直接推断时。
+3. 当函数返回类型较复杂时，使用尾置返回类型可以提高代码的可读性。
+*/
+```
+
+### 10. ADL
+```c++
+#include <iostream>
+
+// 模板编程通过类型可以找到对应的函数(如不同命名空间下的),这个就叫做ADL.
+// 下面这个例子展示了如何通过模板编程和ADL，使得模板函数能够在不知道具体类型的情况下，利用参数的类型在相应的命名空间中查找相应的函数。
+
+namespace MyNamespace {
+    struct MyType {};
+
+    void someFunction(MyType myArg) {
+      std::cout << "Function in MyNamespace called" << '\n';
+    }
+}
+
+template <typename T>
+void myTemplateFunction(T arg) {
+    someFunction(arg); // 依赖于ADL查找someFunction
+}
+
+int main() {
+    MyNamespace::MyType obj;
+    myTemplateFunction(obj); // 调用myTemplateFunction
+    return 0;
+}
+```
