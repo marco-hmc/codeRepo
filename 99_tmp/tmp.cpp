@@ -1,26 +1,31 @@
-#include <cstdint>
+#include <chrono>
+#include <iostream>
+#include <mutex>
+#include <thread>
 
-#define WRONG_CODE_ENABLED 0
+std::mutex mtx;
+int shared_data = 0;
 
-namespace _2_2_3 {
-template <typename T>
-class TypeToID {
-   public:
-    static int const ID = -1;
-};
+void thread_safe_function() {
+    std::lock_guard<std::mutex> lock(mtx);
+    shared_data++;
+    std::cout << "Thread-safe function: " << shared_data << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(2));  // 模拟长时间操作
+}
 
-class B {};
+void reentrant_function() {
+    std::lock_guard<std::mutex> lock(mtx);
+    shared_data++;
+    std::cout << "Reentrant function: " << shared_data << std::endl;
+}
 
-template <>
-class TypeToID<void()>;  // 函数的TypeID
-template <>
-class TypeToID<int[3]>;  // 数组的TypeID
-template <>
-class TypeToID<int(int[3])>;  // 这是以数组为参数的函数的TypeID
-template <>
-class TypeToID<int (B::*[3])(
-    void*, float[2])>;  // 我也不知道这是什么了，自己看着办吧。
+int main() {
+    std::thread t1(thread_safe_function);
+    std::this_thread::sleep_for(std::chrono::seconds(1));  // 确保 t1 持有锁
+    std::thread t2(reentrant_function);
 
-template <>
-class TypeToID<int const* volatile* const volatile>;
-}  // namespace _2_2_3
+    t1.join();
+    t2.join();
+
+    return 0;
+}
