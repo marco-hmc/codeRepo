@@ -1,14 +1,14 @@
-## 2. 多线程关键词
+## c++的多线程
 
-### 2.1 threads
+### 多线程的创建和管理手段
+#### 1. thread
 
 - 作者以[NonRecurisiveMutest.cc](https://github.com/chenshuo/recipes/tree/master/thread/test)这个为例子,如果 mutex 是递归的话,push_back()可能(但不总是)导致迭代器失效,程序偶尔会 crash,这种错误不好 debug.
 - 而这种偶发的 crash,发生在调用函数和被调用函数都以为自己拿到了锁,如果恰好都在修改一个对象的时候,这时候就容易 crash.
 - 而如果使用非递归锁,这种错误就会提前暴露出来,死锁比偶发的 crash 总归是好 debug.
 - 种种优化方法在没有数据支持的情况下,是靠不住的.很多人误认为用锁会让程序变慢,但实际上影响性能的不是锁,而是锁争用.要学会在程序的复杂度和性能之间取得平衡,并考虑机器扩容的可能.
 - 多机的可扩展能力比单机的性能优化更重要,更值得投入精力.
-
-#### 2.2 join 和 detach
+##### 1.1 join 和 detach
 
 - join 和 detach
 - join:
@@ -22,24 +22,48 @@
 - 不使用 join 也不使用 detach:
   在主线程退出时,可能会导致一些未定义行为,因为线程对象将被销毁,但线程本身可能仍在运行.
   以下是可能发生的情况:
-
   1. 程序可能终止,但线程可能仍在运行:
      如果主线程退出,而被创建的线程仍在运行,可能导致程序终止,但线程继续执行.这可能导致线程无法正确完成其任务,因为主线程已经退出.
      程序可能崩溃:
-
   2. 程序可能会崩溃:
      这是由于线程对象的销毁可能涉及到一些资源的释放,而线程本身仍在访问这些资源,导致未定义行为.
   3. 资源泄漏:
      如果线程分配了一些资源(例如内存),但在线程执行完毕前这些资源没有被释放,可能会导致资源泄漏.
 
-### 2.2 mutex
+#### 2. async
 
-#### 2.1 args
+std::async 是 C++11 中引入的一个用于启动异步任务的函数.它的原型如下:
 
-#### 2.2 lock_guard 2.3 unique_lock
+```cpp
+template <class Fn, class... Args>
+std::future<typename std::result_of<Fn(Args...)>::type>
+    async(std::launch policy, Fn&& f, Args&&... args);
+```
 
-是的,你的理解是正确的.
+这里是 std::async 函数的主要参数及其意义:
 
+policy: 异步任务的启动策略,它是一个 std::launch 类型的枚举值.可能的值有:
+
+std::launch::async:异步执行任务,可能会在新的线程中执行.
+std::launch::deferred:延迟执行任务,直到调用 std::future 对象的 get 或 wait 函数时执行,可能在当前线程执行.
+std::launch::async | std::launch::deferred:由系统自行选择执行方式,可能异步也可能延迟.
+f: 要异步执行的函数或可调用对象.
+
+args...: 传递给函数 f 的参数列表.
+
+std::async 返回一个 std::future 对象,通过这个对象可以获取异步任务的结果.std::future 是一个轻量级的异步结果管理器,它提供了对异步任务的状态查询(是否完成/是否有异常等)以及获取最终结果的功能.
+
+使用 std::async 可以方便地在后台执行任务,而调用 get 函数时,如果任务尚未完成,主线程会等待直到任务完成.这有助于充分利用多核系统的性能,将计算密集型任务分配到不同的线程中执行.
+
+注意:在使用 std::async 时,需要小心选择适当的启动策略,以避免不必要的线程创建和上下文切换.
+
+
+
+#### 3. packaged_task
+
+### 2. 多线程间的通信、通信手段
+
+#### 2.1 mutex
 `std::lock_guard`和`std::unique_lock`都是 RAII(Resource Acquisition Is Initialization)风格的互斥锁包装器,它们在构造时自动锁定互斥锁,在析构时自动解锁互斥锁.这种设计可以确保在函数退出(正常或异常)时自动释放锁,从而避免了因忘记解锁而导致的死锁.
 
 `std::lock_guard`和`std::unique_lock`的主要区别在于,`std::unique_lock`提供了更多的灵活性:
@@ -82,8 +106,9 @@
 
 需要注意的是,`std::shared_lock`只能用于支持共享所有权语义的互斥锁,如`std::shared_mutex`和`std::shared_timed_mutex`.对于不支持共享所有权语义的互斥锁,如`std::mutex`,你应该使用`std::unique_lock`或`std::lock_guard`.
 
-### 2.3 condition variable
 
+
+#### 2.2 condition_variable
 `std::condition_variable`是 C++中的一种同步原语,它可以用来在多线程环境中实现复杂的同步模式.以下是一些常见的用法:
 
 1. **等待通知**:一个线程可以使用`std::condition_variable::wait`或`wait_for`/`wait_until`方法来等待另一个线程的通知.当`wait`被调用时,当前线程将被阻塞,直到另一个线程调用`std::condition_variable::notify_one`或`notify_all`方法.
@@ -135,43 +160,16 @@ int main() {
 
 在这个例子中,生产者线程生成数字并将其放入队列,然后通知所有等待的消费者线程.消费者线程等待队列非空,然后从队列中取出并消费数字.
 
-### 2.4 future
+#### 2.3 atmoic
 
+#### 2.4 promise/ future
 future 是表示未来能够得到的值,具体什么时候能够得到,依赖于承诺对象的实现;什么是承诺对象?
 promise 和 packaged_task 就是承诺对象,但这些承诺对象 set_value 的时候,就可以执行 future.get()
-
-#### 2.4.1 async 的入参解释
-
-std::async 是 C++11 中引入的一个用于启动异步任务的函数.它的原型如下:
-
-```cpp
-template <class Fn, class... Args>
-std::future<typename std::result_of<Fn(Args...)>::type>
-    async(std::launch policy, Fn&& f, Args&&... args);
-```
-
-这里是 std::async 函数的主要参数及其意义:
-
-policy: 异步任务的启动策略,它是一个 std::launch 类型的枚举值.可能的值有:
-
-std::launch::async:异步执行任务,可能会在新的线程中执行.
-std::launch::deferred:延迟执行任务,直到调用 std::future 对象的 get 或 wait 函数时执行,可能在当前线程执行.
-std::launch::async | std::launch::deferred:由系统自行选择执行方式,可能异步也可能延迟.
-f: 要异步执行的函数或可调用对象.
-
-args...: 传递给函数 f 的参数列表.
-
-std::async 返回一个 std::future 对象,通过这个对象可以获取异步任务的结果.std::future 是一个轻量级的异步结果管理器,它提供了对异步任务的状态查询(是否完成/是否有异常等)以及获取最终结果的功能.
-
-使用 std::async 可以方便地在后台执行任务,而调用 get 函数时,如果任务尚未完成,主线程会等待直到任务完成.这有助于充分利用多核系统的性能,将计算密集型任务分配到不同的线程中执行.
-
-注意:在使用 std::async 时,需要小心选择适当的启动策略,以避免不必要的线程创建和上下文切换.
-
-#### 2.4.2 promise && packaged_task
 
 关于 future,promise,packaged_task,async 的理解,以下表述对吗?
 promise 和 packaged_task 都是还没有给出具体值的承诺对象,当给出具体数值的时候,就表示承诺实现,可以用于计算.
 而 async 是表示会开一个异步线程进行计算,返回的是一个 future 的值,如果 future 的值计算好之后,就可以通过 future.get()得到.
+
 
 所以说,在一个异步计算中,promise 和 packaged_task 是输入端的,async 是输出端的.
 
