@@ -1,66 +1,40 @@
 #include <iostream>
-#include <memory>
-#include <string>
-#include <unordered_map>
+#include <iterator>
+#include <numeric>
 
-class PathNode {
-   public:
- std::unordered_map<std::string, std::shared_ptr<PathNode>> children;
- bool isEndOfPath = false;
-};
+template <typename T>
+auto map(T fn) {
+    return [=](auto reduce_fn) {
+        return
+            [=](auto accum, auto input) { return reduce_fn(accum, fn(input)); };
+    };
+}
 
-class PathCacheTree {
-   public:
-    PathCacheTree() : root(std::make_shared<PathNode>()) {}
-
-    void insert(const std::string& path) {
-        auto currentNode = root;
-        size_t pos = 0, found;
-        while ((found = path.find('/', pos)) != std::string::npos) {
-            std::string part = path.substr(pos, found - pos);
-            if (!currentNode->children.count(part)) {
-                currentNode->children[part] = std::make_shared<PathNode>();
+template <typename T>
+auto filter(T predicate) {
+    return [=](auto reduce_fn) {
+        return [=](auto accum, auto input) {
+            if (predicate(input)) {
+                return reduce_fn(accum, input);
+            } else {
+                return accum;
             }
-            currentNode = currentNode->children[part];
-            pos = found + 1;
-        }
-        std::string part = path.substr(pos);
-        if (!currentNode->children.count(part)) {
-            currentNode->children[part] = std::make_shared<PathNode>();
-        }
-        currentNode->children[part]->isEndOfPath = true;
-    }
-
-    bool search(const std::string& path) const {
-        auto currentNode = root;
-        size_t pos = 0, found;
-        while ((found = path.find('/', pos)) != std::string::npos) {
-            std::string part = path.substr(pos, found - pos);
-            if (!currentNode->children.count(part)) {
-                return false;
-            }
-            currentNode = currentNode->children.at(part);
-            pos = found + 1;
-        }
-        std::string part = path.substr(pos);
-        return currentNode->children.count(part) &&
-               currentNode->children.at(part)->isEndOfPath;
-    }
-
-   private:
-    std::shared_ptr<PathNode> root;
-};
+        };
+    };
+}
 
 int main() {
-    PathCacheTree tree;
-    tree.insert("/home/user/documents");
-    tree.insert("/home/user/pictures");
+    std::istream_iterator<int> it{std::cin};
+    std::istream_iterator<int> end_it;
+    auto even([](int i) { return i % 2 == 0; });
+    auto twice([](int i) { return i * 2; });
 
-    std::cout << std::boolalpha;
-    std::cout << "Search /home/user/documents: "
-              << tree.search("/home/user/documents") << std::endl;
-    std::cout << "Search /home/user/music: " << tree.search("/home/user/music")
-              << std::endl;
+    auto copy_and_advance([](auto it, auto input) {
+        *it = input;
+        return ++it;
+    });
 
-    return 0;
+    std::accumulate(it, end_it, std::ostream_iterator<int>{std::cout, ", "},
+                    filter(even)(map(twice)(copy_and_advance)));
+    std::cout << '\n';
 }

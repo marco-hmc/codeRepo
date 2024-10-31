@@ -1,32 +1,19 @@
-//
-// 5.1.shared.ptr.cpp
-// chapter 05 start pointers and memory management
-// modern c++ tutorial
-//
-// created by changkun at changkun.de
-// https://github.com/changkun/modern-cpp-tutorial
-//
 
 #include <iostream>
 #include <memory>
 
-void foo(std::shared_ptr<int> i)
-{
-    (*i)++;
-}
+void foo(std::shared_ptr<int> i) { (*i)++; }
 
-int main()
-{
+int main() {
     // auto pointer = new int(10); // illegal, no direct assignment
     // std::shared_ptr construction
     auto pointer = std::make_shared<int>(10);
-    auto pointer2 = pointer;    // reference count + 1
-    auto pointer3 = pointer;    // reference count + 1
-    
-    
+    auto pointer2 = pointer;  // reference count + 1
+    auto pointer3 = pointer;  // reference count + 1
+
     foo(pointer);
-    std::cout << *pointer << '\n';      // 11
-    int *p = pointer.get();             // does not increase reference count
+    std::cout << *pointer << '\n';  // 11
+    int *p = pointer.get();         // does not increase reference count
 
     std::cout << "pointer.use_count() = " << pointer.use_count() << '\n';
     std::cout << "pointer2.use_count() = " << pointer2.use_count() << '\n';
