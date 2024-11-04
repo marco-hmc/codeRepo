@@ -3,7 +3,6 @@
 ### 1.1 trivals
 1. network
     - chatRoom
-2. git subModule
 
 ### 1.5 readings
   3. tetris-AI

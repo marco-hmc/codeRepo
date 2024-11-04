@@ -21,6 +21,9 @@ class SharedPtr {
         return *this;
     }
 
+    T &operator*() const { return *ptr; }
+    T *operator->() const { return ptr; }
+
     T *get() const { return ptr; }
 
     int use_count() const { return *refCount; }
@@ -33,9 +36,6 @@ class SharedPtr {
         ptr = nullptr;
         refCount = nullptr;
     }
-
-    T &operator*() const { return *ptr; }
-    T *operator->() const { return ptr; }
 
    public:
     T *ptr;
