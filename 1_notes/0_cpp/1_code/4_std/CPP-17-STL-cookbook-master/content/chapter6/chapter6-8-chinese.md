@@ -16,11 +16,6 @@
    #include <algorithm>
    
    using namespace std;
-   ```
-
-2. `remove_multi_whitespace`看起来与STL的风格非常类似。这个算法会移除多余的空格，只保留一个空格。当字符串为`a b`，算法是不会进行任何操作的；当字符串为`a   b`时，算法会返回`a b`。为了完成这个算法，我们使用`std::unqiue`通过对一段区域的迭代，用来查找一对连续的元素。然后，通过谓词函数进行判断，确定两个元素是否相等。如果相等，那么`std::unique`会将其中一个移除。这样，子范围中就不会存在相等的元素了。谓词函数会通过读取到的内容来判断二者是否相等。我们需要给`std::unique`怎么样一个谓词函数呢？其需要判断两个元素是否是连续的空格；如果是，就要移除一个空格。与`std::unique`类似，也需要传入一对`begin/end`迭代器，然后返回的迭代器将返回新范围的末尾迭代器：
-
-   ```c++
    template <typename It>
    It remove_multi_whitespace(It it, It end_it)
    {
@@ -28,21 +23,11 @@
        	return isspace(a) && isspace(b);
        });
    }
-   ```
-
-3. 万事俱备，就来进行测试，尝试使用算法将不必要的空格进行删除：
-
-   ```c++
    int main()
    {
        string s {"fooo bar \t baz"};
        
        cout << s << '\n';
-   ```
-
-4. 对字符串使用过滤算法，去掉多余的空格：
-
-   ```c++
        s.erase(remove_multi_whitespace(begin(s), end(s)), end(s));
        
    	cout << s << '\n';

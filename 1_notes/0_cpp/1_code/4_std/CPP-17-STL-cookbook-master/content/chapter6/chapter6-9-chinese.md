@@ -18,11 +18,6 @@
    #include <tuple>
    
    using namespace std;
-   ```
-
-2. 对于我们的压缩算法，我们会尝试去找到文本中连续相同的字符，并且对他们进行单独的进行压缩处理。当我们拿到一个字符串，我们需要知道与第一个字符不同的字符在哪里。这里使用`std::find`来寻找与第一个位置上的元素不同的元素位置。先将起始位置的字符赋予`c`。经过查找后就会返回一个迭代器，其指向第一个不同的元素。两个不同字符间的距离，会放到元组中返回：
-
-   ```c++
    template <typename It>
    tuple<It, char, size_t> occurrences(It it, It end_it)
    {
@@ -34,11 +29,6 @@
        
        return {diff, c, distance(it, diff)};
    }
-   ```
-
-3. `compress`会连续的对`occurrences`函数进行调用。这样，就能从同一个字符组，跳转到另一个。`r << c << n`行表示将字符`c`推入到输出流中，并且将`occurrences`函数的调用次数作为结果字符串的一部分。最后会返回一个字符串对象，就包含了压缩过的字符串：
-
-   ```c++
    string compress(const string &s)
    {
        const auto end_it (end(s));
@@ -52,11 +42,6 @@
        
        return r.str();
    }
-   ```
-
-4. `decompress`的原理也不复杂，但会更简短。其会持续的从输入流中获取字符，字符串包括字符和数字。对于这两种值，函数会构造一个字符串用于解压所获取到的字符串。最后，会再次返回一个字符串。顺带一提，这里的`decompress`函数是不安全的。其很容易被破解。我们会在后面来看下这个问题：
-
-   ```c++
    string decompress(const string &s)
    {
        stringstream ss{s};
@@ -68,11 +53,6 @@
        while (ss >> c >> n) { r << string(n, c); }
        return r.str();
    }
-   ```
-
-5. 主函数中会构造一个简单的字符串，里面有很多重复的字符。打印压缩过后，和解压过后的字符串。最后，我们应该会得到原始的字符串：
-
-   ```c++
    int main()
    {
        string s {"aaaaaaaaabbbbbbbbbccccccccccc"};

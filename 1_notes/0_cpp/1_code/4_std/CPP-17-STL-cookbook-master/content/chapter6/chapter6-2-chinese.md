@@ -25,11 +25,6 @@
    #include <fstream>
    
    using namespace std;
-   ```
-
-2. 我们将使用上一节实现的trie类：
-
-   ```c++
    template <typename T>
    class trie
    {
@@ -83,20 +78,10 @@
    		return subtrie(begin(c), end(c));
    	}
    };
-   ```
-
-3. 实现一个简单的辅助函数，这个函数将用于提示用户输入他们想要查找的东西：
-
-   ```c++
    static void prompt()
    {
    	cout << "Next input please:\n > ";
    } 
-   ```
-
-4. 主函数中，我们打开一个文本文件，其作为我们的基础数据库。我们逐行读取文本文件的内容，并且将数据放入trie中解析：
-
-   ```c++
    int main()
    {
        trie<string> t;
@@ -105,19 +90,9 @@
            istringstream iss {line};
            t.insert(istream_iterator<string>{iss}, {});
        }
-   ```
-
-5. 现在可以使用构建好的trie类，并且需要实现接收用户查询输入的接口。会提示用户进行输入，并且将用户的输入整行读取：
-
-   ```c++
        prompt();
        for (string line; getline(cin, line);) {
        	istringstream iss {line};
-   ```
-
-6. 通过文本输入，可以使用trie对其子trie进行查询。如果在数据库中已经有相应的语句，那么会对输入进行建议，否则会告诉用户没有建议给他们：
-
-   ```c++
        if (auto st (t.subtrie(istream_iterator<string>{iss}, {}));
        	st) {
        	cout << "Suggestions:\n";
@@ -125,11 +100,6 @@
        } else {
        	cout << "No suggestions found.\n";
        }
-   ```
-
-7. 之后，将打印一段分割符，并且再次等待用户的输入：
-
-   ```c++
            cout << "----------------\n";
            prompt();
        }

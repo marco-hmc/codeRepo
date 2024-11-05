@@ -17,22 +17,12 @@
    #include <functional>
    
    using namespace std; 
-   ```
-
-2. `gather`算法是表现标准算法组合性很好的一个例子。`gather`接受一对`begin/end`迭代器和另一个迭代器`gather_pos`，其指向`begin`和`end`迭代器的中间位置。最后一个参数是一个谓词函数。使用谓词函数，算法会将满足谓词条件的所有元素放置在`gather_pos`迭代器附近。使用`std::stable_partition`来完成移动元素的任务。`gather`算法将会返回一对迭代器。这两个迭代器由`stable_partition`所返回，其表示汇集范围的起始点和结束点：
-
-   ```c++
    template <typename It, typename F>
    pair<It, It> gather(It first, It last, It gather_pos, F predicate)
    {
    	return {stable_partition(first, gather_pos, not_fn(predicate)),
    		    stable_partition(gather_pos, last, predicate)};
    }
-   ```
-
-3. 算法的另一种变体为`gather_sort`。其工作原理与`gather`相同，不过其不接受一元谓词函数；其能接受一个二元比较函数。这样，其就也能将对应值汇集在`gather_pos`附近，并且能知道其中最大值和最小值：
-
-   ```c++
    template <typename It, typename F>
    void gather_sort(It first, It last, It gather_pos, F comp_func)
    {
@@ -43,51 +33,21 @@
        stable_sort(first, gather_pos, inv_comp_func);
        stable_sort(gather_pos, last, comp_func);
    }
-   ```
-
-4. 让我们来使用一下这些算法。先创建一个谓词函数，其会告诉我们当前的字母是不是`a`，再构建一个字符串，仅包含`a`和`-`字符：
-
-   ```c++
    int main()
    {
        auto is_a ([](char c) { return c == 'a'; });
        string a {"a_a_a_a_a_a_a_a_a_a_a"};
-   ```
-
-5. 继续构造一个迭代器，让其指向字符串的中间位置。这时可以调用`gather`算法，然后看看会发生什么。`a`字符将汇集在字符串中间的某个位置附近：
-
-   ```c++
        auto middle (begin(a) + a.size() / 2);
        
    	gather(begin(a), end(a), middle, is_a);
        cout << a << '\n';
-   ```
-
-6. 再次调用`gather`，不过这次`gather_pos`的位置在字符串的起始端：
-
-   ```c++
    	gather(begin(a), end(a), begin(a), is_a);
    	cout << a << '\n';
-   ```
-
-7. 再将`gather_pos`的位置放在末尾试试：
-
-   ```c++
    	gather(begin(a), end(a), end(a), is_a);
    	cout << a << '\n';
-   ```
-
-8. 最后一次，这次将再次将迭代器指向中间位置。这次与我们的期望不相符，后面我们来看看发生了什么：
-
-   ```c++
    	// This will NOT work as naively expected
    	gather(begin(a), end(a), middle, is_a);
    	cout << a << '\n';
-   ```
-
-9. 再构造另一个字符串，使用下划线和一些数字组成。对于这个输入队列，我们使用`gather_sort`。`gather_pos`迭代器指向字符串的中间，并且比较函数为`std::less<char>`：
-
-   ```c++
        string b {"_9_2_4_7_3_8_1_6_5_0_"};
        gather_sort(begin(b), end(b), begin(b) + b.size() / 2,
        		   less<char>{});

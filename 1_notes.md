@@ -1,6 +1,9 @@
 to readingRepo
 the lazy fox jumps over brown dog
 
+dom解析和流式解析两种
+
+
 ## 怎么开始阅读一个大项目？
 
 ###

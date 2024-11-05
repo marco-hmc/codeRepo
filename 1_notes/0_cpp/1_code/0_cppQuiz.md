@@ -526,3 +526,96 @@ STL的默认分配器`std::allocator`直接使用`new`和`delete`来分配和释
 
 纯右值(prvalue)，移动语义，转发引用(俗称万能引用)，std::forward<T>()完美转发，RAII，表达式求值，弃值表达式，不求值表达式，潜在求值表达式，常量表达式，临时量实质化(C++17)，标准布局类，用元编程实现constexpr编译期算法(如编译期汉诺塔，编译期递归，拼接字符数组，打函数表)，用户定义字面量，PIMPL，三五零原则，构造函数异常处理，函数 try 块，模块，全局模块片段及其存在的意义，模块分区，在CMake工程中声明模块范围库(范围适配器，定制点对象(CPO)，niebloid，ADL实参依赖查找，常见的范围工厂，视图，老式迭代器对和新式迭代器+哨位概念的对比)，可变仿引用对象的 operator= 成员必须带 const 限定的依据，奇特重现模板模式(CRTP)以及其在C++20范围适配器中的应用概念库，requires子句，约束的归入(subsume)，约束的偏序，concept，原子约束，约束规范化过程，范围库中常用的concept(可间接写入，可间接读取)协程，协程promise_type，挂起点，等待体，范围生成器，协程抛异常，格式化器特化，基本格式化器，格式串格式，显式对象形参(C++23)
 
+
+* 栈上内存为什么比通过RAII管理的堆上内存快？
+栈上内存通常比通过 RAII（Resource Acquisition Is Initialization）管理的堆上内存快，主要原因有以下几点：
+
+### 1. 内存分配和释放的开销
+
+- **栈内存**：
+  - 栈内存的分配和释放是由编译器自动管理的，分配和释放的速度非常快。
+  - 栈内存的分配通常只需要调整栈指针，而释放内存只需要将栈指针恢复到之前的位置。
+  - 栈内存的分配和释放是确定的，开销非常小。
+
+- **堆内存**：
+  - 堆内存的分配和释放是由操作系统或运行时库管理的，分配和释放的速度相对较慢。
+  - 堆内存的分配需要找到合适的内存块，可能涉及复杂的内存管理算法。
+  - 堆内存的释放需要更新内存管理数据结构，开销较大。
+
+### 2. 内存局部性
+
+- **栈内存**：
+  - 栈内存通常具有较好的局部性，因为栈上的数据通常是连续分配的。
+  - 较好的局部性可以提高缓存命中率，从而提高访问速度。
+
+- **堆内存**：
+  - 堆内存的分配可能是分散的，局部性较差。
+  - 较差的局部性可能导致缓存命中率降低，从而降低访问速度。
+
+### 3. 内存管理的复杂性
+
+- **栈内存**：
+  - 栈内存的管理非常简单，不需要显式的内存管理操作。
+  - 栈内存的生命周期由作用域决定，编译器自动管理。
+
+- **堆内存**：
+  - 堆内存的管理较为复杂，需要显式的内存分配和释放操作。
+  - 使用 RAII 可以自动管理堆内存，但仍然需要额外的开销来管理智能指针和引用计数。
+
+### 示例代码
+
+以下是一个示例代码，展示了栈上内存和通过 RAII 管理的堆上内存的使用：
+
+```cpp
+#include <iostream>
+#include <memory>
+
+class Base {
+public:
+    virtual ~Base() = default;
+};
+
+class Foo : public Base {
+public:
+    Foo(int value) : value(value) {}
+    void setValue(int newValue) { value = newValue; }
+    int getValue() const { return value; }
+
+private:
+    int value;
+};
+
+void useStackMemory() {
+    Foo foo(42); // 在栈上分配内存
+    std::cout << "Stack memory value: " << foo.getValue() << std::endl;
+    foo.setValue(100);
+    std::cout << "Modified stack memory value: " << foo.getValue() << std::endl;
+}
+
+void useHeapMemory() {
+    std::unique_ptr<Foo> fooPtr = std::make_unique<Foo>(42); // 在堆上分配内存
+    std::cout << "Heap memory value: " << fooPtr->getValue() << std::endl;
+    fooPtr->setValue(100);
+    std::cout << "Modified heap memory value: " << fooPtr->getValue() << std::endl;
+}
+
+int main() {
+    useStackMemory();
+    useHeapMemory();
+    return 0;
+}
+```
+
+### 解释
+
+1. **栈上内存**：
+   - 在 `useStackMemory` 函数中，`Foo foo(42)` 在栈上分配内存。
+   - 当 `useStackMemory` 函数返回时，[`foo`](command:_github.copilot.openSymbolFromReferences?%5B%22%22%2C%5B%7B%22uri%22%3A%7B%22scheme%22%3A%22file%22%2C%22authority%22%3A%22%22%2C%22path%22%3A%22%2Fhome%2Fmarco%2FgitRepo%2FcodeRepo%2F99_tmp%2Ftmp.cpp%22%2C%22query%22%3A%22%22%2C%22fragment%22%3A%22%22%7D%2C%22pos%22%3A%7B%22line%22%3A18%2C%22character%22%3A8%7D%7D%5D%2C%22e21330ee-2028-4d2d-9306-298aaba762f0%22%5D "Go to definition") 超出作用域，内存自动释放。
+
+2. **堆上内存**：
+   - 在 `useHeapMemory` 函数中，`std::unique_ptr<Foo> fooPtr = std::make_unique<Foo>(42)` 在堆上分配内存，并使用 `std::unique_ptr` 管理。
+   - 当 `fooPtr` 超出作用域时，`std::unique_ptr` 自动释放内存。
+
+### 总结
+
+栈上内存通常比通过 RAII 管理的堆上内存快，主要原因是栈内存的分配和释放开销较小，内存局部性较好，内存管理较为简单。堆内存的分配和释放开销较大，内存局部性较差，内存管理较为复杂。通过 RAII 可以自动管理堆内存，但仍然需要额外的开销来管理智能指针和引用计数。

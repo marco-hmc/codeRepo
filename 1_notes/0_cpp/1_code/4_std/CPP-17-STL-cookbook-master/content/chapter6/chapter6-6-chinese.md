@@ -18,11 +18,6 @@
    #include <list>
    
    using namespace std; 
-   ```
-
-2. 本节的所有算法都围绕分割来进行。其接受一对`begin/end`迭代器和一个输出迭代器，其用法和`std::copy`或`std::transform`类似。其他参数为`split_val`和`bin_func`。`split_val`参数是要在输入范围内要查找的值，其表示要当碰到这个值时，要对范围进行分割。`bin_func`参数是一个函数，其为分割的子序列的开始和结尾。我们可以使用`std::find`对输入范围进行迭代查找，这样就能直接跳转到`split_val`所在的位置。当将一个长字符串分割成多个单词，可以通过分割空格字符达到目的。对于每一个分割值，都会做相应的分割，并将对应的分割块拷贝到输出范围内：
-
-   ```c++
    template <typename InIt, typename OutIt, typename T, typename F>
    InIt split(InIt it, InIt end_it, OutIt out_it, T split_val,
    		  F bin_func)
@@ -36,34 +31,14 @@
        }
        return it;
    }
-   ```
-
-3. 现在尝试一下我们的新算法，构建一个需要进行分割的字符串。其中的字符使用`-`进行连接：
-
-   ```c++
    int main()
    {
    	const string s {"a-b-c-d-e-f-g"};
-   ```
-
-4. 创建一个`bin_func`对象，其能接受一组迭代器，我们需要通过该函数创建一个新的字符串：
-
-   ```c++
    	auto binfunc ([](auto it_a, auto it_b) {
        	return string(it_a, it_b);
        });
-   ```
-
-5. 输出的子序列将保存在`std::list`中。我们现在可以调用`split`算法：
-
-   ```c++
        list<string> l;
        split(begin(s), end(s), back_inserter(l), '-', binfunc);
-   ```
-
-6. 为了看一下结果，我们将对子字符串进行打印：
-
-   ```c++
    	copy(begin(l), end(l), ostream_iterator<string>{cout, "\n"});
    } 
    ```

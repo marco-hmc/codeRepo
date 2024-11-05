@@ -1,47 +1,91 @@
-您已经列出了一些关键的代码优化思路，以下是一些补充，这些可以帮助进一步提升C++代码的性能：
+#include "DownloadManager.h"
 
-1. **内存管理优化**：
-   - 使用智能指针管理动态分配的内存，如`std::unique_ptr`和`std::shared_ptr`，以自动释放内存，减少内存泄漏。
-   - 避免使用裸指针进行动态内存管理，除非绝对必要。
+DownloadManager::DownloadManager() : stopFlag(false) {
+    downloadThread = std::thread(&DownloadManager::processDownloads, this);
+}
 
-2. **算法和数据结构选择**：
-   - 根据实际需求选择合适的算法和数据结构，比如使用哈希表代替数组或链表，以减少查找时间复杂度。
+DownloadManager::~DownloadManager() {
+    {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        stopFlag = true;
+    }
+    cv.notify_all();
+    if (downloadThread.joinable()) {
+        downloadThread.join();
+    }
+}
 
-3. **缓存利用**：
-   - 优化数据访问模式以提高缓存利用率，例如通过预取（prefetching）和局部性优化。
+void DownloadManager::addDownloadTask(const std::string& uuid, int priority) {
+    {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        downloadQueue.push(
+            {priority, [this, uuid] { return ABC_Download(uuid); }});
+    }
+    cv.notify_one();
+}
 
-4. **分支预测**：
-   - 优化代码中的条件分支，使得CPU分支预测器能够更准确地预测分支结果，减少分支误预测导致的性能损失。
+void DownloadManager::addDownloadTaskAsync(const std::string& uuid,
+                                           int priority,
+                                           std::function<void(bool)> callback) {
+    {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        downloadQueue.push({priority, [this, uuid, callback] {
+                                bool result = ABC_Download(uuid);
+                                callback(result);
+                                return result;
+                            }});
+    }
+    cv.notify_one();
+}
 
-5. **多线程和并发**：
-   - 利用多核CPU的计算能力，通过多线程和并发编程技术分散计算负载。
-   - 使用线程池来管理和复用线程，减少线程创建和销毁的开销。
+void DownloadManager::processDownloads() {
+    while (true) {
+        TaskWithPriority taskWithPriority;
+        {
+            std::unique_lock<std::mutex> lock(queueMutex);
+            cv.wait(lock,
+                    [this] { return !downloadQueue.empty() || stopFlag; });
+            if (stopFlag && downloadQueue.empty()) {
+                break;
+            }
+            taskWithPriority = downloadQueue.top();
+            downloadQueue.pop();
+        }
+        // 执行下载任务
+        taskWithPriority.second();
+    }
+}
 
-6. **I/O优化**：
-   - 对于I/O密集型应用，使用异步I/O操作减少等待时间，提高整体性能。
+bool DownloadManager::ABC_Download(const std::string& uuid) {
+    std::cout << "Downloading file with UUID: " << uuid << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(2));  // 模拟下载时间
+    std::cout << "Downloaded file with UUID: " << uuid << std::endl;
+    return true;  // 模拟下载成功
+}
 
-7. **减少动态分配**：
-   - 减少运行时的动态内存分配，通过使用栈分配、对象池或其他内存管理技术。
+// #include "DownloadManager.h"
+// #include <iostream>
+// #include <thread>
 
-8. **编译器特定优化**：
-   - 利用编译器特定的优化选项，如GCC的`-O3`、Clang的`-Ofast`等，以及针对特定架构的优化标志。
+// int main() {
+//     DownloadManager manager;
 
-9. **模板元编程**：
-   - 使用模板元编程在编译时执行计算，减少运行时的计算负担。
+//     // 添加下载任务
+//     manager.addDownloadTask("uuid1", 1);
+//     manager.addDownloadTask("uuid2", 3);
+//     manager.addDownloadTask("uuid3", 2);
 
-10. **避免虚函数**：
-    - 尽量减少虚函数的使用，特别是在性能敏感的代码路径中，因为虚函数调用有额外的开销。
+//     // 添加异步下载任务
+//     manager.addDownloadTaskAsync("uuid4", 1, [](bool success) {
+//         if (success) {
+//             std::cout << "Async download completed successfully." << std::endl;
+//         } else {
+//             std::cout << "Async download failed." << std::endl;
+//         }
+//     });
 
-11. **代码剖析和分析**：
-    - 使用性能分析工具（如gprof、Valgrind、Intel VTune）来识别热点和瓶颈。
+//     // 等待一段时间以便下载任务完成
+//     std::this_thread::sleep_for(std::chrono::seconds(10));
 
-12. **减少外部依赖**：
-    - 减少对外部库的依赖，尤其是在性能关键的部分，以避免不可预测的运行时开销。
-
-13. **代码重构**：
-    - 定期重构代码以提高可维护性和性能，去除坏味道和不必要的复杂性。
-
-14. **持续集成和性能回归测试**：
-    - 在开发过程中集成性能测试，确保每次提交都不会导致性能回归。
-
-通过综合运用上述优化策略，可以显著提升C++程序的性能和效率。需要注意的是，优化应该是有目标和有度的，过度优化可能会使代码变得难以理解和维护。因此，在进行优化时，应该基于性能测试结果，优先解决那些对性能影响最大的问题。
+//     return 0;
+// }
