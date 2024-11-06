@@ -1,65 +1,22 @@
+#include <cstdint>
 #include <iostream>
-#include <numeric>
-#include <vector>
 
-class zip_iterator {
-    using it_type = std::vector<double>::iterator;
+enum class MyEnum : uint8_t { Value1 = 1, Value2 = 2, Value3 = 3 };
 
-    it_type it1;
-    it_type it2;
-
-   public:
-    zip_iterator(it_type iterator1, it_type iterator2)
-        : it1{iterator1}, it2{iterator2} {}
-
-    zip_iterator &operator++() {
-        ++it1;
-        ++it2;
-        return *this;
+void processEnum(uint8_t* enumPtr) {
+    if (enumPtr) {
+        std::cout << "Enum value: " << static_cast<int>(*enumPtr) << std::endl;
+    } else {
+        std::cout << "enumPtr is null" << std::endl;
     }
-
-    bool operator!=(const zip_iterator &o) const {
-        return it1 != o.it1 && it2 != o.it2;
-    }
-
-    bool operator==(const zip_iterator &o) const { return !operator!=(o); }
-
-    std::pair<double, double> operator*() const { return {*it1, *it2}; }
-};
-
-namespace std {
-template <>
-struct iterator_traits<zip_iterator> {
-    using iterator_category = std::forward_iterator_tag;
-    using value_type = std::pair<double, double>;
-    using difference_type = long int;
-};
-}  // namespace std
-
-class zipper {
-    using vec_type = std::vector<double>;
-    vec_type &vec1;
-    vec_type &vec2;
-
-   public:
-    zipper(vec_type &va, vec_type &vb) : vec1{va}, vec2{vb} {}
-
-    zip_iterator begin() const { return {std::begin(vec1), std::begin(vec2)}; }
-    zip_iterator end() const { return {std::end(vec1), std::end(vec2)}; }
-};
+}
 
 int main() {
-    using namespace std;
-    vector<double> a{1.0, 2.0, 3.0};
-    vector<double> b{4.0, 5.0, 6.0};
+    MyEnum myEnum = MyEnum::Value2;
 
-    zipper zipped{a, b};
+    // 获取枚举值的地址并传递给函数
+    // processEnum(reinterpret_cast<uint8_t*>(&myEnum));
+    processEnum(static_cast<uint8_t*>(&myEnum));
 
-    const auto add_product(
-        [](double sum, const auto &p) { return sum + p.first * p.second; });
-
-    const auto dot_product(
-        accumulate(begin(zipped), end(zipped), 0.0, add_product));
-
-    cout << dot_product << '\n';
+    return 0;
 }
