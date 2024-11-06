@@ -1,0 +1,16 @@
+# Build directories.
+bazel-*
+/build
+
+# Build files.
+*.o
+*.exe
+*.o.tmp
+*.exe.stackdump
+*.map
+
+# Sourcetrail files.
+*.srctrl*
+
+# Tags files.
+.tags*
