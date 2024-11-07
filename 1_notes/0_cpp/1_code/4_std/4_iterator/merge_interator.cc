@@ -43,8 +43,9 @@ private:
 
     // TODO: generalize this using C::value_comp ?
     bool operator<(const Item &rhs) const {
-      if (iter->first == rhs.iter->first)
-        return idx > rhs.idx;
+        if (iter->first == rhs.iter->first) {
+            return idx > rhs.idx;
+        }
       return iter->first > rhs.iter->first;
     }
   };

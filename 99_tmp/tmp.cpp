@@ -1,22 +1,27 @@
-#include <cstdint>
+#include <deque>
 #include <iostream>
-
-enum class MyEnum : uint8_t { Value1 = 1, Value2 = 2, Value3 = 3 };
-
-void processEnum(uint8_t* enumPtr) {
-    if (enumPtr) {
-        std::cout << "Enum value: " << static_cast<int>(*enumPtr) << std::endl;
-    } else {
-        std::cout << "enumPtr is null" << std::endl;
-    }
-}
+#include <iterator>
+#include <sstream>
+#include <string>
 
 int main() {
-    MyEnum myEnum = MyEnum::Value2;
+    std::istream_iterator<int> it_cin{std::cin};
+    std::istream_iterator<int> end_cin;
 
-    // 获取枚举值的地址并传递给函数
-    // processEnum(reinterpret_cast<uint8_t*>(&myEnum));
-    processEnum(static_cast<uint8_t*>(&myEnum));
+    std::deque<int> v;
+    std::copy(it_cin, end_cin, std::back_inserter(v));
 
-    return 0;
+    std::istringstream sstr{"123 456 789"};
+
+    auto deque_middle(std::next(std::begin(v), static_cast<int>(v.size()) / 2));
+
+    std::copy(std::istream_iterator<int>{sstr}, {},
+              std::inserter(v, deque_middle));
+
+    std::initializer_list<int> il2{-1, -2, -3};
+    std::copy(std::begin(il2), std::end(il2), std::front_inserter(v));
+
+    std::copy(std::begin(v), std::end(v),
+              std::ostream_iterator<int>{std::cout, ", "});
+    std::cout << '\n';
 }

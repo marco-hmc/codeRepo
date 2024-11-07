@@ -3,18 +3,18 @@
 
 namespace jc {
 
-    template <typename T>
-    class A {
-        // 类作用域内的 A 是注入类名，等价于 A<T>
-        friend std::ostream& operator<<(std::ostream& os, const A& rhs) {
-            return os << "A<" << typeid(T).name() << "> = " << rhs.n;
-        }
+template <typename T>
+class A {
+    // 类作用域内的 A 是注入类名，等价于 A<T>
+    friend std::ostream& operator<<(std::ostream& os, const A& rhs) {
+        return os << "A<" << typeid(T).name() << "> = " << rhs.n;
+    }
 
-        friend void f() {}
+    friend void f() {}
 
-    private:
-        int n = 0;
-    };
+   private:
+    int n = 0;
+};
 
 }  // namespace jc
 

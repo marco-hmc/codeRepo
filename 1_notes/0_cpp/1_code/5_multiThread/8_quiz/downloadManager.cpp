@@ -1,16 +1,17 @@
-#include <iostream>
-#include <thread>
-#include <queue>
-#include <mutex>
+#include <atomic>
 #include <condition_variable>
 #include <functional>
-#include <atomic>
 #include <future>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
 
 // 自定义返回类型
 class Foo {
-public:
-    Foo(bool success, const std::string& message) : success(success), message(message) {}
+   public:
+    Foo(bool success, const std::string& message)
+        : success(success), message(message) {}
     bool success;
     std::string message;
 };
@@ -29,7 +30,7 @@ struct CompareTask {
 
 // 下载管理器类
 class DownloadManager {
-public:
+   public:
     static DownloadManager& getInstance() {
         static DownloadManager instance;
         return instance;
@@ -41,10 +42,10 @@ public:
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             downloadQueue.push({priority, [this, uuid, promise]() {
-                Foo result = ABC_Download(uuid);
-                promise->set_value(result);
-                return result;
-            }});
+                                    Foo result = ABC_Download(uuid);
+                                    promise->set_value(result);
+                                    return result;
+                                }});
         }
         cv.notify_one();
         return future;
@@ -55,10 +56,10 @@ public:
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             downloadQueue.push({priority, [this, uuid, callback]() {
-                Foo result = ABC_Download(uuid);
-                callback(result);
-                return result;
-            }});
+                                    Foo result = ABC_Download(uuid);
+                                    callback(result);
+                                    return result;
+                                }});
         }
         cv.notify_one();
     }
@@ -67,14 +68,14 @@ public:
         {
             std::lock_guard<std::mutex> lock(queueMutex);
             downloadQueue.push({priority, [this, uuid]() {
-                Foo result = ABC_Download(uuid);
-                return result;
-            }});
+                                    Foo result = ABC_Download(uuid);
+                                    return result;
+                                }});
         }
         cv.notify_one();
     }
 
-private:
+   private:
     DownloadManager() : stopFlag(false) {
         downloadThread = std::thread(&DownloadManager::processDownloads, this);
     }
@@ -98,7 +99,9 @@ private:
             TaskWithPriority taskWithPriority;
             {
                 std::unique_lock<std::mutex> lock(queueMutex);
-                cv.wait(lock, [this]() { return !downloadQueue.empty() || stopFlag; });
+                cv.wait(lock, [this]() {
+                    return !downloadQueue.empty() || stopFlag;
+                });
                 if (stopFlag && downloadQueue.empty()) {
                     break;
                 }
@@ -118,7 +121,9 @@ private:
     }
 
     std::thread downloadThread;
-    std::priority_queue<TaskWithPriority, std::vector<TaskWithPriority>, CompareTask> downloadQueue;
+    std::priority_queue<TaskWithPriority, std::vector<TaskWithPriority>,
+                        CompareTask>
+        downloadQueue;
     std::mutex queueMutex;
     std::condition_variable cv;
     std::atomic<bool> stopFlag;
@@ -138,16 +143,21 @@ int main() {
     future3.wait();
 
     // 检查任务结果
-    std::cout << "Download uuid1 result: " << future1.get().message << std::endl;
-    std::cout << "Download uuid2 result: " << future2.get().message << std::endl;
-    std::cout << "Download uuid3 result: " << future3.get().message << std::endl;
+    std::cout << "Download uuid1 result: " << future1.get().message
+              << std::endl;
+    std::cout << "Download uuid2 result: " << future2.get().message
+              << std::endl;
+    std::cout << "Download uuid3 result: " << future3.get().message
+              << std::endl;
 
     // 添加异步下载任务
     manager.addDownloadTaskAsync("uuid4", 1, [](Foo result) {
         if (result.success) {
-            std::cout << "Async download completed successfully: " << result.message << std::endl;
+            std::cout << "Async download completed successfully: "
+                      << result.message << std::endl;
         } else {
-            std::cout << "Async download failed: " << result.message << std::endl;
+            std::cout << "Async download failed: " << result.message
+                      << std::endl;
         }
     });
 
