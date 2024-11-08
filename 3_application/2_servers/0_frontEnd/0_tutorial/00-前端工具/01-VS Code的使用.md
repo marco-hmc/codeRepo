@@ -1,45 +1,55 @@
-## 常见配置
+## 前言
 
+## 一、VS Code 的介绍
 
-**自动保存**：
+### 18、Vetur
 
-```
- "files.autoSave": "onFocusChange"
-```
+Vue 多功能集成插件，包括：语法高亮，智能提示，emmet，错误提示，格式化，自动补全，debugger。VS Code 官方钦定 Vue 插件，Vue 开发者必备。
 
-参考链接：<https://blog.csdn.net/WestLonly/article/details/78048049>
+### 19、ES7 React/Redux/GraphQL/React-Native snippets
 
+React/Redux/react-router 的语法智能提示。
 
-**在新的窗口中打开文件**：
+### 20、minapp：小程序支持
 
-```json
-"workbench.editor.enablePreview": false,
-```
+小程序开发必备插件。
 
-## 常见操作
+### 22、ESLint：代码格式校验
 
-### 如何查看代码结构
+日常开发中，建议用可以用 Prettier 做代码格式化，然后用 eslint 做校验。
 
-- 方法一：「Cmd + Shift + O」
+### 24、JavaScript(ES6) code snippets
 
-- 方法二：安装插件`Code Outline`
+ES6 语法智能提示，支持快速输入。
 
-参考链接：<https://www.zhihu.com/question/264045094>
+### 25、Search node_modules 【荐】
 
+`node_modules`模块里面的文件夹和模块实在是太多了，根本不好找。好在安装 `Search node_modules` 这个插件后，输入快捷键「Cmd + Shift + P」，然后输入 `node_modules`，在弹出的选项中选择 `Search node_modules`，即可搜索 node_modules 里的模块。
 
+![](http://img.smyhvae.com/20200618_2100.png)
 
-### 在本地开启服务器
+### 29、Local History 【荐】
 
-```bash
-# 安装
-npm install -g live-server
+维护文件的本地历史记录，强烈建议安装。代码意外丢失时，有时可以救命。
 
-# 启动
-live-server
-```
+![](http://img.smyhvae.com/20200618_2246.png)
 
+### 32、Auto Close Tag、Auto Rename Tag
 
-参考链接：[Visual Studio Code + live-server编辑和浏览HTML网页](http://www.cnblogs.com/1zhk/p/5699379.html)
+自动闭合标签、自动对标签重命名。
+
+### 34、CSS Peek
+
+增强 HTML 和 CSS 之间的关联，快速查看该元素上的 CSS 样式。
+
+### 35、Vue CSS Peek
+
+CSS Peek 对 Vue 没有支持，该插件提供了对 Vue 文件的支持。
+
+### 39、Import Cost
+
+在项目开发过程中，我们会引入很多 npm 包，有时候可能只用到了某个包里的一个方法，却引入了整个包，导致代码体积增大很多。`Import Cost`插件可以在代码中友好的提示我们，当前引入的包会增加多少体积，这很有助于帮我们优化代码的体积。
+
 
 
 ### sftp：文件传输
@@ -91,26 +101,6 @@ live-server
 ```
 
 
-### Sass Formatter
-
-Sass 文件格式化。
-
-
-### Code Outline：显示代码结构
-
-
-安装好插件「Code Outline」后，可以在左侧的资源管理器中，显示当前文件的代码结构：
-
-![](http://img.smyhvae.com/20180420_0925.png)
-
-参考链接：
-
-- <https://www.zhihu.com/question/50273450>
-
-- <http://itopic.org/vscode.html>
-
-- <https://github.com/varHarrie/varharrie.github.io/issues/10>
-
 ### vscode-fileheader：添加顶部注释模板(签名)
 
 （1）安装插件vscode -fileheader，并重启。
@@ -140,50 +130,9 @@ Sass 文件格式化。
 
 ![](http://img.smyhvae.com/20180611_2235.png)
 
-
-### open in browser
-
-在浏览器中打开。
-
-
-### Auto Rename Tag
-
-适用于 JSX、Vue、HTML。在修改标签名时，能在你修改开始（结束）标签的时候修改对应的结束（开始）标签，帮你减少 50% 的击键。
-
-
-###Project Manager
+### Project Manager
 
 项目管理，让我们方便的在命令面板中切换项目文件夹，当然，你也可以直接打开包含多个项目的父级文件夹，但这样可能会让 VSCode 变慢。
-
-
-
-### highlight-icemode：选中相同的代码时，让高亮显示更加明显【荐】
-
-VSCode自带的高亮显示，实在是不够显眼。用插件支持一下吧。
-
-所用了这个插件之后，VS Code自带的高亮就可以关掉了：
-
-在用户设置里添加`"editor.selectionHighlight": false`即可。
-
-
-参考链接：[vscode 选中后相同内容高亮插件推荐](https://blog.csdn.net/palmer_kai/article/details/79548164)
-
-
-### highlight-words：全局高亮（跨文件多色彩）
-
-
-参考链接：[Visual Studio Code全局高亮着色插件(跨文件多色彩)经验纪要](https://zhuanlan.zhihu.com/p/31163793)
-
-
-### color-exchange：颜色格式转换【荐】
-
-
-安装完插件后，在css中输入颜色，然后按`cmd + .`，就能进行颜色的格式转换。
-
-20181013_1450.png
-
-我在写这一段时，安装的人还不多，赶紧上车。
-
 
 
 ## Vue 相关的插件
@@ -207,7 +156,6 @@ VSCode自带的高亮显示，实在是不够显眼。用插件支持一下吧�
 - <https://github.com/varHarrie/varharrie.github.io/issues/10>
 
 
-
 ### 参考链接
 
 - <https://www.jianshu.com/p/0724921285d4>
@@ -226,7 +174,3 @@ VSCode自带的高亮显示，实在是不够显眼。用插件支持一下吧�
 
 - [能让你开发效率翻倍的 VSCode 插件配置（上）](https://zhuanlan.zhihu.com/p/30976584)
 
-
-### 某网友的VS Code 插件截图
-
-![](http://img.smyhvae.com/20180611_2255.png)

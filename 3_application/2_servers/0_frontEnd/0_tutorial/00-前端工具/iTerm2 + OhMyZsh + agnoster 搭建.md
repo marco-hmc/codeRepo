@@ -1,3 +1,11 @@
+
+
+推荐链接：
+
+- <https://www.jianshu.com/p/246b844f4449>
+
+
+
 ## 手机设置代理
 
 连接好指定的wifi后，点击那个wifi里的设置，将「代理」那一项，设置为手动，然后输入ip（电脑上的ip）、端口号（8899）。然后就可以通过电脑上的whistle工具，查看手机的网页请求。
@@ -53,3 +61,19 @@ http://xxx.com htmlAppend://{eruda.html}
 
 然后就OK了。
 
+## 控制台的使用
+
+### 控制台查看源码
+
+控制台的`Sources`标签可以查看源码。按住快捷键「cmd + P」，可以根据文件名查找源码文件。
+
+
+## 其他
+
+### show user agent shadow DOM
+
+![](http://img.smyhvae.com/20180206_1610.png)
+
+![](http://img.smyhvae.com/20180206_1616.png)
+
+把上图中的红框部分打钩。
