@@ -1,3 +1,31 @@
+cmake提速
+
+* unity build - supported by cmake
+  * 为什么会变快？因为编译单元少了，减少了编译的初始化开销。
+  * 减少了头文件的重复解析
+  * 更大的编译单元，利于内联函数，常量传播等编译器优化方式。
+  * 缺点：
+    * 调试：
+    * 命名空间
+* pch
+* 并行
+* ccache
+
+* include what you used
+* clang build analyzer
+* module c++ 20
+* LTCG: incremental
+* pimpl
+* 我知道的有两个，1:预编译头文件，2增量式编译，一般会引入ccache
+
+
+1、Windows 平台，使用increase build ，缺点是无法产生pdb 符号文件。速度有保障2、Linux平台，最近发现一个很有趣的现象，我们写了一个脚本把所有的cpp 文件写到了一个CPP 文件中,可以大幅度提高编译速度，缺点是gdb 调试的时候不方便。使用distcc 和ccache 并不能显著提高速度，除非机器数量特别庞大，而且要保证机器环境一致，相比之下更推荐写脚本把CPP 文件数量减少。
+
+
+https://www.cnblogs.com/misserwell/p/4343927.html
+
+如果是使用了模板，每一个编译单元都会有一个自己的实例代码。如果不是通过模板实现，函数的定义只会在自己对应的编译单元，其他编译单元通过链接的方式找到。
+
 ## Q&A of CMake
 
 > marco
@@ -206,3 +234,10 @@
 * **`SET(A "${A}" CACHE PATH "xxx")`的意义是什么?**
 
   
+如何理解CMakePredefinedTargets?
+* all_build
+* install
+* package
+* zero_check
+
+cmake中的目标是什么意思？
