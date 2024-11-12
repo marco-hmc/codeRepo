@@ -17,7 +17,7 @@ https://link.zhihu.com/?target=https%3A//github.com/qinguoyi/TinyWebServer
 3. SQLiteCpp:
     简单易用的Sqlite C++封装库，我目前项目中就是使用的这个库，很好用，代码行数2,500左右。
 
-
+[汇总](http://ezlippi.com/blog/2014/12/c-open-project.html)
 #### 3. db
 1. level-DB
 2. sqlite

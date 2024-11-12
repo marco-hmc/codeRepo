@@ -1,3 +1,17 @@
+
+* [Git Internals-eng]
+* [Pro Git - eng]
+* [Pro Git - 中文版]
+* [git - 简易指南](http://rogerdudler.github.io/git-guide/index.zh.html)
+* [Git 参考手册](http://gitref.justjavac.com)
+* [Pro Git](http://git-scm.com/book/zh)
+* [Git Magic](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/zh_cn/)
+* [GotGitHub](http://www.worldhello.net/gotgithub/index.html)
+* [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
+* [Mercurial 使用教程](http://mercurial.selenic.com/wiki/ChineseTutorial)
+* [HgInit (中文版)](http://bucunzai.net/hginit/)
+
+
 ## git操作
 
 > marco

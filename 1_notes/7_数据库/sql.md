@@ -1,3 +1,31 @@
+*  高性能MySQL 
+  *  本书深度讲解了mysql引擎架构、索引设计、SQL查询优化的实战技巧、复制、分片等原理，还有运维技能。适合精读。 
+* 《 经典原版书库：数据库系统概念（英文精编版·第6版） 》
+* 数据库的知识面试问的不多，但是数据库对于以后工作是肯定会用到的，如果有时间建议将基础打好，可以先看**数据库系统概念**，了解数据库的基础知识，然后阅读**mysql必知必会**这本书，可以帮助你快速学习 *mysql* 的基本语法。
+
+
+* [MongoDB_实践]
+* [MongoDB基础教程]
+* [MongoDB开发使用手册]
+* [MongoDB开发应用实践_潘凡]
+* [MongoDB权威指南]
+* [10 Key Performance Indicators for MongoDB]
+* [u dont know mongodb]
+* [MongoDB.in.Action(2011.12).Kyle.Banker.文字版]
+* [O'Reilly:深入学习MongoDB(霍多罗夫).巨成等.扫描版]
+
+
+* [Google MapReduce-中文版]
+* [Google MapReduce-英文版osdi04]
+* [NoSQL数据库笔谈]
+* [The Google File System]
+* [高性能MySQL(第2版)中文版.施瓦茨.扫描版](http://pan.baidu.com/s/1zpaWY)
+
+
+[sqlite3-c++](https://www.runoob.com/sqlite/sqlite-update.html)
+
+[sqlite](https://www.geeksforgeeks.org/sql-using-c-c-and-sqlite/)
+
 ## 1. login
 * `sudo systemctl start mysql`
 * `sudo systemctl stop mysql`

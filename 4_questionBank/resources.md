@@ -2,6 +2,10 @@
 
 ### **面经&学习路线**
 
+* [程序员面试题精选100题]
+* [程序员面试宝典(第三版)]
+* [剑指offer 名企面试官精讲典型编程题]
+
 [一站式学习资料](https://[www.r2coding.com/#/](http://www.r2coding.com/#/))
 
 [cpp-guide-web](https://balloonwj.github.io/cpp-guide-web/)
@@ -21,26 +25,12 @@
 [CS-Notes](https://github.com/CyC2018/CS-Notes)
 
 
-
 ### **书籍**
 
 [awesome-cs-books](https://github.com/imarvinle/awesome-cs-books)
 
 [超过1000本!计算机经典书籍PDF分享]**(**https://github.com/forthespada/CS-Books)
 
-### **网络编程**
-
-[TCP-IP-NetworkNote](https://github.com/riba2534/TCP-IP-NetworkNote)
-
-### **数据库**
-
-[sqlite3-c++](https://www.runoob.com/sqlite/sqlite-update.html)
-
-[sqlite](https://www.geeksforgeeks.org/sql-using-c-c-and-sqlite/)
-
-### **开源项目**
-
-[汇总](http://ezlippi.com/blog/2014/12/c-open-project.html)
 
 * <现代操作系统> Tanenbaum.A.S: 
 * <程序员的自我修养:链接/装载与库>
@@ -72,11 +62,8 @@
 | **[编程语言与编译器](#编程语言与编译器)** | 若你懂得编程语言和编译器如何工作,你就能写出更好的代码,更轻松地学习新的编程语言. | _[<Crafting Interpreters>](https://craftinginterpreters.com/)_ | Alex Aiken's course on Lagunita   |
 | **[分布式系统](#分布式系统)**             | 如今,_多数_ 系统都是分布式的.                              | _[<数据密集型应用系统设计>](https://book.douban.com/subject/30329536/)_ | MIT 6.824                         |
 
-## 1. 指引
 
 ### 1.1 编程
-
-大多数计算机专业本科教学以程序设计"导论"作为开始.这类课程的最佳版本不仅能满足初学者的需要,还适用于那些在初学编程阶段遗漏了某些有益的概念和程序设计模式的人.
 
 对于这部分内容,我们的标准推荐是这部经典著作:[<计算机程序的构造和解释>](https://book.douban.com/subject/1148282/).
 
@@ -113,15 +100,6 @@
 
 [![深入理解计算机系统](.自学CS顺序以及书单.asserts/82109944-12270d00-976d-11ea-85a9-774e4f762ec9.png)](https://book.douban.com/subject/26912767/) [![计算机系统要素](.自学CS顺序以及书单.asserts/66758695-60231c00-eed1-11e9-8422-a4acfb10a390.jpg)](http://www.nand2tetris.org) 
 
-### 算法与数据结构
-
-关于算法与数据结构,有成百上千的书可供使用,但是我们的最爱是Steven Skiena编写的 _[<算法设计手册>](https://book.douban.com/subject/4048566/)_.显而易见,他对此充满热爱,迫不及待地想要帮助其他人理解.
-
-最后,我们强烈推荐 _[<怎样解题>](https://book.douban.com/subject/2124114/)_.这本书极为优秀且独特,指导人们解决广义上的问题,因而一如其适用于数学,它适用于计算机科学.
-
-## 2. 附录
-
-### 2.1 经典书推荐
 
 #### 1.1 SICP
 
@@ -135,290 +113,18 @@ SICP,即计算机程序的构造和解释.因为 SICP 是独一无二的,它可�
 
 龙书,即编译原理,依旧是内容最为完整的编译器单本书籍.由于过分强调一些如今不够时新的主题的细节,比如解析,这本书招致了恶评.然而事实上,这本书从未打算供人一页一页的学习,而仅仅是为了给教师准备一门课程提供足够的材料.类似地,自学者可以从书中量身按需挑选主题,或者最好依照公开课授课教师在课程大纲中的建议.
 
-## 科普类
-
-### 1. 代码大全
-
-构建之法
-
-软件调试
-
-head first java
-
-**Java并发编程实战**
-
-**大话设计模式**
-
-高性能mySQL
-
-Wireshark网络分析就这么简单
-
-哥德尔`艾舍尔`巴赫:集异璧之大成
-
-穿越计算机的迷雾
-
-<黑客与画家>
-
-码农翻身
-
-逻辑的引擎
-
-## 3. 计算机网络
-
-### 3.1 重点学习内容
-
-### 3.2 **资料推荐：**
-
-* 《Wireshark网络分析就这么简单》 
-  * 更偏向于实战
-* 计算机网络 第7版（谢希仁 著）
-  - 学习网络，可以先看**计算机网络**这本书，讲解通俗易懂，前面的物理层和链路层可以快速看，了解基本原理即可，重点学习网络层、传输层和应用层，其中传输层的TCP和UDP是面试最常考的，非常重要。网络的知识比较容易理解，但是知识点比较繁杂，一段时间不看就很容易忘记，建议学习之后将各个知识点整理成文档或者笔记，有助于找工作前复习。
-* TCP/IP详解 原书第2版（卷1）
-  - 学完**计算机网络**，可以基本建立计算机网络的知识体系，但是这本书深度不够，建议继续学习**TCP/IP详解 卷1**，作为对TCP/IP协议的深入，这本书讲解非常细致，看的过程中很容易陷入细节，对整本书系统学习的话比较花时间，如果时间有限的话，可以先选择性地学习一些章节，建议先将传输层的内容看完，有助于对TCP和UDP的深入理解，其他层的内容可以根据个人情况选择性的学习。
-* UNIX网络编程 第3版（卷1）
-  - 另外，如果想要对网络编程进行实践，可以继续学习**UNIX网络编程 卷1**
-
-## 4. 操作系统
-
-####   操作通用知识
-
-*  深入理解计算机系统 第3版（CSAPP）
-   *  先看**深入理解计算机系统**，操作系统方面的神书，内容非常经典，而且比较通俗易懂，适合入门，软件的话建议先学习第二部分和第三部分，再根据个人情况学习第一部分。
-*  《程序员自我修养》 
-   *  如果想对**编译链接**的原理进行深入学习，可以参考**程序员的自我修养**，这本书非常详细的讲解了程序编译过程中的具体细节。
-*  操作系统 精髓与设计原理 第8版
-   *  然后再学习**操作系统 精髓与设计原理**，这本书比现代操作系统更通俗易懂，可以结合CSAPP一起看，两本书的知识点相互有所弥补。
-*  ==协程==(GO web2.0时代重要的东西.处理高并发)
-
--------
-
-## 6. 数据库
-
-### 6.1 重点学习内容
-
-### 6.2 **资料推荐：**
-
-*  高性能MySQL 
-  *  本书深度讲解了mysql引擎架构、索引设计、SQL查询优化的实战技巧、复制、分片等原理，还有运维技能。适合精读。 
-* 《 经典原版书库：数据库系统概念（英文精编版·第6版） 》
-* 数据库的知识面试问的不多，但是数据库对于以后工作是肯定会用到的，如果有时间建议将基础打好，可以先看**数据库系统概念**，了解数据库的基础知识，然后阅读**mysql必知必会**这本书，可以帮助你快速学习 *mysql* 的基本语法。
-
-
-## ==8. 分布式==
-
-### 8.1 重点学习内容
-
-* 一致性协议
-* raft/paxos/zab/cap等理论
-
-### 8.2 **资料推荐：**
-
-* 大话设计模式
-
-  * 本书并没有局限于那种分布式框架，而是着重讲解分布式整体架构设计理念和基础知识。
-
-    **作者水平非常高，本书广度非常大**（诚然并不是很深，要在一本书里将那么多知识深度讲解也是不可能的），深入浅出，大家不用担心晦涩难懂（在这里更加推荐英文基础好的话直接读英文原版）。
-
-## 9. 实战项目
-
-### *9.1 C语言制作斗地主发牌*
-
-*[c语言 斗地主的发牌期](https://study.163.com/course/introduction/1321006.htm#/courseDetail)*
-
-*可以掌握基本项目开发。*
-
-### 9.2 C语言的http server
-
-[tinyhttpd](https://github.com/EZLippi/Tinyhttpd)
-
-超轻量级http server，可以用来理解服务器程序的原理和本质。
-
-### 9.3 c语言的数据库
-
-[dbl_tutorial](https://github.com/cstack/db_tutorial)
-
-用c从零开始搭建一个简单的数据库
-
-### 9.4 C++ 网站压力测试
-
-[压力测试](http://home.tiscali.cz/~cz210552/webbench.html)
-
-这个资料使用fork()模拟多个客户端同时访问我们设定的URL，测试网站在压力下工作的性能。适合用于学习网络编程
-
-### 9.5 c++ Lightweight web server
-
-[high performance webserver](https://github.com/linyacool/WebServer)
-
-[lightweight web server based on linux epoll](https://github.com/imarvinle/WebServer)
-
-### 9.6 libjson
-
-[json解析器](https://github.com/cesanta/frozen)
-
- 这是一个超级高效的JSON解析器，并且高度可定制的，非常轻巧。 
-
-### ==9.7 kv存储==
-
-[levelDB](https://github.com/google/leveldb)
-
-这是一个基于LSM结构的KV存储，levldb常常被用作各类数据库、存储系统的存储引擎，估计在BAT都能找到它的使用。
-
-分布式存储数据库
-
 
 [有哪些你看了以后大呼过瘾的编程书](https://www.zhihu.com/question/50408698)
 
 ## 1. 计算机
-
-* SICP
-  
-  * SICP帮助读者了解CS的核心概念,属于从高空俯瞰世界,刚入门的读者不应该错过.
-  
+代码大全
+构建之法
+软件调试 
 *  Clean Architecture: A Craftsman's Guide to Software Structure and Design
-  
 *  这本书是Uncle Bob最近几年的博文合集,读完以后有种灵台清明的感觉,做code review的时候思路清晰了很多. 
-  
 *  寒江独钓:windows内核安全编程
-
 *  密码故事-人类智力的另类较量
-
-  ![img](https://pic2.zhimg.com/50/v2-da063b75aace2ac7dcb4e453d2a19b98_hd.jpg?source=1940ef5c)
-
-  ....
-
 *  DOOM启示录
-
-  ![img](.书单.asserts/v2-e020b309c91a608cd2d84b0fef17e297_hd.jpg)
-
-## C/C++
-
-* [C++标准程序库--自修教程与参考手册](http://pan.baidu.com/s/1qWLNhaG)
-* [C++程序设计原理与实践](http://pan.baidu.com/s/1ntqfhPJ)
-* [C++程序设计语言_特别版](http://pan.baidu.com/s/1o6jX3iq)
-* [C++编程惯用法__高级程序员常用方法和技巧](http://pan.baidu.com/s/1i3sVhJZ)
-* [C++编程规范-101条规则准则与最佳实践](http://pan.baidu.com/s/1ntDfM21)
-* [C++语言的设计和演化](http://pan.baidu.com/s/1kT3a2dp)
-* [C++释难解惑](http://pan.baidu.com/s/1nt4ssrf)
-* [C和C++安全编码(中文版)](http://pan.baidu.com/s/1hqqVtp6)
-* [Exceptional C++ Style(Herb Sutter).中文版](http://pan.baidu.com/s/1qWCtFOC)
-* [Exceptional C++ 中文版](http://pan.baidu.com/s/1pLCHC)
-* [More Exceptional C++(中文版)](http://pan.baidu.com/s/1qWLNgZE)
-* [From C++ to Objective-C-english](http://pan.baidu.com/s/1o6LRolc)
-* [From C++ to Objective-C-中文版]
-* [Linux C编程一站式学习6.14--宋劲衫](http://pan.baidu.com/s/1bny7ga7)
-* [从缺陷中学习C/C++](http://pan.baidu.com/s/1c0GLTOs)
-* [你必须知道的222个C++语言问题.范立锋.扫描版](http://pan.baidu.com/s/1c03oHVE)
-* [深入学习:GNU C++ for Linux 编程技术](http://pan.baidu.com/s/1dDkVKVB)
-* [编写高质量代码  改善C++程序的150个建议.李健.扫描版](http://pan.baidu.com/s/1pJlXxk3)
-
-## C/C++进阶
-
-* [Accelerated C++中文版 ]
-* [Advanced c++ Programming  Styles and Idioms中文版]
-* [C++ API设计--英文版]
-* [C++ API设计]
-* [C++代码设计与重用]
-* [C++标准库__自学教程与参考手册(第2版)英文版]
-* [C++沉思录(Ruminations on C++)中文第2版]
-* [C++程序设计]
-* [C++设计新思维(Modern_C++_Design)]
-* [大规模C++程序设计]
-* [模板编程与OO编程范型--混搭]
-* [深度探索C++对象模型]
-* [高质量C++／C编程指南]
-* [Imperfect C++]
-
-## 网络相关
-
-* [图解TCP_IP_第5版](http://pan.baidu.com/s/1o6181v0)
-* [深入理解Nginx模块开发与架构解析](http://pan.baidu.com/s/1c0zQUyO)
-
-## 数据库
-
-* [Google MapReduce-中文版]
-* [Google MapReduce-英文版osdi04]
-* [NoSQL数据库笔谈]
-* [The Google File System]
-* [高性能MySQL(第2版)中文版.施瓦茨.扫描版](http://pan.baidu.com/s/1zpaWY)
-
-### Hadoop
-
-* [Hadoop 2.0基本架构与发展趋势]
-* [Hadoop入门实战手册]
-* [Hadoop实战-陆嘉恒(高清完整版)].pdf
-* [Hadoop开发者入门专刊]
-* [Hadoop开发者第一期]
-* [Hadoop开发者第二期]
-* [hadoop开发者第三期]
-* [Hadoop开发者第四期]
-* [Hadoop权威指南(第2版)]
-* [为何Hadoop是分布式大数据处理的未来]
-
-### MongoDB
-
-* [MongoDB_实践]
-* [MongoDB基础教程]
-* [MongoDB开发使用手册]
-* [MongoDB开发应用实践_潘凡]
-* [MongoDB权威指南]
-* [10 Key Performance Indicators for MongoDB]
-* [u dont know mongodb]
-* [MongoDB.in.Action(2011.12).Kyle.Banker.文字版]
-* [O'Reilly:深入学习MongoDB(霍多罗夫).巨成等.扫描版]
-
-## 软件工程
-
-* [97+Things+Every+Programmer+Should+Know]
-* [Google的C++编码规范 中文]
-* [人月神话20周年纪念版--中文版]
-* [代码大全(第二版,中文版)]
-* [代码整洁之道-完整版]
-* [修改代码的艺术]
-* [当析构函数遇到多线程--C++中线程安全的对象回调]
-* [敏捷软件开发:原则/模式与实践]
-* [程序员修炼之道-从小工到专家]
-* [程序员的自我修养_链接/装载与库]
-* [编码__隐匿在计算机软硬件背后的语言]
-* [编程匠艺:编写卓越的代码(第二版)(奋斗的小鸟)]
-* [计算机程序的构造和解释中文版]
-* [设计模式-可复用面向对象软件的基础]
-* [软件架构的艺术]
-* [重构-改善既有代码的设计 中文版]
-* [高效程序员的45个习惯:敏捷开发修炼之道]
-* [黑客与画家]
-
-## Linux
-
-* [Bash 新手指南 ]
-* [高级Bash脚本编程指南]
-* [LINUX UNIX设计思想]
-* [LINUX内核设计与实现(第二版)].pdf
-* [L]inux常用命令.cpp
-* [LINUX常用命令]
-* [Linux程序设计(Begin Linux Programming)第]四版源码.zip
-* [Linux系统案例精解]
-* [Linux网络编程]
-* [UNIX编程艺术中文版]
-* [Linux网络编程-宋敬彬-孙海滨]
-* [鸟哥的Linux私房菜_基础学习篇(第三版)].pdf
-* [鸟哥的Linux私房菜_服务器架设篇(第三版)].pdf
-
-## 大数据
-
-* [大数据:互联网大规模数据挖掘与分布式处理]
-* [谁说菜鸟不会数据分析  入门篇]
-
-## 算法
-
-* [Algorithms and Data Structures]
-* [数据结构算法与应用]
-* [算法导论]
-
-## 面试资料
-
-* [程序员面试题精选100题]
-* [程序员面试宝典(第三版)]
-* [剑指offer 名企面试官精讲典型编程题]
 
 ## 闲读
 
@@ -429,19 +135,8 @@ Wireshark网络分析就这么简单
 * [浪潮之巅]
 * [淘宝技术这十年,完整最终确认版]
 * [程序员的职业素养]
-
-## 版本管理
-
-* [Git Internals-eng]
-* [Pro Git - eng]
-* [Pro Git - 中文版]
-* [git - 简易指南](http://rogerdudler.github.io/git-guide/index.zh.html)
-* [Git 参考手册](http://gitref.justjavac.com)
-* [Pro Git](http://git-scm.com/book/zh)
-* [Git Magic](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/zh_cn/)
-* [GotGitHub](http://www.worldhello.net/gotgithub/index.html)
-* [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
-* [Mercurial 使用教程](http://mercurial.selenic.com/wiki/ChineseTutorial)
-* [HgInit (中文版)](http://bucunzai.net/hginit/)
-
-《C++新经典:对象模型》
+哥德尔`艾舍尔`巴赫:集异璧之大成
+穿越计算机的迷雾
+<黑客与画家>
+码农翻身
+逻辑的引擎
