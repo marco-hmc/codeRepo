@@ -234,10 +234,20 @@ https://www.cnblogs.com/misserwell/p/4343927.html
 * **`SET(A "${A}" CACHE PATH "xxx")`的意义是什么?**
 
   
-如何理解CMakePredefinedTargets?
-* all_build
-* install
-* package
-* zero_check
-
 cmake中的目标是什么意思？
+  目标（Target）是构建系统中的一个基本概念，表示一个可以构建的实体，如可执行文件、库文件。也可以特殊地表示一个自定义命令。
+
+如何理解CMakePredefinedTargets?
+* **`all_build`**
+  - **描述**：`all_build` 目标用于构建项目中的所有目标。
+  - **用途**：这是默认的构建目标，通常在执行 `make` 或 `cmake --build .` 时被调用。
+* **`install`**
+  - **描述**：`install` 目标用于将构建生成的文件安装到指定的安装目录。
+  - **用途**：执行安装步骤，将可执行文件、库文件、头文件等复制到预定义的安装路径。
+  ```
+* **`package`**
+  - **描述**：`package` 目标用于创建项目的分发包（如 `.tar.gz`、`.zip`、`.deb`、`.rpm` 等）。
+  - **用途**：生成可分发的安装包，便于发布和分发项目。
+* **`zero_check`**
+  - **描述**：`zero_check` 目标用于确保生成的构建系统是最新的。
+  - **用途**：在每次构建之前检查 CMakeLists.txt 文件和其他配置文件是否有变化，如果有变化，则重新运行 CMake 以更新构建
