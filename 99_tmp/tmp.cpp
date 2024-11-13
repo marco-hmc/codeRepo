@@ -1,43 +1,56 @@
-#include <algorithm>
-#include <functional>
 #include <iostream>
-#include <string>
+#include <utility>
 
-template <typename It, typename F>
-std::pair<It, It> gather(It first, It last, It gather_pos, F predicate) {
-    return {std::stable_partition(first, gather_pos, std::not_fn(predicate)),
-            std::stable_partition(gather_pos, last, predicate)};
-}
+class Base {
+   public:
+    int* data;
 
-template <typename It, typename F>
-void gather_sort(It first, It last, It gather_pos, F comp_func) {
-    auto inv_comp_func([&](const auto &...ps) { return !comp_func(ps...); });
+    Base() : data(new int(42)) {
+        std::cout << "Base default constructor called" << std::endl;
+    }
 
-    std::stable_sort(first, gather_pos, inv_comp_func);
-    std::stable_sort(gather_pos, last, comp_func);
-}
+    Base(Base&& other) noexcept : data(other.data) {
+        other.data = nullptr;
+        std::cout << "Base move constructor called" << std::endl;
+    }
+
+    virtual ~Base() {
+        delete data;
+        std::cout << "Base destructor called" << std::endl;
+    }
+};
+
+class Derived : public Base {
+   public:
+    int* extraData;
+
+    Derived() : extraData(new int(84)) {
+        std::cout << "Derived default constructor called" << std::endl;
+    }
+
+    Derived(Derived&& other) noexcept
+        : Base(std::move(other)), extraData(other.extraData) {
+        other.extraData = nullptr;
+        std::cout << "Derived move constructor called" << std::endl;
+    }
+
+    ~Derived() {
+        delete extraData;
+        std::cout << "Derived destructor called" << std::endl;
+    }
+};
 
 int main() {
-    auto is_a([](char c) { return c == 'a'; });
-    std::string a{"a_a_a_a_a_a_a_a_a_a_a"};
-    auto middle(std::begin(a) + a.size() / 2);
+    Derived d1;
+    Derived d2 = std::move(d1);
 
-    gather(std::begin(a), std::end(a), middle, is_a);
-    std::cout << a << "1\n";
+    // 尝试使用被移动的对象 d1
+    if (d1.data == nullptr) {
+        std::cout << "d1's data has been moved" << std::endl;
+    }
+    if (d1.extraData == nullptr) {
+        std::cout << "d1's extraData has been moved" << std::endl;
+    }
 
-    gather(std::begin(a), std::end(a), std::begin(a), is_a);
-    std::cout << a << "2\n";
-
-    gather(std::begin(a), std::end(a), std::end(a), is_a);
-    std::cout << a << "3\n";
-
-    // This will NOT work as naively expected
-    middle = (std::begin(a) + a.size() / 2);
-    gather(std::begin(a), std::end(a), middle, is_a);
-    std::cout << a << "4\n";
-
-    std::string b{"_9_2_4_7_3_8_1_6_5_0_"};
-    gather_sort(std::begin(b), std::end(b), std::begin(b) + b.size() / 2,
-                std::less<char>{});
-    std::cout << b << "5\n";
+    return 0;
 }

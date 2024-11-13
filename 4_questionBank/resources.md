@@ -28,10 +28,29 @@
 ### **书籍**
 
 [awesome-cs-books](https://github.com/imarvinle/awesome-cs-books)
-
+[有哪些你看了以后大呼过瘾的编程书](https://www.zhihu.com/question/50408698)
 [超过1000本!计算机经典书籍PDF分享]**(**https://github.com/forthespada/CS-Books)
 
-
+* [MacTalk`人生元编程(池建强)]
+* [图灵的秘密  他的生平/思想及论文解读]
+* [我编程,我快乐:程序员职业规划之道]
+* [数学之美]
+* [浪潮之巅]
+* [淘宝技术这十年,完整最终确认版]
+* [程序员的职业素养]
+哥德尔`艾舍尔`巴赫:集异璧之大成
+穿越计算机的迷雾
+<黑客与画家>
+码农翻身
+逻辑的引擎
+代码大全
+构建之法
+软件调试 
+*  Clean Architecture: A Craftsman's Guide to Software Structure and Design
+*  这本书是Uncle Bob最近几年的博文合集,读完以后有种灵台清明的感觉,做code review的时候思路清晰了很多. 
+*  寒江独钓:windows内核安全编程
+*  密码故事-人类智力的另类较量
+*  DOOM启示录
 * <现代操作系统> Tanenbaum.A.S: 
 * <程序员的自我修养:链接/装载与库>
 * <Linux系统编程>
@@ -55,7 +74,6 @@
 | **[编程](#编程)**                         | 不要做一个"永远没彻底搞懂"诸如递归等概念的程序员.           | _[<计算机程序的构造和解释>](https://book.douban.com/subject/1148282/)_ | 着重学习前三章                    |
 | **[计算机架构](#计算机架构)**             | 如果你对于计算机如何工作没有具体的概念,那么你所做出的所有高级抽象都是空中楼阁. | _[<深入理解计算机系统>](https://book.douban.com/subject/26912767/)_ | 着重学习前六章                    |
 | **[算法与数据结构](#算法和数据结构)**     | 如果你不懂得如何使用栈/队列/树/图等常见数据结构,遇到有难度的问题时,你将束手无策. | _[<算法设计手册>](https://book.douban.com/subject/4048566/)_ | Steven Skiena's lectures          |
-| **[数学知识](#数学知识)**                 | 计算机科学基本上是应用数学的一个"跑偏的"分支,因此学习数学将会给你带来竞争优势. | _[<计算机科学中的数学>](https://book.douban.com/subject/33396340/)_ | Tom Leighton's MIT 6.042J         |
 | **[操作系统](#操作系统)**                 | 你所写的代码,基本上都由操作系统来运行,因此你应当了解其运作的原理. | _[<操作系统导论>](https://book.douban.com/subject/33463930/)_ | Berkeley CS 162                   |
 | **[计算机网络](#计算机网络)**             | 互联网已然势不可挡:理解工作原理才能解锁全部潜力.           | _[<计算机网络:自顶向下方法>](https://book.douban.com/subject/30280001/)_ | Stanford CS 144                   |
 | **[数据库](#数据库)**                     | 对于多数重要程序,数据是其核心,然而很少人理解数据库系统的工作原理. | _[<Readings in Database Systems>](https://book.douban.com/subject/2256069/) (暂无中译本)_ | Joe Hellerstein's Berkeley CS 186 |
@@ -70,21 +88,12 @@
 我们建议至少学完SICP的前三章,并完成配套的习题.如果需要额外的练习,可以去解决一些小的程序设计问题,比如[exercism](http://exercism.io).
 
 > **中文翻译新增:**  
->
-> * 关于SICP国内视频观看地址  
->   * [MIT的免费视频课程(中英字幕)](https://www.bilibili.com/video/av8515129/)  
->   * [Brian Harvey 开设的 SICP 课程(英文字幕)](https://www.bilibili.com/video/av40460492/)  
 > * Scheme 学习的相关资源参见:<https://github.com/DeathKing/Learning-SICP>  
 > * 更详细的补充说明:[#3](https://github.com/keithnull/TeachYourselfCS-CN/issues/3)  
-
-为什么这么要学SICP?因为 SICP 是独一无二的,它可以__至少很有可能__改变你对计算机和编程的基本认识.不是每个人都有这样的体验.有的人讨厌这本书,有的人看了前几页就放弃了.但潜在的回报让它值得一读.
 
 如果你觉得SICP过于难,试试 _<Composing Programs>_.如果还是不合适,那我们推荐 _<程序设计方法>([中文版](https://book.douban.com/subject/1140942/),[英文版](http://www.htdp.org/))_ ;如果你觉得SICP过于简单,那我们推荐 _[<Concepts, Techniques, and Models of Computer Programming>](https://book.douban.com/subject/1782316/)_ .如果读这些书让你觉得没有收获,也行你应该先学习其他科目,一两年后再重新审视编程的理念.
 
 > 新版原文删除了对 _<Concepts, Techniques, and Models of Computer Programming>_ 一书的推荐,但这本书对各种编程模型有深入的见解,值得一读.所以译文中依然保留.
-> _ 译者注
-
-[![计算机程序的构造和解释](.自学CS顺序以及书单.asserts/66758473-ef7bff80-eed0-11e9-944a-15ae5c8542ca.jpg)](https://book.douban.com/subject/1148282/) 
 
 ### 1.2 计算机架构
 
@@ -101,42 +110,8 @@
 [![深入理解计算机系统](.自学CS顺序以及书单.asserts/82109944-12270d00-976d-11ea-85a9-774e4f762ec9.png)](https://book.douban.com/subject/26912767/) [![计算机系统要素](.自学CS顺序以及书单.asserts/66758695-60231c00-eed1-11e9-8422-a4acfb10a390.jpg)](http://www.nand2tetris.org) 
 
 
-#### 1.1 SICP
-
-我们建议至少学完SICP的前三章,并完成配套的习题.
-
-SICP,即计算机程序的构造和解释.因为 SICP 是独一无二的,它可以__至少很有可能__改变你对计算机和编程的基本认识.不是每个人都有这样的体验.有的人讨厌这本书,有的人看了前几页就放弃了.但潜在的回报让它值得一读.
-
-如果你觉得SICP过于难,试试 _<Composing Programs>_.如果还是不合适,那我们推荐 _<程序设计方法>([中文版](https://book.douban.com/subject/1140942/),[英文版](http://www.htdp.org/))_ ;如果你觉得SICP过于简单,那我们推荐 
-
 #### 2.2 龙书
 
 龙书,即编译原理,依旧是内容最为完整的编译器单本书籍.由于过分强调一些如今不够时新的主题的细节,比如解析,这本书招致了恶评.然而事实上,这本书从未打算供人一页一页的学习,而仅仅是为了给教师准备一门课程提供足够的材料.类似地,自学者可以从书中量身按需挑选主题,或者最好依照公开课授课教师在课程大纲中的建议.
 
 
-[有哪些你看了以后大呼过瘾的编程书](https://www.zhihu.com/question/50408698)
-
-## 1. 计算机
-代码大全
-构建之法
-软件调试 
-*  Clean Architecture: A Craftsman's Guide to Software Structure and Design
-*  这本书是Uncle Bob最近几年的博文合集,读完以后有种灵台清明的感觉,做code review的时候思路清晰了很多. 
-*  寒江独钓:windows内核安全编程
-*  密码故事-人类智力的另类较量
-*  DOOM启示录
-
-## 闲读
-
-* [MacTalk`人生元编程(池建强)]
-* [图灵的秘密  他的生平/思想及论文解读]
-* [我编程,我快乐:程序员职业规划之道]
-* [数学之美]
-* [浪潮之巅]
-* [淘宝技术这十年,完整最终确认版]
-* [程序员的职业素养]
-哥德尔`艾舍尔`巴赫:集异璧之大成
-穿越计算机的迷雾
-<黑客与画家>
-码农翻身
-逻辑的引擎
