@@ -1,41 +1,28 @@
-to readingRepo
-the lazy fox jumps over brown dog
+dom 解析和流式解析两种
 
-dom解析和流式解析两种
+- cygwin 是是什么？
+- gflw 是什么？
+- downDemo github
 
+- 继承的析构函数一般要怎么处理？继承的特殊成员函数怎么处理？
 
-## 怎么开始阅读一个大项目？
+有两个同名函数 func()，形参分别是 Foo 类型指针和 Bar 类型指针，Bar 类型是 Foo 类型的派生类。
+如果有一个 Foo \*bar = new Bar(); 调用 func(bar)，调用的是那一个方法？
 
-###
-
-1. 知道意图，看文档，问人
-2. 断点调试
-3. 修改
-4. 重构（减少重复代码，函数提取）
-5. 添加测试
-
-
-* cygwin是是什么？
-* gflw是什么？
-* downDemo github
-
-
-* 本地缓存
-* 重生成通过monitor的方式去做
-* 如何避免代码膨胀？
-* 交互
-    * 操作系统到qt到bim
-* bim的架构
-* bim的命令调度
-* bim的显示
-    * bim的不同视图下的ctp数据差异体现在哪里
-* bim的构件类型
-* 多线程开发指南
-* 重生成
-* 模型数据
-    * viewItem
-    * docItem
-    * ctp
+- 如何避免代码膨胀？
+- 交互
+  - 操作系统到 qt 到 bim
+- bim 的架构
+- bim 的命令调度
+- bim 的显示
+  - bim 的不同视图下的 ctp 数据差异体现在哪里
+- bim 的构件类型
+- 多线程开发指南
+- 重生成
+- 模型数据
+  - viewItem
+  - docItem
+  - ctp
     https://confluence.zwcad.com/pages/viewpage.action?pageId=60720467
 * 模型编辑
     * 自己
@@ -50,6 +37,20 @@ dom解析和流式解析两种
 
 * 如果有一个全局变量存在，最后是提供统一的操作函数接口。哪怕是一个int的++操作也通过函数封装起来，这样可以方便调试。
 * 知道哪些地方修改过。不然这个状态无法追踪在哪里被修改了。
+
+#### 8. 设计class犹如设计type
+
++ 新的class对象应该被如何创建和构造
++ 对象的初始化和赋值应该有什么样的差别(不同的函数调用,构造函数和赋值操作符)
++ 新的class如果被pass by value(以值传递),意味着什么(copy构造函数)
++ 什么是新type的"合法值"(成员变量通常只有某些数值是有效的,这些值决定了class必须维护的约束条件)
++ 新的class需要配合某个继承图系么(会受到继承类的约束)
++ 新的class需要什么样的转换(和其他类型的类型变换)
++ 什么样的操作符和函数对于此type而言是合理的(决定声明哪些函数,哪些是成员函数)
++ 什么样的函数必须为private的 
++ 新的class是否还有相似的其他class,如果是的话就应该定义一个class template
++ 你真的需要一个新type么?如果只是定义新的derived class或者为原来的class添加功能,说不定定义non-member函数或者templates更好
+
 
 比如内存映射，调用栈，同步对象等，连同公司本身的业务都需要有一定的了解。
 

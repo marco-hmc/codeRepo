@@ -1,9 +1,4 @@
 
-
-This directory contains exercises and solutions for a hands-on
-OpenMP course.  Information about these programs can be found
-in the comments and in the slides from the course.
-
 To use these programs, copy the appropriate "def" file into
 "make.def".  For example on a linux system running the gnu 
 compilers, I'd type

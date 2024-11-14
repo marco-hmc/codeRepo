@@ -95,69 +95,12 @@ std::shared_ptr<FILE> smartFile(fopen("file.txt", "r"), [](FILE* ptr){
 ---
 
 ### 2. unique_ptr
-unique_ptr的实现
-```c++
-template<typename T>
-class unique_ptr {
-public:
-    explicit unique_ptr(T* ptr = nullptr) : ptr_(ptr) {}
-    
-    ~unique_ptr() {
-        delete ptr_;
-    }
-
-    unique_ptr(const unique_ptr&) = delete; // 禁止复制
-    unique_ptr& operator=(const unique_ptr&) = delete; // 禁止赋值
-
-    unique_ptr(unique_ptr&& other) noexcept : ptr_(other.ptr_) {
-        other.ptr_ = nullptr;
-    } // 移动构造函数
-
-    unique_ptr& operator=(unique_ptr&& other) noexcept {
-        if (this != &other) {
-            delete ptr_;
-            ptr_ = other.ptr_;
-            other.ptr_ = nullptr;
-        }
-        return *this;
-    } // 移动赋值运算符
-
-    T* release() noexcept {
-        T* result = ptr_;
-        ptr_ = nullptr;
-        return result;
-    }
-
-    void reset(T* ptr = nullptr) noexcept {
-        delete ptr_;
-        ptr_ = ptr;
-    }
-
-    T* get() const noexcept {
-        return ptr_;
-    }
-
-    T& operator*() const {
-        return *ptr_;
-    }
-
-    //obj->member实际上是obj.operator->()->member，也就是ptr_->member。这就是为什么这样重载->运算符就等于对ptr_使用->运算符。
-    T* operator->() const {
-        return ptr_;
-    }
-
-private:
-    T* ptr_;
-};
-```
 
 #### 2.1 unique_ptr是怎么保证所有权唯一的？
 `std::unique_ptr`通过以下几种方式保证所有权的唯一性：
 
 1. **禁止复制**：`std::unique_ptr`禁止复制构造和复制赋值，这意味着你不能将一个`unique_ptr`直接赋值给另一个`unique_ptr`。这样可以防止有两个`unique_ptr`同时拥有同一个对象的所有权。
-
 2. **允许移动**：虽然`unique_ptr`禁止复制，但是它允许移动。这意味着你可以将一个`unique_ptr`的所有权转移给另一个`unique_ptr`。在所有权转移之后，原始的`unique_ptr`不再拥有任何对象，这样可以确保任何时候都只有一个`unique_ptr`拥有对象的所有权。
-
 3. **自动删除**：当`unique_ptr`被销毁（例如离开其作用域）时，它会自动删除其所拥有的对象。这意味着你不需要手动删除对象，可以防止因忘记删除对象而导致的内存泄漏。
 
 通过这三种方式，`std::unique_ptr`可以保证所有权的唯一性，从而避免内存泄漏和悬挂指针等问题。
@@ -165,46 +108,6 @@ private:
 ---
 
 ### 3. shared_ptr
-```c++
-template<typename T>
-class shared_ptr {
-public:
-    explicit shared_ptr(T* ptr = nullptr) : ptr_(ptr), count_(ptr ? new long(1) : nullptr) {}
-
-    ~shared_ptr() {
-        if (ptr_ && --*count_ == 0) {
-            delete ptr_;
-            delete count_;
-        }
-    }
-
-    shared_ptr(const shared_ptr& other) : ptr_(other.ptr_), count_(other.count_) {
-        if (ptr_) ++*count_;
-    }
-
-    shared_ptr& operator=(const shared_ptr& other) {
-        if (this != &other) {
-            this->~shared_ptr();
-            ptr_ = other.ptr_;
-            count_ = other.count_;
-            if (ptr_) ++*count_;
-        }
-        return *this;
-    }
-
-    T& operator*() const {
-        return *ptr_;
-    }
-
-    T* operator->() const {
-        return ptr_;
-    }
-
-private:
-    T* ptr_;
-    long* count_;
-};
-```
 
 #### 3.1 shared_ptr是怎么控制所有权的？
 
@@ -233,66 +136,6 @@ private:
 4. 在多线程环境中，可能需要使用互斥锁或原子操作来保证线程安全。
 
 ### 4. weak_ptr
-weak_ptr的实现
-
-```c++
-template<typename T>
-class weak_ptr {
-public:
-    // 默认构造函数
-    weak_ptr() noexcept : ptr_(nullptr), count_(nullptr) {}
-
-    // 从shared_ptr构造
-    weak_ptr(const shared_ptr<T>& sp) noexcept : ptr_(sp.ptr_), count_(sp.count_) {
-        if (count_) {
-            count_->weak_count++;
-        }
-    }
-
-    // 复制构造函数
-    weak_ptr(const weak_ptr& wp) noexcept : ptr_(wp.ptr_), count_(wp.count_) {
-        if (count_) {
-            count_->weak_count++;
-        }
-    }
-
-    // 赋值运算符
-    weak_ptr& operator=(const weak_ptr& wp) {
-        if (this != &wp) {
-            if (count_) {
-                count_->weak_count--;
-            }
-            ptr_ = wp.ptr_;
-            count_ = wp.count_;
-            if (count_) {
-                count_->weak_count++;
-            }
-        }
-        return *this;
-    }
-
-    // 析构函数
-    ~weak_ptr() {
-        if (count_) {
-            count_->weak_count--;
-        }
-    }
-
-    // 尝试获取shared_ptr
-    shared_ptr<T> lock() const {
-        if (count_ && count_->count > 0) {
-            return shared_ptr<T>(*this);
-        } else {
-            return shared_ptr<T>();
-        }
-    }
-
-private:
-    T* ptr_;
-    control_block* count_;  // 这是一个假设的控制块，它包含两个计数器：count和weak_count
-};
-```
-
 #### 4.1 weak_ptr是怎么解决循环引用计数问题的？
 `std::weak_ptr`是一种特殊的智能指针，它被设计用来解决`std::shared_ptr`的循环引用问题。
 

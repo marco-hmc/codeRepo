@@ -11,6 +11,5 @@ struct CustomDeleter {
 int main() {
     std::unique_ptr<int, CustomDeleter> ptr(new int(42));
     std::cout << *ptr << '\n';
-
     return 0;
 }

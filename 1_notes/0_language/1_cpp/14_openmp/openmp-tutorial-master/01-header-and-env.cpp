@@ -1,15 +1,21 @@
-#include <iostream>
-
-// main OpenMP include header
 #include <omp.h>
 
-int
-main()
-{
-	// omp_get_max_threads() and many other functions are declared in omp.h
-	std::cout << "OpenMP will use " << omp_get_max_threads() <<
-	    " threads maximum." << std::endl;
-	return 0;
-}
+#include <cassert>
+#include <cstdio>
 
-// XXX: execute with OMP_NUM_THREADS=2 and OMP_NUM_THREADS=3
+#ifndef _OPENMP
+assert(false);
+#endif
+
+int main() {
+    const int maxThreadSize = omp_get_max_threads();
+    const int currentThreadSize = omp_get_num_threads();
+
+#pragma omp parallel num_threads(4)
+    { printf("Hello from thread %d\n", omp_get_thread_num()); }
+
+#pragma omp parallel
+    { printf("Hello from thread %d\n", omp_get_thread_num()); }
+
+    return 0;
+}

@@ -1,7 +1,7 @@
 #include <iostream>
 
 int main() {
-    const int size = 50;
+    const int size = 5;
     int a[size];
 
 #pragma omp parallel for
@@ -13,5 +13,3 @@ int main() {
 
     return 0;
 }
-
-// XXX: create a separate "omp parallel" region with a for-loop in it
