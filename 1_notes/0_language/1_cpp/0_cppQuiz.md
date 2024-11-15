@@ -26,9 +26,9 @@
     ```c++
     void foo(int);
     void foo(char*);
-
     foo(NULL);  // 调用哪个函数？
     ```
+
 * **一个new出来的指针,被delete两次会怎么样**
 如果一个指针被`delete`两次,会导致未定义行为(Undefined Behavior).这是因为在第一次`delete`后,该指针已经不再指向有效的内存区域,再次尝试`delete`就是对无效内存的操作,这是非法的.
 

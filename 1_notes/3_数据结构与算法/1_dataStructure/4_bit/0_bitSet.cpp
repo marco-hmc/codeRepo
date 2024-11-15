@@ -24,5 +24,10 @@ int main() {
   std::cout << bitSet.test(2) << '\n'; // Output: 0
   std::cout << bitSet.test(5) << '\n'; // Output: 1
 
+  bool getFlag();
+  void doFuncA();
+  void doFuncB();
+  const bool xxx = getFlag();
+  xxx ? doFuncA() : doFuncB();
   return 0;
 }
