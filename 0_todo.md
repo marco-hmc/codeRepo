@@ -23,7 +23,6 @@
     * otSumbit_python
     * json
     * logging
-    * multiThread
     * skipList
     * coredump
     * valgrind
