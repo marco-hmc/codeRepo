@@ -1,0 +1,16 @@
+## C/C++进阶
+
+* [Accelerated C++中文版 ]
+* [Advanced c++ Programming  Styles and Idioms中文版]
+* [C++ API设计--英文版]
+* [C++ API设计]
+* [C++代码设计与重用]
+* [C++标准库__自学教程与参考手册(第2版)英文版]
+* [C++沉思录(Ruminations on C++)中文第2版]
+* [C++程序设计]
+* [C++设计新思维(Modern_C++_Design)]
+* [大规模C++程序设计]
+* [模板编程与OO编程范型--混搭]
+* [深度探索C++对象模型]
+* [高质量C++／C编程指南]
+* [Imperfect C++]

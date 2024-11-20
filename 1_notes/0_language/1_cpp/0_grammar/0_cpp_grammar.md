@@ -1,8 +1,45 @@
+## C/C++
 
+- [C++标准程序库--自修教程与参考手册](http://pan.baidu.com/s/1qWLNhaG)
+- [C++程序设计原理与实践](http://pan.baidu.com/s/1ntqfhPJ)
+- [C++程序设计语言\_特别版](http://pan.baidu.com/s/1o6jX3iq)
+- [C++编程惯用法\_\_高级程序员常用方法和技巧](http://pan.baidu.com/s/1i3sVhJZ)
+- [C++编程规范-101 条规则准则与最佳实践](http://pan.baidu.com/s/1ntDfM21)
+- [C++语言的设计和演化](http://pan.baidu.com/s/1kT3a2dp)
+- [C++释难解惑](http://pan.baidu.com/s/1nt4ssrf)
+- [C 和 C++安全编码(中文版)](http://pan.baidu.com/s/1hqqVtp6)
+- [Exceptional C++ Style(Herb Sutter).中文版](http://pan.baidu.com/s/1qWCtFOC)
+- [Exceptional C++ 中文版](http://pan.baidu.com/s/1pLCHC)
+- [More Exceptional C++(中文版)](http://pan.baidu.com/s/1qWLNgZE)
+- [From C++ to Objective-C-english](http://pan.baidu.com/s/1o6LRolc)
+- [From C++ to Objective-C-中文版]
+- [Linux C 编程一站式学习 6.14--宋劲衫](http://pan.baidu.com/s/1bny7ga7)
+- [从缺陷中学习 C/C++](http://pan.baidu.com/s/1c0GLTOs)
+- [你必须知道的 222 个 C++语言问题.范立锋.扫描版](http://pan.baidu.com/s/1c03oHVE)
+- [深入学习:GNU C++ for Linux 编程技术](http://pan.baidu.com/s/1dDkVKVB)
+- [编写高质量代码 改善 C++程序的 150 个建议.李健.扫描版](http://pan.baidu.com/s/1pJlXxk3)
+
+## C/C++进阶
+
+- [Accelerated C++中文版 ]
+- [Advanced c++ Programming Styles and Idioms 中文版]
+- [C++ API 设计--英文版]
+- [C++ API 设计]
+- [C++代码设计与重用]
+- [C++标准库__自学教程与参考手册(第 2 版)英文版]
+- [C++沉思录(Ruminations on C++)中文第 2 版]
+- [C++程序设计]
+- [C++设计新思维(Modern_C++_Design)]
+- [大规模 C++程序设计]
+- [模板编程与 OO 编程范型--混搭]
+- [深度探索 C++对象模型]
+- [高质量 C++／C 编程指南]
+- [Imperfect C++]
 
 ## trivial grammar
 
 ### 1. attribute
+
 ```c++
 #include <iostream>
 
@@ -21,13 +58,14 @@ int main() {
   return 0;
 }
 ```
-这段代码展示了C++17标准中引入的两个新属性：`[[deprecated]]`和`[[nodiscard]]`。
+
+这段代码展示了 C++17 标准中引入的两个新属性：`[[deprecated]]`和`[[nodiscard]]`。
 
 - `[[deprecated]]`属性用于标记已经被废弃的函数。当你试图使用被`[[deprecated]]`标记的函数时，编译器会生成一个警告，告诉你这个函数已经被废弃，你应该使用其他函数代替。在这个例子中，`oldFunction`函数被标记为废弃，所以在`main`函数中调用`oldFunction`时，编译器会生成一个警告。
 
 - `[[nodiscard]]`属性用于标记那些返回值不应该被忽略的函数。如果你调用了被`[[nodiscard]]`标记的函数，但没有使用它的返回值，编译器会生成一个警告。在这个例子中，`calculate`函数被标记为`[[nodiscard]]`，所以在`main`函数中调用`calculate`但没有使用它的返回值时，编译器会生成一个警告。
 
-除了`[[deprecated]]`和`[[nodiscard]]`，C++还有其他的属性，如`[[maybe_unused]]`（用于标记可能未被使用的变量，以避免编译器生成未使用变量的警告）、`[[likely]]`和`[[unlikely]]`（用于给编译器提供分支预测的提示，这两个属性在C++20中引入）等。
+除了`[[deprecated]]`和`[[nodiscard]]`，C++还有其他的属性，如`[[maybe_unused]]`（用于标记可能未被使用的变量，以避免编译器生成未使用变量的警告）、`[[likely]]`和`[[unlikely]]`（用于给编译器提供分支预测的提示，这两个属性在 C++20 中引入）等。
 
 ### 2. literals
 
@@ -110,21 +148,20 @@ auto f = [&r = x, x = x * 10] {
 f(); // sets x to 2 and returns 12
 ```
 
-在C++11之前，成员函数只能根据是否修改了对象的状态（即是否为const）进行重载。C++11引入了引用限定的成员函数，允许你根据*this是左值引用还是右值引用来重载成员函数。
+在 C++11 之前，成员函数只能根据是否修改了对象的状态（即是否为 const）进行重载。C++11 引入了引用限定的成员函数，允许你根据\*this 是左值引用还是右值引用来重载成员函数。
 
-在这个例子中，Foo类有三个getBar成员函数，它们的区别在于*this的类型：
+在这个例子中，Foo 类有三个 getBar 成员函数，它们的区别在于\*this 的类型：
 
-Bar getBar() &：当*this是非const左值引用时，调用这个版本的函数。
-Bar getBar() const&：当*this是const左值引用时，调用这个版本的函数。
-Bar getBar() &&：当*this是右值引用时，调用这个版本的函数。
+Bar getBar() &：当*this 是非 const 左值引用时，调用这个版本的函数。
+Bar getBar() const&：当*this 是 const 左值引用时，调用这个版本的函数。
+Bar getBar() &&：当\*this 是右值引用时，调用这个版本的函数。
 这种特性在你需要根据对象是左值还是右值来选择不同的行为时非常有用。例如，当对象是右值时，你可能希望移动（而不是拷贝）它的成员，以提高性能。
 
-在这个例子中，当Foo对象是右值时，getBar函数会返回bar成员的移动版本，而不是拷贝版本。这可以避免不必要的拷贝，从而提高性能。
+在这个例子中，当 Foo 对象是右值时，getBar 函数会返回 bar 成员的移动版本，而不是拷贝版本。这可以避免不必要的拷贝，从而提高性能。
 
-此外，这段代码还展示了C++14引入的一种新特性：初始化捕获（Init capture）。这种特性允许你在lambda表达式的捕获列表中进行初始化。在这个例子中，lambda表达式捕获了x的引用和x * 10的值。
+此外，这段代码还展示了 C++14 引入的一种新特性：初始化捕获（Init capture）。这种特性允许你在 lambda 表达式的捕获列表中进行初始化。在这个例子中，lambda 表达式捕获了 x 的引用和 x \* 10 的值。
 
-
-**3. 理解decltype**
+**3. 理解 decltype**
 
     template<typename Container, typename Index> // works, but requires refinements
     auto authAndAccess(Container& c, Index i) -> decltype(c[i])
@@ -133,23 +170,26 @@ Bar getBar() &&：当*this是右值引用时，调用这个版本的函数。
         return c[i];
     }
     在上面的这段代码里面，C++14可以把后面的->decltype(c[i])删掉，但是auto实际推倒的类型是container而不带引用。因为 authAndAccess(d, 5) = 10这样是编译器不允许的情况。
+
 如果想要返回引用的话，需要将上面的那一段代码重写成下面的样子：
-    
+
     template<typename Container, typename Index> // works, but still requires refinements
     decltype(auto) authAndAccess(Container& c, Index i)
     {
         authenticateUser();
         return c[i];
     }
+
 如果想要这个函数既返回左值（可以修改）又可以返回右值（不能修改）的话，可以用下面的写法：
-    
+
     template<typename Container, typename Index>
     decltype(auto) authAndAccess(Container&& c, Index i){//C++14
         authenticateUser();
         return std::forward<Container>(c)[i];
     }
-decltype的一些让人意外的应用：
-    
+
+decltype 的一些让人意外的应用：
+
     decltype(auto) f2(){
         int x = 0 ;
         return x;     // 返回的是int;
@@ -159,12 +199,10 @@ decltype的一些让人意外的应用：
         return (x);   //返回的是int&
     }
 
+**22. 考虑使用 op=来取代单独的 op 运算符**
 
+operator+ 和 operator+=是不一样的，所以如果想要重载+号，就最好重载+=，那么一个比较好的方法就是把+号用+=来实现，当然如果可以的话，可以使用模板编写：
 
-
-**22. 考虑使用op=来取代单独的op运算符**
-
-operator+ 和operator+=是不一样的，所以如果想要重载+号，就最好重载+=，那么一个比较好的方法就是把+号用+=来实现，当然如果可以的话，可以使用模板编写：
 ```c++
     template<class T>
     const T operator+(const T& lhs, const T& rhs)
@@ -173,18 +211,17 @@ operator+ 和operator+=是不一样的，所以如果想要重载+号，就最�
     }
     template<class T>
     const T operator-(const T& lhs, const T& rhs){
-        return T(lhs) -= rhs; 
+        return T(lhs) -= rhs;
     }
 ```
 
+**24. 理解虚函数、多重继承、虚基类以及 RTTI 所带来的开销**
 
-**24. 理解虚函数、多重继承、虚基类以及RTTI所带来的开销**
+C++的特性和编译器会很大程度上影响程序的效率，所以我们有必要知道编译器在一个 C++特性后面做了些什么事情。
 
-C++的特性和编译器会很大程度上影响程序的效率，所以我们有必要知道编译器在一个C++特性后面做了些什么事情。
+例如虚函数，指向对象的指针或者引用的类型是不重要的，大多数编译器使用的是 virtual table(vtbl)和 virtual table pointers(vptr)来进行实现
 
-例如虚函数，指向对象的指针或者引用的类型是不重要的，大多数编译器使用的是virtual table(vtbl)和virtual table pointers(vptr)来进行实现
-
-vtbl:  
+vtbl:
 
     class C1{
     public:
@@ -196,7 +233,7 @@ vtbl:
         void f4()const
     }
 
-vtbl的虚拟表类似于下面这样,只有虚函数在里面，非虚函数的f4不在里面：
+vtbl 的虚拟表类似于下面这样,只有虚函数在里面，非虚函数的 f4 不在里面：
 
      ___
     |___| → ~C1()
@@ -204,7 +241,7 @@ vtbl的虚拟表类似于下面这样,只有虚函数在里面，非虚函数的
     |___| → f2()
     |___| → f3()
 
-如果按照上面的这种，每一个虚函数都需要一个地址空间的话，那么如果拥有大量虚函数的类，就会需要大量的地址存储这些东西，这个vtbl放在哪里根据编译器的不同而不同
+如果按照上面的这种，每一个虚函数都需要一个地址空间的话，那么如果拥有大量虚函数的类，就会需要大量的地址存储这些东西，这个 vtbl 放在哪里根据编译器的不同而不同
 
 vptr：
 
@@ -212,43 +249,45 @@ vptr：
     |__________| → 存放类的数据
     |__________| → 存放vptr
 
-每一个对象都只存储一个指针，但是在对象很小的时候，多于的vptr将会看起来非常占地方。在使用vptr的时候，编译器会先通过vptr找到对应的vtbl，然后通过vtbl开始找到指向的函数
+每一个对象都只存储一个指针，但是在对象很小的时候，多于的 vptr 将会看起来非常占地方。在使用 vptr 的时候，编译器会先通过 vptr 找到对应的 vtbl，然后通过 vtbl 开始找到指向的函数
 事实上对于函数：
-    
+
     pC1->f1();
+
 他的本质是：
 
     (*pC1->vptr[i])(pC1);
 
-在使用多继承的时候，vptr会占用很大的地方，并且非常恶心，所以不要用多继承
+在使用多继承的时候，vptr 会占用很大的地方，并且非常恶心，所以不要用多继承
 
-RTTI：能够让我们在runtime找到对象的类信息，那么就肯定有一个地方存储了这些信息，这个特性也可以使用vtbl实现，把每一个对象，都添加一个隐形的数据成员type_info，来存储这些东西，从而占用很大的空间
+RTTI：能够让我们在 runtime 找到对象的类信息，那么就肯定有一个地方存储了这些信息，这个特性也可以使用 vtbl 实现，把每一个对象，都添加一个隐形的数据成员 type_info，来存储这些东西，从而占用很大的空间
 
-### 4. release模式防止变量被优化
+### 4. release 模式防止变量被优化
+
     volatile
 
 ### 5. 函数遮蔽
 
-* 什么是函数遮蔽？
-函数遮蔽（Function Hiding）是指在派生类中定义一个与基类中同名的函数，这会导致基类中的同名函数在派生类中被隐藏。即使基类中的函数和派生类中的函数具有不同的参数列表，基类中的函数也会被隐藏。
+- 什么是函数遮蔽？
+  函数遮蔽（Function Hiding）是指在派生类中定义一个与基类中同名的函数，这会导致基类中的同名函数在派生类中被隐藏。即使基类中的函数和派生类中的函数具有不同的参数列表，基类中的函数也会被隐藏。
 
-* 什么是静态绑定？
-静态绑定（Static Binding），也称为早期绑定（Early Binding），是在编译时决定函数调用的绑定方式。静态绑定通常用于非虚函数调用，编译器在编译时确定函数调用的具体实现。
+- 什么是静态绑定？
+  静态绑定（Static Binding），也称为早期绑定（Early Binding），是在编译时决定函数调用的绑定方式。静态绑定通常用于非虚函数调用，编译器在编译时确定函数调用的具体实现。
 
-* 对于一个非虚函数，如果父类和子类都声明了这个同名函数方法，不管参数列表是否相同，都是调用的静态绑定的方法。
+- 对于一个非虚函数，如果父类和子类都声明了这个同名函数方法，不管参数列表是否相同，都是调用的静态绑定的方法。
 
-* c++怎么处理函数调用？
-首先进行名称查找（Name Lookup），然后才是类型匹配（Type Matching）：
+- c++怎么处理函数调用？
+  首先进行名称查找（Name Lookup），然后才是类型匹配（Type Matching）：
 
 1. **名称查找**：编译器首先查找与函数调用匹配的函数名。这一步不考虑函数的参数类型。如果在派生类中找到了同名函数，名称查找就会停止，不再继续到基类中查找。
 2. **类型匹配**：一旦找到了同名函数，编译器接下来会根据函数调用的实参类型，从找到的函数中选择最合适的一个进行调用。
 
-* 如果想保留父类和子类的同名方法，又不用虚函数，请使用using
+- 如果想保留父类和子类的同名方法，又不用虚函数，请使用 using
 
 ### 6. 通过引用捕获异常
 
-使用指针方式捕获异常：不需要拷贝对象，是最快的,但是，程序员很容易忘记写static，如果忘记写static的话，会导致异常在抛出后，因为离开了作用域而失效：
-    
+使用指针方式捕获异常：不需要拷贝对象，是最快的,但是，程序员很容易忘记写 static，如果忘记写 static 的话，会导致异常在抛出后，因为离开了作用域而失效：
+
     void someFunction(){
         static exception ex;
         throw &ex;
@@ -259,9 +298,10 @@ RTTI：能够让我们在runtime找到对象的类信息，那么就肯定有一
         }
         catch(exception *ex){...}
     }
+
 创建堆对象抛出异常：new exception 不会出现异常失效的问题，但是会出现在捕捉以后是否应该删除他们接受的指针，在哪一个层级删除指针的问题
-通过值捕获异常：不会出现上述问题，但是会在被抛出时系统将异常对象拷贝两次，而且会出现派生类和基类的slicing problem，即派生类的异常对象被作为基类异常对象捕获时，会把派生类的一部分切掉，例如：
-    
+通过值捕获异常：不会出现上述问题，但是会在被抛出时系统将异常对象拷贝两次，而且会出现派生类和基类的 slicing problem，即派生类的异常对象被作为基类异常对象捕获时，会把派生类的一部分切掉，例如：
+
     class exception{
     public:
         virtual const char *what() throw();
@@ -282,7 +322,7 @@ RTTI：能够让我们在runtime找到对象的类信息，那么就肯定有一
     }
 
 通过引用捕获异常：可以避免上面所有的问题，异常对象也只会被拷贝一次：
-    
+
     void someFunction(){...} //和上面一样
     void doSomething(){
         try{...}             //和上面一样
@@ -291,16 +331,16 @@ RTTI：能够让我们在runtime找到对象的类信息，那么就肯定有一
         }
     }
 
-
 这段文字讨论了在 C++ 中抛出异常、传递参数和调用虚函数之间的不同点，特别是它们在处理方式和行为上的差异。以下是对这段文字的详细解释：
 
 ### 7. 传递参数和捕获异常的相同点和不同点
 
-* **相同点**
+- **相同点**
 
 传递参数和捕获异常的方式可以是传值、传引用或者传指针。例如：
 
 - 传递参数的函数：
+
   ```cpp
   void f1(Widget w);
   ```
@@ -312,24 +352,28 @@ RTTI：能够让我们在runtime找到对象的类信息，那么就肯定有一
 
 这两种方式都可以通过传值、传引用或传指针来进行参数传递或异常捕获。
 
-* **不同点**
+- **不同点**
 
-- **控制权的返回**：
+* **控制权的返回**：
   - 调用函数时，程序的控制权会返回到函数的调用处。
   - 抛出异常时，控制权永远不会回到抛出异常的地方。
 
-* **三种捕获异常的方法**
+- **三种捕获异常的方法**
 
 1. **传值捕获**：
+
    ```cpp
    catch(Widget w);
    ```
+
    - 捕获异常对象的副本。
 
 2. **传引用捕获**：
+
    ```cpp
    catch(Widget& w);
    ```
+
    - 捕获异常对象的引用。
 
 3. **传常量引用捕获**：
@@ -338,13 +382,13 @@ RTTI：能够让我们在runtime找到对象的类信息，那么就肯定有一
    ```
    - 捕获异常对象的常量引用。
 
-* **捕获异常的注意事项**
+- **捕获异常的注意事项**
 
-- 一个被抛出的对象可以通过普通的引用捕获，不需要通过指向 [`const`]对象的引用捕获。
-- 在函数调用中，不允许传递一个临时对象到一个非 [`const`]引用类型的参数中。
-- 异常抛出时实际上是抛出对象创建的临时对象的拷贝。
+* 一个被抛出的对象可以通过普通的引用捕获，不需要通过指向 [`const`]对象的引用捕获。
+* 在函数调用中，不允许传递一个临时对象到一个非 [`const`]引用类型的参数中。
+* 异常抛出时实际上是抛出对象创建的临时对象的拷贝。
 
-* **类型转换**
+- **类型转换**
 
 在 [`try`]语句块中，抛出的异常不会进行类型转换（除了继承类和基类之间的类型转换，以及类型化指针转变成无类型指针的转换）。例如：
 
@@ -361,7 +405,7 @@ void f(int value) {
 
 在这个例子中，[`catch`]子句只处理 [`double`]类型的异常，如果抛出的是 [`int`]类型的异常，则不会被捕获。
 
-* **捕获异常的顺序**
+- **捕获异常的顺序**
 
 异常捕获是按照顺序进行的。如果有多个 [`catch`]子句，程序会优先进入第一个匹配的 [`catch`]子句。例如：
 
@@ -379,13 +423,13 @@ catch(...) {
 
 在这个例子中，如果抛出的是 `std::exception` 类型的异常，会优先进入第一个 [`catch`]子句。如果没有匹配的 [`catch`]子句，则会进入第二个捕获所有类型异常的 [`catch`]子句。
 
-* **总结**
+- **总结**
 
-- **传递参数和捕获异常的方式**：可以是传值、传引用或传指针。
-- **控制权的返回**：函数调用会返回控制权，异常抛出不会。
-- **捕获异常的方法**：可以通过传值、传引用或传常量引用捕获异常。
-- **类型转换**：异常抛出时不会进行类型转换，除了继承类和基类之间的类型转换。
-- **捕获顺序**：异常捕获是按照顺序进行的，优先进入第一个匹配的 [`catch`]子句。
+* **传递参数和捕获异常的方式**：可以是传值、传引用或传指针。
+* **控制权的返回**：函数调用会返回控制权，异常抛出不会。
+* **捕获异常的方法**：可以通过传值、传引用或传常量引用捕获异常。
+* **类型转换**：异常抛出时不会进行类型转换，除了继承类和基类之间的类型转换。
+* **捕获顺序**：异常捕获是按照顺序进行的，优先进入第一个匹配的 [`catch`]子句。
 
 通过理解这些差异，可以更好地编写和调试 C++ 程序，确保异常处理机制的正确性和有效性。
 
@@ -425,29 +469,33 @@ int main() {
 }
 ```
 
-* **常用场景**
+- **常用场景**
 
 1. **内存池**：
+
    - 在内存池中预先分配一大块内存，然后使用 `placement new` 在这块内存上构造对象。这样可以减少频繁的内存分配和释放，提高性能。
 
 2. **联合体**：
+
    - 在联合体中管理复杂类型的对象。由于联合体的所有成员共享同一块内存，需要使用 `placement new` 显式调用构造函数，并在对象生命周期结束时显式调用析构函数。
 
 3. **自定义内存管理器**：
+
    - 在自定义内存管理器中，使用 `placement new` 在预先分配的内存块上构造对象，以便更精细地控制内存分配和释放。
 
 4. **嵌入式系统**：
    - 在嵌入式系统中，内存资源有限，使用 `placement new` 可以更高效地利用内存，避免不必要的内存分配和释放。
 
-* **注意事项**
+- **注意事项**
 
-- **内存管理**：使用 `placement new` 时，需要确保提供的内存足够大以容纳对象，并且在对象生命周期结束时显式调用析构函数。
-- **未定义行为**：如果在同一块内存上多次使用 `placement new` 而不调用析构函数，可能会导致未定义行为。
-- **用途**：`placement new` 常用于内存池、联合体和自定义内存管理器等场景。
+* **内存管理**：使用 `placement new` 时，需要确保提供的内存足够大以容纳对象，并且在对象生命周期结束时显式调用析构函数。
+* **未定义行为**：如果在同一块内存上多次使用 `placement new` 而不调用析构函数，可能会导致未定义行为。
+* **用途**：`placement new` 常用于内存池、联合体和自定义内存管理器等场景。
 
-**49. 了解new-handler的行为 （Understand the behavior of the new-handler)**
+**49. 了解 new-handler 的行为 （Understand the behavior of the new-handler)**
 
-当new无法申请到新的内存的时候，会不断的调用new-handler，直到找到足够的内存,new_handler是一个错误处理函数：
+当 new 无法申请到新的内存的时候，会不断的调用 new-handler，直到找到足够的内存,new_handler 是一个错误处理函数：
+
 ```c++
 namespace std{
     typedef void(*new_handler)();
@@ -455,15 +503,17 @@ namespace std{
 }
 ```
 
-一个设计良好的new-handler要做下面的事情：
-+ 让更多内存可以被使用
-+ 安装另一个new-handler，如果目前这个new-handler无法取得更多可用内存，或许他知道另外哪个new-handler有这个能力，然后用那个new-handler替换自己
-+ 卸除new-handler
-+ 抛出bad_alloc的异常
-+ 不返回，调用abort或者exit
+一个设计良好的 new-handler 要做下面的事情：
 
-new-handler无法给每个class进行定制，但是可以重写new运算符，设计出自己的new-handler
-此时这个new应该类似于下面的实现方式：
+- 让更多内存可以被使用
+- 安装另一个 new-handler，如果目前这个 new-handler 无法取得更多可用内存，或许他知道另外哪个 new-handler 有这个能力，然后用那个 new-handler 替换自己
+- 卸除 new-handler
+- 抛出 bad_alloc 的异常
+- 不返回，调用 abort 或者 exit
+
+new-handler 无法给每个 class 进行定制，但是可以重写 new 运算符，设计出自己的 new-handler
+此时这个 new 应该类似于下面的实现方式：
+
 ```c++
 void* Widget::operator new(std::size_t size) throw(std::bad_alloc){
     NewHandlerHolder h(std::set_new_handler(currentHandler));      // 安装Widget的new-handler
@@ -472,18 +522,19 @@ void* Widget::operator new(std::size_t size) throw(std::bad_alloc){
 ```
 
 总结：
-+ set_new_handler允许客户制定一个函数，在内存分配无法获得满足时被调用
-+ Nothrow new是一个没什么用的东西
 
-**52. 写了placement new也要写placement delete（Write placement delete if you write placement new)**
+- set_new_handler 允许客户制定一个函数，在内存分配无法获得满足时被调用
+- Nothrow new 是一个没什么用的东西
 
-如果operator new接受的参数除了一定会有的size_t之外还有其他的参数，这个就是所谓的palcement new
+**52. 写了 placement new 也要写 placement delete（Write placement delete if you write placement new)**
+
+如果 operator new 接受的参数除了一定会有的 size_t 之外还有其他的参数，这个就是所谓的 palcement new
 
 void* operator new(std::size_t, void* pMemory) throw(); //placement new
-static void operator delete(void* pMemory) throw();     //palcement delete，此时要注意名称遮掩问题
-
+static void operator delete(void\* pMemory) throw(); //palcement delete，此时要注意名称遮掩问题
 
 ### 9. 尾回归类型
+
 ```c++
 #include <iostream>
 
@@ -515,6 +566,7 @@ int main() {
 ```
 
 ### 10. ADL
+
 ```c++
 #include <iostream>
 
@@ -541,31 +593,66 @@ int main() {
 }
 ```
 
+### 11. 向量化是什么意思?
+
+向量化的特性需要编译器和 CPU 都支持,让我们先来简单的了解一下向量化是如何工作的.假设我们有一个非常大的`vector`.简单的实现可以写成如下的方式:
+
+```c++
+std::vector<int> v {1, 2, 3, 4, 5, 6, 7 /*...*/};
+
+int sum {std::accumulate(v.begin(), v.end(), 0)};
+```
+
+编译器将会生成一个对`accumulate`调用的循环,其可能与下面代码类似:
+
+```c++
+int sum {0};
+
+for (size_t i {0}; i < v.size(); ++i) {
+	sum += v[i];
+}
+```
+
+从这点说起,当编译器开启向量化时,就会生成类似如下的代码.每次循环会进行 4 次累加,这样循环次数就要比之前减少 4 倍.为了简单说明问题,我们这里没有考虑不为 4 倍数个元素的情况:
+
+```c++
+int sum {0};
+for (size_t i {0}; i < v.size() / 4; i += 4) {
+	sum += v[i] + v[i+1] + v[i + 2] + v[i + 3];
+}
+// if v.size() / 4 has a remainder,
+// real code has to deal with that also.
+```
+
+为什么要这样做呢?很多 CPU 指令都能支持这种操作`sum += v[i] + v[i+1] + v[i+2] + v[i+3];`,只需要一个指令就能完成.使用尽可能少的指令完成尽可能多的操作,这样就能加速程序的运行.
+
+自动向量化非常困难,因为编译器需非常了解我们的程序,这样才能进行加速的情况下,不让程序的结果出错.目前,至少可以通过使用标准算法来帮助编译器.因为这样能让编译器更加了解哪些数据流能够并行,而不是从复杂的循环中对数据流的依赖进行分析.
+
 ### 99. books
 
-* [C++程序设计语言_特别版](http://pan.baidu.com/s/1o6jX3iq)
-* [C++编程惯用法__高级程序员常用方法和技巧](http://pan.baidu.com/s/1i3sVhJZ)
-* [C++编程规范-101条规则准则与最佳实践](http://pan.baidu.com/s/1ntDfM21)
-* [C++语言的设计和演化](http://pan.baidu.com/s/1kT3a2dp)
-* [C++释难解惑](http://pan.baidu.com/s/1nt4ssrf)
-* [C和C++安全编码(中文版)](http://pan.baidu.com/s/1hqqVtp6)
-* [Exceptional C++ Style(Herb Sutter).中文版](http://pan.baidu.com/s/1qWCtFOC)
-* [Exceptional C++ 中文版](http://pan.baidu.com/s/1pLCHC)
-* [More Exceptional C++(中文版)](http://pan.baidu.com/s/1qWLNgZE)
-* [Linux C编程一站式学习6.14--宋劲衫](http://pan.baidu.com/s/1bny7ga7)
-* [从缺陷中学习C/C++](http://pan.baidu.com/s/1c0GLTOs)
-* [你必须知道的222个C++语言问题.范立锋.扫描版](http://pan.baidu.com/s/1c03oHVE)
-* [深入学习:GNU C++ for Linux 编程技术](http://pan.baidu.com/s/1dDkVKVB)
-* [编写高质量代码  改善C++程序的150个建议.李健.扫描版](http://pan.baidu.com/s/1pJlXxk3)
-* [Accelerated C++中文版 ]
-* [Advanced c++ Programming  Styles and Idioms中文版]
-* [C++ API设计]
-* [C++代码设计与重用]
-* [C++标准库__自学教程与参考手册(第2版)英文版]
-* [C++沉思录(Ruminations on C++)中文第2版]
-* [C++设计新思维(Modern_C++_Design)]
-* [大规模C++程序设计]
-* [模板编程与OO编程范型--混搭]
-* [深度探索C++对象模型]
-* [高质量C++／C编程指南]
-* [Imperfect C++]
+- [C++程序设计语言\_特别版](http://pan.baidu.com/s/1o6jX3iq)
+- [C++编程惯用法\_\_高级程序员常用方法和技巧](http://pan.baidu.com/s/1i3sVhJZ)
+- [C++编程规范-101 条规则准则与最佳实践](http://pan.baidu.com/s/1ntDfM21)
+- [C++语言的设计和演化](http://pan.baidu.com/s/1kT3a2dp)
+- [C++释难解惑](http://pan.baidu.com/s/1nt4ssrf)
+- [C 和 C++安全编码(中文版)](http://pan.baidu.com/s/1hqqVtp6)
+- [Exceptional C++ Style(Herb Sutter).中文版](http://pan.baidu.com/s/1qWCtFOC)
+- [Exceptional C++ 中文版](http://pan.baidu.com/s/1pLCHC)
+- [More Exceptional C++(中文版)](http://pan.baidu.com/s/1qWLNgZE)
+- [Linux C 编程一站式学习 6.14--宋劲衫](http://pan.baidu.com/s/1bny7ga7)
+- [从缺陷中学习 C/C++](http://pan.baidu.com/s/1c0GLTOs)
+- [你必须知道的 222 个 C++语言问题.范立锋.扫描版](http://pan.baidu.com/s/1c03oHVE)
+- [深入学习:GNU C++ for Linux 编程技术](http://pan.baidu.com/s/1dDkVKVB)
+- [编写高质量代码 改善 C++程序的 150 个建议.李健.扫描版](http://pan.baidu.com/s/1pJlXxk3)
+- [Accelerated C++中文版 ]
+- [Advanced c++ Programming Styles and Idioms 中文版]
+- [C++ API 设计]
+- [C++代码设计与重用]
+- [C++标准库__自学教程与参考手册(第 2 版)英文版]
+- [C++沉思录(Ruminations on C++)中文第 2 版]
+- [C++设计新思维(Modern_C++_Design)]
+- [大规模 C++程序设计]
+- [模板编程与 OO 编程范型--混搭]
+- [深度探索 C++对象模型]
+- [高质量 C++／C 编程指南]
+- [Imperfect C++]
