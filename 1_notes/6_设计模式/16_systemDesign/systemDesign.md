@@ -24,3 +24,14 @@ MVC模式在概念上强调 Model, View, Controller 的分离,各个模块也遵
 4. https://github.com/ByteByteGoHq/system-design-101?tab=readme-ov-file#how-git-commands-work
 5. https://github.com/donnemartin/system-design-primer/blob/master/README-zh-Hans.md#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E4%B8%BB%E9%A2%98%E4%BB%8E%E8%BF%99%E9%87%8C%E5%BC%80%E5%A7%8B
 6. mvc
+
+# What is system design?
+
+System design is the process of defining the architecture, interfaces, and data
+for a system that satisfies specific requirements. 
+
+System design meets the needs of your business or organization through coherent and efficient systems. It requires
+a systematic approach to building and engineering systems. 
+
+A good system design requires us to think about everything, from infrastructure all the way down to the data and how it's stored.
+

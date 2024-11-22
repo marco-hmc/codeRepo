@@ -34,7 +34,7 @@ constexpr int f(T) {
   return 1;
 }
 
-}  // namespace jc
+}  // namespace jc 
 
 namespace jd {
 

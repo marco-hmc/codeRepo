@@ -350,3 +350,6 @@ docker、k8s 等虚拟化和云计算相关的
 
 
 Linux 系统下可能还会问什么是 daemon 进程，如何产生 daemo 进程，什么是僵尸进程，僵尸进程如何产生和消除(bilibili 问过)。
+
+
+![alt text](_imgs/0_linux_image.png)

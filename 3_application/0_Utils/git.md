@@ -296,3 +296,6 @@ git config --global https.proxy 'socks5://127.0.0.1:7890'
   ```
 
   使用git merge和git rebase一般不显式指定两个分支,可能是怕谁合并谁带来太大的心智负担,因此一般都是切换到要保留的分支,然后合并其他分支.
+
+
+![alt text](_imgs/git_image.png)

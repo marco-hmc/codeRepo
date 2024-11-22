@@ -1,10 +1,7 @@
 # System Design
 
-# Table of contents
-
 - **Chapter I**
 
-  - [IP](#ip)
   - [OSI Model](#osi-model)
   - [TCP and UDP](#tcp-and-udp)
   - [Domain Name System (DNS)](#domain-name-system-dns)
@@ -378,13 +375,7 @@ Clustering is commonly used in the industry, and often many technologies offer s
 
 # Caching
 
-_"There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton_
-
 ![caching](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/caching/caching.png)
-
-A cache's primary purpose is to increase data retrieval performance by reducing the need to access the underlying slower storage layer. Trading off capacity for speed, a cache typically stores a subset of data transiently, in contrast to databases whose data is usually complete and durable.
-
-Caches take advantage of the locality of reference principle _"recently requested data is likely to be requested again"._
 
 ## Caching and Memory
 
@@ -5485,9 +5476,16 @@ To make our system more resilient we can do the following:
 - Multiple instances and replicas for our distributed cache.
 - Exactly once delivery and message ordering is challenging in a distributed system, we can use a dedicated [message broker](https://karanpratapsingh.com/courses/system-design/message-brokers) such as [Apache Kafka](https://kafka.apache.org) or [NATS](https://nats.io) to make our notification system more robust.
 
-# Next Steps
 
-Congratulations, you've finished the course!
+
+
+
+
+
+
+
+
+# Next Steps
 
 Now that you know the fundamentals of System Design, here are some additional resources:
 
@@ -5512,17 +5510,10 @@ It is also recommended to actively follow engineering blogs of companies putting
 - [Paypal Developer Blog](https://medium.com/paypal-engineering)
 - [Twitter Engineering](https://blog.twitter.com/engineering)
 
-Last but not least, volunteer for new projects at your company, and learn from senior engineers and architects to further improve your system design skills.
 
-I hope this course was a great learning experience. I would love to hear feedback from you.
-
-Wishing you all the best for further learning!
 
 # References
 
-Here are the resources that were referenced while creating this course.
-
-- [Cloudflare learning center](https://www.cloudflare.com/learning)
 - [IBM Blogs](https://www.ibm.com/blogs)
 - [Fastly Blogs](https://www.fastly.com/blog)
 - [NS1 Blogs](https://ns1.com/blog)
@@ -5535,4 +5526,3 @@ Here are the resources that were referenced while creating this course.
 - [PagerDuty resources](https://www.pagerduty.com/resources)
 - [VMWare Blogs](https://blogs.vmware.com/learning)
 
-_All the diagrams were made using [Excalidraw](https://excalidraw.com) and are available [here](https://github.com/karanpratapsingh/system-design/tree/main/diagrams)._

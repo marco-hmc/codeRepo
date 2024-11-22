@@ -1,91 +1,10 @@
-#include "DownloadManager.h"
-
-DownloadManager::DownloadManager() : stopFlag(false) {
-    downloadThread = std::thread(&DownloadManager::processDownloads, this);
-}
-
-DownloadManager::~DownloadManager() {
-    {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        stopFlag = true;
-    }
-    cv.notify_all();
-    if (downloadThread.joinable()) {
-        downloadThread.join();
-    }
-}
-
-void DownloadManager::addDownloadTask(const std::string& uuid, int priority) {
-    {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        downloadQueue.push(
-            {priority, [this, uuid] { return ABC_Download(uuid); }});
-    }
-    cv.notify_one();
-}
-
-void DownloadManager::addDownloadTaskAsync(const std::string& uuid,
-                                           int priority,
-                                           std::function<void(bool)> callback) {
-    {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        downloadQueue.push({priority, [this, uuid, callback] {
-                                bool result = ABC_Download(uuid);
-                                callback(result);
-                                return result;
-                            }});
-    }
-    cv.notify_one();
-}
-
-void DownloadManager::processDownloads() {
-    while (true) {
-        TaskWithPriority taskWithPriority;
-        {
-            std::unique_lock<std::mutex> lock(queueMutex);
-            cv.wait(lock,
-                    [this] { return !downloadQueue.empty() || stopFlag; });
-            if (stopFlag && downloadQueue.empty()) {
-                break;
-            }
-            taskWithPriority = downloadQueue.top();
-            downloadQueue.pop();
-        }
-        // 执行下载任务
-        taskWithPriority.second();
-    }
-}
-
-bool DownloadManager::ABC_Download(const std::string& uuid) {
-    std::cout << "Downloading file with UUID: " << uuid << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(2));  // 模拟下载时间
-    std::cout << "Downloaded file with UUID: " << uuid << std::endl;
-    return true;  // 模拟下载成功
-}
-
-// #include "DownloadManager.h"
-// #include <iostream>
-// #include <thread>
-
-// int main() {
-//     DownloadManager manager;
-
-//     // 添加下载任务
-//     manager.addDownloadTask("uuid1", 1);
-//     manager.addDownloadTask("uuid2", 3);
-//     manager.addDownloadTask("uuid3", 2);
-
-//     // 添加异步下载任务
-//     manager.addDownloadTaskAsync("uuid4", 1, [](bool success) {
-//         if (success) {
-//             std::cout << "Async download completed successfully." << std::endl;
-//         } else {
-//             std::cout << "Async download failed." << std::endl;
-//         }
-//     });
-
-//     // 等待一段时间以便下载任务完成
-//     std::this_thread::sleep_for(std::chrono::seconds(10));
-
-//     return 0;
-// }
+// 使用 Fetch API 向业务服务器发送请求
+fetch('https://api.example.com/data', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer your-token'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));

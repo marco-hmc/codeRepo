@@ -928,7 +928,6 @@ It accounts for 60% of digital retail transactions in India today.
 
 UPI = payment markup language + standard for interoperable payments
 
-
 <p>
   <img src="images/how-does-upi-work.png"  style="width: 600px" />
 </p>
@@ -938,13 +937,9 @@ UPI = payment markup language + standard for interoperable payments
 
 ###  DevOps vs. SRE vs. Platform Engineering. What is the difference?
 
-The concepts of DevOps, SRE, and Platform Engineering have emerged at different times and have been developed by various individuals and organizations. 
-
 <p>
   <img src="images/devops-sre-platform.jpg" />
 </p>
-
-DevOps as a concept was introduced in 2009 by Patrick Debois and Andrew Shafer at the Agile conference. They sought to bridge the gap between software development and operations by promoting a collaborative culture and shared responsibility for the entire software development lifecycle. 
 
 SRE, or Site Reliability Engineering, was pioneered by Google in the early 2000s to address operational challenges in managing large-scale, complex systems. Google developed SRE practices and tools, such as the Borg cluster management system and the Monarch monitoring system, to improve the reliability and efficiency of their services. 
 
@@ -965,35 +960,22 @@ A k8s cluster consists of a set of worker machines, called nodes, that run conta
 The worker node(s) host the Pods that are the components of the application workload. The control plane manages the worker nodes and the Pods in the cluster. In production environments, the control plane usually runs across multiple computers, and a cluster usually runs multiple nodes, providing fault tolerance and high availability.
 
 - Control Plane Components
-
 1. API Server
-
     The API server talks to all the components in the k8s cluster. All the operations on pods are executed by talking to the API server.
-
 2. Scheduler
-
     The scheduler watches pod workloads and assigns loads on newly created pods.
-
 3. Controller Manager
-
     The controller manager runs the controllers, including Node Controller, Job Controller, EndpointSlice Controller, and ServiceAccount Controller.
-
 4. Etcd
-    
+   
     etcd is a key-value store used as Kubernetes' backing store for all cluster data.
 
 - Nodes
-
 1. Pods
-
     A pod is a group of containers and is the smallest unit that k8s administers. Pods have a single IP address applied to every container within the pod.
-
 2. Kubelet
-
     An agent that runs on each node in the cluster. It ensures containers are running in a Pod.
-
 3. Kube Proxy
-
     Kube-proxy is a network proxy that runs on each node in your cluster. It routes traffic coming into a node from the service. It forwards requests for work to the correct containers.
 
 ### Docker vs. Kubernetes. Which one should we use? 
@@ -1051,70 +1033,6 @@ Let’s take the “docker run” command as an example.
   1. Docker allocates a read-write filesystem to the container. 
   1. Docker creates a network interface to connect the container to the default network. 
   1. Docker starts the container.
-
-## GIT
-
-### How Git Commands work
-
-To begin with, it's essential to identify where our code is stored. The common assumption is that there are only two locations - one on a remote server like Github and the other on our local machine. However, this isn't entirely accurate. Git maintains three local storages on our machine, which means that our code can be found in four places: 
-
-<p>
-  <img src="images/git-commands.png" style="width: 600px" />
-</p>
-
-
-- Working directory: where we edit files 
-- Staging area: a temporary location where files are kept for the next commit 
-- Local repository: contains the code that has been committed 
-- Remote repository: the remote server that stores the code 
-
-Most Git commands primarily move files between these four locations. 
-
-### How does Git Work?
-
-The diagram below shows the Git workflow. 
-
-<p>
-  <img src="images/git-workflow.jpeg" style="width: 520px" />
-</p>
-
-
-Git is a distributed version control system. 
-
-Every developer maintains a local copy of the main repository and edits and commits to the local copy. 
-
-The commit is very fast because the operation doesn’t interact with the remote repository. 
-
-If the remote repository crashes, the files can be recovered from the local repositories. 
-
-### Git merge vs. Git rebase
-
-What are the differences?
-
-<p>
-  <img src="images/git-merge-git-rebase.jpeg" style="width: 680px" />
-</p>
-
-
-When we **merge changes** from one Git branch to another, we can use ‘git merge’ or ‘git rebase’. The diagram below shows how the two commands work.
-
-**Git merge**
-
-This creates a new commit G’ in the main branch. G’ ties the histories of both main and feature branches.
-
-Git merge is **non-destructive**. Neither the main nor the feature branch is changed.
-
-**Git rebase**
-
-Git rebase moves the feature branch histories to the head of the main branch. It creates new commits E’, F’, and G’ for each commit in the feature branch.
-
-The benefit of rebase is that it has a linear **commit history**.
-
-Rebase can be dangerous if “the golden rule of git rebase” is not followed.
-
-**The Golden Rule of Git Rebase**
-
-Never use it on public branches!
 
 ## Cloud Services
 
@@ -1185,26 +1103,6 @@ What does it do?
 - Supports the following providers: AWS, Azure, GCP, Kubernetes, Alibaba Cloud, Oracle Cloud, etc. 
  
 [Github repo](https://github.com/mingrammer/diagrams)
-
-## Linux
-
-### Linux file system explained
-
-<p>
-  <img src="images/linux-file-systems.jpg" style="width: 680px" />
-</p>
-
-The Linux file system used to resemble an unorganized town where individuals constructed their houses wherever they pleased. However, in 1994, the Filesystem Hierarchy Standard (FHS) was introduced to bring order to the Linux file system.
-
-By implementing a standard like the FHS, software can ensure a consistent layout across various Linux distributions. Nonetheless, not all Linux distributions strictly adhere to this standard. They often incorporate their own unique elements or cater to specific requirements.
-To become proficient in this standard, you can begin by exploring. Utilize commands such as "cd" for navigation and "ls" for listing directory contents. Imagine the file system as a tree, starting from the root (/). With time, it will become second nature to you, transforming you into a skilled Linux administrator.
-
-### 18 Most-used Linux Commands You Should Know 
-
-<p>
-  <img src="images/18 Most-Used Linux Commands You Should Know-01.jpeg" style="width: 680px" />
-</p>
-
 
 ## Security
 
