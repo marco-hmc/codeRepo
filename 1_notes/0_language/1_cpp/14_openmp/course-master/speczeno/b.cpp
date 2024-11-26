@@ -1,8 +1,6 @@
+#include <iostream>
 #include <memory>
 #include <string>
-#include <iostream>
-
-using namespace std;
 
 struct IObject {
     IObject() = default;
@@ -11,48 +9,44 @@ struct IObject {
     virtual ~IObject() = default;
 
     virtual void eatFood() = 0;
-    virtual shared_ptr<IObject> clone() const = 0;
+    virtual std::shared_ptr<IObject> clone() const = 0;
 };
 
 struct CatObject : IObject {
-    string m_catFood = "someFish";
+    std::string m_catFood = "someFish";
 
-    virtual void eatFood() override {
-        cout << "eating " << m_catFood << endl;
+    void eatFood() override {
+        std::cout << "eating " << m_catFood << std::endl;
         m_catFood = "fishBones";
     }
 
-    virtual shared_ptr<IObject> clone() const override {
-        return make_shared<CatObject>(*this);
+    [[nodiscard]] std::shared_ptr<IObject> clone() const override {
+        return std::make_shared<CatObject>(*this);
     }
-
-    virtual ~CatObject() override = default;
 };
 
 struct DogObject : IObject {
-    string m_dogFood = "someMeat";
+    std::string m_dogFood = "someMeat";
 
-    virtual void eatFood() override {
-        cout << "eating " << m_dogFood << endl;
+    void eatFood() override {
+        std::cout << "eating " << m_dogFood << std::endl;
         m_dogFood = "meatBones";
     }
 
-    virtual shared_ptr<IObject> clone() const override {
-        return make_shared<DogObject>(*this);
+    std::shared_ptr<IObject> clone() const override {
+        return std::make_shared<DogObject>(*this);
     }
-
-    virtual ~DogObject() override = default;
 };
 
 void eatTwice(IObject *obj) {
-    shared_ptr<IObject> newObj = obj->clone();
+    std::shared_ptr<IObject> newObj = obj->clone();
     obj->eatFood();
     newObj->eatFood();
 }
 
 int main() {
-    shared_ptr<CatObject> cat = make_shared<CatObject>();
-    shared_ptr<DogObject> dog = make_shared<DogObject>();
+    std::shared_ptr<CatObject> cat = std::make_shared<CatObject>();
+    std::shared_ptr<DogObject> dog = std::make_shared<DogObject>();
 
     eatTwice(cat.get());
     eatTwice(dog.get());

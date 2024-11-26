@@ -8,7 +8,8 @@
 #include <termios.h>
 #include <fcntl.h>
 
-using namespace std;
+
+using namespace std::chrono_literals;
 
 struct InStream {
     virtual size_t read(char *__restrict s, size_t len) = 0;
@@ -212,7 +213,7 @@ public:
     size_t read(char *__restrict s, size_t len) override {
         if (len == 0) return 0;
         std::this_thread::sleep_for(0.2s);
-        ssize_t n = ::read(fd, s, len);
+        ssize_t n = std:: ::read(fd, s, len);
         if (n < 0)
             throw std::system_error(errno, std::generic_category());
         return n;
@@ -227,9 +228,7 @@ struct UnixFileInStreamOwned : UnixFileInStream {
     explicit UnixFileInStreamOwned(int fd_) : UnixFileInStream(fd_) {
     }
 
-    ~UnixFileInStreamOwned() {
-        ::close(file_handle());
-    }
+    ~UnixFileInStreamOwned() { std:: ::close(file_handle()); }
 };
 
 struct OutStream {
@@ -269,13 +268,13 @@ public:
     void write(const char *__restrict s, size_t len) override {
         if (len == 0) return;
         std::this_thread::sleep_for(0.2s);
-        ssize_t written = ::write(fd, s, len);
+        ssize_t written = std:: ::write(fd, s, len);
         if (written < 0)
             throw std::system_error(errno, std::generic_category());
         if (written == 0)
             throw std::system_error(EPIPE, std::generic_category());
         while ((size_t)written != len) {
-            written = ::write(fd, s, len);
+            written = std:: ::write(fd, s, len);
             if (written < 0)
                 throw std::system_error(errno, std::generic_category());
             if (written == 0)
@@ -287,9 +286,7 @@ public:
 
     UnixFileOutStream(UnixFileOutStream &&) = delete;
 
-    ~UnixFileOutStream() {
-        ::close(fd);
-    }
+    ~UnixFileOutStream() { std:: ::close(fd); }
 
     int file_handle() const noexcept {
         return fd;
@@ -300,9 +297,7 @@ struct UnixFileOutStreamOwned : UnixFileOutStream {
     explicit UnixFileOutStreamOwned(int fd_) : UnixFileOutStream(fd_) {
     }
 
-    ~UnixFileOutStreamOwned() {
-        ::close(file_handle());
-    }
+    ~UnixFileOutStreamOwned() { std:: ::close(file_handle()); }
 };
 
 struct BufferedOutStream : OutStream {

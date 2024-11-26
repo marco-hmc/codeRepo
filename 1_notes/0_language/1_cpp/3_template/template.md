@@ -95,3 +95,8 @@
 #### 2. 模板函数内联和不内联的区别是什么？
 
 #### 3. 模板参数parameter和模板实参argument概念的区分
+
+
+使用了 decltype(a)，各种莫名其妙报错，is_same_v 判断无效（因为 decltype(a) 会返回 A const & 而不是 A，用 std::decay_t<decltype(a)> 即可）
+
+T::value_type 无法编译通过（由于缺乏 typename 前缀，用 typename T::value_type 即可）

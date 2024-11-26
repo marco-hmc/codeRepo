@@ -1,5 +1,6 @@
 #include <map>
 #include <memory>
+
 #include "msglib.h"
 
 struct MsgBase {
@@ -10,34 +11,23 @@ struct MsgBase {
     using Ptr = std::shared_ptr<MsgBase>;
 };
 
-namespace msg_extra_funcs { // 无法为 Msg 们增加成员函数，只能以重载的形式，外挂追加
-    void load(MoveMsg &msg) {
-        std::cin >> msg.x >> msg.y;
-    }
+namespace msg_extra_funcs {  // 无法为 Msg 们增加成员函数，只能以重载的形式，外挂追加
+    void load(MoveMsg &msg) { std::cin >> msg.x >> msg.y; }
 
-    void load(JumpMsg &msg) {
-        std::cin >> msg.height;
-    }
+    void load(JumpMsg &msg) { std::cin >> msg.height; }
 
-    void load(SleepMsg &msg) {
-        std::cin >> msg.time;
-    }
+    void load(SleepMsg &msg) { std::cin >> msg.time; }
 
-    void load(ExitMsg &) {
-    }
-}
+    void load(ExitMsg &) {}
+}  // namespace msg_extra_funcs
 
 template <class Msg>
 struct MsgImpl : MsgBase {
     Msg msg;
 
-    void speak() override {
-        msg.speak();
-    }
+    void speak() override { msg.speak(); }
 
-    void load() override {
-        msg_extra_funcs::load(msg);
-    }
+    void load() override { msg_extra_funcs::load(msg); }
 };
 
 struct MsgFactoryBase {
@@ -49,9 +39,7 @@ struct MsgFactoryBase {
 
 template <class Msg>
 struct MsgFactoryImpl : MsgFactoryBase {
-    MsgBase::Ptr create() override {
-        return std::make_shared<MsgImpl<Msg>>();
-    }
+    MsgBase::Ptr create() override { return std::make_shared<MsgImpl<Msg>>(); }
 };
 
 template <class Msg>
@@ -82,8 +70,7 @@ struct RobotClass {
     }
 
     void update() {
-        if (msg)
-            msg->speak();
+        if (msg) msg->speak();
     }
 
     MsgBase::Ptr msg;
