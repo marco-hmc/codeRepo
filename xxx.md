@@ -265,3 +265,83 @@ reduce(
 ### 总结
 
 通过使用策略模式、适配器模式和过滤器模式，可以实现灵活、可扩展的代码设计，满足单一职责原则、开闭原则和依赖倒置原则。这样设计的代码更易于维护和扩展。
+
+
+这段文字讨论了在并发编程中使用同步和临界区（critical section）时的一些注意事项。以下是对这段文字的详细解释：
+
+### 同步和临界区
+
+在并发编程中，同步是指协调多个线程或进程的执行，以确保它们不会同时访问共享资源，从而避免数据竞争和不一致性。临界区是指一段代码，这段代码在任何时候只能由一个线程执行，以保护共享资源。
+
+### 关键点
+
+1. **使用临界区减少伪共享**：
+   - 伪共享（false sharing）是指多个线程访问不同的数据，但这些数据位于同一个缓存行中，导致缓存一致性协议频繁触发，从而降低性能。
+   - 使用临界区可以减少伪共享，因为临界区确保同一时间只有一个线程访问共享资源，从而避免了多个线程同时访问同一个缓存行。
+
+2. **不要在紧密循环中放置临界区**：
+   - 在紧密循环（tight loop）中放置临界区会导致串行化（serialization），即多个线程无法并行执行，而是必须一个接一个地进入临界区。
+   - 这种做法会显著降低并发性能，因为线程需要等待其他线程退出临界区才能继续执行。
+
+### 示例
+
+以下是一个示例，展示了如何使用临界区保护共享资源，同时避免在紧密循环中放置临界区：
+
+```cpp
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <mutex>
+
+std::mutex mtx;
+int shared_resource = 0;
+
+void increment(int iterations) {
+    for (int i = 0; i < iterations; ++i) {
+        // 避免在紧密循环中放置临界区
+        std::lock_guard<std::mutex> lock(mtx);
+        ++shared_resource;
+    }
+}
+
+int main() {
+    const int num_threads = 4;
+    const int iterations = 1000;
+
+    std::vector<std::thread> threads;
+    for (int i = 0; i < num_threads; ++i) {
+        threads.emplace_back(increment, iterations);
+    }
+
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    std::cout << "Final value of shared_resource: " << shared_resource << std::endl;
+    return 0;
+}
+```
+
+### 解释
+
+1. **定义共享资源和互斥锁**：
+   - `std::mutex mtx;`：定义一个互斥锁，用于保护共享资源。
+   - `int shared_resource = 0;`：定义一个共享资源。
+
+2. **定义增量函数**：
+   - `void increment(int iterations)`：定义一个函数，接受迭代次数作为参数。
+   - 在循环中使用 `std::lock_guard<std::mutex> lock(mtx);` 保护对共享资源的访问，确保同一时间只有一个线程可以修改 `shared_resource`。
+
+3. **创建和启动线程**：
+   - 创建多个线程，每个线程执行 `increment` 函数。
+   - 使用 `threads.emplace_back(increment, iterations);` 将线程添加到线程向量中。
+
+4. **等待线程完成**：
+   - 使用 `t.join();` 等待所有线程完成执行。
+
+5. **输出共享资源的最终值**：
+   - 输出 `shared_resource` 的最终值，确保所有线程正确地完成了增量操作。
+
+### 总结
+
+这段文字强调了在并发编程中使用临界区时需要注意的两个关键点：使用临界区减少伪共享，但不要在紧密循环中放置临界区，以避免串行化和性能下降。通过合理地使用临界区，可以提高并发程序的性能和可靠性。

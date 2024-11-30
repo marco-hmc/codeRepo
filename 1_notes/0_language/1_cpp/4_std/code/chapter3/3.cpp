@@ -3,24 +3,25 @@
 #include <iterator>
 #include <sstream>
 #include <string>
-using namespace std;
 
 int main() {
-    istream_iterator<int> it_cin{cin};
-    istream_iterator<int> end_cin;
+    std::istream_iterator<int> it_cin{std::cin};
+    std::istream_iterator<int> end_cin;
 
-    deque<int> v;
-    copy(it_cin, end_cin, back_inserter(v));
+    std::deque<int> v;
+    std::copy(it_cin, end_cin, std::back_inserter(v));
 
-    istringstream sstr{"123 456 789"};
+    std::istringstream sstr{"123 456 789"};
 
-    auto deque_middle(next(begin(v), static_cast<int>(v.size()) / 2));
+    auto deque_middle(std::next(std::begin(v), static_cast<int>(v.size()) / 2));
 
-    copy(istream_iterator<int>{sstr}, {}, inserter(v, deque_middle));
+    std::copy(std::istream_iterator<int>{sstr}, {},
+              std::inserter(v, deque_middle));
 
-    initializer_list<int> il2{-1, -2, -3};
-    copy(begin(il2), end(il2), front_inserter(v));
+    std::initializer_list<int> il2{-1, -2, -3};
+    std::copy(std::begin(il2), std::end(il2), std::front_inserter(v));
 
-    copy(begin(v), end(v), ostream_iterator<int>{cout, ", "});
-    cout << '\n';
+    std::copy(std::begin(v), std::end(v),
+              std::ostream_iterator<int>{std::cout, ", "});
+    std::cout << '\n';
 }

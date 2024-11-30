@@ -12,6 +12,7 @@ spark-streaming将输入根据时间片划分成一段一段的Dstream(也就是
 spark的算子分成transformation和action两类
 * transformation是变换算子,这类算子不会触发提交,是延迟执行的.也就是说执行到transformation算子的时候数据并没有马上进行计算,只是记住了对RDD的逻辑操作 
 * action算子是执行算子,会出发spark提交作业,并将数据输出到spark
+
 #### 8. spark常用的算子说几个
 spark的算子分为两类:transformation和action
 

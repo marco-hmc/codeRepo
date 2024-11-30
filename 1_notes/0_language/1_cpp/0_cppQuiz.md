@@ -308,20 +308,6 @@ Core dump是程序在运行过程中由于某些原因异常终止，而将其�
 以上只是一些常见的原因，实际上可能导致core dump的原因有很多，具体还需要结合程序的具体情况进行分析。
 
 
-算法
-有家问了个记录栈的最大值没答上来，有家问的两个栈组成一个队列
-
-网络
-握手挥手基本都问，握手挥手中间有一次丢掉怎么办，处于什么状态，问就是time wait和重传。
-有家问我套接字发送端确认发送出去了然后接收端收不到，我寻思有重传还能收不到，扯扯nagle，后来说他们抓包发现被防火墙挡住了，看我简历里有写抓包啥的问我这个。
-tcp/udp什么区别，tcp自带心跳和应用层心跳啥的。
-
-数据库
-虽然也没啥可问的，但基本都提一嘴，答增删改查授权这些用一用，其他都不怎么用，往这个方向引大概率是想问索引，索引原理，有家电话让我说授权语句，这玩意谁记啊，不都现用现查，说了俩关键字顺序也没整对，后来还是给了个口头
-
-为什么有的游戏要在udp应用层实现确认和重传，而不用tcp，差距在哪，然后我说我看知乎上有些就是这么说的，具体也没了解过，后来就问我滑动窗口9，张口就来第一个字节收不到，窗口外的都收不到，立马就反应过来不就是问我这个吗，自己笨比没串起来而已
-
-
 #### 27. 以下四行代码中"123"是否可以修改?
 const char*a="123";
 char *b="123";
@@ -368,3 +354,13 @@ STL的默认分配器`std::allocator`直接使用`new`和`delete`来分配和释
 
 如何实现一个线程池?说一下基本思路即可!
 
+
+- [热心观众整理的学习资料](https://github.com/jiayaozhang/OpenVDB_and_TBB)
+- [HackingCpp 图文教程](https://hackingcpp.com/)
+- [Performance Analysis and Tuning on Modern CPUs](http://faculty.cs.niu.edu/~winans/notes/patmc.pdf)
+- [C++ 并发编程实战](https://www.bookstack.cn/read/Cpp_Concurrency_In_Action/README.md)
+- [深入理解计算机原理 (CSAPP)](http://csapp.cs.cmu.edu/)
+- [并行体系结构与编程 (CMU 15-418)](https://www.bilibili.com/video/av48153629/)
+- [因特尔 TBB 编程指南](https://www.inf.ed.ac.uk/teaching/courses/ppls/TBBtutorial.pdf)
+- [实用网站 CppInsights 解构 C++ 语法糖](https://cppinsights.io)
+- [实用网站 GodBolt 查看不同编译器生成的汇编](http://godbolt.org)

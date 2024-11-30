@@ -1,33 +1,96 @@
-# C++20
+# C++17
 
-## Overview
-Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
+### Declaring non-type template parameters with auto
+Following the deduction rules of `auto`, while respecting the non-type template parameter list of allowable types[\*], template arguments can be deduced from the types of its arguments:
+```c++
+template <auto... seq>
+struct my_integer_sequence {
+  // Implementation here ...
+};
 
-C++20 includes the following new language features:
-- [C++20](#c20)
-  - [Overview](#overview)
-  - [C++20 Language Features](#c20-language-features)
-    - [Coroutines](#coroutines)
-    - [Concepts](#concepts)
-    - [constexpr virtual functions](#constexpr-virtual-functions)
-    - [explicit(bool)](#explicitbool)
-    - [Immediate functions](#immediate-functions)
-    - [using enum](#using-enum)
-    - [Lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
-    - [constinit](#constinit)
-  - [C++20 Library Features](#c20-library-features)
-    - [Concepts library](#concepts-library)
-    - [Synchronized buffered outputstream](#synchronized-buffered-outputstream)
-    - [std::span](#stdspan)
-    - [Bit operations](#bit-operations)
-    - [Math constants](#math-constants)
-    - [std::is\_constant\_evaluated](#stdis_constant_evaluated)
-    - [std::make\_shared supports arrays](#stdmake_shared-supports-arrays)
-    - [starts\_with and ends\_with on strings](#starts_with-and-ends_with-on-strings)
-    - [Check if associative container has element](#check-if-associative-container-has-element)
-    - [std::bit\_cast](#stdbit_cast)
-    - [std::midpoint](#stdmidpoint)
-    - [std::to\_array](#stdto_array)
+// Explicitly pass type `int` as template argument.
+auto seq = std::integer_sequence<int, 0, 1, 2>();
+// Type is deduced to be `int`.
+auto seq2 = my_integer_sequence<0, 1, 2>();
+```
+\* - For example, you cannot use a `double` as a template parameter type, which also makes this an invalid deduction using `auto`.
+
+### Class template argument deduction
+*Class template argument deduction* (CTAD) allows the compiler to deduce template arguments from constructor arguments.
+```c++
+std::vector v{ 1, 2, 3 }; // deduces std::vector<int>
+
+std::mutex mtx;
+auto lck = std::lock_guard{ mtx }; // deduces to std::lock_guard<std::mutex>
+
+auto p = new std::pair{ 1.0, 2.0 }; // deduces to std::pair<double, double>
+```
+
+For user-defined types, *deduction guides* can be used to guide the compiler how to deduce template arguments if applicable:
+```c++
+template <typename T>
+struct container {
+  container(T t) {}
+
+  template <typename Iter>
+  container(Iter beg, Iter end);
+};
+
+// deduction guide
+template <template Iter>
+container(Iter b, Iter e) -> container<typename std::iterator_traits<Iter>::value_type>;
+
+container a{ 7 }; // OK: deduces container<int>
+
+std::vector<double> v{ 1.0, 2.0, 3.0 };
+auto b = container{ v.begin(), v.end() }; // OK: deduces container<double>
+
+container c{ 5, 6 }; // ERROR: std::iterator_traits<int>::value_type is not a type
+```
+
+## C++17 Library Features
+
+### std::string_view
+A non-owning reference to a string. Useful for providing an abstraction on top of strings (e.g. for parsing).
+```c++
+// Regular strings.
+std::string_view cppstr {"foo"};
+// Wide strings.
+std::wstring_view wcstr_v {L"baz"};
+// Character arrays.
+char array[3] = {'b', 'a', 'r'};
+std::string_view array_v(array, std::size(array));
+```
+```c++
+std::string str {"   trim me"};
+std::string_view v {str};
+v.remove_prefix(std::min(v.find_first_not_of(" "), v.size()));
+str; //  == "   trim me"
+v; // == "trim me"
+```
+
+### std::invoke
+Invoke a `Callable` object with parameters. Examples of *callable* objects are `std::function` or lambdas; objects that can be called similarly to a regular function.
+```c++
+template <typename Callable>
+class Proxy {
+  Callable c_;
+
+public:
+  Proxy(Callable c) : c_{ std::move(c) } {}
+
+  template <typename... Args>
+  decltype(auto) operator()(Args&&... args) {
+    // ...
+    return std::invoke(c_, std::forward<Args>(args)...);
+  }
+};
+
+const auto add = [](int x, int y) { return x + y; };
+Proxy p{ add };
+p(1, 2); // == 3
+```
+
 
 ## C++20 Language Features
 

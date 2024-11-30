@@ -5,7 +5,8 @@
     "cmake.configureOnOpen": false,
     "cSpell.words": [
         "ansicolor",
-        "nullmutex"
+        "nullmutex",
+        "Systemstatus"
     ],
     "cmake.sourceDirectory": "C:/Users/46599/Documents/1_codeRepo/0_codigRepo/codingRepo/99_tmp/myAiTetris"
 }
