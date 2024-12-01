@@ -19,6 +19,11 @@
     for, sections, single
     task, simd, target
 * 数据环境：
+  一个parallel指令智能被一个default子句修饰。子句default用来控制并行区域内便里昂的共享属性。默认情况，并行区域内便来能耐都是公有的，以下是特殊情况。
+  1. 循环指标变量
+  2. 区域内的局部变量
+  3. 所有在private\firstprivate\lastparivate\deduction子句中列出的变量是私有的。
+
     共享变量: shared, copyprivate(copyin)
     私有变量: private， firstprivate, lastprivate
     default

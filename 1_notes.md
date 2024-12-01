@@ -206,3 +206,16 @@ lower_bound
 - **编译器扩展和内置函数**：编译器通常提供一些特殊的内置函数和扩展，这些是专门为编译器设计的，用户代码无法直接使用。
 
 通过这些能力，编译器能够在编译过程中实现那些用户代码难以或无法实现的特殊功能。
+
+哑元表
+
+```c++
+#pragma omp parallel for default(shared) firstprivate(eps)  private(c, j)
+    for (int i = 0; i < N_POINTS; i++) {
+        for (int j = 0; j < N_POINTS; j++) {
+            c.r = -2.0 + 2.5 * (double)(i) / (double)(N_POINTS) + eps;
+            c.i = 1.125 * (double)(j) / (double)(N_POINTS) + eps;
+            testpoint(c);
+        }
+    }
+```

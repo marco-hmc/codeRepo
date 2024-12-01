@@ -6,59 +6,9 @@ A lot of good tutorials on-line:
 - https://hpc.llnl.gov/tuts/openMP/
 - http://openmp.org/mp-documents/omp-hands-on-SC08.pdf 
 
-### 0.5 Exercise
-1. Implement
-  - vector dot-product: c=<x,y>
-  - matrix-matrix multiply
-  - 2D matrix convolution
-2. Add openmp support to relu, and max-pooling layers 
-
-## Tutorial1: Introduction to OpenMP
-
 - [video](https://www.youtube.com/playlist?list=PLLX-Q6B8xqZ8n8bwjGdzBJ25X2utwnoEG)
 - [slide](https://www.openmp.org/wp-content/uploads/Intro_To_OpenMP_Mattson.pdf)
 - [exercise](https://www.openmp.org/wp-content/uploads/Mattson_OMP_exercises.zip)
-
-Outline:
-
-### Unit 1: Getting started with OpenMP
-
-- Module 1: Introduction to parallel programming
-- Module 2: The boring bits: Using an OpenMP compiler (hello world)
-- Discussion 1: Hello world and how threads work
-
-### Unit 2: The core features of OpenMP
-- Module 3: Creating Threads (the Pi program)
-- Discussion 2: The simple Pi program and why it sucks
-- Module 4: Synchronization (Pi program revisited)
-- Discussion 3: Synchronization overhead and eliminating false sharing
-- Module 5: Parallel Loops (making the Pi program simple)
-- Discussion 4: Pi program wrap-up
-
-### Unit 3: Working with OpenMP
-- Module 6: Synchronize single masters and stuff
-- Module 7: Data environment
-- Discussion 5: Debugging OpenMP programs
-- Module 8: Skills practice … linked lists and OpenMP
-- Discussion 6: Different ways to traverse linked lists
-
-### Unit 4: a few advanced OpenMP topics
-- Module 9: Tasks (linked lists the easy way)
-- Discussion 7: Understanding Tasks
-- Module 10: The scary stuff … Memory model, atomics, and flush (pairwise synch).
-- Discussion 8: The pitfalls of pairwise synchronization
-- Module 11: Threadprivate Data and how to support libraries (Pi again)
-- Discussion 9: Random number generators
-
-## Tutorial2: OpenMP
-
-Author: Blaise Barney, Lawrence Livermore National Laboratory
-
-[OpenMP](https://computing.llnl.gov/tutorials/openMP/)
-
-## Tutorial3: OpenMP tutorial | Goulas Programming Soup  
-https://goulassoup.wordpress.com/2011/10/28/openmp-tutorial/
-
 
 ### 2. 语法层面
 
@@ -281,3 +231,64 @@ https://zhuanlan.zhihu.com/p/541408827
 为什么我用了 OpenMP 并没有变快多少，甚至反而变慢了？（先看看你的数据量是不是足够大，大于 256 KB，总执行时间是否足够长，大于 0.1 ms，否则就是高射炮打蚊子，并行没有意义，如果是处理网络实时收发包的数据，建议先把数据堆到一定量以后再批量并行处理：先等 256 个蚊子全粘在苍蝇板上，再一次性用高射炮处决，这样才高效，是吧？而不是发现一个就立马打掉）
 
 为什么我用了 OpenMP 并没有变快多少，甚至反而变慢了？我的数据量足够大，远大于 256 KB（我们的个人电脑大多是 SMP 架构，并行的“拷贝”并不会比串行的更快，并行加速的是计算，而不能加速访存，对于接近于 memcpy 的 memory-bound（内存瓶颈型）任务，你应该先考虑的是优化访存，而不是急着并行）BV1gu41117bW
+
+
+```c++
+#pragma omp parallel for default(shared) private(c, eps)
+    for (i = 0; i < N_POINTS; i++) {
+        for (j = 0; j < N_POINTS; j++) {
+            c.r = -2.0 + 2.5 * (double)(i) / (double)(N_POINTS) + eps;
+            c.i = 1.125 * (double)(j) / (double)(N_POINTS) + eps;
+            testpoint();
+        }
+    }
+```
+* default(shared)是默认行为
+* for的循环变量也是默认私有的
+
+```c++
+int main() {
+    long i;
+    long Ncirc = 0;
+    double pi, x, y, test;
+    double r = 1.0;  // radius of circle. Side of squrare is 2*r
+
+    seed(-r, r);  // The circle and square are centered at the origin
+#pragma omp parallel for private(x, y, test) reduction(+ : Ncirc)
+    for (i = 0; i < num_trials; i++) {
+        x = drandom();
+        y = drandom();
+
+        test = x * x + y * y;
+
+        if (test <= r * r) Ncirc++;
+    }
+
+    pi = 4.0 * ((double)Ncirc / (double)num_trials);
+
+    printf("\n %ld trials, pi is %lf \n", num_trials, pi);
+
+    return 0;
+}
+```
+
+```c++
+#pragma omp parallel private(i)
+        {
+            int id = omp_get_thread_num();
+            int numthreads = omp_get_num_threads();
+            double x;
+
+            double partial_sum = 0;
+
+#pragma omp single
+            printf(" num_threads = %d", numthreads);
+
+            for (int i = id; i < num_steps; i += numthreads) {
+                x = (i + 0.5) * step;
+                partial_sum += +4.0 / (1.0 + x * x);
+            }
+#pragma omp critical
+            full_sum += partial_sum;
+        }
+        ```

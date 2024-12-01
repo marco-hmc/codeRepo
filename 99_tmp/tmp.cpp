@@ -1,27 +1,92 @@
-#include <deque>
-#include <iostream>
-#include <iterator>
-#include <sstream>
-#include <string>
+#include <omp.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int main() {
-    std::istream_iterator<int> it_cin{std::cin};
-    std::istream_iterator<int> end_cin;
+#ifndef N
+#define N 5
+#endif
 
-    std::deque<int> v;
-    std::copy(it_cin, end_cin, std::back_inserter(v));
+#ifndef FS
+#define FS 38
+#endif
 
-    std::istringstream sstr{"123 456 789"};
+struct node {
+    int data;
+    int fibData;
+    struct node* next;
+};
 
-    auto deque_middle(std::next(std::begin(v), static_cast<int>(v.size()) / 2));
+int fib(int n) {
+    if (n < 2) {
+        return n;
+    } else {
+        return fib(n - 1) + fib(n - 2);
+    }
+}
 
-    std::copy(std::istream_iterator<int>{sstr}, {},
-              std::inserter(v, deque_middle));
+void processwork(struct node* p) {
+    int n = p->data;
+    p->fibData = fib(n);
+}
 
-    std::initializer_list<int> il2{-1, -2, -3};
-    std::copy(std::begin(il2), std::end(il2), std::front_inserter(v));
+struct node* init_list(struct node* p) {
+    struct node* head = (struct node*)malloc(sizeof(struct node));
+    p = head;
+    p->data = FS;
+    p->fibData = 0;
 
-    std::copy(std::begin(v), std::end(v),
-              std::ostream_iterator<int>{std::cout, ", "});
-    std::cout << '\n';
+    struct node* temp = NULL;
+    for (int i = 0; i < N; i++) {
+        temp = (struct node*)malloc(sizeof(struct node));
+        p->next = temp;
+        p = temp;
+        p->data = FS + i + 1;
+        p->fibData = i + 1;
+    }
+    p->next = NULL;
+    return head;
+}
+
+int main(int /*argc*/, char* /*argv*/[]) {
+    printf("Process linked list\n");
+    printf(
+        "  Each linked list node will be processed by function "
+        "'processwork()'\n");
+    printf(
+        "  Each ll node will compute %d fibonacci numbers beginning with %d\n",
+        N, FS);
+
+    struct node* p = NULL;
+    p = init_list(p);
+    struct node* head = p;
+
+    double start = omp_get_wtime();
+
+    // 使用 OpenMP 并行处理链表节点
+#pragma omp parallel
+    {
+#pragma omp single
+        {
+            while (p != NULL) {
+#pragma omp task firstprivate(p)
+                { processwork(p); }
+                p = p->next;
+            }
+        }
+    }
+
+    double end = omp_get_wtime();
+
+    p = head;
+    struct node* temp = NULL;
+    while (p != NULL) {
+        printf("%d : %d\n", p->data, p->fibData);
+        temp = p->next;
+        free(p);
+        p = temp;
+    }
+
+    printf("Compute Time: %f seconds\n", end - start);
+
+    return 0;
 }
