@@ -1,16 +1,28 @@
-## C/C++进阶
+### 99. books
 
-* [Accelerated C++中文版 ]
-* [Advanced c++ Programming  Styles and Idioms中文版]
-* [C++ API设计--英文版]
-* [C++ API设计]
-* [C++代码设计与重用]
-* [C++标准库__自学教程与参考手册(第2版)英文版]
-* [C++沉思录(Ruminations on C++)中文第2版]
-* [C++程序设计]
-* [C++设计新思维(Modern_C++_Design)]
-* [大规模C++程序设计]
-* [模板编程与OO编程范型--混搭]
-* [深度探索C++对象模型]
-* [高质量C++／C编程指南]
-* [Imperfect C++]
+- [C++程序设计语言\_特别版](http://pan.baidu.com/s/1o6jX3iq)
+- [C++编程惯用法\_\_高级程序员常用方法和技巧](http://pan.baidu.com/s/1i3sVhJZ)
+- [C++编程规范-101 条规则准则与最佳实践](http://pan.baidu.com/s/1ntDfM21)
+- [C++语言的设计和演化](http://pan.baidu.com/s/1kT3a2dp)
+- [C++释难解惑](http://pan.baidu.com/s/1nt4ssrf)
+- [C 和 C++安全编码(中文版)](http://pan.baidu.com/s/1hqqVtp6)
+- [Exceptional C++ Style(Herb Sutter).中文版](http://pan.baidu.com/s/1qWCtFOC)
+- [Exceptional C++ 中文版](http://pan.baidu.com/s/1pLCHC)
+- [More Exceptional C++(中文版)](http://pan.baidu.com/s/1qWLNgZE)
+- [Linux C 编程一站式学习 6.14--宋劲衫](http://pan.baidu.com/s/1bny7ga7)
+- [从缺陷中学习 C/C++](http://pan.baidu.com/s/1c0GLTOs)
+- [你必须知道的 222 个 C++语言问题.范立锋.扫描版](http://pan.baidu.com/s/1c03oHVE)
+- [深入学习:GNU C++ for Linux 编程技术](http://pan.baidu.com/s/1dDkVKVB)
+- [编写高质量代码 改善 C++程序的 150 个建议.李健.扫描版](http://pan.baidu.com/s/1pJlXxk3)
+- [Accelerated C++中文版 ]
+- [Advanced c++ Programming Styles and Idioms 中文版]
+- [C++ API 设计]
+- [C++代码设计与重用]
+- [C++标准库__自学教程与参考手册(第 2 版)英文版]
+- [C++沉思录(Ruminations on C++)中文第 2 版]
+- [C++设计新思维(Modern_C++_Design)]
+- [大规模 C++程序设计]
+- [模板编程与 OO 编程范型--混搭]
+- [深度探索 C++对象模型]
+- [高质量 C++／C 编程指南]
+- [Imperfect C++]

@@ -1,3 +1,0 @@
-## view perspective
-
-BmDbViewPerspective

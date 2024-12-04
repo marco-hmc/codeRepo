@@ -97,8 +97,3 @@ LLVM的tutorial文档（LLVM Tutorial: Table of Contents）中，有一个My Fir
   https://www.zhihu.com/question/20124494
 
 CMU15-213，计算机组成原理，教材是 CSAPPStanford，CS144，计算机网络，课程要求实现一个 TCP 协议MIT6.s081，操作系统，课程要求魔改 xv6 操作系统，为其添加很多 feature，基本涵盖了 OS 的各个方面MIT6.824，分布式系统，课程要求实现基于 Raft 的分布式 kv 数据库CMU15-445，数据库系统导论，课程要求实现一个面向磁盘的关系型 数据库，其中的缓冲池、存储引擎层、执行器、优化器都需要自己实现，对于有性能追求的同学还提供了 LeaderBoard 打榜。
-
-作者：逆风的大船
-链接：https://zhuanlan.zhihu.com/p/665413542
-来源：知乎
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

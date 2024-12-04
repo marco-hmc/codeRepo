@@ -74,7 +74,6 @@
   - [Next Steps](#next-steps)
   - [References](#references)
 
-
 # Domain Name System (DNS)
 
 This brings us to Domain Name System (DNS) which is a hierarchical and decentralized naming system used for translating human-readable domain names to IP addresses.
@@ -5476,15 +5475,6 @@ To make our system more resilient we can do the following:
 - Multiple instances and replicas for our distributed cache.
 - Exactly once delivery and message ordering is challenging in a distributed system, we can use a dedicated [message broker](https://karanpratapsingh.com/courses/system-design/message-brokers) such as [Apache Kafka](https://kafka.apache.org) or [NATS](https://nats.io) to make our notification system more robust.
 
-
-
-
-
-
-
-
-
-
 # Next Steps
 
 Now that you know the fundamentals of System Design, here are some additional resources:
@@ -5510,8 +5500,6 @@ It is also recommended to actively follow engineering blogs of companies putting
 - [Paypal Developer Blog](https://medium.com/paypal-engineering)
 - [Twitter Engineering](https://blog.twitter.com/engineering)
 
-
-
 # References
 
 - [IBM Blogs](https://www.ibm.com/blogs)
@@ -5525,4 +5513,3 @@ It is also recommended to actively follow engineering blogs of companies putting
 - [Martin Fowler](https://martinfowler.com)
 - [PagerDuty resources](https://www.pagerduty.com/resources)
 - [VMWare Blogs](https://blogs.vmware.com/learning)
-

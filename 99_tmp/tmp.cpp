@@ -1,92 +1,47 @@
-#include <omp.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
 
-#ifndef N
-#define N 5
-#endif
-
-#ifndef FS
-#define FS 38
-#endif
-
-struct node {
-    int data;
-    int fibData;
-    struct node* next;
-};
-
-int fib(int n) {
-    if (n < 2) {
-        return n;
-    } else {
-        return fib(n - 1) + fib(n - 2);
-    }
-}
-
-void processwork(struct node* p) {
-    int n = p->data;
-    p->fibData = fib(n);
-}
-
-struct node* init_list(struct node* p) {
-    struct node* head = (struct node*)malloc(sizeof(struct node));
-    p = head;
-    p->data = FS;
-    p->fibData = 0;
-
-    struct node* temp = NULL;
-    for (int i = 0; i < N; i++) {
-        temp = (struct node*)malloc(sizeof(struct node));
-        p->next = temp;
-        p = temp;
-        p->data = FS + i + 1;
-        p->fibData = i + 1;
-    }
-    p->next = NULL;
-    return head;
-}
-
-int main(int /*argc*/, char* /*argv*/[]) {
-    printf("Process linked list\n");
-    printf(
-        "  Each linked list node will be processed by function "
-        "'processwork()'\n");
-    printf(
-        "  Each ll node will compute %d fibonacci numbers beginning with %d\n",
-        N, FS);
-
-    struct node* p = NULL;
-    p = init_list(p);
-    struct node* head = p;
-
-    double start = omp_get_wtime();
-
-    // 使用 OpenMP 并行处理链表节点
-#pragma omp parallel
-    {
-#pragma omp single
-        {
-            while (p != NULL) {
-#pragma omp task firstprivate(p)
-                { processwork(p); }
-                p = p->next;
-            }
+namespace _nmsp2 {
+    class A {
+      public:
+        A() { std::cout << "A::A()构造函数被执行" << std::endl; }
+        A(const A& tmpobj) {
+            std::cout << "A::A()拷贝构造函数被执行" << std::endl;
         }
+
+        A& operator=(const A& tmpaobj) {
+            std::cout << "A::operator=()拷贝赋值运算符被执行" << std::endl;
+            printf("拷贝赋值运算符中tmpaobj的地址为%p\n", &tmpaobj);
+            return *this;
+        }
+
+        ~A() { std::cout << "A::~A()析构函数被执行" << std::endl; }
+    };
+
+    A operator+(const A& obj1, const A& obj2) {
+        A tmpobj;
+        printf("tmpobj的地址为%p\n", &tmpobj);
+        return tmpobj;  // 编译器产生临时对象，把tmpobj对象的内容通过调用拷贝构造函数拷贝给这个临时对象；
+                        // 然后返回的是这个临时对象；
     }
 
-    double end = omp_get_wtime();
+    void func() {
+        A myobj1;
+        printf("myobj1的地址为%p\n", &myobj1);
 
-    p = head;
-    struct node* temp = NULL;
-    while (p != NULL) {
-        printf("%d : %d\n", p->data, p->fibData);
-        temp = p->next;
-        free(p);
-        p = temp;
+        A myobj2;
+        printf("myobj2的地址为%p\n", &myobj2);
+
+        A resultobj;
+        resultobj = myobj1 + myobj2;  // 拷贝赋值运算符
+
+        // A resultobj = myobj1 + myobj2; // 拷贝构造函数
+
+        printf("resultobj的地址为%p\n", &resultobj);
+        return;
     }
+}  // namespace _nmsp2
 
-    printf("Compute Time: %f seconds\n", end - start);
-
+int main() {
+    _nmsp2::func();
     return 0;
 }

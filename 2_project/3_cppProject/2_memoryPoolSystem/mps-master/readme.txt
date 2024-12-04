@@ -3,49 +3,17 @@
 =============================
 Memory Pool System Kit Readme
 =============================
-
-:author: Richard Brooksby
-:organization: Ravenbrook Limited
-:date: 2002-05-20
-:revision: $Id$
-:confidentiality: public
-
-
-This is the Memory Pool System Kit -- a complete set of sources for
-using, modifying, and adapting the MPS.  This document will give you a
-very brief overview and tell you where to find more information.
-
-
-Overview of the MPS
 -------------------
 
-.. IMPORTANT: If you change the paragraph below, also change
-   manual/source/guide/overview.rst
 
-The Memory Pool System (MPS) is a very general, adaptable, flexible,
-reliable, and efficient memory management system.  It permits the
-flexible combination of memory management techniques, supporting manual
-and automatic memory management, in-line allocation, finalization,
-weakness, and multiple concurrent co-operating incremental generational
-garbage collections.  It also includes a library of memory pool classes
-implementing specialized memory management policies.
-
-The MPS has been in development since 1994 and deployed in successful
-commercial products since 1997. Bugs are almost unknown in production.
-It is under continuous development and support by `Ravenbrook
-<https://www.ravenbrook.com/>`__.
-
-The MPS is distributed under the BSD 2-clause open source license (see
-`<license.txt>`_).
+It permits the flexible combination of memory management techniques, supporting manual 
+and automatic memory management, in-line allocation, finalization, weakness, and multiple concurrent co-operating incremental generational garbage collections.  
 
 
 Getting started
 ---------------
 
-The MPS Kit is a complete set of sources and documentation to enable
-you to use, modify, and adapt the MPS: source code, manuals,
-procedures, design documentation, and so on.  See the manual_ for an
-index.  (If for some reason the manual_ isn't available, you can build
+ See the manual_ for an index.  (If for some reason the manual_ isn't available, you can build
 it.  See below.)
 
 .. _manual: https://memory-pool-system.readthedocs.io/

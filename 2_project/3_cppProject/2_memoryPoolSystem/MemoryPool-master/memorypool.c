@@ -1,5 +1,7 @@
 #include "memorypool.h"
 
+#include <cstdlib>
+
 #define MP_CHUNK_HEADER sizeof(struct _mp_chunk)
 #define MP_CHUNK_END sizeof(struct _mp_chunk*)
 
