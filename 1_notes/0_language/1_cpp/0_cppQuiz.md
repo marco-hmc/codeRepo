@@ -350,10 +350,7 @@ STL的默认分配器`std::allocator`直接使用`new`和`delete`来分配和释
 4. **访问已释放的内存**：对已经调用`delete`或`free`释放的内存进行访问或操作。
 段错误是一种保护机制，操作系统通过它来防止程序执行非法的内存访问，保护程序的内存空间不被破坏。
 
-#### 34. 
-
 如何实现一个线程池?说一下基本思路即可!
-
 
 - [热心观众整理的学习资料](https://github.com/jiayaozhang/OpenVDB_and_TBB)
 - [HackingCpp 图文教程](https://hackingcpp.com/)

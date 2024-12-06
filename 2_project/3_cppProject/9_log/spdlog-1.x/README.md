@@ -1,18 +1,3 @@
-<img alt="spdlog" src="logos/spdlog.png" />
-
-Very fast, header-only/compiled, C++ logging library. [![ci](https://github.com/gabime/spdlog/actions/workflows/ci.yml/badge.svg)](https://github.com/gabime/spdlog/actions/workflows/ci.yml)&nbsp; [![Build status](https://ci.appveyor.com/api/projects/status/d2jnxclg20vd0o50?svg=true&branch=v1.x)](https://ci.appveyor.com/project/gabime/spdlog) [![Release](https://img.shields.io/github/release/gabime/spdlog.svg)](https://github.com/gabime/spdlog/releases/latest)
-
-## Install
-#### Header-only version
-Copy the include [folder](https://github.com/gabime/spdlog/tree/v1.x/include/spdlog) to your build tree and use a C++11 compiler.
-
-#### Compiled version (recommended - much faster compile times)
-```console
-$ git clone https://github.com/gabime/spdlog.git
-$ cd spdlog && mkdir build && cd build
-$ cmake .. && make -j
-```
-see example [CMakeLists.txt](https://github.com/gabime/spdlog/blob/v1.x/example/CMakeLists.txt) on how to use.
 
 ## Features
 * Very fast (see [benchmarks](#benchmarks) below).
@@ -58,7 +43,8 @@ int main()
     spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
     
     // Compile time log levels
-    // define SPDLOG_ACTIVE_LEVEL to desired level
+    // Note that this does not change the current log level, it will only
+    // remove (depending on SPDLOG_ACTIVE_LEVEL) the call on the release code.
     SPDLOG_TRACE("Some trace message with param {}", 42);
     SPDLOG_DEBUG("Some debug message");
 }
@@ -251,6 +237,7 @@ void async_example()
 ---
 #### Asynchronous logger with multi sinks
 ```c++
+#include "spdlog/async.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 
@@ -273,7 +260,7 @@ struct fmt::formatter<my_type> : fmt::formatter<std::string>
 {
     auto format(my_type my, format_context &ctx) const -> decltype(ctx.out())
     {
-        return format_to(ctx.out(), "[my_type i={}]", my.i);
+        return fmt::format_to(ctx.out(), "[my_type i={}]", my.i);
     }
 };
 
@@ -414,7 +401,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     logger->info("Some info message");
 }
 ```
+---
 
+#### Mapped Diagnostic Context
+```c++
+// Mapped Diagnostic Context (MDC) is a map that stores key-value pairs (string values) in thread local storage.
+// Each thread maintains its own MDC, which loggers use to append diagnostic information to log outputs.
+// Note: it is not supported in asynchronous mode due to its reliance on thread-local storage.
+#include "spdlog/mdc.h"
+void mdc_example()
+{
+    spdlog::mdc::put("key1", "value1");
+    spdlog::mdc::put("key2", "value2");
+    // if not using the default format, use the %& formatter to print mdc data
+    // spdlog::set_pattern("[%H:%M:%S %z] [%^%L%$] [%&] %v");
+}
+```
 ---
 ## Benchmarks
 
@@ -471,9 +473,3 @@ Below are some [benchmarks](https://github.com/gabime/spdlog/blob/v1.x/bench/ben
 
 ## Documentation
 Documentation can be found in the [wiki](https://github.com/gabime/spdlog/wiki/1.-QuickStart) pages.
-
----
-
-Thanks to [JetBrains](https://www.jetbrains.com/?from=spdlog) for donating product licenses to help develop **spdlog** <a href="https://www.jetbrains.com/?from=spdlog"><img src="logos/jetbrains-variant-4.svg" width="94" align="center" /></a>
-
-

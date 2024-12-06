@@ -36,3 +36,10 @@ https://search.bilibili.com/all?keyword=%E8%BF%B7%E7%A6%BB%E6%9A%97%E5%A4%9C%E8%
 https://www.bilibili.com/video/BV1yPStYUEkk/?spm_id_from=333.1007.tianma.1-1-1.click&vd_source=8215bf938da2fb524fa6ffc652bb3c53
 
 https://github.com/muatik/openmp-examples/tree/master
+
+
+https://zhuanlan.zhihu.com/p/674073158
+
+https://www.cnblogs.com/shuqin/p/12214439.html
+
+https://zsyyblog.com/3b9abd4f.html

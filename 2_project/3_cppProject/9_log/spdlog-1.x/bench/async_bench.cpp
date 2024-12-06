@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
         }
         spdlog::shutdown();
     } catch (std::exception &ex) {
-        std::cerr << "Error: " << ex.what() << '\n';
+        std::cerr << "Error: " << ex.what() << std::endl;
         perror("Last error");
         return 1;
     }
@@ -160,7 +160,7 @@ void bench_mt(int howmany, std::shared_ptr<spdlog::logger> logger, int thread_co
 
     for (auto &t : threads) {
         t.join();
-    };
+    }
 
     auto delta = high_resolution_clock::now() - start;
     auto delta_d = duration_cast<duration<double>>(delta).count();

@@ -30,5 +30,8 @@ Diagnostics:
         cppcoreguidelines-pro-bounds-array-to-pointer-decay, # 关闭数组到指针衰减警告
         bugprone-easily-swappable-parameters, # 关闭易交换参数警告
         readability-use-anyofallof, # 关闭使用 any_of 和 all_of 警告
+        cppcoreguidelines-avoid-c-arrays,
+        cppcoreguidelines-owning-memory,
+        hicpp-no-array-decay,
       ]
 ...
