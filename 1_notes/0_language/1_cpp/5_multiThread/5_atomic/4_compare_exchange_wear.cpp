@@ -3,44 +3,46 @@
 #include <thread>
 #include <vector>
 
-struct Node { int value; Node* next; };
-std::atomic<Node*> list_head (nullptr);
+struct Node {
+    int value;
+    Node *next;
+};
+std::atomic<Node *> list_head(nullptr);
 
 void append(int val) {
-  Node *oldHead = list_head;
-  Node *newNode = new Node{val, oldHead};
+    Node *oldHead = list_head;
+    Node *newNode = new Node{val, oldHead};
 
-  while (!list_head.compare_exchange_weak(oldHead, newNode)) {
-    newNode->next = oldHead;
-  }
+    while (!list_head.compare_exchange_weak(oldHead, newNode)) {
+        newNode->next = oldHead;
+    }
 }
 
 void printFunc() {
-  Node *it;
-  while (it = list_head) {
-    list_head = it->next;
-    delete it;
-  }
+    Node *it;
+    while (it = list_head) {
+        list_head = it->next;
+        delete it;
+    }
 }
 
 int main() {
+    std::vector<std::thread> threads;
+    threads.reserve(10);
+    for (int i = 0; i < 10; ++i) {
+        threads.emplace_back(append, i);
+    }
+    for (auto &th : threads) {
+        th.join();
+    }
 
-  std::vector<std::thread> threads;
-  threads.reserve(10);
-  for (int i = 0; i < 10; ++i) {
-    threads.emplace_back(append, i);
-  }
-  for (auto &th : threads) {
-    th.join();
-  }
+    for (Node *it = list_head; it != nullptr; it = it->next) {
+        std::cout << ' ' << it->value;
+    }
+    std::cout << '\n';
 
-  for (Node *it = list_head; it != nullptr; it = it->next) {
-    std::cout << ' ' << it->value;
-  }
-  std::cout << '\n';
-
-  printFunc();
-  return 0;
+    printFunc();
+    return 0;
 }
 
 /*
@@ -70,76 +72,6 @@ desired, std::memory_order success, std::memory_order failure) noexcept;
 `desired`。
 - 如果当前原子对象的值与 `expected` 不相等，则返回
 `false`，并将当前原子对象的值写入 `expected`。
-
-### 使用示例
-
-以下是一个使用 `compare_exchange_weak` 的示例，展示了如何在无锁栈中使用该操作：
-
-```cpp
-#include <atomic>
-#include <iostream>
-
-struct Node {
-    int value;
-    Node* next;
-};
-
-class LockFreeStack {
-public:
-    LockFreeStack() : head(nullptr) {}
-
-    void push(int value) {
-        Node* new_node = new Node{value, nullptr};
-        Node* old_head = head.load();
-        do {
-            new_node->next = old_head;
-        } while (!head.compare_exchange_weak(old_head, new_node));
-    }
-
-    bool pop(int& value) {
-        Node* old_head = head.load();
-        do {
-            if (old_head == nullptr) {
-                return false; // 栈为空
-            }
-        } while (!head.compare_exchange_weak(old_head, old_head->next));
-        value = old_head->value;
-        delete old_head;
-        return true;
-    }
-
-private:
-    std::atomic<Node*> head;
-};
-
-int main() {
-    LockFreeStack stack;
-    stack.push(1);
-    stack.push(2);
-    stack.push(3);
-
-    int value;
-    while (stack.pop(value)) {
-        std::cout << "Popped: " << value << std::endl;
-    }
-
-    return 0;
-}
-```
-
-### 解释
-
-1. **初始化栈**：`LockFreeStack` 类中，`head` 是一个原子指针，指向栈顶节点。
-2. **push 操作**：
-   - 创建一个新节点 `new_node`。
-   - 使用 `compare_exchange_weak` 尝试将 `new_node` 插入栈顶。如果 `head` 的值在
-`compare_exchange_weak` 调用期间被其他线程修改，则 `old_head`
-会被更新为新的栈顶，循环继续，直到插入成功。
-3. **pop 操作**：
-   - 使用 `compare_exchange_weak` 尝试将 `head` 更新为下一个节点。如果 `head`
-的值在 `compare_exchange_weak` 调用期间被其他线程修改，则 `old_head`
-会被更新为新的栈顶，循环继续，直到更新成功。
-   - 如果栈为空，返回 `false`。
 
 ### 总结
 

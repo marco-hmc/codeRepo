@@ -4,35 +4,6 @@
 #include <thread>
 #include <vector>
 
-namespace identifier1 {
-std::atomic_flag lock_stream = ATOMIC_FLAG_INIT;
-std::stringstream stream;
-
-void append_number(int x) {
-    while (lock_stream.test_and_set()) {
-    }
-    stream << "thread #" << x << '\n';
-    lock_stream.clear();
-}
-
-void test_1() {
-    std::vector<std::thread> threads;
-    for (int i = 1; i <= 10; ++i) {
-        threads.emplace_back(append_number, i);
-    }
-    for (auto &th : threads) {
-        th.join();
-    }
-
-    std::cout << stream.str();
-}
-}  // namespace identifier1
-
-int main() {
-    identifier1::test_1();
-    return 0;
-}
-
 /*
 ### 1. `atomic_flag` 和一般的 `atomic` 有什么区别？
 
@@ -64,3 +35,32 @@ int main() {
   -[`clear()`]：清除标志位，将其设置为 `false`。
 
 */
+
+namespace identifier1 {
+    std::atomic_flag lock_stream = ATOMIC_FLAG_INIT;
+    std::stringstream stream;
+
+    void append_number(int x) {
+        while (lock_stream.test_and_set()) {
+        }
+        stream << "thread #" << x << '\n';
+        lock_stream.clear();
+    }
+
+    void test_1() {
+        std::vector<std::thread> threads;
+        for (int i = 1; i <= 10; ++i) {
+            threads.emplace_back(append_number, i);
+        }
+        for (auto &th : threads) {
+            th.join();
+        }
+
+        std::cout << stream.str();
+    }
+}  // namespace identifier1
+
+int main() {
+    identifier1::test_1();
+    return 0;
+}

@@ -1,56 +1,9 @@
-#include <iostream>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-int main() {
-  // 创建共享内存
-  int shmid = shmget(IPC_PRIVATE, sizeof(int), IPC_CREAT | 0666);
-  if (shmid == -1) {
-    std::cerr << "Failed to create shared memory" << '\n';
-    return 1;
-  }
-
-  // 将共享内存附加到当前进程
-  int *sharedData = (int *)shmat(shmid, nullptr, 0);
-  if (sharedData == (int *)-1) {
-    std::cerr << "Failed to attach shared memory" << '\n';
-    return 1;
-  }
-
-  // 创建子进程
-  pid_t pid = fork();
-  if (pid == -1) {
-    std::cerr << "Failed to create child process" << '\n';
-    return 1;
-  }
-
-  if (pid == 0) {
-    // 子进程
-    *sharedData = 42; // 写入共享内存
-    std::cout << "Child process wrote data to shared memory" << '\n';
-  } else {
-    // 父进程
-    sleep(1); // 等待子进程写入共享内存
-    std::cout << "Parent process read data from shared memory: " << *sharedData
-              << '\n';
-
-    // 分离共享内存
-    if (shmdt(sharedData) == -1) {
-      std::cerr << "Failed to detach shared memory" << '\n';
-      return 1;
-    }
-
-    // 删除共享内存
-    if (shmctl(shmid, IPC_RMID, nullptr) == -1) {
-      std::cerr << "Failed to delete shared memory" << '\n';
-      return 1;
-    }
-  }
-
-  return 0;
-}
+#include <iostream>
 
 /*
 
@@ -106,3 +59,44 @@ int main() {
     `IPC_CREAT`：与键值相对应的共享内存段不存在时，创建一个新的共享内存段。如果该共享内存段已存在，则返回现有的ID。通常与权限位一起使用，如`IPC_CREAT
     | 0666`。
 */
+
+int main() {
+    int shmid = shmget(IPC_PRIVATE, sizeof(int), IPC_CREAT | 0666);
+    if (shmid == -1) {
+        std::cerr << "Failed to create shared memory" << '\n';
+        return 1;
+    }
+
+    int *sharedData = (int *)shmat(shmid, nullptr, 0);
+    if (sharedData == (int *)-1) {
+        std::cerr << "Failed to attach shared memory" << '\n';
+        return 1;
+    }
+
+    pid_t pid = fork();
+    if (pid == -1) {
+        std::cerr << "Failed to create child process" << '\n';
+        return 1;
+    }
+
+    if (pid == 0) {
+        *sharedData = 42;
+        std::cout << "Child process wrote data to shared memory" << '\n';
+    } else {
+        sleep(1);
+        std::cout << "Parent process read data from shared memory: "
+                  << *sharedData << '\n';
+
+        if (shmdt(sharedData) == -1) {
+            std::cerr << "Failed to detach shared memory" << '\n';
+            return 1;
+        }
+
+        if (shmctl(shmid, IPC_RMID, nullptr) == -1) {
+            std::cerr << "Failed to delete shared memory" << '\n';
+            return 1;
+        }
+    }
+
+    return 0;
+}

@@ -7,15 +7,15 @@ std::atomic<bool> ready(false);
 std::atomic<bool> winner(false);
 
 void count1m(int id) {
-  while (!ready) {
-  }
+    while (!ready) {
+    }
 
-  for (int i = 0; i < 1000000; ++i) {
-  }
+    for (int i = 0; i < 1000000; ++i) {
+    }
 
-  if (!winner.exchange(true)) {
-    std::cout << "thread #" << id << " won!\n";
-  }
+    if (!winner.exchange(true)) {
+        std::cout << "thread #" << id << " won!\n";
+    }
 };
 
 int main() {

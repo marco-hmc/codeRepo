@@ -4,10 +4,11 @@
 #include <string>
 #include <type_traits>
 #include <utility>
+#include <variant>
 #include <vector>
 
 class Variant {
-   public:
+  public:
     // 构造函数模板，用于存储不同类型的数据
     template <typename T>
     Variant(T value) {
@@ -69,26 +70,36 @@ class Variant {
     T get() const {
         using U = std::decay_t<T>;
         if constexpr (std::is_same_v<U, int>) {
-            if (type != Type::Int) throw std::bad_variant_access();
+            if (type != Type::Int) {
+                throw std::bad_variant_access();
+            }
             return data.intValue;
         } else if constexpr (std::is_same_v<U, float>) {
-            if (type != Type::Float) throw std::bad_variant_access();
+            if (type != Type::Float) {
+                throw std::bad_variant_access();
+            }
             return data.floatValue;
         } else if constexpr (std::is_same_v<U, std::string>) {
-            if (type != Type::String) throw std::bad_variant_access();
+            if (type != Type::String) {
+                throw std::bad_variant_access();
+            }
             return data.stringValue;
         } else if constexpr (std::is_same_v<U, std::vector<int>>) {
-            if (type != Type::VectorInt) throw std::bad_variant_access();
+            if (type != Type::VectorInt) {
+                throw std::bad_variant_access();
+            }
             return data.vectorIntValue;
         } else if constexpr (std::is_same_v<U, std::array<int, 5>>) {
-            if (type != Type::ArrayInt5) throw std::bad_variant_access();
+            if (type != Type::ArrayInt5) {
+                throw std::bad_variant_access();
+            }
             return data.arrayInt5Value;
         } else {
             throw std::invalid_argument("Unsupported type");
         }
     }
 
-   private:
+  private:
     Type type;
 
     union Data {

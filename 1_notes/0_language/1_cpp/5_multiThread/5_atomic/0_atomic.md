@@ -15,6 +15,11 @@ is_lock_free() 方法用于检查原子操作是否是无锁的。无锁操作�
 #### 1.3 exchange
 exchange 是 std::atomic 提供的一个成员函数，用于将原子对象的值设置为新值，并返回旧值。这个操作是原子的，保证了在多线程环境中操作的安全性。
 
+#### 1.4 原子操作api
+* store
+* load
+* fetch_add
+
 #### 1.4 compare_exchange_weak/ compare_exchange_strong
 暂时不需要掌握.
 
