@@ -9,7 +9,8 @@ int main() {
         a[i] = i;
     }
 
-    for (int i = 0; i < size; i++) std::cout << a[i] << std::endl;
-
+    for (int i : a) {
+        std::cout << i << std::endl;
+    }
     return 0;
 }

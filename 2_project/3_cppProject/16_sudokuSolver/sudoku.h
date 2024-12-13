@@ -2,7 +2,7 @@
 #define SUDOKU_H
 
 const bool DEBUG_MODE = false;
-enum { ROW=9, COL=9, N = 81, NEIGHBOR = 20 };
+enum { ROW = 9, COL = 9, N = 81, NEIGHBOR = 20 };
 const int NUM = 9;
 
 extern int neighbors[N][NEIGHBOR];
