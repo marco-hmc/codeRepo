@@ -1,65 +1,78 @@
+
 #include <iostream>
-#include <memory>
 #include <string>
 
-// 产品类
-class Product {
+class Burger {
   public:
-    void AddPart(const std::string& part) { parts_ += part + " "; }
-    void Show() const { std::cout << "Product parts: " << parts_ << std::endl; }
+    Burger(int size, bool cheese, bool pepperoni, bool lettuce, bool tomato)
+        : size(size),
+          cheese(cheese),
+          pepperoni(pepperoni),
+          lettuce(lettuce),
+          tomato(tomato) {}
 
-  private:
-    std::string parts_;
-};
-
-// 抽象建造者类
-class Builder {
-  public:
-    virtual ~Builder() = default;
-    virtual void BuildPartA() = 0;
-    virtual void BuildPartB() = 0;
-    virtual void BuildPartC() = 0;
-    virtual std::unique_ptr<Product> GetProduct() = 0;
-};
-
-// 具体建造者类
-class ConcreteBuilder : public Builder {
-  public:
-    ConcreteBuilder() { product_ = std::make_unique<Product>(); }
-    void BuildPartA() override { product_->AddPart("PartA"); }
-    void BuildPartB() override { product_->AddPart("PartB"); }
-    void BuildPartC() override { product_->AddPart("PartC"); }
-    std::unique_ptr<Product> GetProduct() override {
-        return std::move(product_);
+    void show() const {
+        std::cout << "Burger size: " << size << "\n"
+                  << "Cheese: " << (cheese ? "Yes" : "No") << "\n"
+                  << "Pepperoni: " << (pepperoni ? "Yes" : "No") << "\n"
+                  << "Lettuce: " << (lettuce ? "Yes" : "No") << "\n"
+                  << "Tomato: " << (tomato ? "Yes" : "No") << std::endl;
     }
 
   private:
-    std::unique_ptr<Product> product_;
+    int size;
+    bool cheese;
+    bool pepperoni;
+    bool lettuce;
+    bool tomato;
 };
 
-// 指导者类
-class Director {
+class BurgerBuilder {
   public:
-    void SetBuilder(std::shared_ptr<Builder> builder) { builder_ = builder; }
-    void Construct() {
-        builder_->BuildPartA();
-        builder_->BuildPartB();
-        builder_->BuildPartC();
+    BurgerBuilder(int size)
+        : size(size),
+          cheese(false),
+          pepperoni(false),
+          lettuce(false),
+          tomato(false) {}
+
+    BurgerBuilder& addCheese() {
+        cheese = true;
+        return *this;
+    }
+
+    BurgerBuilder& addPepperoni() {
+        pepperoni = true;
+        return *this;
+    }
+
+    BurgerBuilder& addLettuce() {
+        lettuce = true;
+        return *this;
+    }
+
+    BurgerBuilder& addTomato() {
+        tomato = true;
+        return *this;
+    }
+
+    Burger build() const {
+        return Burger(size, cheese, pepperoni, lettuce, tomato);
     }
 
   private:
-    std::shared_ptr<Builder> builder_;
+    int size;
+    bool cheese;
+    bool pepperoni;
+    bool lettuce;
+    bool tomato;
 };
 
-// 客户端代码
 int main() {
-    auto builder = std::make_shared<ConcreteBuilder>();
-    Director director;
-    director.SetBuilder(builder);
-    director.Construct();
+    Burger burger =
+        BurgerBuilder(14).addPepperoni().addLettuce().addTomato().build();
 
-    auto product = builder->GetProduct();
-    product->Show();
+    burger.show();
 
     return 0;
 }

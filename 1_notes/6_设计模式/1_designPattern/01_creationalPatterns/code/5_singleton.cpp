@@ -76,5 +76,6 @@ int main() {
         LazySingleton& lazyInstance2 = LazySingleton::GetInstance();
         lazyInstance2.DoSomething();
     }
+
     return 0;
 }

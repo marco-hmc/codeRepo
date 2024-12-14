@@ -1,22 +1,65 @@
-#include <functional>
 #include <iostream>
+#include <string>
 
-auto Y = [](auto f) {
-    return [f](auto x) -> std::function<int(int)> {
-        return f([x](auto v) { return x(x)(v); });
-    }([f](auto x) -> std::function<int(int)> {
-               return f([x](auto v) { return x(x)(v); });
-           });
+// 图像接口
+class Image {
+  public:
+    virtual void display() const = 0;
 };
 
-auto factorial = Y(
-    [](auto f) { return [f](int n) { return (n == 0) ? 1 : n * f(n - 1); }; });
+// 具体图像类
+class RealImage : public Image {
+  private:
+    std::string filename;
 
-void test_y_combinator() {
-    std::cout << "Factorial of 5: " << factorial(5) << '\n';
-}
+    void loadFromDisk() const {
+        std::cout << "Loading " << filename << std::endl;
+    }
 
+  public:
+    RealImage(const std::string& filename) : filename(filename) {
+        loadFromDisk();
+    }
+
+    void display() const override {
+        std::cout << "Displaying " << filename << std::endl;
+    }
+};
+
+// 代理图像类
+class ProxyImage : public Image {
+  private:
+    std::string filename;
+    RealImage* realImage;
+
+  public:
+    ProxyImage(const std::string& filename)
+        : filename(filename), realImage(nullptr) {}
+
+    ~ProxyImage() { delete realImage; }
+
+    void display() const override {
+        if (realImage == nullptr) {
+            realImage = new RealImage(filename);
+        }
+        realImage->display();
+    }
+};
+
+// 客户端代码
 int main() {
-    test_y_combinator();
+    Image* image1 = new ProxyImage("image1.jpg");
+    Image* image2 = new ProxyImage("image2.jpg");
+
+    // 图像将会在第一次调用 display() 时加载
+    image1->display();
+    image2->display();
+
+    // 图像已经加载，不会再次加载
+    image1->display();
+
+    delete image1;
+    delete image2;
+
     return 0;
 }
