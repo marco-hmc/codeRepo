@@ -4,12 +4,10 @@
 #include <typeinfo>
 
 /*
-    ### 什么是 Double Dispatch
-
+### 什么是 Double Dispatch
     Double Dispatch 是一种设计模式，允许在运行时根据两个对象的实际类型来选择调用适当的函数。它解决了基于多个对象的多态行为问题，常用于处理对象之间的交互，例如碰撞检测。
 
-    ### 如何解决 Double Dispatch
-
+### 如何解决 Double Dispatch
     1. **使用 RTTI（运行时类型识别）**：
     - 通过 `typeid` 和 `dynamic_cast` 来识别对象的实际类型，并调用相应的处理函数。
 
@@ -21,9 +19,8 @@
 
     4. **初始化模拟虚函数表**：
     - 使用映射表将字符串类型映射到相应的处理函数，在运行时动态调用处理函数。
+*/
 
-
-    */
 namespace UsingRTTI {
     class GameObject {
       public:

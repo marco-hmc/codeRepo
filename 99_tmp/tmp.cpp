@@ -8,12 +8,12 @@ class State;
 // Context class
 class Context {
   public:
-  Context();
-  void setState(std::shared_ptr<State> state);
-  void request();
+    Context();
+    void setState(std::shared_ptr<State> state);
+    void request();
 
-private:
-  std::shared_ptr<State> state_;
+  private:
+    std::shared_ptr<State> state_;
 };
 
 // Abstract State class
@@ -25,7 +25,7 @@ class State {
 // Concrete State classes
 class ConcreteStateA : public State {
   public:
-  void handle(Context& context) override;
+    void handle(Context& context) override;
 };
 
 class ConcreteStateB : public State {
