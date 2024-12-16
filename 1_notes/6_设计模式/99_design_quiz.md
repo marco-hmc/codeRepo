@@ -1,102 +1,146 @@
+### 代理类
 
-## Architecture patterns
+#### 例子：实现二维数组类
 
-### MVC, MVP, MVVM, MVVM-C, and VIPER
-These architecture patterns are among the most commonly used in app development, whether on iOS or Android platforms. Developers have introduced them to overcome the limitations of earlier patterns. So, how do they differ? 
+以下是一个实现二维数组类的示例，通过两次重载 `operator[]` 运算符来实现对二维数组的访问：
 
-<p>
-  <img src="images/client arch patterns.png" style="width: 720px" />
-</p>
+```cpp
+#include <iostream>
 
-- MVC, the oldest pattern, dates back almost 50 years 
-- Every pattern has a "view" (V) responsible for displaying content and receiving user input 
-- Most patterns include a "model" (M) to manage business data 
-- "Controller," "presenter," and "view-model" are translators that mediate between the view and the model ("entity" in the VIPER pattern)
+template<class T>
+class Array2D {
+public:
+    Array2D(int dim1, int dim2) : dim1_(dim1), dim2_(dim2) {
+        data_ = new T*[dim1];
+        for (int i = 0; i < dim1; ++i) {
+            data_[i] = new T[dim2];
+        }
+    }
 
-### 18 Key Design Patterns Every Developer Should Know
+    ~Array2D() {
+        for (int i = 0; i < dim1_; ++i) {
+            delete[] data_[i];
+        }
+        delete[] data_;
+    }
 
-Patterns are reusable solutions to common design problems, resulting in a smoother, more efficient development process. They serve as blueprints for building better software structures. These are some of the most popular patterns: 
-
-<p>
-  <img src="images/18-oo-patterns.png" />
-</p>
-
-- Abstract Factory: Family Creator - Makes groups of related items. 
-- Builder: Lego Master - Builds objects step by step, keeping creation and appearance separate. 
-- Prototype: Clone Maker - Creates copies of fully prepared examples. 
-- Singleton: One and Only - A special class with just one instance. 
-- Adapter: Universal Plug - Connects things with different interfaces. 
-- Bridge: Function Connector - Links how an object works to what it does. 
-- Composite: Tree Builder - Forms tree-like structures of simple and complex parts. 
-- Decorator: Customizer - Adds features to objects without changing their core. 
-- Facade: One-Stop-Shop - Represents a whole system with a single, simplified interface. 
-- Flyweight: Space Saver - Shares small, reusable items efficiently. 
-- Proxy: Stand-In Actor - Represents another object, controlling access or actions. 
-- Chain of Responsibility: Request Relay - Passes a request through a chain of objects until handled. 
-- Command: Task Wrapper - Turns a request into an object, ready for action. 
-- Iterator: Collection Explorer - Accesses elements in a collection one by one. 
-- Mediator: Communication Hub - Simplifies interactions between different classes. 
-- Memento: Time Capsule - Captures and restores an object's state. 
-- Observer: News Broadcaster - Notifies classes about changes in other objects. 
-- Visitor: Skillful Guest - Adds new operations to a class without altering it.
-
-
-# 大型工程中常见的模式
-
-- 责任链模式
-- P-IMPL 模式
-- 桥接模式
-- MVC 模式
-
-
-* 大话设计模式
-  * 本书并没有局限于那种分布式框架，而是着重讲解分布式整体架构设计理念和基础知识。
-    **作者水平非常高，本书广度非常大**（诚然并不是很深，要在一本书里将那么多知识深度讲解也是不可能的），深入浅出，大家不用担心晦涩难懂（在这里更加推荐英文基础好的话直接读英文原版）。
-
-
-
-1/如何实现断点续传,如何提高上传速
-
-
-**30. 代理类**
-
-例子：实现二维数组类：
-    
-    template<class T>
-    class Array2D{
+    class Array1D {
     public:
-        Array2D(int dim1, int dim2);
-        class Array1D{
-        public:
-            T& operator[](int index);
-            const T& operator[](int index) const;
-        };
-        Array1D operator[](int index);
-        const Array1D operator[](int index) const;
-    };
-    Array2D<int> data(10, 20);
-    cout << data[3][6] //这里面的[][]运算符是通过两次重载实现的
+        Array1D(T* array) : array_(array) {}
 
-例子：代理类区分[]操作符的读写：
+        T& operator[](int index) {
+            return array_[index];
+        }
 
-采用延迟计算方法，修改operator[]让他返回一个（代理字符的）proxy对象而不是字符对象本身，并且判断之后这个代理字符怎么被使用，从而判断是读还是写操作
-    
-    class String{
-    public:
-        class CharProxy{
-        public:
-            CharProxy(String& str, int index);
-            CharProxy& operator=(const CharProxy& rhs);
-            CharProxy& operator=(char c);
-            operator char() const;
-        private:
-            String& theString;
-            int charIndex;
-        };
-        const CharProxy operator[](int index) const;//对于const的Strings
-        CharProxy operator[](int index);            //对于non-const的Strings
-    
-        friend class CharProxy;
+        const T& operator[](int index) const {
+            return array_[index];
+        }
+
     private:
-        RCPtr<StringValue> value;
+        T* array_;
     };
+
+    Array1D operator[](int index) {
+        return Array1D(data_[index]);
+    }
+
+    const Array1D operator[](int index) const {
+        return Array1D(data_[index]);
+    }
+
+private:
+    int dim1_, dim2_;
+    T** data_;
+};
+
+int main() {
+    Array2D<int> data(10, 20);
+    data[3][6] = 42;
+    std::cout << data[3][6] << std::endl; // 输出: 42
+    return 0;
+}
+```
+
+#### 例子：代理类区分 `[]` 操作符的读写
+
+采用延迟计算方法，修改 `operator[]` 让它返回一个代理对象而不是字符对象本身，并且判断之后这个代理对象怎么被使用，从而判断是读还是写操作。
+
+```cpp
+#include <iostream>
+#include <memory>
+
+class String {
+public:
+    class CharProxy {
+    public:
+        CharProxy(String& str, int index) : theString_(str), charIndex_(index) {}
+
+        CharProxy& operator=(const CharProxy& rhs) {
+            if (this != &rhs) {
+                theString_.setChar(charIndex_, rhs.theString_.getChar(rhs.charIndex_));
+            }
+            return *this;
+        }
+
+        CharProxy& operator=(char c) {
+            theString_.setChar(charIndex_, c);
+            return *this;
+        }
+
+        operator char() const {
+            return theString_.getChar(charIndex_);
+        }
+
+    private:
+        String& theString_;
+        int charIndex_;
+    };
+
+    const CharProxy operator[](int index) const {
+        return CharProxy(const_cast<String&>(*this), index);
+    }
+
+    CharProxy operator[](int index) {
+        return CharProxy(*this, index);
+    }
+
+    void setChar(int index, char c) {
+        value_[index] = c;
+    }
+
+    char getChar(int index) const {
+        return value_[index];
+    }
+
+private:
+    std::string value_;
+};
+
+int main() {
+    String str;
+    str.setChar(0, 'H');
+    str.setChar(1, 'e');
+    str.setChar(2, 'l');
+    str.setChar(3, 'l');
+    str.setChar(4, 'o');
+
+    std::cout << str[0] << str[1] << str[2] << str[3] << str[4] << std::endl; // 输出: Hello
+
+    str[0] = 'h';
+    std::cout << str[0] << str[1] << str[2] << str[3] << str[4] << std::endl; // 输出: hello
+
+    return 0;
+}
+```
+
+### 解释
+
+1. **二维数组类**：
+   - `Array2D` 类实现了一个二维数组，通过两次重载 `operator[]` 运算符来实现对二维数组的访问。
+   - `Array1D` 类是 `Array2D` 类的内部类，用于表示一维数组，并重载了 `operator[]` 运算符。
+
+2. **代理类区分 `[]` 操作符的读写**：
+   - `String` 类实现了一个字符串类，通过代理类 `CharProxy` 来区分 `[]` 操作符的读写操作。
+   - `CharProxy` 类是 `String` 类的内部类，通过重载 `operator=` 和类型转换运算符来实现读写操作的区分。
+
+通过这些示例，可以看到代理类的应用场景和实现方式。代理类可以用于延迟计算、控制访问权限、记录日志等场景。

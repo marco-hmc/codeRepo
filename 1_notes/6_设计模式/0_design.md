@@ -1,18 +1,21 @@
 ## 设计
 
 ### 1. 开发层面的设计
-按照我的理解，我会将设计分为以下几种。限于个人自身语文水平，以及语言本身表达能力的匮乏，这些设计的命名上似乎难以完全体现其区分。
-为此，我都给出了不同设计的定义，以及示例。
+按照我的理解，我会将设计分为以下几种。限于个人自身语文水平，以及语言本身表达能力的匮乏，这些设计的命名上似乎难以完全体现其区分。为此，不同设计的严格定义都在这里给出。
+厘清这些概念，能够有助于能够从不同角度去理解设计。明白当前设计需要考虑什么。
+而传统的设计模式多少有些太泛了，似乎只是指那三大类二十多种模式，又似乎什么都能往里面装。
 
 1. **设计模式**：
    - **定义**：设计模式是针对特定问题的通用解决方案，旨在提高系统的灵活性和可扩展性。
    - **作用**：减少重复代码，降低耦合度，提高代码的可维护性和可读性。
    - **示例**：单一职责原则（SRP）、里氏替换原则（LSP）、依赖倒置原则（DIP）等。
 
-2. **架构设计**：
+2. **系统设计/架构设计**：
    - **定义**：架构设计是对整个系统的高层次设计，涉及系统的整体结构和各个模块的划分。
-   - **作用**：结合业务需求，划分不同的模块，分析哪些模块可能成为性能瓶颈并进行优化。
-   - **示例**：一个支付系统的架构设计，包括从客户端发出请求、服务器端处理请求、校验余额、保证安全、存储数据、实现事务性等。
+   - **作用**：
+      * 满足业务：系统设计通过系统化的方法构建和工程化系统，以满足业务或组织的需求。系统设计需要考虑从基础设施到数据存储的所有方面。还需要结合业务需求，划分不同的模块。
+      * 满足性能：分析哪些模块可能成为性能瓶颈并调整。比如说日活跃用户1k和日活跃用户100k的网站，其整体架构就不可能一样。按照100k设计1k的网站，必然会增加维护成本；按照1k的设计100k的则必然经常崩溃，这种问题则往往需要系统层面的重构。因此一开始至少要知道某一个那一个模块可能会成为性能瓶颈，这个模块的性能瓶颈能不能克服。
+   - **示例**：一个电商系统的系统设计可能包括用户管理模块、商品管理模块、订单处理模块、支付系统、数据库表结构设计和API接口设计等。具体流程可能会有客户端发出请求、服务器端处理请求、校验余额、保证安全、存储数据、实现事务性等等。
 
 3. **模块设计**：
    - **定义**：模块设计是对系统中具体模块的设计，强调某一个具体功能的抽象。
@@ -34,7 +37,7 @@
    - **作用**：确保数据的完整性、一致性和高效访问。
    - **示例**：设计一个关系数据库模式，定义表、字段和关系。
 
-7. **开发规范**：
+7. **开发规范设计**：
    - **定义**：开发规范是出于安全和避免差错的一些设计原则，不属于设计模式的范畴。
    - **作用**：规范代码编写，提升代码质量，减少错误。
    - **示例**：`Effective C++` 中提到的条款，如避免使用魔法数、使用智能指针管理资源等。
@@ -68,44 +71,15 @@
 
 ### 3. 总结
 这里对各个场景下的设计给出了定义和示例。这些概念更多是个人的经验划分，并不完全是开发者群体的集体共识。
-当个人觉得明确了这些不同设计层次的一些本质概念，将更有助于在实践中开发运用。
+但个人觉得明确了这些不同设计层次的一些本质概念，将更有助于在实践中开发运用。
 后面也会接着补充开发层面设计的相关博文。
 
+### 99. ref
+1. https://github.com/checkcheckzz/system-design-interview
+2. https://github.com/InterviewReady/system-design-resources
+3. https://github.com/donnemartin/system-design-primer/blob/master/README-zh-Hans.md#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E4%B8%BB%E9%A2%98%E4%BB%8E%E8%BF%99%E9%87%8C%E5%BC%80%E5%A7%8B
+4. 大话设计模式
+> 本书并没有局限于那种分布式框架，而是着重讲解分布式整体架构设计理念和基础知识。
+> **作者水平非常高，本书广度非常大**（诚然并不是很深，要在一本书里将那么多知识深度讲解也是不可能的），深入浅出，大家不用担心晦涩难懂（在这里更加推荐英文基础好的话直接读英文原版）。
 
-将应用程序划分为三种组件,模型 - 视图 - 控制器(MVC)设计定义它们之间的相互作用.[[2\]](https://zh.wikipedia.org/wiki/MVC#cite_note-posa-2)
-
-- **模型(Model)**
-
-  ​	用于封装与应用程序的业务逻辑相关的数据以及对数据的处理方法." Model  "有对数据直接访问的权力,例如对数据库的访问."Model"不依赖"View"和"Controller",也就是说, Model  不关心它会被如何显示或是如何被操作.但是 Model 中数据的变化一般会通过一种刷新机制被公布.为了实现这种机制,那些用于监视此 Model 的 View 必须事先在此 Model 上注册,从而,View 可以了解在数据 Model 上发生的改变.(比如:[观察者模式](https://zh.wikipedia.org/wiki/观察者模式)([软件设计模式](https://zh.wikipedia.org/wiki/软件设计模式)))
-
-- **视图(View)**
-
-  ​	能够实现数据有目的的显示(理论上,这不是必需的).在 View 中一般没有程序上的逻辑.为了实现 View 上的刷新功能,View 需要访问它监视的数据模型(Model),因此应该事先在被它监视的数据那里注册.
-
-- **控制器(Controller)**
-
-  ​	起到不同层面间的组织作用,用于控制应用程序的流程.它处理事件并作出响应."事件"包括用户的行为和数据 Model 上的改变.
-
-MVC模式在概念上强调 Model, View, Controller 的分离,各个模块也遵循着由 Controller  来处理消息,Model 掌管数据源,View 负责数据显示的职责分离原则,因此在实现上,MVC 模式的 Framework 通常会将 MVC  三个部分分离实现:
-
-- Model 负责数据访问,较现代的 Framework 都会建议使用独立的数据对象 (DTO, POCO, POJO 等)  来替代弱类型的集合对象.数据访问的代码会使用 Data Access 的代码或是 ORM-based Framework,也可以进一步使用  Repository Pattern 与 Unit of Works Pattern 来切割数据源的相依性.
-- View 负责显示数据,这个部分多为前端应用,而 Controller 会有一个机制将处理的结果 (可能是 Model,  集合或是状态等) 交给 View,然后由 View 来决定怎么显示.例如 Spring Framework 使用 JSP  或相应技术,ASP.NET MVC 则使用 Razor 处理数据的显示.
-- Controller 负责处理消息,较高端的 Framework 会有一个默认的实现来作为 Controller 的基础,例如  Spring 的 DispatcherServlet 或是 ASP.NET MVC 的 Controller 等,在职责分离原则的基础上,每个  Controller 负责的部分不同,因此会将各个 Controller 切割成不同的文件以利维护.
-
-1. https://github.com/karanpratapsingh/system-design
-2. https://github.com/checkcheckzz/system-design-interview
-3. https://github.com/InterviewReady/system-design-resources
-4. https://github.com/ByteByteGoHq/system-design-101?tab=readme-ov-file#how-git-commands-work
-5. https://github.com/donnemartin/system-design-primer/blob/master/README-zh-Hans.md#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E4%B8%BB%E9%A2%98%E4%BB%8E%E8%BF%99%E9%87%8C%E5%BC%80%E5%A7%8B
-6. mvc
-
-# What is system design?
-
-System design is the process of defining the architecture, interfaces, and data
-for a system that satisfies specific requirements. 
-
-System design meets the needs of your business or organization through coherent and efficient systems. It requires
-a systematic approach to building and engineering systems. 
-
-A good system design requires us to think about everything, from infrastructure all the way down to the data and how it's stored.
 

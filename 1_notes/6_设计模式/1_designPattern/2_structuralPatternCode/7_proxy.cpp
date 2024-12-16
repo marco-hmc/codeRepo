@@ -1,9 +1,6 @@
-
-
 #include <iostream>
 #include <memory>
 
-// 门接口
 class Door {
   public:
     virtual ~Door() = default;
@@ -11,7 +8,6 @@ class Door {
     virtual void close() const = 0;
 };
 
-// 实验室门类
 class LabDoor : public Door {
   public:
     void open() const override { std::cout << "打开实验室门" << std::endl; }
@@ -19,7 +15,6 @@ class LabDoor : public Door {
     void close() const override { std::cout << "关闭实验室门" << std::endl; }
 };
 
-// 安全门代理类
 class SecuredDoor : public Door {
   public:
     SecuredDoor(std::shared_ptr<Door> door) : door_(door) {}
@@ -50,9 +45,9 @@ int main() {
     auto labDoor = std::make_shared<LabDoor>();
     SecuredDoor securedDoor(labDoor);
 
-    securedDoor.open("invalid");  // 输出: 不行！这是不可能的。
-    securedDoor.open("$ecr@t");   // 输出: 打开实验室门
-    securedDoor.close();          // 输出: 关闭实验室门
+    securedDoor.open("invalid");
+    securedDoor.open("$ecr@t");
+    securedDoor.close();
 
     return 0;
 }

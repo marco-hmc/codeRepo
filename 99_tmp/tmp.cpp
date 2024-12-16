@@ -1,65 +1,66 @@
 #include <iostream>
+#include <memory>
 #include <string>
 
-// 图像接口
-class Image {
+// Forward declaration of State class
+class State;
+
+// Context class
+class Context {
   public:
-    virtual void display() const = 0;
+  Context();
+  void setState(std::shared_ptr<State> state);
+  void request();
+
+private:
+  std::shared_ptr<State> state_;
 };
 
-// 具体图像类
-class RealImage : public Image {
-  private:
-    std::string filename;
-
-    void loadFromDisk() const {
-        std::cout << "Loading " << filename << std::endl;
-    }
-
+// Abstract State class
+class State {
   public:
-    RealImage(const std::string& filename) : filename(filename) {
-        loadFromDisk();
-    }
-
-    void display() const override {
-        std::cout << "Displaying " << filename << std::endl;
-    }
+    virtual void handle(Context& context) = 0;
 };
 
-// 代理图像类
-class ProxyImage : public Image {
-  private:
-    std::string filename;
-    RealImage* realImage;
-
+// Concrete State classes
+class ConcreteStateA : public State {
   public:
-    ProxyImage(const std::string& filename)
-        : filename(filename), realImage(nullptr) {}
-
-    ~ProxyImage() { delete realImage; }
-
-    void display() const override {
-        if (realImage == nullptr) {
-            realImage = new RealImage(filename);
-        }
-        realImage->display();
-    }
+  void handle(Context& context) override;
 };
 
-// 客户端代码
+class ConcreteStateB : public State {
+  public:
+    void handle(Context& context) override;
+};
+
+// Implementation of Context methods
+Context::Context() : state_(std::make_shared<ConcreteStateA>()) {}
+
+void Context::setState(std::shared_ptr<State> state) { state_ = state; }
+
+void Context::request() { state_->handle(*this); }
+
+// Implementation of ConcreteStateA methods
+void ConcreteStateA::handle(Context& context) {
+    std::cout << "ConcreteStateA handling request and changing state to "
+                 "ConcreteStateB"
+              << std::endl;
+    context.setState(std::make_shared<ConcreteStateB>());
+}
+
+// Implementation of ConcreteStateB methods
+void ConcreteStateB::handle(Context& context) {
+    std::cout << "ConcreteStateB handling request and changing state to "
+                 "ConcreteStateA"
+              << std::endl;
+    context.setState(std::make_shared<ConcreteStateA>());
+}
+
+// Main function
 int main() {
-    Image* image1 = new ProxyImage("image1.jpg");
-    Image* image2 = new ProxyImage("image2.jpg");
-
-    // 图像将会在第一次调用 display() 时加载
-    image1->display();
-    image2->display();
-
-    // 图像已经加载，不会再次加载
-    image1->display();
-
-    delete image1;
-    delete image2;
-
+    Context context;
+    context.request();
+    context.request();
+    context.request();
     return 0;
 }
