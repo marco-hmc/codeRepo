@@ -1,38 +1,37 @@
-## Cloud Services
+## 云服务
 
-### A nice cheat sheet of different cloud services (2023 edition)
+### 2023年不同云服务的速查表
 
 <p>
   <img src="images/cloud-compare.jpg" />
 </p>
 
+### 什么是云原生？
 
-### What is cloud native?
-
-Below is a diagram showing the evolution of architecture and processes since the 1980s. 
+下图展示了自1980年代以来架构和流程的演变。
 
 <p>
   <img src="images/cloud-native.jpeg" style="width: 640px" />
 </p>
 
-Organizations can build and run scalable applications on public, private, and hybrid clouds using cloud native technologies. 
+组织可以使用云原生技术在公有云、私有云和混合云上构建和运行可扩展的应用程序。
 
-This means the applications are designed to leverage cloud features, so they are resilient to load and easy to scale. 
+这意味着应用程序被设计为利用云的特性，因此它们对负载具有弹性且易于扩展。
 
-Cloud native includes 4 aspects: 
+云原生包括四个方面：
 
-1. Development process 
+1. **开发过程**
 
-    This has progressed from waterfall to agile to DevOps. 
+    开发过程已经从瀑布模型进化到敏捷开发，再到 DevOps。
 
-2. Application Architecture 
+2. **应用架构**
 
-    The architecture has gone from monolithic to microservices. Each service is designed to be small, adaptive to the limited resources in cloud containers. 
+    应用架构已经从单体架构转变为微服务架构。每个服务都被设计得很小，能够适应云容器中的有限资源。
 
-3. Deployment & packaging 
+3. **部署与打包**
 
-    The applications used to be deployed on physical servers. Then around 2000, the applications that were not sensitive to latency were usually deployed on virtual servers. With cloud native applications, they are packaged into docker images and deployed in containers. 
+    应用程序过去是部署在物理服务器上的。大约在2000年，不敏感于延迟的应用程序通常部署在虚拟服务器上。对于云原生应用程序，它们被打包成 Docker 镜像并部署在容器中。
 
-4. Application infrastructure 
+4. **应用基础设施**
 
-    The applications are massively deployed on cloud infrastructure instead of self-hosted servers. 
+    应用程序大量部署在云基础设施上，而不是自托管服务器上。

@@ -1,51 +1,49 @@
 #include <iostream>
+#include <memory>
 #include <vector>
 
-// 抽象基类 Filter
 class Filter {
-public:
+  public:
+    virtual ~Filter() = default;
     virtual std::vector<int> process(const std::vector<int>& input) = 0;
 };
 
-// 具体过滤器类 FilterA
 class FilterA : public Filter {
-public:
+  public:
     std::vector<int> process(const std::vector<int>& input) override {
         std::vector<int> output;
+        output.reserve(input.size());
         for (int num : input) {
-            // 过滤器A的处理逻辑
             output.push_back(num * 2);
         }
         return output;
     }
 };
 
-// 具体过滤器类 FilterB
 class FilterB : public Filter {
-public:
+  public:
     std::vector<int> process(const std::vector<int>& input) override {
         std::vector<int> output;
+        output.reserve(input.size());
         for (int num : input) {
-            // 过滤器B的处理逻辑
             output.push_back(num + 1);
         }
         return output;
     }
 };
 
-// Pipeline 类
 class Pipeline {
-private:
-    std::vector<Filter*> filters;
+  private:
+    std::vector<std::unique_ptr<Filter>> filters;
 
-public:
-    void addFilter(Filter* filter) {
-        filters.push_back(filter);
+  public:
+    void addFilter(std::unique_ptr<Filter> filter) {
+        filters.push_back(std::move(filter));
     }
 
     std::vector<int> process(const std::vector<int>& input) {
         std::vector<int> output = input;
-        for (Filter* filter : filters) {
+        for (const auto& filter : filters) {
             output = filter->process(output);
         }
         return output;
@@ -53,22 +51,16 @@ public:
 };
 
 int main() {
-    // 创建过滤器实例
-    FilterA filterA;
-    FilterB filterB;
+    auto filterA = std::make_unique<FilterA>();
+    auto filterB = std::make_unique<FilterB>();
 
-    // 创建管道实例并添加过滤器
     Pipeline pipeline;
-    pipeline.addFilter(&filterA);
-    pipeline.addFilter(&filterB);
+    pipeline.addFilter(std::move(filterA));
+    pipeline.addFilter(std::move(filterB));
 
-    // 输入数据
-    std::vector<int> input = { 1, 2, 3, 4, 5 };
-
-    // 处理数据
+    std::vector<int> input = {1, 2, 3, 4, 5};
     std::vector<int> output = pipeline.process(input);
 
-    // 输出结果
     for (int num : output) {
         std::cout << num << " ";
     }

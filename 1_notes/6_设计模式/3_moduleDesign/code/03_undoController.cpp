@@ -1,14 +1,14 @@
 #include <iostream>
+#include <sstream>
 #include <stack>
 #include <string>
-#include <sstream>
 
 class UndoController {
-public:
-  void AddOperation(const std::string& operation) {
-      stream_ << operation << '\n';
-      redoStack_ = std::stack<std::string>();
-  }
+  public:
+    void AddOperation(const std::string& operation) {
+        stream_ << operation << '\n';
+        redoStack_ = std::stack<std::string>();
+    }
 
     void Undo() {
         if (stream_.tellg() > 0) {
@@ -23,17 +23,13 @@ public:
         if (!redoStack_.empty()) {
             std::string operation = redoStack_.top();
             redoStack_.pop();
-
             stream_ << operation << '\n';
         }
     }
 
-    void PrintStream() {
-       
-        std::cout << stream_.str();
-    }
+    void PrintStream() { std::cout << stream_.str(); }
 
-private:
+  private:
     std::stringstream stream_;
     std::stack<std::string> redoStack_;
 };
@@ -52,6 +48,5 @@ int main() {
 
     undoController.Redo();
     undoController.PrintStream();
-
     return 0;
 }
