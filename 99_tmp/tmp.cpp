@@ -1,24 +1,23 @@
+#include <omp.h>
+
 #include <iostream>
 
-template <typename T>
-class Base {
-  public:
-    virtual void compileSuccess() = 0;
-
-    template <typename T2>
-    virtual void compileSuccess(T2 a) = 0;
-};
-
-template <typename T>
-class Derived : public Base<T> {
-  public:
-    void compileSuccess() override {
-        std::cout << "Derived::compileSuccess()" << std::endl;
-    }
-};
-
 int main() {
-    Derived<int> d;
-    d.compileSuccess();
+    int x = 10;
+    int y = 20;
+
+#pragma omp parallel private(x) firstprivate(y)
+    {
+        x = 5;  // Each thread has its own private copy of x, initialized to an undefined value
+        y +=
+            omp_get_thread_num();  // Each thread has its own private copy of y, initialized to 20
+
+        std::cout << "Thread " << omp_get_thread_num() << ": x = " << x
+                  << ", y = " << y << std::endl;
+    }
+
+    std::cout << "Outside parallel region: x = " << x << ", y = " << y
+              << std::endl;
+
     return 0;
 }
