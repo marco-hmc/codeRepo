@@ -253,40 +253,33 @@ std::shared_future<int> sf = f.share();
 
 #### 1. `std::lock_guard`和`std::unique_lock`有什么不同？
 
-`std::lock_guard` 和 `std::unique_lock` 都是 RAII（Resource Acquisition Is Initialization）风格的互斥锁包装器，它们在构造时自动锁定互斥锁，在析构时自动解锁互斥锁。这种设计可以确保在函数退出（无论是正常退出还是异常退出）时自动释放锁，从而避免因忘记解锁而导致的死锁。
+`std::lock_guard` 和 `std::unique_lock` 都是 RAII（Resource Acquisition Is Initialization）风格的互斥锁包装器，它们在构造时自动锁定互斥锁，在析构时自动解锁互斥锁。这种设计可以确保在函数退出（无论是正常退出还是异常退出）时自动释放锁，从而避免因忘记解锁而导致的死锁。`std::lock_guard`和`std::unique_lock`的主要区别在于:
 
-`std::lock_guard`和`std::unique_lock`的主要区别在于:
+  1.  **延迟锁定**：
+      - `std::unique_lock` 可以在创建时不立即锁定互斥锁，然后在需要的时候再锁定。
+      - `std::lock_guard` 则在创建时必须立即锁定互斥锁。
+  2.  **所有权传递**：
+      - `std::unique_lock` 是可移动的，这意味着你可以将锁的所有权从一个 `std::unique_lock` 对象转移到另一个。
+      - `std::lock_guard` 则不可移动。
+  3.  **手动锁定和解锁**：
+      - `std::unique_lock` 提供了 `lock` 和 `unlock` 方法，允许你在任何时候手动锁定和解锁互斥锁。
+      - `std::lock_guard` 则不提供这些方法。
 
-1.  **延迟锁定**：
-    - `std::unique_lock` 可以在创建时不立即锁定互斥锁，然后在需要的时候再锁定。
-    - `std::lock_guard` 则在创建时必须立即锁定互斥锁。
-2.  **所有权传递**：
-    - `std::unique_lock` 是可移动的，这意味着你可以将锁的所有权从一个 `std::unique_lock` 对象转移到另一个。
-    - `std::lock_guard` 则不可移动。
-3.  **手动锁定和解锁**：
-    - `std::unique_lock` 提供了 `lock` 和 `unlock` 方法，允许你在任何时候手动锁定和解锁互斥锁。
-    - `std::lock_guard` 则不提供这些方法。
+简单来说，使用选择上：
+  - **`std::unique_lock`**：
+    - 适用于需要更多控制的场景，例如延迟锁定、所有权传递或手动锁定和解锁。
+    - 提供更大的灵活性，但相对开销也更大。
 
-使用选择上
-
-- **`std::unique_lock`**：
-
-  - 适用于需要更多控制的场景，例如延迟锁定、所有权传递或手动锁定和解锁。
-  - 提供更大的灵活性，但相对开销也更大。
-
-- **`std::lock_guard`**：
-  - 适用于简单的锁定和解锁场景。
-  - 更简单，且开销更小。
+  - **`std::lock_guard`**：
+    - 适用于简单的锁定和解锁场景。
+    - 更简单，且开销更小。
 
 #### 2. `std::unique_lock`提供的锁策略参数是什么？
-
 `std::adopt_lock`/`std::defer_lock` 和 `std::try_to_lock` 都是 `std::unique_lock` 的构造函数可以接受的锁策略参数,它们的含义和使用场景如下:
 
-1.  **std::adopt_lock**:这个策略表示互斥锁在构造锁对象时已经被锁定.当你已经手动锁定了一个互斥锁,然后想要将它的管理权交给 `std::unique_lock` 时,可以使用 `std::adopt_lock`.这样,`std::unique_lock` 在构造时就不会再次尝试锁定互斥锁,而是直接接管已经被锁定的互斥锁.
-
-2.  **std::defer_lock**:这个策略表示在构造 `std::unique_lock` 时不锁定互斥锁.你可以稍后手动调用 `std::unique_lock::lock` 方法来锁定互斥锁.这个策略在你需要延迟锁定互斥锁的情况下很有用.
-
-3.  **std::try_to_lock**:这个策略表示在构造 `std::unique_lock` 时尝试锁定互斥锁,如果互斥锁已经被锁定,则立即返回,不会阻塞.你可以检查 `std::unique_lock::owns_lock` 方法的返回值,来判断是否成功锁定了互斥锁.
+  1.  **std::adopt_lock**:这个策略表示互斥锁在构造锁对象时已经被锁定.当你已经手动锁定了一个互斥锁,然后想要将它的管理权交给 `std::unique_lock` 时,可以使用 `std::adopt_lock`.这样,`std::unique_lock` 在构造时就不会再次尝试锁定互斥锁,而是直接接管已经被锁定的互斥锁.
+  2.  **std::defer_lock**:这个策略表示在构造 `std::unique_lock` 时不锁定互斥锁.你可以稍后手动调用 `std::unique_lock::lock` 方法来锁定互斥锁.这个策略在你需要延迟锁定互斥锁的情况下很有用.
+  3.  **std::try_to_lock**:这个策略表示在构造 `std::unique_lock` 时尝试锁定互斥锁,如果互斥锁已经被锁定,则立即返回,不会阻塞.你可以检查 `std::unique_lock::owns_lock` 方法的返回值,来判断是否成功锁定了互斥锁.
 
 #### 3. C++11 的 thread_local 是什么？
 
