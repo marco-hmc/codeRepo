@@ -1,3 +1,40 @@
+一些实时性要求很高的领域就不能用 unordered_map。
+
+## insert 不会替换现有值
+
+```cpp
+map<string, int> table;
+table.insert({"小彭老师", 24});
+table.insert({"小彭老师", 42});
+```
+
+这时，`table["小彭老师"]` 仍然会是 24，而不是 42。因为 insert 不会替换 map 里已经存在的值。
+
+## insert 不会替换现有值
+
+（避免不必要的构造？）
+
+```cpp
+map<string, int> table;
+table["小彭老师"] = 24;
+table["小彭老师"] = 42;
+```
+
+C++17 提供了比 `[]` 运算符更适合覆盖性插入的 insert_or_assign 函数：
+
+```cpp
+map<string, int> table;
+table.insert_or_assign("小彭老师", 24);
+table.insert_or_assign("小彭老师", 42);
+```
+
+## 高效删除 vector 元素
+
+back swap erase
+
+lower_bound
+
+
 ## stl
 
 ### 1. concepts
