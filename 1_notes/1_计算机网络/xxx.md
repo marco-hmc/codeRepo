@@ -1,3 +1,184 @@
+
+
+
+
+## notDone
+
+### 浏览器的数据库
+存储的数据可能是从服务端获取到的数据，也可能是在多个页面中需要频繁使用到的数据<br>
+* cookie: 一个cookie不超过4k，每个网站不超过20个cookie，所有网站cookie总和不超过300个
+* localStorage:5M，除非手动清除，否则一直存在
+* sessionStorage:5M，不可以跨标签访问，页面关闭就清理
+* indexedDB:浏览器端数据库，无限容量，除非手动清除，否则一直存在
+
+#### Storage:localStorage、sessionStorage
+* 大小:官方建议5M存储空间
+* 类型:只能操作字符串，在存储之前应该使用JSON.stringfy()方法先进行一步安全转换字符串，取值时在用JSON.parse()方法再转换一次
+* 存储的内通:数字，图片，json，样式，脚本...
+* ⚠️数据时明文存储，毫无隐私性可言，绝对不能用于存储敏感信息
+* 区别:sessionStorage临时存储在sesssion中，浏览器关闭，数据随之小事，localStorage将数据存储在本地，理论上一直有
+*
+另，不同浏览器无法共享localStorage和sessionStorage中的信息。同一浏览器的相同域名和端口的不同页面📃间可以共享相同localStorage，但是不同页面间无法共享sessionStorage的信息<br>
+
+```js
+// 保存数据
+localStorage.setItem( key， value );
+sessionStorage.setItem( key， value );
+// 读取数据
+localStorage.getItem( key );
+sessionStorage.getItem( key );
+// 删除单个数据
+localStorage.removeItem( key ); 
+sessionStorage.removeItem( key );
+// 删除全部数据
+localStorage.clear( ); 
+sessionStorage.clear( );
+// 获取索引的key
+localStorage.key( index ); 
+sessionStorage.key( index );
+```
+##### 监听Storage事件
+可以通过监听window对象的storage事件并指定其事件处理函数，当页面中对localStorage或sessionStorage进行修改时，会触发对应的处理函数
+```js
+window.addEventListener('storage'，function(e){
+   console.log('key='+e.key+'，oldValue='+e.oldValue+'，newValue='+e.newValue);
+})
+/***
+* 触发事件的时间对象（e 参数值）有几个属性：
+* key : 键值。
+* oldValue : 被修改前的值。
+* newValue : 被修改后的值。
+* url : 页面url。
+* storageArea : 被修改的 storage 对象。
+***/
+```
+#### indexedDB
+[张鑫旭博客indexedDB可以了解了解](https://www.zhangxinxu.com/wordpress/2017/07/html5-indexeddb-js-example/)
+
+**1⃣️打开数据库**<br>
+```js
+var DBOpenRequest = window.indexedDB.open(dbName，version);
+```
+打开数据库的结果是，有可能触发4种事件<br>
+* success，error，upgradeneeded第一次打开该数据库，或者数据库版本发生变化，blocked上一次数据库连接还未关闭
+
+第一次打开数据库时，会先触发upgradeneeded事件，然后触发success事件
+```js
+var openRequest = indexedDB.open("test"，1);
+var db;
+// open返回一个对象，回调函数会定义在这个对象之上
+
+openRequest.onupgradeneeded = function(e) {
+    console.log("Upgrading...");
+}
+// 回调函数接受一个事件对象event作为参数
+ 
+openRequest.onsuccess = function(e) {
+    console.log("Success!");
+    db = e.target.result; // target.result属性就指向打开的indexedDB数据库
+}
+ 
+openRequest.onerror = function(e) {
+    console.log("Error");
+    console.dir(e);
+}
+```
+**2⃣️创建一个数据库存储对象**<br>
+```js
+var objectStore = db.createObjectStore(dbName， { 
+        keyPath: 'id'，
+        autoIncrement: true
+    });
+    // objectStore是一个重要对象，可以理解为存储的对象
+    // objectStore.add()可以向数据库添加数据，objectStore.delete()删除数据，objectStore.clear()可以为空，objectStore.put()可以替换数据
+
+    objectStore.createIndex('id'， 'id'， {
+        unique: true    
+    });
+    // objectStore创建数据库的主键和普通字段
+    objectStore.createIndex('name'， 'name');
+    objectStore.createIndex('begin'， 'begin');
+    objectStore.createIndex('end'， 'end');
+    objectStore.createIndex('person'， 'person');
+    objectStore.createIndex('remark'， 'remark');
+```
+**3⃣向indexedDB添加数据**<br>
+数据库的操作都是基于事务(transaction)来进行，无论是添加编辑还是删除数据库，都要先建立一个事务(transaction)，才能继续下面的操作<br>
+
+```js
+// 新建一个事务
+var transaction = db.transaction('project'， "readwrite");
+// 打开存储对象
+var objectStore = transaction.objectStore('project');
+// 添加到数据对象中
+objectStore.add(newItem);
+newItem={
+  "name": "第一个项目"，
+  "begin": "2017-07-16"，
+  "end": "2057-07-16"，
+  "person": "张鑫旭"，
+  "remark": "测试测试"
+}
+```
+**4⃣️indexedDB数据库的获取**<br>
+indexedDB数据库的获取使用Cursor APIs和Key Range APIs。也就是使用“游标API”和“范围API”，具体使用可以去看文档<br>
+游标🌰
+
+```js
+var objectStore = db.transaction(dbName).objectStore(dbName);
+objectStore.openCursor().onsuccess = function(event) {
+    var cursor = event.target.result;
+    if (cursor) {
+        // cursor.value就是数据对象
+        // 游标没有遍历完，继续
+        cursor.continue();
+    } else {
+        // 如果全部遍历完毕...
+    }
+}
+```
+例如查询范围
+```js
+// 确定打开的游标的主键范围
+var keyRangeValue = IDBKeyRange.bound(4， 10);
+// 打开对应范围的游标
+var objectStore = db.transaction(dbName).objectStore(dbName);
+objectStore.openCursor(keyRangeValue).onsuccess = function(event) {
+    var cursor = event.target.result;
+    // ...
+}
+```
+其中，有bound()， only()， lowerBound()和upperBound()这几个方法，意思就是方法名字面意思，“范围内”，“仅仅是”，“小于某值”和“大于某值”。<br>
+
+方法最后还支持两个布尔值参数，例如：
+```js
+IDBKeyRange.bound(4， 10， true， true)
+```
+取范围3-9，也就是true的时候，不能与边界相等<br>
+
+好了，到这里，localStorage是键值永久保存在本地，sessionStorage是键值临时保存存储在session，关掉浏览器就没了，indexedDB能永久存储支持数据结构比较复杂的存储。
+
+#### localStorage，sessionStorage和cookie的区别
+共同点：都是保存在浏览器端、且同源的<br>
+区别：
+* cookie数据始终在同源的http请求中携带（即使不需要），即cookie在浏览器和服务器间来回传递，而sessionStorage和localStorage不会自动把数据发送给服务器，仅在本地保存。cookie数据还有路径（path）的概念，可以限制cookie只属于某个路径下
+
+* 存储大小限制也不同，cookie数据不能超过4K，同时因为每次http请求都会携带cookie、所以cookie只适合保存很小的数据，如会话标识。sessionStorage和localStorage虽然也有存储大小的限制，但比cookie大得多，可以达到5M或更大
+
+* 数据有效期不同，sessionStorage：仅在当前浏览器窗口关闭之前有效；localStorage：始终有效，窗口或浏览器关闭也一直保存，因此用作持久数据；cookie：只在设置的cookie过期时间之前有效，即使窗口关闭或浏览器关闭
+
+* 作用域不同，sessionStorage不在不同的浏览器窗口中共享，即使是同一个页面；localstorage在所有同源窗口中都是共享的；cookie也是在所有同源窗口中都是共享的
+
+* web Storage支持事件通知机制，可以将数据更新的通知发送给监听者
+
+* web Storage的api接口使用更方便
+
+通过缓存机制，实现离线开发，也是可能的。通过缓存机制，实现负载均衡也是可能的。后面会持续讲到CDN的，这节只是讲了静态资源的缓存，后面会持续讲解。<br>
+
+
+
+# split-------------------------------
+
 为了提高这段关于HTTP缓存机制的表达清晰度和结构性，我会对内容进行重新组织和补充，以确保易于理解并且逻辑流畅。同时，也会确保技术细节准确无误。以下是修改后的内容：
 
 ---

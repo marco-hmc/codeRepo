@@ -1,6 +1,15 @@
-## [ADL（Argument-Dependent Lookup，Koenig Lookup）](https://en.cppreference.com/w/cpp/language/adl)
+## ADL（Argument-Dependent Lookup，Koenig Lookup）
 
-* [ADL](https://en.cppreference.com/w/cpp/language/adl) 即实参依赖查找，对于一个类，其成员函数与使用了它的非成员函数，都是该类的逻辑组成部分，如果函数接受一个类作为参数，编译器查找函数名时，不仅会查找局部作用域，还会查找类所在的命名空间
+**ADL（实参依赖查找）** 是 C++ 中的一种查找函数的机制。当函数调用时，编译器不仅查找局部作用域中的函数，还会根据函数的参数类型查找与其关联的命名空间或类。ADL 使得某些函数可以“隐式地”找到，而不需要显式指定命名空间或类名。
+
+### 1. **ADL 的基本原理**
+
+当你调用一个函数并传递一个类类型的参数时，编译器会通过 ADL 查找该函数。ADL 查找的范围包括：
+
+- 函数所在的局部作用域。
+- 与参数类型相关联的命名空间或类。
+
+#### 示例：ADL 查找函数
 
 ```cpp
 #include <iostream>
@@ -17,14 +26,23 @@ void f(const A&) {}  // f() 是 A 的逻辑组成部分
 jc::A a;
 
 int main() {
-  f(a);  // 通过 ADL 找到 jc::f()，如果没有 ADL，就要写成 jc::f(a)
+  f(a);  // 通过 ADL 找到 jc::f()，如果没有 ADL，需要写成 jc::f(a)
   std::string s;
   std::cout << s;  // std::operator<<() 是 std::string 的逻辑组成部分
-  // 如果没有 ADL，就要写成 std::operator<<(std::cout, s)
+  // 如果没有 ADL，需要写成 std::operator<<(std::cout, s)
 }
 ```
 
-* ADL 会忽略 using 声明
+在上面的例子中：
+
+- `f(a)` 通过 **ADL** 找到 `jc::f()`，而无需显式地写成 `jc::f(a)`。
+- 对于 `std::cout << s;`，通过 ADL 查找到 `std::operator<<()`，无需显式写出 `std::operator<<(std::cout, s)`。
+
+### 2. **ADL 忽略 `using` 声明**
+
+ADL 不会考虑作用域中的 `using` 声明或 `using namespace` 语句。因此，即使在某个命名空间内通过 `using` 引入了其他命名空间的函数，也不会影响 ADL 的查找过程。
+
+#### 示例：ADL 忽略 `using` 声明
 
 ```cpp
 namespace jc {
@@ -53,15 +71,28 @@ static_assert(f(jd::red) == 2);    // 使用 ADL 找到 jd::f()
 int main() {}
 ```
 
-* ADL 会查找实参关联的命名空间和类，关联的命名空间和类组成的集合定义如下
-  * 内置类型：集合为空
-  * 指针和数组类型：所引用类型关联的命名空间和类
-  * 枚举类型：关联枚举声明所在的命名空间
-  * 类成员：关联成员所在的类
-  * 类类型：关联的类包括该类本身、外围类型、直接和间接基类，关联的命名空间为每个关联类所在的命名空间，如果类是一个类模板实例则还包含模板实参本身类型、模板的模板实参所在的类和命名空间
-  * 函数类型：所有参数和返回类型关联的命名空间和类
-  * 类成员指针类型：成员和类关联的命名空间和类
-* 友元声明在外围作用域不可见，因为如果可见的话，实例化类模板会使普通函数的声明可见，如果没有先实例化类就调用函数，将导致编译错误，但如果友元函数所在类属于 ADL 的关联类集合，则在外围作用域可以找到该友元声明，且调用时，未实例化的类会被实例化
+在这个例子中：
+
+- 在 `jd` 命名空间内，`using namespace jc;` 不会影响 ADL。调用 `::f(jd::red)` 会查找全局作用域中的 `f(int)`。
+- `f(jd::red)` 会通过 ADL 查找 `jd::f()`，因为 `jd::f()` 是 `jd::red` 的逻辑组成部分。
+
+### 3. **ADL 查找规则**
+
+ADL 会查找与实参类型关联的命名空间或类，具体的关联规则如下：
+
+- **内置类型**：没有关联的命名空间或类，ADL 不会发生。
+- **指针和数组类型**：查找所引用类型的关联命名空间和类。
+- **枚举类型**：查找与枚举类型声明所在的命名空间。
+- **类成员**：查找该成员所在的类。
+- **类类型**：查找与该类相关的所有命名空间和类，包括该类本身、直接和间接的基类。
+- **函数类型**：查找函数参数类型和返回类型相关的命名空间和类。
+- **类成员指针类型**：查找类成员所在的类和命名空间。
+
+### 4. **ADL 与友元函数**
+
+如果一个类的友元函数所在类是 ADL 的关联类集合的一部分，那么该友元函数可以在外围作用域找到并调用。否则，若该类未实例化，则该友元函数不可见。
+
+#### 示例：ADL 与友元函数
 
 ```cpp
 namespace jc {
@@ -82,9 +113,27 @@ void g(const A<int>& a) {
 int main() {}
 ```
 
-## [注入类名（Injected Class Name）](https://en.cppreference.com/w/cpp/language/injected-class-name)
+在这个示例中：
 
-* 为了便于查找，在类作用域中，类名称是自身类型的 public 别名，该名称称为注入类名
+- `f()` 是 `A<T>` 的友元函数，但由于 `f()` 不带参数，它不能通过 ADL 查找。
+- `f(a)` 使用了 `A<int>` 类型作为参数，因此可以通过 ADL 查找到 `f(A<int>)`，且如果 `A<int>` 类未实例化，调用时会触发类实例化。
+
+### 总结
+
+- **ADL**（实参依赖查找）使得编译器可以根据函数参数的类型自动查找与之关联的命名空间或类中的函数，而不需要显式指定函数的命名空间。
+- ADL 查找时，会考虑与参数类型相关的所有命名空间和类。
+- ADL **忽略** `using` 声明或 `using namespace` 语句，不会将它们纳入查找范围。
+- ADL 可以在某些情况下帮助找到友元函数，尤其是当该友元函数所属的类与调用函数的参数类型相关时。
+
+ADL 是 C++ 中非常有用的特性，它简化了函数调用，特别是在涉及到运算符重载、模板类、以及函数的隐式查找时非常方便。
+
+## line---------------------------------------------
+
+## 注入类名（Injected Class Name）
+
+**注入类名** 是指类作用域中的类名称，它是该类类型的公有别名。该别名使得在类的成员函数中可以使用类名作为类型，进行便捷的类型声明。在类作用域内，类名不仅代表该类型的名称，还可以作为类型的标识符使用。
+
+### 示例：注入类名
 
 ```cpp
 namespace jc {
@@ -94,7 +143,7 @@ int A;
 struct A {
   void f() {
     A* p;    // OK：A 是注入类名
-    ::A* q;  // 错误：查找到变量名 A，隐藏了 struct A 的名称
+    ::A* q;  // 错误：查找到全局变量 A，隐藏了 struct A 的名称
   }
 };
 
@@ -103,7 +152,14 @@ struct A {
 int main() {}
 ```
 
-* 类模板的注入类名可以被用作模板名或类型名
+在这个示例中：
+
+- `A* p;` 使用 `A` 作为类名来声明指针，`A` 是类 `A` 的注入类名。
+- `::A* q;` 会错误地查找到全局变量 `A`，而不是 `struct A`，因为全局作用域中的 `A` 隐藏了类名。
+
+### 类模板中的注入类名
+
+类模板的注入类名不仅可以作为类型名使用，还可以作为模板名使用。模板类的名字在模板定义中作为当前实例化的一部分，依赖于模板参数的类型。
 
 ```cpp
 namespace jc {
@@ -116,7 +172,7 @@ struct B {
   B* a;            // B 被当作类型名，等价于 B<T>
   B<void>* b;      // B 被当作模板名
   using c = A<B>;  // B 被当作模板名
-  A<jc::B> d;      // jc::B 不是注入类名，总会被当作模板名
+  A<jc::B> d;      // jc::B 是模板名，不是注入类名
 };
 
 }  // namespace jc
@@ -124,24 +180,25 @@ struct B {
 int main() {}
 ```
 
+在这个例子中：
+
+- `B* a;` 表示 `B<T>` 类型。
+- `B<void>* b;` 表示 `B<void>` 类型，`B` 在这里作为模板名。
+- `A<jc::B> d;` 是一个模板类 `A`，传入 `jc::B` 作为模板参数。这里，`jc::B` 作为模板名，并不是注入类名。
+
 ## 非模板中的上下文相关性
 
-* 解析理论主要面向上下文无关语言，而 C++ 是上下文相关语言，为了解决这个问题，编译器使用一张符号表结合扫描器和解析器
-* 解析某个声明时会把它添加到表中，扫描器找到一个标识符时，会在符号表中查找，如果发现该符号是一个类型就会注释这个标记，如编译器看见 `x*`，扫描器会查找 x，如果发现 x 是一个类型，解析器会看到标记如下，认为表达式是一个声明
+C++ 是一种上下文相关语言，这意味着编译器在解析一个声明时会依赖于上下文信息。在上下文相关的语言中，解析一个声明时，编译器不仅要检查符号表，还需要依据扫描器和解析器的配合，来做出正确的决策。
 
-```
-identifier, type, x
-symbol, *
-```
+### 符号表和扫描器
 
-* 如果 x 不是类型，则解析器从扫描器获得标记如下，表达式被视为一个乘积
+当编译器解析某个声明时，它会将该声明的信息添加到符号表中。如果扫描器遇到某个标识符，它会在符号表中查找对应的符号。如果找到的符号是一个类型，扫描器会对该标识符做出相应的注解。例如，在解析 `x*` 时，编译器会首先查找 `x` 是否是类型，如果是，则将其视为类型标识符，处理为指针声明。
 
-```cpp
-identifier, nontype, x
-symbol, *
-```
+如果 `x` 不是类型，编译器会认为这是一个乘法表达式，并处理为 `x *`。
 
-* 对于 `A<1>(0)`，如果 A 是类模板，则表达式是把 0 转换成 `A<1>` 类型。如果不是类模板，表达式等价于 `(A<1)>0`，计算表达式 A 小于 1 的结果，再将结果与 0 比较大小。因此解析器先查找 `<` 前的名称，如果名称是模板才会把 `<` 看作左尖括号，其他情况则看作小于号
+### 示例：表达式解析
+
+对于表达式 `A<1>(0)`，如果 `A` 是类模板，编译器会将 `0` 转换为 `A<1>` 类型。如果 `A` 不是类模板，编译器会将 `<` 看作小于号并执行比较。
 
 ```cpp
 namespace jc {
@@ -152,17 +209,21 @@ struct A {
 };
 
 static_assert(A<(1 > 0)>::value);  // 必须使用小括号
-
 }  // namespace jc
 
 int main() {}
 ```
 
-## [Dependent name](https://en.cppreference.com/w/cpp/language/dependent_name)
+在这个例子中：
 
-### 当前实例化（current instantiation）和未知特化（unknown specialization）
+- `A<(1 > 0)>::value` 会通过 `A<1>` 来访问静态成员 `value`。
+- 必须使用小括号 `()` 来确保表达式 `1 > 0` 被正确解析为模板参数。
 
-* Name lookup 对 dependent name 与 non-dependent name 有不同的查找规则，在模板定义中，依赖于模板参数的名称称为 dependent name，dependent name 包含当前实例化和未知特化。类模板的注入类名属于当前实例化，依赖于模板参数但不是当前实例化的为未知特化（unknown specialization）
+## 依赖名称（Dependent Name）
+
+**依赖名称** 是指在模板定义中，依赖于模板参数的名称。C++ 编译器对依赖名称（dependent name）和非依赖名称（non-dependent name）有不同的查找规则。`Dependent name` 包括当前实例化和未知特化，而 **未知特化** 是指依赖于模板参数但不属于当前实例化的名称。
+
+### 示例：当前实例化与未知特化
 
 ```cpp
 namespace jc {
@@ -184,7 +245,7 @@ struct A {
   struct C {
     A* a;        // A 是当前实例化
     A<type>* b;  // A<type> 是当前实例化
-    B* c;        // 不在 B 的作用域内，B 是未知特化
+    B* c;        // B 是未知特化
     C* d;        // C 是当前实例化
   };
 };
@@ -197,14 +258,19 @@ struct A<int>::B {
 }  // namespace jc
 
 int main() {
-  jc::A<double>::C{}.c->a;
-  jc::A<int>::C{}.c->i;  // 使用特化的 A<int>::B
+  jc::A<double>::C{}.c->a;  // 使用当前实例化的 A<double>::C
+  jc::A<int>::C{}.c->i;     // 使用特化的 A<int>::B
 }
 ```
 
-### typename 消歧义符
+在这个例子中：
 
-* typename 消歧义符只能用于不在基类列表和初始化列表中的 dependent name，用作用域运算符访问 dependent name 中的成员类型时，必须指定 typename 消歧义符
+- `A* a` 和 `A<type>* b` 是当前实例化的依赖名称。
+- `A<T*>* c` 是未知特化，因为 `T` 可能会是 `int*` 等不同的类型。
+
+### `typename` 消歧义符
+
+当访问类模板的依赖名称时，必须使用 `typename` 消歧义符来明确告诉编译器该名称是一个类型。如果不加 `typename`，编译器可能会误将其当作非类型标识符。
 
 ```cpp
 namespace jc {
@@ -238,9 +304,14 @@ struct Derived : A<T>::type {  // 基类列表中不能加 typename 消歧义符
 int main() { jc::Derived<jc::Base>{}.f(); }
 ```
 
-### template 消歧义符
+在这个例子中：
 
-* 访问模板参数的 dependent name 时，要在 dependent name 前加 template 消歧义符，才能让编译器知道引用的是一个模板，否则 `<` 会被视为小于号
+- `A<T>::type` 必须加上 `typename` 消歧义符，来指明 `type` 是一个类型。
+- `A<int>::type` 是一个非依赖名称，`typename` 消歧义符可以选择性地加上。
+
+### `template` 消歧义符
+
+当访问模板的依赖名称时，必须使用 `template` 消歧义符来指明该名称是一个模板，否则 `<` 会被误解析为小于号。
 
 ```cpp
 namespace jc {
@@ -261,16 +332,22 @@ struct A {
 
 template <typename T>
 void test() {
-  T::template Impl<T>::template f<T>();
-  T::template f<T>();
+  T::template Impl<T>::template f<T>();  // 需要加上 template 消歧义符
+  T::template f<T>();  // 需要加上 template 消歧义符
 }
 
 int main() { test<jc::A<int>>(); }
 ```
 
-## Non-dependent base
+在这个例子中：
 
-* Non-dependent base 是不用知道模板实参就可以推断类型的基类，派生类中查找 non-dependent name 时会先查找 non-dependent base，再查找模板参数列表
+- 访问 `Impl<T>::template f<T>()` 和 `f<T>()` 时，必须加上 `template` 消歧义符，以明确告诉编译器这些名称是模板。
+
+## Non-dependent Base（非依赖基类）
+
+**Non-dependent base** 是不依赖于模板参数类型的基类。派生类中访问非依赖基类的成员时，编译器会首先查找非依赖基类，再查找模板参数列表。
+
+### 示例：Non-dependent Base
 
 ```cpp
 #include <type_traits>
@@ -283,16 +360,18 @@ struct Base {
 };
 
 template <typename T>
-struct Derived1 : Base<void> {  // non-dependent base
+struct Derived1 : Base<void> {  // 非依赖基类
   using type = T;               // T 是 Base<void>::T
 };
 
 template <typename T>
-struct Derived2 : Base<T> {  // dependent base
+struct Derived2 : Base<T> {  // 依赖基类
   using type = T;            // T 是模板参数
 };
 
-static_assert(std::is_same_v<Derived1<int>::type, char>);
+static_assert(std::is_same_v<Derived1<int>::
+
+type, char>);
 static_assert(std::is_same_v<Derived2<int>::type, int>);
 
 }  // namespace jc
@@ -300,9 +379,22 @@ static_assert(std::is_same_v<Derived2<int>::type, int>);
 int main() {}
 ```
 
-## Dependent base
+在这个例子中：
 
-* 对于 non-dependent name，不会在 dependent base 中做查找
+- `Derived1` 使用了非依赖基类 `Base<void>`，因此 `T` 被解析为 `Base<void>::T`。
+- `Derived2` 使用了依赖基类 `Base<T>`，因此 `T` 被解析为模板参数 `T`。
+
+## line -------------------------------------------------------------------
+
+## Dependent Base（依赖基类）
+
+在 C++ 中，当派生类继承一个模板基类时，这个基类会被称为 **dependent base**（依赖基类）。对派生类来说，基类的类型依赖于模板参数，因此编译器在查找基类成员时必须特别注意。
+
+### 1. 对于非依赖名称的查找
+
+对于 **non-dependent name**（非依赖名称），编译器不会在 **dependent base** 中查找。非依赖名称是指那些在模板参数之外独立的名称。为了确保基类成员能被正确查找，通常需要使用 `this->` 或者作用域运算符来使其变为依赖名称。
+
+#### 示例：错误的查找
 
 ```cpp
 namespace jc {
@@ -324,7 +416,13 @@ struct Derived : Base<T> {  // dependent base
 int main() {}
 ```
 
-* 如果要在 dependent base 中查找，则可以使用 `this->` 或作用域运算符将 non-dependent name 变为 dependent name
+在这个例子中，`value` 是一个非依赖名称，它应该在基类 `Base<T>` 中查找，但因为它是一个非依赖名称，编译器不会在 `Base<T>` 中查找它，导致编译错误。
+
+### 2. 使用 `this->` 或作用域运算符进行查找
+
+为了确保可以在 **dependent base** 中查找非依赖名称，可以使用 `this->` 或作用域运算符来将该名称变为 **dependent name**。
+
+#### 示例：使用 `this->` 来查找
 
 ```cpp
 namespace jc {
@@ -349,12 +447,19 @@ struct Base<bool> {
 }  // namespace jc
 
 int main() {
-  static_assert(jc::Derived<int>{}.get_value() == 1);
-  static_assert(jc::Derived<bool>{}.get_value() == 2);
+  static_assert(jc::Derived<int>{}.get_value() == 1);  // 输出 1
+  static_assert(jc::Derived<bool>{}.get_value() == 2); // 输出 2
 }
 ```
 
-* 或者使用 using 声明，这样只需要引入一次
+在这个示例中：
+
+- `this->value` 将 `value` 转换为 **dependent name**，使得编译器能够在依赖基类 `Base<T>` 中查找 `value`。
+- `jc::Derived<int>` 和 `jc::Derived<bool>` 根据不同的模板参数，调用了基类 `Base<int>` 和 `Base<bool>` 中的 `value`。
+
+#### 示例：使用 `using` 声明
+
+另一种方式是使用 `using` 声明，这样只需要一次声明就能让派生类中的成员引用基类的成员。
 
 ```cpp
 namespace jc {
@@ -366,7 +471,7 @@ struct Base {
 
 template <typename T>
 struct Derived : Base<T> {  // dependent base
-  using Base<T>::value;
+  using Base<T>::value;  // 引入 value
 
   constexpr int get_value() const {
     return value;  // dependent name，会在 dependent base 中查找
@@ -381,12 +486,21 @@ struct Base<bool> {
 }  // namespace jc
 
 int main() {
-  static_assert(jc::Derived<int>{}.get_value() == 1);
-  static_assert(jc::Derived<bool>{}.get_value() == 2);
+  static_assert(jc::Derived<int>{}.get_value() == 1);  // 输出 1
+  static_assert(jc::Derived<bool>{}.get_value() == 2); // 输出 2
 }
 ```
 
-* 使用作用域运算符不会访问虚函数
+在这个示例中：
+
+- `using Base<T>::value;` 引入了 `Base<T>` 中的 `value` 成员，这使得 `get_value()` 可以直接使用它。
+- 使用 `using` 声明可以避免重复写 `this->`，简化代码。
+
+### 3. 使用作用域运算符时不会访问虚函数
+
+当你使用作用域运算符访问基类的成员时，编译器不会进行虚函数的查找。作用域运算符只是直接访问基类的成员，因此虚函数不会被调用。
+
+#### 示例：作用域运算符不访问虚函数
 
 ```cpp
 #include <cassert>
@@ -401,7 +515,7 @@ struct Base {
 template <typename T>
 struct Derived : Base<T> {  // dependent base
   virtual int f() const { return 2; }
-  int get_value() const { return Base<T>::f(); }
+  int get_value() const { return Base<T>::f(); }  // 使用作用域运算符访问
 };
 
 template <>
@@ -412,12 +526,18 @@ struct Base<bool> {
 }  // namespace jc
 
 int main() {
-  assert(jc::Derived<int>{}.get_value() == 1);
-  assert(jc::Derived<bool>{}.get_value() == 3);
+  assert(jc::Derived<int>{}.get_value() == 1);   // 输出 1
+  assert(jc::Derived<bool>{}.get_value() == 3);  // 输出 3
 }
 ```
 
-* 如果需要使用虚函数，则只能使用 `this->` 或 using 声明
+在这个示例中，`Base<T>::f()` 通过作用域运算符访问基类的 `f()` 函数，但不会进行虚函数机制的查找，因此对于 `Derived<int>`，它调用了 `Base<int>` 中的 `f()`，而对于 `Derived<bool>`，它调用了 `Base<bool>` 中的 `f()`，没有调用 `Derived` 中重写的虚函数。
+
+### 4. 使用 `this->` 或 `using` 声明访问虚函数
+
+如果你需要访问虚函数，并希望遵循多态的规则（即基于对象的动态类型调用正确的函数），你必须使用 `this->` 或 `using` 声明，而不是作用域运算符。
+
+#### 示例：使用 `this->` 或 `using` 声明访问虚函数
 
 ```cpp
 #include <cassert>
@@ -432,14 +552,14 @@ struct Base {
 template <typename T>
 struct Derived1 : Base<T> {  // dependent base
   virtual int f() const { return 2; }
-  int get_value() const { return this->f(); }
+  int get_value() const { return this->f(); }  // 使用 this-> 调用虚函数
 };
 
 template <typename T>
 struct Derived2 : Base<T> {  // dependent base
-  using Base<T>::f;
+  using Base<T>::f;  // 引入 Base<T>::f
   virtual int f() const { return 2; }
-  int get_value() const { return f(); }
+  int get_value() const { return f(); }  // 使用 f() 调用虚函数
 };
 
 template <>
@@ -450,9 +570,20 @@ struct Base<bool> {
 }  // namespace jc
 
 int main() {
-  assert(jc::Derived1<int>{}.get_value() == 2);
-  assert(jc::Derived1<bool>{}.get_value() == 2);
-  assert(jc::Derived2<int>{}.get_value() == 2);
-  assert(jc::Derived2<bool>{}.get_value() == 2);
+  assert(jc::Derived1<int>{}.get_value() == 2);  // 输出 2
+  assert(jc::Derived1<bool>{}.get_value() == 2); // 输出 2
+  assert(jc::Derived2<int>{}.get_value() == 2);  // 输出 2
+  assert(jc::Derived2<bool>{}.get_value() == 2); // 输出 2
 }
 ```
+
+在这个示例中：
+
+- `Derived1` 和 `Derived2` 都使用 `this->f()` 或 `using Base<T>::f` 来确保访问虚函数时遵循动态多态。
+- 使用 `this->` 或 `using` 声明，使得编译器能够正确解析虚函数调用，并支持多态性。
+
+### 总结
+
+- **Non-dependent name**（非依赖名称）不会在 **dependent base**（依赖基类）中查找，若要使其作为依赖名称查找，必须使用 `this->` 或作用域运算符。
+- 使用作用域运算符时，虚函数不会被访问。若要确保访问虚函数，需要使用 `this->` 或 `using` 声明。
+- `this->` 和 `using` 声明使得派生类能够正确访问基类的成员，并支持多态性。
