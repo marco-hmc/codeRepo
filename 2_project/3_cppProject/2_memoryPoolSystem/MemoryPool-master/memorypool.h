@@ -56,11 +56,12 @@ int get_memory_id(_MP_Memory* mm);
  */
 
 MemoryPool* MemoryPoolInit(mem_size_t maxmempoolsize, mem_size_t mempoolsize);
+int MemoryPoolSetThreadSafe(MemoryPool* mp, int thread_safe);
+
 void* MemoryPoolAlloc(MemoryPool* mp, mem_size_t wantsize);
 int MemoryPoolFree(MemoryPool* mp, void* p);
 MemoryPool* MemoryPoolClear(MemoryPool* mp);
 int MemoryPoolDestroy(MemoryPool* mp);
-int MemoryPoolSetThreadSafe(MemoryPool* mp, int thread_safe);
 
 /*
  *  内存池信息API
