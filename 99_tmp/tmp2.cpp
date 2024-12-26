@@ -1,17 +1,21 @@
-#include <iostream>
+
+class BasicA {
+  public:
+    int m_i = 0;
+    bool m_b = true;
+};
+
+class BasicB {
+  private:
+    BasicA m_ba;
+    int m_i;
+};
 
 int main() {
-    int arr1[10];
-    // int arr2[10];
-    std::fill(std::begin(arr1), std::end(arr1), 1);
-    // std::fill(std::begin(arr2), std::end(arr2), 2);
-
-    // arr1[15] = 5;
-    std::cout << "Value: " << arr1[15] << std::endl;
-
-    // for (int i = 0; i < 10; ++i) {
-    //     std::cout << arr2[i] << " ";
-    // }
-    std::cout << std::endl;
+    void *pB = nullptr;
+    pB = new BasicB;
+    BasicA *pA = (BasicA *)pB;
+    pA->m_b = 0;
+    pA->m_i = 1;
     return 0;
 }

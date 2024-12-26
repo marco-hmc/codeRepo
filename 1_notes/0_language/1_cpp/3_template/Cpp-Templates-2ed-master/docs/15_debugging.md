@@ -1,6 +1,6 @@
 ## 浅实例化（Shallow Instantiation）
 
-* 一种简单的减少报错信息长度的方式是提前使用参数
+### 一种简单的减少报错信息长度的方式是提前使用参数
 
 ```cpp
 template <typename T>
@@ -47,7 +47,7 @@ int main() {
 
 ## 原型（Archetype）
 
-* 模板的一个挑战是确保满足特定约束的实参都能通过编译，为了测试满足要求的模板参数，引入原型的概念。原型是用户定义的类，以尽可能小的方式来满足模板大多数要求，而不提供任何外来的操作
+### 模板的一个挑战是确保满足特定约束的实参都能通过编译，为了测试满足要求的模板参数，引入原型的概念。原型是用户定义的类，以尽可能小的方式来满足模板大多数要求，而不提供任何外来的操作
 
 ```cpp
 // 要求 T 是可比较类型
@@ -77,7 +77,7 @@ template int find(const EqualityComparable*, int, const EqualityComparable&);
 int main() {}
 ```
 
-* 实例化将失败，改用 `operator==` 比较即可解决此问题
+### 实例化将失败，改用 `operator==` 比较即可解决此问题
 
 ```cpp
 template <typename T>
@@ -90,7 +90,7 @@ int find(const T* a, int n, const T& v) {
 }
 ```
 
-* 但这又在无意中对结果使用了 `operator!`，如果要发现这点，在 ConvertibleToBool 中禁用 `operator!` 即可，当其被使用时将报错
+### 但这又在无意中对结果使用了 `operator!`，如果要发现这点，在 ConvertibleToBool 中禁用 `operator!` 即可，当其被使用时将报错
 
 ```cpp
 struct ConvertibleToBool {
@@ -99,12 +99,12 @@ struct ConvertibleToBool {
 };
 ```
 
-* 可以再对原型做其他扩展，比如禁用 `operator&&` 和 `operator||` 来找出其他的一些模板定义中的问题
+### 可以再对原型做其他扩展，比如禁用 `operator&&` 和 `operator||` 来找出其他的一些模板定义中的问题
 
 ## 跟踪程序（Tracer）
 
-* 以上都是编译或链接时的 bug，更大的挑战是确保程序在运行期表现正确
-* Tracer 是一个用户定义的类，它能用作要测试的模板的实参。通常 tracer 也是一个原型，但包含一些额外的信息。下面是一个用于测试 [std::sort](https://en.cppreference.com/w/cpp/algorithm/sort) 的 tracer，它提供 [std::sort](https://en.cppreference.com/w/cpp/algorithm/sort) 需要的功能（比如 `operator==` 和 `operator>`），并给出算法开销的直观结果，但不揭示排序模板的正确性
+### 以上都是编译或链接时的 bug，更大的挑战是确保程序在运行期表现正确
+### Tracer 是一个用户定义的类，它能用作要测试的模板的实参。通常 tracer 也是一个原型，但包含一些额外的信息。下面是一个用于测试 [std::sort](https://en.cppreference.com/w/cpp/algorithm/sort) 的 tracer，它提供 [std::sort](https://en.cppreference.com/w/cpp/algorithm/sort) 需要的功能（比如 `operator==` 和 `operator>`），并给出算法开销的直观结果，但不揭示排序模板的正确性
 
 ```cpp
 #include <algorithm>

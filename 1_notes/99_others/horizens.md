@@ -1,4 +1,4 @@
-* java-history
+### java-history
   * 因为C++需要有不同的编译器才能实现跨平台的效果，而为不同的家庭设备开发一种跨平台通用的系统，才有了java。
   * java实现跨平台是通过jvm
   * 后来因为java适合跨平台项目，就用java前身语言oak写了一个浏览器webRunner，除了支持渲染html，还可以跑oak，即java applet。
@@ -85,3 +85,15 @@ ODB: 针对 C++ 的特性进行了优化,能够提供较好的性能.
   * 从编程模式出发:比如MVC架构/MVVM架构,规定了代码如何进行逻辑分离.
   * 从客户端出发:比如[B/S架构](https://baike.baidu.com/item/B/S%E7%BB%93%E6%9E%84/4868588)/[C/S架构](https://baike.baidu.com/item/%E6%9C%8D%E5%8A%A1%E5%99%A8-%E5%AE%A2%E6%88%B7%E6%9C%BA/5937024)
   * 从服务器端出发:比如分布式架构/微服务架构
+
+
+#### glfw是什么
+  * GLFW 的全称是 Graphics Library Framework，用于创建窗口、管理 OpenGL/Vulkan 上下文和处理输入事件。
+
+#### cygwin 是什么？
+Cygwin 是一个运行在 Windows 系统上的软件工具，旨在提供一个类似于 Linux/Unix 环境的运行时。它通过模拟 Linux 的 API，让用户能够在 Windows 上运行许多 Linux 应用程序和工具。
+Cyg：来自 Cygnet 或 Cyg（表示与 Windows 有关），意指它运行在 Windows 系统上。
+
+    "Cyg" 可能源自 Cygnet，意为“小天鹅”，与 GNU（自由软件基金会的吉祥物为一只野天鹅）形成呼应。
+
+win：直接代表 Windows 操作系统。

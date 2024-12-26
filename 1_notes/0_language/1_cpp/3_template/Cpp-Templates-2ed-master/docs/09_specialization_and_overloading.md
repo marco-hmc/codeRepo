@@ -1,6 +1,7 @@
 ## [函数模板重载](https://en.cppreference.com/w/cpp/language/function_template#Function_template_overloading)
 
-* 对于实参推断能匹配多个模板的情况，标准规定了偏序（partial ordering）规则，最终将调用最特殊（能接受更少类型）的模板
+### 偏序
+对于实参推断能匹配多个模板的情况，标准规定了偏序（partial ordering）规则，最终将调用最特殊（能接受更少类型）的模板
 
 ```cpp
 #include <cassert>
@@ -28,7 +29,7 @@ int main() {
   assert(jc::f(nullptr) == 1);  // nullptr 推断为 std::nullptr_t，匹配第一个模板
 }
 ```
-
+### 偏序规则2
 * 对于两个模板，用实参替代第一个模板的参数，替代后的结果作为实参去推断第二个模板，如果推断成功，反过来用第二个模板推断第一个模板，若推断失败，则第一个模板更特殊，如果均推断失败或推断成功，则两个模板没有偏序关系
 
 ```cpp
@@ -74,7 +75,7 @@ int main() {
 }
 ```
 
-* 函数模板可以和非模板函数重载
+### 函数模板可以和非模板函数重载
 
 ```cpp
 #include <iostream>
@@ -104,7 +105,7 @@ int main() {
 }
 ```
 
-* 变参模板的重载
+### 变参模板的重载
 
 ```cpp
 namespace jc {
@@ -138,7 +139,7 @@ int main() {}
 
 ## [特化（Specialization）](https://en.cppreference.com/w/cpp/language/template_specialization)
 
-* 函数模板特化引入了重载和实参推断，如果能推断特化版本，就可以不显式声明模板实参
+#### 函数模板特化引入了重载和实参推断，如果能推断特化版本，就可以不显式声明模板实参
 
 ```cpp
 #include <cassert>
@@ -175,7 +176,7 @@ int main() {
 }
 ```
 
-* 函数模板的特化不能有默认实参，但会使用要被特化的模板的默认实参
+#### 函数模板的特化不能有默认实参，但会使用要被特化的模板的默认实参
 
 ```cpp
 namespace jc {
@@ -197,7 +198,7 @@ static_assert(f<int>() == 2);
 int main() {}
 ```
 
-* 类模板特化的实参列表必须对应模板参数，如果有默认实参可以不指定对应参数。可以特化整个类模板，也可以特化部分成员。如果对某种类型特化类模板成员，就不能再特化整个类模板，其他未特化的成员会被保留
+#### 类模板特化的实参列表必须对应模板参数，如果有默认实参可以不指定对应参数。可以特化整个类模板，也可以特化部分成员。如果对某种类型特化类模板成员，就不能再特化整个类模板，其他未特化的成员会被保留
 
 ```cpp
 #include <cassert>
@@ -263,8 +264,7 @@ int main() {
   assert((jc::A<char, char>::B<bool>{}.j == 3));
 }
 ```
-
-* 类模板特化必须在实例化之前，对已实例化的类型不能再进行特化
+### 类模板特化必须在实例化之前，对已实例化的类型不能再进行特化
 
 ```cpp
 namespace jc {
@@ -286,8 +286,7 @@ int main() {}
 ```
 
 ## [偏特化（Partial Specialization）](https://en.cppreference.com/w/cpp/language/partial_specialization)
-
-* 类模板偏特化限定一些类型，而非某个具体类型
+### 类模板偏特化限定一些类型，而非某个具体类型
 
 ```cpp
 namespace jc {
@@ -363,8 +362,7 @@ int main() {
   // jc::A<const int[3]>{};  // 错误：匹配多个版本
 }
 ```
-
-* [变量模板（variable template）](https://en.cppreference.com/w/cpp/language/variable_template)的特化和偏特化
+### [变量模板（variable template）](https://en.cppreference.com/w/cpp/language/variable_template)的特化和偏特化
 
 ```cpp
 #include <cassert>

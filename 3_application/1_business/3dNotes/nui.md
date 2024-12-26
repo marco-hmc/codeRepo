@@ -1,0 +1,173 @@
+- nui 模块定义：
+  负责软件 UI 框架和命令框架的设计和维护，并提供良好的平台交互设计方案。
+
+- 描述：
+  负责 ZW3D 软件 UI 框架和命令框架的设计和维护工作，保证框架的稳定性易用性和扩展性。
+  响应用户对产品界面及交互的相关需求，提供良好的交互设计方案。
+  UI 设计组需要对 UI 框架和命令框架未来发展方向具有前瞻性的了解，能够对平台未来框架的发展做出指导工作。
+
+- 模块：
+  介绍下目前 UI 组负责的一些代码模块范围，主要是 Source 源码目录下的 nui、in、gfx/gui、gfx/guiw 等文件夹。
+  当然，由于目前模块化做的不是很好，这些文件夹下面的内容也可能有其他模块的内容，后续我们会将模块边界定义更加清晰，实现模块化。
+
+### nui
+
+- nui
+  - CommandSystem
+    - QAction 相关
+      - Action 对象类（ZsCs::Action）
+      - Action 池（ZsCs::ActionPool）
+      - Action 映射器基类（ZsCs::ActionMapper）
+      - QWidget 映射器基类（ZsCs::WidgetMapper）
+    - 指令系统
+      - 指令对象基类 （ZsCs::Command）
+      - 指令工厂类 （ZsCs::CommandFactory）
+      - 指令执行器 （ZsCs::CommandInvoker）
+      - 指令管理器 （ZsCs::CommandManager）
+      - 指令管道 （ZsCs::CommandPipe）
+    - 命令系统
+      - 命令参数数据基类 （ZsCs::Parameter）
+      - 命令模板类 （ZsCs::Template）
+      - 命令模板池 （ZsCs::TemplatePool）
+      - 命令模板管理类 （ZsCs::TemplateTool）
+    - Escaper 机制
+      - Escaper 对象基类 （ZsCs::Escaper）
+      - Escaper 管道类 （ZsCs::EscaperPipe）
+    - UI 模块对象工厂类（ZsCs::Factory）
+    - UI 模块对象构建器（ZsCs::Builder）
+  - CommonControls
+    - 模板控件（nui/CommonControls/Template）
+    - 普通 gui 控件
+  - CommonControlsPlugin
+    - CommonControls 控件插件（用于在 Qt Designer 上加载自定义控件）
+  - DocumentSystem
+    - 文档数据库管理类 （ZsDs::Document、ZsDs::Database）
+  - DrawingInstance
+    - 应用程序实例类（ZsDi::DrawingStudio）
+    - 应用程序入口（DiModuleEntry.cpp）
+    - 注册函数和符号（DiForceSymRef.cpp）
+    - 录宏相关操作 （DiMacroHandler.cpp）
+    - 界面管理类（FormManager、FormConnector）
+    - 指令系统：指令对象类 （nui/DrawingInstance/Commands）
+    - 错误日志窗口功能（nui/DrawingInstance/Consumers）
+    - 侧边栏、多文档区对象 （nui/DrawingInstance/Controls）
+    - Pipe Escapers 对象 （nui/DrawingInstance/Escapers）
+    - 工厂类 （nui/DrawingInstance/Factories）
+    - CheckableTextComboBox 控件 handle 类 （nui/DrawingInstance/FieldHandler）
+    - Log 系统 （DiLogSystem.cpp、nui/DrawingInstance/Strategies）
+    - 模板控件观察者模式相关类 （DiLogSystem.cpp、nui/DrawingInstance/Template）
+  - GraphicsSystem
+    - QGLWidget 显示窗口设备 （ZsGs::Device）
+    - QGraphicsScene 场景类 （ZsGs::Scene）
+    - QGraphicsItem 图元类 （ZsGs::World）
+  - NuiShared
+    - 独立程序样式适配 （adaptToHR）
+  - ProcessManager
+    - 进程管理器 （QProcess）
+  - QtnRibbon
+    - 基于 Qt 的 Office 界面风格组件
+  - QtnRibbonDsgn
+    - QtnRibbon 提供的一些组件及插件类
+  - QtnStylePlugin
+    - QtnRibbon 提供的样式插件
+  - ResourceCompiler
+    - Qt 资源编译小程序
+  - ResourceSystem
+    - 资源管理系统（资源编译、资源加载等功能）
+  - UserInterface
+    - 应用程序主界面及相关类（UiDrawingDesigner、UiMdiWidget 等）
+    - 界面管理类（UiFormManager、UiFormConnector、UiFormForwarder 等）
+    - 功能窗口相关类（UiErrorWidget、UiBalloonWidget、UiExcelWidget 等）
+    - Customize 界面类（nui/UserInterface/Cui）
+    - 工厂类 （nui/DrawingInstance/Factories）
+    - 控件 Handle 类（nui/DrawingInstance/FieldHandle）
+    - 侧边栏管理器（nui/DrawingInstance/Managers）
+    - 控件映射器类（nui/DrawingInstance/Mappers）
+    - File 页面相关类（nui/DrawingInstance/Pages）
+    - 配置资源相关类（nui/DrawingInstance/Profile）
+    - 模板控件观察者模式基类（nui/DrawingInstance/Template）
+
+### in
+
+- in
+  - 命令模块
+    - 命令及参数相关接口 （ZsInCmd.cpp、ZsInParm.cpp、ZsInTpl.cpp）
+    - 参数激活管理器 、命令派发器、命令对象、命令参数基类（in/src/cmd）
+    - 命令参数 （in/src/parm）
+    - 命令及参数相关接口 （in/src/class）
+    - 命令执行相关接口 （InEval.cpp）
+    - Gui 命令相关相关接口 （InGui.cpp）
+    - 新命令执行相关接口 （InNew.cpp）
+    - 模板命令界面相关接口 （InOpt.cpp）
+  - 模板命令 form 相关接口 （InForm.cpp）
+  - 显示窗口光标线绘制 （InCursorStateImp.cpp）
+  - 事件相关
+    - 显示窗口事件操作 （InImpMask.c、InDyn.cpp）
+    - 事件循环相关接口 （InEvent.cpp）
+    - 事件 handle 相关接口 （InEvt.c）
+    - 事件操作及管理相关接口 （InMgr.cpp）
+    - VxInput 相关 （VxInput.cpp）
+  - vdata 数据相关
+    - 数据编辑、Pick、显示等接口 （InFormData.cpp）
+    - log/get vadata 数据相关接口 （InInp.cpp、InData.cpp）
+  - tools 工具类
+    - 字符串不同编码解析接口 （InAsc.cpp）
+    - 命令文件浏览器界面（InBrowser.cpp）
+    - 文件对话框（InGuiDirSB.cpp、InGuiFileSB.cpp）
+    - 文字编辑器（InTextEditor.cpp）
+    - Message 对话框（InGuiGetOpt.cpp、InGuiGetReply.cpp、InGuiShowMsg.cpp、InGuiShowOpt.cpp）
+    - 多列树属性管理器（InTreeAttrColumnMgr.cpp）
+  - 指令字符解析业务逻辑 （InUtils.cpp）
+  - 事物相关接口 （InXn.cpp）
+  - 参数激活相关业务功能（in/src/wid）
+
+### gfx
+
+- gfx
+  - gui
+    - 事件接口 （uiEvt.cpp）
+    - gui 界面接口 （uiGui.cpp）
+    - 显示绘制相关接口 （ZsDsp.cpp）
+    - 宏相关接口 （uiMacro.cpp）
+  - guiw
+    - 控件接口
+      - 颜色接口 （uiColor.cpp）
+      - 勾选框接口 （uiCheckBox.cpp）
+      - 下拉框接口 （uiCombo.cpp）
+      - 文字控件接口 （uiLabel.cpp）
+      - 列表接口 （uiList.cpp）
+      - 按钮控件接口 （uiMatrixButtons.cpp）
+      - RealNumberEdit 接口 （uiNumIn.cpp）
+      - 滑块接口 （uiSlider.cpp）
+      - 分离部件接口 （uiSplitter.cpp）
+      - tab 控件接口 （uiTabCtrl.cpp）
+      - 表格控件接口 （uiTable.cpp）
+      - 文本控件接口 （uiText.cpp）
+      - 树接口 （uiTree.cpp）
+    - 界面接口
+      - 文件对话框相关 （uiCFileDialog.cpp、uiQFileDialog.cpp、uiZwFileDialog.cpp）
+      - 文字编辑器接口 （uiEditor.cpp）
+      - 界面相关接口 （uiFormUtils.cpp）
+      - SaveFile 界面相关接口 （uiSaveFile.cpp）
+      - TolTable 界面接口 （uiTolTable.cpp）
+      - 弹出框接口 （uiGetOpt.cpp、uiGetReplay.cpp、uiShowMsg.cpp、uiShowOpt.cpp）
+    - 其他接口
+      - 菜单、Ribbon 栏、PopupWidget、侧边栏等接口 （uiInterface.cpp）
+      - 状态栏命令输入相关接口 （uiBWtaUtils.cpp）
+      - 鼠标形状接口 （uiCursor.cpp）
+      - 路径和文件接口 （uiDirSB.cpp、uiFileSB.cpp、uiQFileSB.cpp）
+      - Escaper 接口 （uiEscaper.cpp）
+      - Excel 接口 （uiExcel.cpp）
+      - 字体接口 （uiFont.cpp）
+      - 提示信息接口 （uiHint.cpp、uiHintUtils.cpp）
+      - 图片接口 （uiImange.cpp）
+      - ISOPreview 预览接口 （uiISOPreview.cpp）
+      - OleItem 文件文档复合文档等 （uiOleItem.cpp）
+      - PaperPreview 预览接口 （uiPaperPreview.cpp）
+      - PrintPreview 预览接口 （uiPrintPreview.cpp）
+      - 注册表接口 （uiReg.cpp）
+      - 远程调试接口 （uiRemoteGrphDbg.cpp）
+      - SheetTab 接口 （uiSheetTabUtils.cpp）
+      - 声音接口 （uiSound.cpp）
+      - 定时器接口 （uiTimer.cpp）
+      - 日期时间接口 （uiTimeToLocalString.cpp）

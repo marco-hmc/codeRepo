@@ -1,96 +1,99 @@
 #include <iostream>
-
-namespace Method1 {
-template <typename T> struct has_type {
-  template <typename C> static char test(typename C::type *);
-
-  template <typename C> static int test(...);
-
-  static const bool value = sizeof(test<T>(nullptr)) == sizeof(char);
-};
-
-struct A {
-  typedef int type;
-};
-struct B {};
-
-void test_has_type() {
-  std::cout << std::boolalpha;
-  std::cout << has_type<A>::value << '\n'; // 输出true
-  std::cout << has_type<B>::value << '\n'; // 输出false
-}
-} // namespace Method1
-
-namespace Method2 {
 #include <type_traits>
 
-template <typename, typename = std::void_t<>>
-struct has_type : std::false_type {};
+/*
+2. has_type 和 has_function 怎么用？
+    has_type 和 has_function 是模板元编程工具，用于在编译时检查类型是否具有特定的成员类型或成员函数。
+    它们常用于 SFINAE（Substitution Failure Is Not An Error）技术中，根据条件选择合适的模板实例化。
+*/
 
-template <typename T>
-struct has_type<T, std::void_t<typename T::type>> : std::true_type {};
+namespace hasUsage {
+    // has_type 的实现
+    template <typename, typename = std::void_t<>>
+    struct has_type : std::false_type {};
 
-struct A {
-  typedef int type;
-};
-struct B {};
+    template <typename T>
+    struct has_type<T, std::void_t<typename T::type>> : std::true_type {};
 
-void test_has_type() {
-  std::cout << std::boolalpha;
-  std::cout << has_type<A>::value << std::endl; // 输出true
-  std::cout << has_type<B>::value << std::endl; // 输出false
-}
-} // namespace Method2
+    // has_function 的实现
+    template <typename, typename = std::void_t<>>
+    struct has_function : std::false_type {};
 
-//////////////////////////////////////////////////////
-namespace Method1 {
-template <typename T> struct has_function {
-  template <typename C> static char test(decltype(&C::function));
+    template <typename T>
+    struct has_function<T, std::void_t<decltype(&T::function)>>
+        : std::true_type {};
 
-  template <typename C> static int test(...);
+    // 示例类型
+    struct A {
+        typedef int type;
+    };
 
-  static const bool value = sizeof(test<T>(0)) == sizeof(char);
-};
+    struct B {};
 
-struct C {
-  void function() {}
-};
-struct D {};
+    struct C {
+        void function() {}
+    };
 
-void test_has_function() {
-  std::cout << std::boolalpha;
-  std::cout << has_function<C>::value << '\n'; // 输出true
-  std::cout << has_function<D>::value << '\n'; // 输出false
-}
-} // namespace Method1
+    struct D {};
 
-namespace Method2 {
+    void test() {
+        std::cout << std::boolalpha;
+        std::cout << "has_type<A>::value: " << has_type<A>::value
+                  << std::endl;  // 输出 true
+        std::cout << "has_type<B>::value: " << has_type<B>::value
+                  << std::endl;  // 输出 false
+        std::cout << "has_function<C>::value: " << has_function<C>::value
+                  << std::endl;  // 输出 true
+        std::cout << "has_function<D>::value: " << has_function<D>::value
+                  << std::endl;  // 输出 false
+    }
+}  // namespace hasUsage
 
-template <typename, typename = std::void_t<>>
-struct has_function : std::false_type {};
+////////////////////////////////////////////////////////////////////
+namespace hasImpl {
+    // has_type 的实现
+    template <typename, typename = std::void_t<>>
+    struct has_type : std::false_type {};
 
-template <typename T>
-struct has_function<T, std::void_t<decltype(&T::function)>> : std::true_type {};
+    template <typename T>
+    struct has_type<T, std::void_t<typename T::type>> : std::true_type {};
 
-// 测试代码
-struct C {
-  void function() {}
-};
+    // has_function 的实现
+    template <typename, typename = std::void_t<>>
+    struct has_function : std::false_type {};
 
-struct D {};
+    template <typename T>
+    struct has_function<T, std::void_t<decltype(&T::function)>>
+        : std::true_type {};
 
-void test_has_function() {
-  std::cout << std::boolalpha;
-  std::cout << has_function<C>::value << std::endl; // 输出true
-  std::cout << has_function<D>::value << std::endl; // 输出false
-}
-} // namespace Method2
-/////////////////////////////////////////////////////
+    // 示例类型
+    struct A {
+        typedef int type;
+    };
+
+    struct B {};
+
+    struct C {
+        void function() {}
+    };
+
+    struct D {};
+
+    void test() {
+        std::cout << std::boolalpha;
+        std::cout << "has_type<A>::value: " << has_type<A>::value
+                  << std::endl;  // 输出 true
+        std::cout << "has_type<B>::value: " << has_type<B>::value
+                  << std::endl;  // 输出 false
+        std::cout << "has_function<C>::value: " << has_function<C>::value
+                  << std::endl;  // 输出 true
+        std::cout << "has_function<D>::value: " << has_function<D>::value
+                  << std::endl;  // 输出 false
+    }
+}  // namespace hasImpl
 
 int main() {
-  Method1::test_has_type();
-  Method2::test_has_type();
-  Method1::test_has_function();
-  Method2::test_has_function();
-  return 0;
+    hasUsage::test();
+    hasImpl::test();
+    return 0;
 }

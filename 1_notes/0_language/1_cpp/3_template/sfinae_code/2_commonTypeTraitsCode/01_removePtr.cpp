@@ -1,8 +1,83 @@
-// template <typename T> class RemovePointer<T *> {
-// public:
-//   // 如果是传进来的是一个指针，我们就剥夺一层，直到指针形式不存在为止。
-//   // 例如 RemovePointer<int**>，Result 是 RemovePointer<int*>::Result，
-//   // 而 RemovePointer<int*>::Result 又是 int，最终就变成了我们想要的
-//   // int，其它也是类似。
-//   typedef typename RemovePointer<T>::Result Result;
-// };
+#include <iostream>
+#include <type_traits>
+
+/*
+1. RemovePointer 怎么用？
+    RemovePointer 是一个模板，用于递归地移除指针类型，直到不再是指针类型为止。
+    它可以用于模板元编程中，处理嵌套指针类型。
+*/
+
+namespace removePointerUsage {
+    // 定义 RemovePointer 模板
+    template <typename T>
+    struct RemovePointer {
+        using Result = T;
+    };
+
+    template <typename T>
+    struct RemovePointer<T*> {
+        using Result = typename RemovePointer<T>::Result;
+    };
+
+    // 静态断言测试
+    static_assert(std::is_same<RemovePointer<int>::Result, int>::value,
+                  "RemovePointer<int>::Result 应该是 int");
+    static_assert(std::is_same<RemovePointer<int*>::Result, int>::value,
+                  "RemovePointer<int*>::Result 应该是 int");
+    static_assert(std::is_same<RemovePointer<int**>::Result, int>::value,
+                  "RemovePointer<int**>::Result 应该是 int");
+    static_assert(std::is_same<RemovePointer<int***>::Result, int>::value,
+                  "RemovePointer<int***>::Result 应该是 int");
+
+    void test() {
+        std::cout << "RemovePointer<int>::Result: "
+                  << typeid(RemovePointer<int>::Result).name() << std::endl;
+        std::cout << "RemovePointer<int*>::Result: "
+                  << typeid(RemovePointer<int*>::Result).name() << std::endl;
+        std::cout << "RemovePointer<int**>::Result: "
+                  << typeid(RemovePointer<int**>::Result).name() << std::endl;
+        std::cout << "RemovePointer<int***>::Result: "
+                  << typeid(RemovePointer<int***>::Result).name() << std::endl;
+    }
+}  // namespace removePointerUsage
+
+////////////////////////////////////////////////////////////////////
+namespace removePointerImpl {
+    // RemovePointer 的实现
+    template <typename T>
+    struct RemovePointer {
+        using Result = T;
+    };
+
+    template <typename T>
+    struct RemovePointer<T*> {
+        using Result = typename RemovePointer<T>::Result;
+    };
+
+    // 静态断言测试
+    static_assert(std::is_same<RemovePointer<int>::Result, int>::value,
+                  "RemovePointer<int>::Result 应该是 int");
+    static_assert(std::is_same<RemovePointer<int*>::Result, int>::value,
+                  "RemovePointer<int*>::Result 应该是 int");
+    static_assert(std::is_same<RemovePointer<int**>::Result, int>::value,
+                  "RemovePointer<int**>::Result 应该是 int");
+    static_assert(std::is_same<RemovePointer<int***>::Result, int>::value,
+                  "RemovePointer<int***>::Result 应该是 int");
+
+    void test() {
+        std::cout << "RemovePointer<int>::Result: "
+                  << typeid(RemovePointer<int>::Result).name() << std::endl;
+        std::cout << "RemovePointer<int*>::Result: "
+                  << typeid(RemovePointer<int*>::Result).name() << std::endl;
+        std::cout << "RemovePointer<int**>::Result: "
+                  << typeid(RemovePointer<int**>::Result).name() << std::endl;
+        std::cout << "RemovePointer<int***>::Result: "
+                  << typeid(RemovePointer<int***>::Result).name() << std::endl;
+    }
+}  // namespace removePointerImpl
+
+int main() {
+    removePointerUsage::test();
+    removePointerImpl::test();
+    return 0;
+}

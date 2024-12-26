@@ -5,7 +5,7 @@ class fibit {
     size_t a{0};
     size_t b{1};
 
-   public:
+  public:
     fibit() = default;
     explicit fibit(size_t i_) : i{i_} {}
 
@@ -23,7 +23,7 @@ class fibit {
 class fib_range {
     size_t end_n;
 
-   public:
+  public:
     fib_range(size_t end_n_) : end_n{end_n_} {}
     fibit begin() const { return fibit{}; }
     fibit end() const { return fibit{end_n}; }

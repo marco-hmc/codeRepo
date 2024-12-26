@@ -131,3 +131,25 @@
 龙书,即编译原理,依旧是内容最为完整的编译器单本书籍.由于过分强调一些如今不够时新的主题的细节,比如解析,这本书招致了恶评.然而事实上,这本书从未打算供人一页一页的学习,而仅仅是为了给教师准备一门课程提供足够的材料.类似地,自学者可以从书中量身按需挑选主题,或者最好依照公开课授课教师在课程大纲中的建议.
 
 
+#### design
+- [分布式系统](https://www.youtube.com/watch?v=UEAMfLPZZhE&list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB)（由 Dr. Martin Kleppmann 主讲）
+- [系统设计面试：内部指南](https://www.amazon.in/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
+- [微服务](https://microservices.io)（由 Chris Richardson 主讲）
+- [无服务器计算](https://en.wikipedia.org/wiki/Serverless_computing)
+- [Kubernetes](https://kubernetes.io)
+
+还建议积极关注那些在大规模实践中应用我们在课程中学到的知识的公司的工程博客：
+
+- [Microsoft Engineering](https://engineering.microsoft.com)
+- [Google Research Blog](http://googleresearch.blogspot.com)
+- [Netflix Tech Blog](http://techblog.netflix.com)
+- [AWS Blog](https://aws.amazon.com/blogs/aws)
+- [Facebook Engineering](https://www.facebook.com/Engineering)
+- [Uber Engineering Blog](http://eng.uber.com)
+- [Airbnb Engineering](http://nerds.airbnb.com)
+- [GitHub Engineering Blog](https://github.blog/category/engineering)
+- [Intel Software Blog](https://software.intel.com/en-us/blogs)
+- [LinkedIn Engineering](http://engineering.linkedin.com/blog)
+- [Paypal Developer Blog](https://medium.com/paypal-engineering)
+- [Twitter Engineering](https://blog.twitter.com/engineering)
+

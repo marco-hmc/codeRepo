@@ -1,53 +1,57 @@
 #include <functional>
 #include <iostream>
 
-namespace identifier1 {
-template <typename F> struct Y {
-  F f;
-  template <typename... Args> auto operator()(Args &&...args) const {
-    return f(*this, std::forward<Args>(args)...);
-  }
-};
+namespace FactorialByYCombinator {
+    template <typename F>
+    struct Y {
+        F f;
+        template <typename... Args>
+        auto operator()(Args &&...args) const {
+            return f(*this, std::forward<Args>(args)...);
+        }
+    };
 
-template <typename F> Y<F> make_y_combinator(F &&f) {
-  return {std::forward<F>(f)};
-}
-
-void test_y_combinator() {
-  auto factorial = make_y_combinator([](auto self, int n) -> int {
-    if (n <= 1) {
-      return 1;
+    template <typename F>
+    Y<F> make_y_combinator(F &&f) {
+        return {std::forward<F>(f)};
     }
-    return n * self(n - 1);
-  });
-  std::cout << "Factorial of 5: " << factorial(5) << '\n';
-}
-} // namespace identifier1
+
+    void test_y_combinator() {
+        auto factorial = make_y_combinator([](auto self, int n) -> int {
+            if (n <= 1) {
+                return 1;
+            }
+            return n * self(n - 1);
+        });
+        std::cout << "Factorial of 5: " << factorial(5) << '\n';
+    }
+}  // namespace FactorialByYCombinator
 
 // Factorial function using Y combinator
 ////////////////////////////////////////////////////////////////////////////////////////
 
-namespace identifier2 {
-auto Y = [](auto f) {
-  return [f](auto x) -> std::function<int(int)> {
-    return f([x](auto v) { return x(x)(v); });
-  }([f](auto x) -> std::function<int(int)> {
-           return f([x](auto v) { return x(x)(v); });
-         });
-};
+namespace FactorialByY {
+    auto Y = [](auto f) {
+        return [f](auto x) -> std::function<int(int)> {
+            return f([x](auto v) { return x(x)(v); });
+        }([f](auto x) -> std::function<int(int)> {
+                   return f([x](auto v) { return x(x)(v); });
+               });
+    };
 
-auto factorial = Y(
-    [](auto f) { return [f](int n) { return (n == 0) ? 1 : n * f(n - 1); }; });
+    auto factorial = Y([](auto f) {
+        return [f](int n) { return (n == 0) ? 1 : n * f(n - 1); };
+    });
 
-void test_y_combinator() {
-  std::cout << "Factorial of 5: " << factorial(5) << '\n';
-}
-} // namespace identifier2
+    void test_y_combinator() {
+        std::cout << "Factorial of 5: " << factorial(5) << '\n';
+    }
+}  // namespace FactorialByY
 
 int main() {
-  identifier1::test_y_combinator();
-  identifier2::test_y_combinator();
-  return 0;
+    FactorialByYCombinator ::test_y_combinator();
+    FactorialByY::test_y_combinator();
+    return 0;
 }
 
 /*

@@ -6,6 +6,8 @@ struct Data {
     int dataValue;
 };
 
+void test(int xxx) {}
+
 int main() {
     MemPool *mp = new MemPool(2 * GB + 1000 * MB + 1000 * KB,
                               1 * GB + 500 * MB + 500 * KB);

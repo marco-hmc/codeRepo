@@ -1,6 +1,6 @@
 ## 空基类优化（EBCO，Empty Base Class Optimization）
 
-* 为了保证给类动态分配内存时有不同的地址，C++ 规定空类大小必须大于 0
+### 为了保证给类动态分配内存时有不同的地址，C++ 规定空类大小必须大于 0
 
 ```cpp
 namespace jc {
@@ -20,7 +20,7 @@ int main() {
 }
 ```
 
-* 一般编译器将空类大小设为 1 字节，对于空类存在继承关系的情况，如果支持 EBCO，可以优化派生类的空间占用大小
+### 一般编译器将空类大小设为 1 字节，对于空类存在继承关系的情况，如果支持 EBCO，可以优化派生类的空间占用大小
 
 ```cpp
 /* 不支持 EBCO 的内存布局：
@@ -50,7 +50,7 @@ static_assert(sizeof(A) == sizeof(C));
 int main() {}
 ```
 
-* 模板参数可能是空类
+### 模板参数可能是空类
 
 ```cpp
 namespace jc {
@@ -71,7 +71,7 @@ static_assert(sizeof(C<A, B>) == 2);
 int main() {}
 ```
 
-* 为了利用 EBCO 压缩内存空间，可以将模板参数设为基类
+### 为了利用 EBCO 压缩内存空间，可以将模板参数设为基类
 
 ```cpp
 namespace jc {
@@ -89,7 +89,7 @@ static_assert(sizeof(C<A, B>) == 1);
 int main() {}
 ```
 
-* 但模板参数可能是相同类型，或者不一定是类，此时将其设为基类在实例化时会报错。如果已知一个模板参数类型为空类，把可能为空的类型参数与一个不为空的成员利用 EBCO 合并起来，即可把空类占用的空间优化掉
+### 但模板参数可能是相同类型，或者不一定是类，此时将其设为基类在实例化时会报错。如果已知一个模板参数类型为空类，把可能为空的类型参数与一个不为空的成员利用 EBCO 合并起来，即可把空类占用的空间优化掉
 
 ```cpp
 namespace jc {
@@ -134,7 +134,7 @@ int main() {}
 
 ## 奇异递归模板模式（CRTP，The Curiously Recurring Template Pattern）
 
-* CRTP 的实现手法是将派生类作为基类的模板参数
+### CRTP 的实现手法是将派生类作为基类的模板参数
 
 ```cpp
 #include <cassert>
@@ -169,7 +169,7 @@ int main() {
 }
 ```
 
-* 通常大量运算符重载会一起出现，但通常这些运算符只需要一个定义，其他运算符可以提取到基类中基于这一个来实现
+### 通常大量运算符重载会一起出现，但通常这些运算符只需要一个定义，其他运算符可以提取到基类中基于这一个来实现
 
 ```cpp
 #include <cassert>
@@ -202,7 +202,7 @@ int main() {
 }
 ```
 
-* CRTP 基类可以基于 CRTP 派生类暴露的小得多的接口定义大部分接口，这个模式称为 facade 模式
+### CRTP 基类可以基于 CRTP 派生类暴露的小得多的接口定义大部分接口，这个模式称为 facade 模式
 
 ```cpp
 #include <cassert>
@@ -298,7 +298,7 @@ int main() {
 
 ## Mixins
 
-* 使用 Mixins 手法可以更方便地引入额外信息
+### 使用 Mixins 手法可以更方便地引入额外信息
 
 ```cpp
 #include <cassert>
@@ -335,7 +335,7 @@ int main() {
 }
 ```
 
-* CRTP-mixin
+### CRTP-mixin
 
 ```cpp
 #include <cassert>
@@ -390,7 +390,7 @@ int main() {
 }
 ```
 
-* Mixins 参数化成员函数的虚拟性
+### Mixins 参数化成员函数的虚拟性
 
 ```cpp
 #include <cassert>
@@ -428,7 +428,7 @@ int main() {
 
 ## 指定模板参数
 
-* 模板常常带有一长串类型参数，不过通常都设有默认值
+### 模板常常带有一长串类型参数，不过通常都设有默认值
 
 ```cpp
 struct A {};
@@ -439,7 +439,7 @@ template <typename T1 = A, typename T2 = B, typename T3 = C>
 struct MyClass {};
 ```
 
-* 现在想指定某个实参，而其他参数依然使用默认实参
+### 现在想指定某个实参，而其他参数依然使用默认实参
 
 ```cpp
 namespace jc {

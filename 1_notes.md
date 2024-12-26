@@ -1,268 +1,260 @@
-# 下一步
+## 1. doing
 
-现在你已经了解了系统设计的基础知识，以下是一些额外的资源：
-
-- [分布式系统](https://www.youtube.com/watch?v=UEAMfLPZZhE&list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB)（由 Dr. Martin Kleppmann 主讲）
-- [系统设计面试：内部指南](https://www.amazon.in/System-Design-Interview-insiders-Second/dp/B08CMF2CQF)
-- [微服务](https://microservices.io)（由 Chris Richardson 主讲）
-- [无服务器计算](https://en.wikipedia.org/wiki/Serverless_computing)
-- [Kubernetes](https://kubernetes.io)
-
-还建议积极关注那些在大规模实践中应用我们在课程中学到的知识的公司的工程博客：
-
-- [Microsoft Engineering](https://engineering.microsoft.com)
-- [Google Research Blog](http://googleresearch.blogspot.com)
-- [Netflix Tech Blog](http://techblog.netflix.com)
-- [AWS Blog](https://aws.amazon.com/blogs/aws)
-- [Facebook Engineering](https://www.facebook.com/Engineering)
-- [Uber Engineering Blog](http://eng.uber.com)
-- [Airbnb Engineering](http://nerds.airbnb.com)
-- [GitHub Engineering Blog](https://github.blog/category/engineering)
-- [Intel Software Blog](https://software.intel.com/en-us/blogs)
-- [LinkedIn Engineering](http://engineering.linkedin.com/blog)
-- [Paypal Developer Blog](https://medium.com/paypal-engineering)
-- [Twitter Engineering](https://blog.twitter.com/engineering)
-
-
-# References
-
-- [IBM Blogs](https://www.ibm.com/blogs)
-- [Fastly Blogs](https://www.fastly.com/blog)
-- [NS1 Blogs](https://ns1.com/blog)
-- [Grokking the System Design Interview](https://www.designgurus.io/course/grokking-the-system-design-interview)
-- [Grokking Microservices Design Patterns](https://www.designgurus.io/course/grokking-microservices-design-patterns)
-- [System Design Primer](https://github.com/donnemartin/system-design-primer)
-- [AWS Blogs](https://aws.amazon.com/blogs)
-- [Architecture Patterns by Microsoft](https://learn.microsoft.com/en-us/azure/architecture/patterns)
-- [Martin Fowler](https://martinfowler.com)
-- [PagerDuty resources](https://www.pagerduty.com/resources)
-- [VMWare Blogs](https://blogs.vmware.com/learning)
-
+##  2. todo
+  * **project**
+    * template
+      * 
+    * memoryPoolSystem
+      * https://memory-pool-system.readthedocs.io/en/latest/
+    * dataStructure
+      * AVL树
+      * b树
+    * hashTable
+    * otSumbit_python
+    * OS-project-csapp
+      * https://hansimov.gitbook.io/csapp/part1/ch04-processor-architecture
+      * https://github.com/CDDSCLab/training-plan?tab=readme-ov-file
+    * network-project
+      * https://github.com/rkimball/tinytcp
+      * cs144
+      * chatRoom
+    * vs code-plugin
+      可以实现将词汇自动粘贴到某个给定路径,自己用来背单词用.
+    * opengl
+    * spdlog
+      * https://zhuanlan.zhihu.com/p/674073158
+      * https://www.cnblogs.com/shuqin/p/12214439.html
+      * https://zsyyblog.com/3b9abd4f.html
+    * game
+      * tetris-AI-server-clint
 
 dom 解析和流式解析两种
 
-- cygwin 是是什么？
-- gflw 是什么？
-- downDemo github
-
-- 继承的析构函数一般要怎么处理？继承的特殊成员函数怎么处理？
-
-有两个同名函数 func()，形参分别是 Foo 类型指针和 Bar 类型指针，Bar 类型是 Foo 类型的派生类。
-如果有一个 Foo \*bar = new Bar(); 调用 func(bar)，调用的是那一个方法？
-
-- 如何避免代码膨胀？
-- 交互
-  - 操作系统到 qt 到 bim
-- bim 的架构
-- bim 的命令调度
-- bim 的显示
-  - bim 的不同视图下的 ctp 数据差异体现在哪里
-- bim 的构件类型
-- 多线程开发指南
-- 重生成
-- 模型数据
-  - viewItem
-  - docItem
-  - ctp
-    https://confluence.zwcad.com/pages/viewpage.action?pageId=60720467
-
-* 模型编辑
-  - 自己
-    - 预览模式
-  - 重生成
-* 模型显示
-  - graphics
-* undo 实现
-* 离线配置
-* 特征/ 永久命名概念
-*
-
-* 如果有一个全局变量存在，最后是提供统一的操作函数接口。哪怕是一个 int 的++操作也通过函数封装起来，这样可以方便调试。
-* 知道哪些地方修改过。不然这个状态无法追踪在哪里被修改了。
-
-
-比如内存映射，调用栈，同步对象等，连同公司本身的业务都需要有一定的了解。
+- [downDemo github](https://github.com/downdemo?tab=repositories)
 
 ### not re-organized
 
-7、实现一个建议内存池
-如何实现 cpp 的新 feature 比如协程?
-如何用 c 实现 template?
-
----
-
-模板，模板特化，SFINAE，type_traits，形参包，
-结构化绑定及其手搓，具名要求，迭代器 trait，值类别，左右值、泛左值(glvalue)、
-
-纯右值(prvalue)，移动语义，转发引用(俗称万能引用)，std::forward<T>()完美转发，RAII，表达式求值，弃值表达式，不求值表达式，潜在求值表达式，常量表达式，临时量实质化(C++17)，标准布局类，用元编程实现 constexpr 编译期算法(如编译期汉诺塔，编译期递归，拼接字符数组，打函数表)，用户定义字面量，构造函数异常处理，函数 try 块，模块，全局模块片段及其存在的意义，模块分区，在 CMake 工程中声明模块范围库(范围适配器，定制点对象(CPO)，niebloid，ADL 实参依赖查找，常见的范围工厂，视图，老式迭代器对和新式迭代器+哨位概念的对比)，可变仿引用对象的 operator= 成员必须带 const 限定的依据，奇特重现模板模式(CRTP)以及其在 C++20 范围适配器中的应用概念库，requires 子句，约束的归入(subsume)，约束的偏序，concept，原子约束，约束规范化过程，范围库中常用的 concept(可间接写入，可间接读取)协程，协程 promise_type，挂起点，等待体，范围生成器，协程抛异常，格式化器特化，基本格式化器，格式串格式，显式对象形参(C++23)
-
----
-
-5.哈希表
-对哈希表的细节要求很高，比如哈希表的冲突；
-Linux 系统下可能还会问什么是 daemon 进程，如何产生 daemo 进程，什么是僵尸进程，僵尸进程如何产 生和消除(bilibili 问过)突检测、哈希函数常用实现、算法复杂度;比如百度二面就让我写一个哈希表插入元素算法，元素类型是任意类型，
-
-1. AVL 树和 B 树的概念、细节。
-   例如会问 mysql 数据库的索引的实现原理，基本上就等于问你 B 树了
-   红黑树、b+树
-
----
-
 3.操作系统原理性的东西
 Linux 下 elf 文件的节结构，映射到进程地址空间后分别对应哪些段
-相关的问题还有，全局变量、静态存储在进程地址空间的哪里;
-堆和栈的区别，栈的结构，栈的细节一点要搞的特别清楚，因为一些对技术要求比较高的公司会问的比较深入，例如京东的一面是让我先写一个从 1 加到 100 的求和函数，然后让我写出这个函数的汇编代码，如果你对栈的结构(如函数参数入栈顺序、函数局部变量在栈中的布局、栈帧指针和栈顶指针位置)不熟悉的话，这题目就无法答对了:
-栈的问题，可能会以常见的函数调用方式来提问，常见的函数调用有如下 cdecl/stdcal/ thiscal/ fastcall 的区别，比如像 printf 这样具有不定参数的函数为什么不能使用 stdcall;
-饿了么二面问了操作系统的保护模式实模式 9，中断向量表，Linux 下的 CAS,
-以上这些问题的答案，《程序员的自我修养 9:链接、装载与库》这本程序员必读书只中都有。感谢某位网友的分享:
 
+相关的问题还有，全局变量、静态存储在进程地址空间的哪里;
+
+堆和栈的区别，栈的结构，栈的细节一点要搞的特别清楚，因为一些对技术要求比较高的公司会问的比较深入，例如京东的一面是让我先写一个从 1 加到 100 的求和函数，然后让我写出这个函数的汇编代码，如果你对栈的结构(如函数参数入栈顺序、函数局部变量在栈中的布局、栈帧指针和栈顶指针位置)不熟悉的话，这题目就无法答对了:
+
+栈的问题，可能会以常见的函数调用方式来提问，常见的函数调用有如下 cdecl/stdcal/ thiscal/ fastcall 的区别，比如像 printf 这样具有不定参数的函数为什么不能使用 stdcall;
+
+饿了么二面问了操作系统的保护模式实模式 9，中断向量表，Linux 下的 CAS,以上这些问题的答案，《程序员的自我修养 9:链接、装载与库》这本程序员必读书只中都有。感谢某位网友的分享:
+
+Linux 系统下可能还会问什么是 daemon 进程，如何产生 daemo 进程，什么是僵尸进程，僵尸进程如何产 生和消除(bilibili 问过)突检测、哈希函数常用实现、算法复杂度;比如百度二面就让我写一个哈希表插入元素算法，元素类型是任意类型，
 
 图形学，游戏服务器，网络通讯架构，虚拟现实，嵌入式系统，设备驱动，音频视频，ai 底层。网络通讯架构能够拿到这个月薪；
 
-std::variant + std::visit
-
-```cpp
-std::optional<std::reference_wrapper<int>> get(size_t index);
-
-auto x = **vec.get(3);         // 性能读
-auto x = *vec.get(3).value();  // 安全读
-*vec.get(3) = 42;              // 性能写
-vec.get(3).value() = 42;       // 安全写
-```
-
-C++17 的 CTAD 语法
-
-哑元表
-
-```c++
-#pragma omp parallel for default(shared) firstprivate(eps)  private(c, j)
-    for (int i = 0; i < N_POINTS; i++) {
-        for (int j = 0; j < N_POINTS; j++) {
-            c.r = -2.0 + 2.5 * (double)(i) / (double)(N_POINTS) + eps;
-            c.i = 1.125 * (double)(j) / (double)(N_POINTS) + eps;
-            testpoint(c);
-        }
-    }
-```
-傅里叶变化，可以将一个任意曲线函数，转成若干个三角函数表示对吗？
-然后如果一个曲线函数是有限时间域内的，就可以转成频域的多个三个函数内。
-
-std::mem_fn 的实现
-
-https://hansimov.gitbook.io/csapp/part1/ch04-processor-architecture
-https://github.com/CDDSCLab/training-plan?tab=readme-ov-file
 
 
+## c++ todo notes
+### 1. 语言特性
+
+- **结构化绑定及其手搓**：C++17 引入的特性，用于解构对象。
+- **具名要求**：C++20 中的 concept 特性，用于定义类型要求。
+- **迭代器 trait**：用于描述迭代器的特性。
+- **值类别**：包括左右值、泛左值（glvalue）、纯右值（prvalue）等。
+- **移动语义**：C++11 引入的特性，用于优化资源管理。
+- **转发引用（俗称万能引用）**：C++11 引入的特性，用于完美转发。
+- **std::forward<T>() 完美转发**：用于实现完美转发的标准库函数。
+- **表达式求值**：包括弃值表达式、不求值表达式、潜在求值表达式、常量表达式等。
+- **临时量实质化（C++17）**：C++17 引入的特性，用于延长临时对象的生命周期。
+- **标准布局类**：符合特定布局规则的类。
+- **用户定义字面量**：C++11 引入的特性，用于定义自定义的字面量。
+- **构造函数异常处理**：处理构造函数中抛出的异常。
+- **函数 try 块**：用于捕获函数中的异常。
+- **模块**：C++20 引入的特性，用于模块化代码。
+- **全局模块片段及其存在的意义**：C++20 引入的特性，用于定义全局模块片段。
+- **模块分区**：C++20 引入的特性，用于分割模块。
+- **在 CMake 工程中声明模块范围库**：在 CMake 中使用模块的方式。
+- **requires 子句**：C++20 引入的特性，用于定义模板的约束。
+- **约束的归入（subsume）**：C++20 中的 concept 特性，用于约束的归入。
+- **约束的偏序**：C++20 中的 concept 特性，用于定义约束的偏序。
+- **concept**：C++20 引入的特性，用于定义类型要求。
+- **原子约束**：C++20 中的 concept 特性，用于定义原子约束。
+- **约束规范化过程**：C++20 中的 concept 特性，用于规范化约束。
+- **协程**：C++20 引入的特性，用于实现协程。
+- **协程 promise_type**：协程的 promise 类型。
+- **挂起点**：协程中的挂起点。
+- **等待体**：协程中的等待体。
+- **协程抛异常**：协程中的异常处理。
+- **显式对象形参（C++23）**：C++23 引入的特性，用于显式指定对象形参。
+
+### 2. 范围库（Ranges Library）
+
+- **范围适配器**：C++20 引入的特性，用于适配范围。
+- **范围工厂**：用于创建范围的工厂函数。
+- **视图**：C++20 引入的特性，用于表示范围的视图。
+- **老式迭代器对和新式迭代器+哨位概念的对比**：比较传统迭代器对和新的迭代器+哨位概念。
+- **范围生成器**：用于生成范围的生成器函数。
+- **范围库中常用的 concept**：范围库中常用的概念，如可间接写入、可间接读取等。
+
+### 3. 元编程
+
+- **用元编程实现 constexpr 编译期算法**：使用元编程实现编译期算法，如编译期汉诺塔、编译期递归、拼接字符数组、打函数表等。
+- **奇特重现模板模式（CRTP）以及其在 C++20 范围适配器中的应用概念库**：CRTP 模式及其在范围适配器中的应用。
+- C++17 的 CTAD 语法
+
+### 4. 格式化
+
+- **格式化器特化**：自定义格式化器的特化。
+- **基本格式化器**：标准库中的基本格式化器。
+- **格式串格式**：格式化字符串的格式。
+
+### 5. 其他
+
+- **可变仿引用对象的 operator= 成员必须带 const 限定的依据**：解释为什么可变仿引用对象的赋值运算符成员必须带 const 限定。
 
 
-# 地理哈希和四叉树
+#### undo-redo
+Undo/Redo是业务场景中重要的功能之一，Undo/Redo功能常用的实现方式有如下几种：
+（1）基于Command模式的Undo/Redo
 
-## 地理哈希
+实现Undo/Redo功能的经典方法是运用Comamnd设计模式，它将每步操作作为一个命令对象，并提供相应的Undo接口，如下所示：
 
-地理哈希是一种用于将地理坐标（如纬度和经度）编码为短的字母数字字符串的[地理编码](https://en.wikipedia.org/wiki/Address_geocoding)方法。它由 [Gustavo Niemeyer](https://twitter.com/gniemeyer) 于 2008 年创建。
+Class Icommand
+{
+  void Do();
+  void Undo();
+};
 
-例如，坐标为 `37.7564, -122.4016` 的旧金山可以用地理哈希表示为 [`9q8yy9mf`]。
+其中Do函数执行功能，Undo函数回退功能。这样就把命令给实体化了，只要将命令对象给保存下来，需要撤销时执行Undo函数，重做时执行Do函数即可，其实现细节如下下：
 
-### 地理哈希如何工作？
+    申请两个Stack来保存命令对象：UndoStack和RedoStack
+    执行命令时，将命令序列化为Command对象，执行Do方法，存入UndoStack，清空RedoStack
+    撤销命令时，从UndoStack中取出命令，执行Undo方法，存入RedoStack
+    重做命令时，从RedoStack中取出命令，执行Do方法，存入UndoStack
 
-地理哈希是一种分层空间索引，使用 Base-32 字母编码。地理哈希的第一个字符将初始位置标识为 32 个单元格之一。这个单元格还包含 32 个单元格。这意味着要表示一个点，世界会随着每个附加位递归地划分为越来越小的单元格，直到达到所需的精度。精度因子还决定了单元格的大小。
+这种方式的重点时Undo()接口的实现，对于一个命令，其Undo可以分为两种情况，一种是可逆向的操作，这种情况只需要执行一个反向操作就能回退，例如旋转一定角度的逆向操作是简单的反向旋转。另一种是更为复杂的操作，无法简单的逆操作，这个时候就需要备份数据在操作前的状态，Undo时恢复数据，例如两个体做完布尔操作，就很难通过逆操作回退，而不得不备份操作前的数据。
 
-![geohashing](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/geohashing.png)
+灵活运用Comamnd模式可以应对各种Undo操作，但是这种方式Undo和具体的命令业务会耦合在一起，一个可以Undo的操作越具体，它和实现应用的耦合关系就越紧，抽象性就越差，也就越难以复用。
+（2）基于对象序列化的Undo/Redo
 
-地理哈希保证如果地理哈希共享更长的前缀，则点在空间上更接近，这意味着字符串中的字符越多，位置越精确。例如，地理哈希 [`9q8yy9mf`] 和 [`9q8yy9vx`]. 在空间上更接近，因为它们共享前缀 [`9q8yy9`]."。
+基于序列化对象的实现方案，调用命名前，将整个业务对象的所有Field序列化，并保存在UndoStack中。在Undo时，将保存在UndoStack中的序列化的值读出来，对现有的业务对象进行数值还原。由于使用对象序列化的方式来保存对象的历史。所以当UndoStack比较深，或是业务对象比较大的时候会占用比较多的内存，性能上也不尽如人意。但是这种Undo实现方式通用性较好。所以适用范围还是不小的。序列化可以按增量备份的方式进行保存，并且可以通过数据压缩的方式进行一定的优化，但是实现起来相对复杂。
+（3）混合方式
 
-地理哈希还可以用于提供一定程度的匿名性，因为我们不需要暴露用户的确切位置，因为根据地理哈希的长度，我们只知道他们在某个区域内。
+为了解决上面两种Undo实现方式的缺点，既保证通用性，又能减少资源占用。可以将上面的两种方式结合起来， 当然这种方式也有不好的地方，由于抽象程度比较高，所以这种Undo机制并不能很好地和业务逻辑契合。
 
-不同长度的地理哈希的单元格大小如下：
+WK平台的Undo/Redo和回滚功能是基于对象序列化实现的，Undo/Redo/回滚操作高度业务依赖业务场景，实现细节较为困难，为了将Undo/Redo尽量和业务场景剥离开来，需要有一个抽象的数层。这个抽象的数据层只是关注数据的Undo/Redo，而并不关心这些数据属于什么对象，什么命令，这个抽象层就是Stream。
 
-| 地理哈希长度 | 单元格宽度 | 单元格高度 |
-| -------------- | ---------- | ----------- |
-| 1              | 5000 公里  | 5000 公里   |
-| 2              | 1250 公里  | 1250 公里   |
-| 3              | 156 公里   | 156 公里    |
-| 4              | 39.1 公里  | 19.5 公里   |
-| 5              | 4.89 公里  | 4.89 公里   |
-| 6              | 1.22 公里  | 0.61 公里   |
-| 7              | 153 米     | 153 米      |
-| 8              | 38.2 米    | 19.1 米     |
-| 9              | 4.77 米    | 4.77 米     |
-| 10             | 1.19 米    | 0.596 米    |
-| 11             | 149 毫米   | 149 毫米    |
-| 12             | 37.2 毫米  | 18.6 毫米   |
-
-### 用例
-
-以下是地理哈希的一些常见用例：
-
-- 它是一种在数据库中表示和存储位置的简单方法。
-- 它也可以作为 URL 在社交媒体上共享，因为它比纬度和经度更容易共享和记住。
-- 我们可以通过非常简单的字符串比较和高效的索引搜索来高效地找到一个点的最近邻居。
-
-### 示例
-
-地理哈希被广泛使用，并且被流行的数据库支持。
-
-- [MySQL](https://www.mysql.com)
-- [Redis](http://redis.io)
-- [Amazon DynamoDB](https://aws.amazon.com/dynamodb)
-- [Google Cloud Firestore](https://cloud.google.com/firestore)
-
-## 四叉树
-
-四叉树是一种树数据结构，其中每个内部节点恰好有四个子节点。它们通常用于通过递归将二维空间划分为四个象限或区域来进行分区。每个子节点或叶节点存储空间信息。四叉树是 [八叉树](https://en.wikipedia.org/wiki/Octree) 的二维类比，八叉树用于分区三维空间。
-
-![quadtree](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/quadtree.png)
-
-### 四叉树的类型
-
-四叉树可以根据它们表示的数据类型进行分类，包括区域、点、线和曲线。以下是一些常见的四叉树类型：
-
-- 点四叉树
-- 点区域 (PR) 四叉树
-- 多边形地图 (PM) 四叉树
-- 压缩四叉树
-- 边四叉树
-
-### 为什么我们需要四叉树？
-
-仅使用纬度和经度不够吗？为什么我们需要四叉树？虽然理论上使用纬度和经度我们可以通过[欧几里得距离](https://en.wikipedia.org/wiki/Euclidean_distance)确定点之间的距离，但对于实际用例来说，由于其对大数据集的 CPU 密集性，这种方法并不具有可扩展性。
-
-![quadtree-subdivision](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-IV/geohashing-and-quadtrees/quadtree-subdivision.png)
-
-四叉树使我们能够高效地在二维范围内搜索点，这些点定义为纬度/经度坐标或笛卡尔 (x, y) 坐标。此外，我们可以通过仅在达到某个阈值后细分节点来节省进一步的计算。通过应用诸如 [Hilbert 曲线](https://en.wikipedia.org/wiki/Hilbert_curve) 之类的映射算法，我们可以轻松提高范围查询性能。
-
-### 用例
-
-以下是四叉树的一些常见用例：
-
-- 图像表示、处理和压缩。
-- 空间索引和范围查询。
-- 基于位置的服务，如 Google 地图、Uber 等。
-- 网格生成和计算机图形学。
-- 稀疏数据存储。
+Stream是对流数据的抽象，通过Infield/ outfield将对象的数据备份到流上。UndoMemoryStream是用于Undo/Redo和回滚的流数据，其底层数据结构是pageBuffer，基于页管理的内存缓存。pageBuffer是一块块大小固定的缓存块，UndoMemoryStream负责管理这些缓存块，并将序列化数据写在这些缓存块之中。
 
 
-# SLA、SLO、SLI
+#### 1. ELF 文件的节结构
 
-让我们简要讨论一下 SLA、SLO 和 SLI。这些主要与业务和站点可靠性相关，但了解它们仍然很有用。
+- **ELF 文件**：Executable and Linkable Format 文件，是一种标准的文件格式，用于可执行文件、目标代码、共享库等。
+- **节结构**：ELF 文件由多个节（Section）组成，每个节包含不同类型的数据，如代码段、数据段、符号表等。
+- **映射到进程地址空间**：
+  - **代码段（.text）**：包含可执行代码，映射到进程的代码段。
+  - **数据段（.data）**：包含已初始化的全局变量和静态变量，映射到进程的数据段。
+  - **未初始化数据段（.bss）**：包含未初始化的全局变量和静态变量，映射到进程的 BSS 段。
+  - **只读数据段（.rodata）**：包含只读数据，如字符串常量，映射到进程的只读数据段。
 
-## 为什么它们很重要？
+#### 2. 全局变量和静态变量的存储位置
 
-SLA、SLO 和 SLI 允许公司定义、跟踪和监控对用户服务的承诺。SLA、SLO 和 SLI 应该帮助团队在其服务中生成更多的用户信任，并强调对事件管理和响应过程的持续改进。
+- **全局变量**：存储在数据段（.data）或 BSS 段（.bss）。
+- **静态变量**：与全局变量类似，存储在数据段（.data）或 BSS 段（.bss）。
 
-## SLA
+#### 4. 栈的结构和细节
 
-SLA，即服务级别协议，是公司与其服务用户之间达成的协议。SLA 定义了公司对用户在特定指标（如服务可用性）方面做出的不同承诺。
+- **函数参数入栈顺序**：通常从右到左入栈。
+- **函数局部变量在栈中的布局**：局部变量在栈帧中按声明顺序分配。
+- **栈帧指针（Frame Pointer, FP）**：指向当前栈帧的起始位置。
+- **栈顶指针（Stack Pointer, SP）**：指向当前栈顶位置。
 
-_SLA 通常由公司的业务或法律团队编写。_
+#### 5. 常见的函数调用约定
 
-## SLO
+- **cdecl**：C 语言默认调用约定，参数从右到左入栈，调用者清理栈。
+- **stdcall**：Windows API 调用约定，参数从右到左入栈，调用者清理栈。
+- **thiscall**：C++ 成员函数调用约定，`this` 指针作为隐藏参数传递。
+- **fastcall**：使用寄存器传递参数，提高调用效率。
 
-SLO，即服务级别目标，是公司对用户在特定指标（如事件响应或正常运行时间）方面做出的承诺。SLO 存在于 SLA 中，作为完整用户协议中的单个承诺。SLO 是服务必须满足的具体目标，以符合 SLA。SLO 应始终简单、明确定义且易于衡量，以确定目标是否得到实现。
+#### 6. 操作系统的保护模式和实模式
 
-## SLI
+- **保护模式**：提供内存保护、多任务和虚拟内存等功能，现代操作系统常用。
+- **实模式**：早期 x86 处理器的工作模式，直接访问物理内存，无内存保护。
 
-SLI，即服务级别指标，是用于确定 SLO 是否得到满足的关键指标。它是 SLO 中描述的指标的测量值。为了保持对 SLA 的遵守，SLI 的值必须始终达到或超过 SLO 确定的值。
+#### 7. 中断向量表
+
+- **中断向量表**：存储中断处理程序入口地址的表，每个中断类型对应一个入口地址。
+
+#### 8. Linux 下的 CAS（Compare-And-Swap）
+
+- **CAS**：一种原子操作，用于实现无锁并发数据结构，比较并交换内存中的值。
+
+#### 9. Daemon 进程和僵尸进程
+
+- **Daemon 进程**：后台运行的服务进程，无控制终端。
+  - **产生方法**：通过 `fork` 创建子进程，父进程退出，子进程成为 Daemon 进程。
+
+- **僵尸进程**：子进程退出后，父进程未调用 `wait` 系统调用回收子进程资源。
+  - **消除方法**：父进程调用 `wait` 系统调用回收子进程资源。
 
 
-https://memory-pool-system.readthedocs.io/en/latest/
+### 其他技术领域
+
+#### 1. 图形学
+
+- **图形学**：研究计算机生成和处理图像的技术，包括渲染、光照、纹理映射等。
+
+#### 2. 游戏服务器
+
+- **游戏服务器**：支持多人在线游戏的服务器，处理游戏逻辑、玩家交互、数据存储等。
+
+#### 3. 网络通讯架构
+
+- **网络通讯架构**：设计和实现网络通信的结构，包括协议、数据传输、网络安全等。
+
+#### 4. 虚拟现实
+
+- **虚拟现实**：通过计算机技术生成逼真的虚拟环境，用户可以通过视觉、听觉、触觉等感官与虚拟环境交互。
+
+#### 5. 嵌入式系统
+
+- **嵌入式系统**：专用计算机系统，嵌入到设备中执行特定任务，如家电、汽车、工业控制等。
+
+#### 6. 设备驱动
+
+- **设备驱动**：操作系统与硬件设备之间的接口，负责设备的初始化、数据传输、控制等。
+
+#### 7. 音频视频
+
+- **音频视频**：处理和传输音频、视频数据的技术，包括编码、解码、压缩、传输等。
+
+#### 8. AI 底层
+
+- **AI 底层**：人工智能技术的基础，包括机器学习算法、神经网络、数据处理等。
+
+### 参考书籍
+
+- 《程序员的自我修养：链接、装载与库》：涵盖操作系统、编译原理、链接和装载等方面的知识，是程序员必读书籍。
+
+### 面试问题示例
+
+1. **操作系统原理**：
+   - 请解释 Linux 下 ELF 文件的节结构，映射到进程地址空间后分别对应哪些段？
+   - 全局变量和静态变量存储在进程地址空间的哪里？
+   - 请解释堆和栈的区别，以及栈的结构和细节。
+   - 请解释 cdecl、stdcall、thiscall、fastcall 的区别。
+
+2. **数据结构与算法**：
+   - 请编写一个从 1 加到 100 的求和函数，并写出该函数的汇编代码。
+   - 请编写哈希表插入元素的算法，元素类型是任意类型。
+
+3. **其他技术领域**：
+   - 请解释什么是 Daemon 进程，如何产生 Daemon 进程？
+   - 请解释僵尸进程的产生和消除方法。
+   - 请解释图形学的基本概念和算法。
+   - 请解释游戏服务器的架构和实现。
+   - 请解释网络通讯的基本原理和架构设计。
+   - 请解释虚拟现实的基本概念和实现技术。
+   - 请解释嵌入式系统的基本原理和开发方法。
+   - 请解释设备驱动的开发和调试方法。
+   - 请解释音频视频的处理和编解码技术。
+   - 请解释 AI 底层的算法和实现。
+
+通过整理这些知识点和面试问题，可以更好地准备技术面试，提升自己的知识水平和应对能力。

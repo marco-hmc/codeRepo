@@ -2,12 +2,12 @@
 #include <type_traits>
 
 /*
-6. std::is_base_of 怎么用？
+1. std::is_base_of 怎么用？
     std::is_base_of 用于检查一个类型是否是另一个类型的基类。
     如果 Base 是 Derived 的基类或相同类型，则 std::is_base_of<Base, Derived>::value 为 true；
     否则为 false。
 
-7. std::is_convertible 怎么用？
+2. std::is_convertible 怎么用？
     std::is_convertible 用于检查一个类型是否可以转换为另一个类型。
     如果类型 From 可以隐式转换为类型 To，则 std::is_convertible<From, To>::value 为 true；
     否则为 false。

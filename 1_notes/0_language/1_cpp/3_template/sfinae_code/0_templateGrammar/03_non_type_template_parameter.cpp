@@ -1,7 +1,15 @@
 #include <bitset>
 #include <cassert>
 
-namespace jc {
+/*
+  ## 非类型模板参数的常见用法
+
+  1. 使用非类型模板参数来控制函数行为：
+     通过非类型模板参数，可以在编译时传递常量值，从而控制函数的行为。
+     例如，下面的 find_next 和 find_prev 函数使用布尔值 IsSet 来决定查找的条件。
+*/
+
+namespace BitsetOperations {
 
     template <bool IsSet = true, std::size_t N>
     std::size_t find_next(const std::bitset<N>& b, std::size_t cur) {
@@ -60,49 +68,51 @@ namespace jc {
         return N;
     }
 
-}  // namespace jc
+}  // namespace BitsetOperations
 
 void test_find_next() {
     std::bitset<8> b{"10010111"};
-    static constexpr int _next_set[] = {1, 2, 4, 4, 7, 7, 7, 8, 8, 8};
-    static constexpr int _next_unset[] = {3, 3, 3, 5, 5, 6, 8, 8, 8, 8};
+    static constexpr int next_set[] = {1, 2, 4, 4, 7, 7, 7, 8, 8, 8};
+    static constexpr int next_unset[] = {3, 3, 3, 5, 5, 6, 8, 8, 8, 8};
 
-    for (std::size_t i = 0; i < std::size(_next_set); ++i) {
-        assert(jc::find_next<true>(b, i) == _next_set[i]);
-        assert(jc::find_next<false>(b, i) == _next_unset[i]);
+    for (std::size_t i = 0; i < std::size(next_set); ++i) {
+        assert(BitsetOperations::find_next<true>(b, i) == next_set[i]);
+        assert(BitsetOperations::find_next<false>(b, i) == next_unset[i]);
     }
 }
 
 void test_find_prev() {
     std::bitset<8> b{"10010110"};
-    static constexpr int _prev_set[] = {8, 8, 1, 2, 2, 4, 4, 4, 7, 7};
-    static constexpr int _prev_unset[] = {8, 0, 0, 0, 3, 3, 5, 6, 6, 6};
+    static constexpr int prev_set[] = {8, 8, 1, 2, 2, 4, 4, 4, 7, 7};
+    static constexpr int prev_unset[] = {8, 0, 0, 0, 3, 3, 5, 6, 6, 6};
 
-    for (std::size_t i = 0; i < std::size(_prev_set); ++i) {
-        assert(jc::find_prev<true>(b, i) == _prev_set[i]);
-        assert(jc::find_prev<false>(b, i) == _prev_unset[i]);
+    for (std::size_t i = 0; i < std::size(prev_set); ++i) {
+        assert(BitsetOperations::find_prev<true>(b, i) == prev_set[i]);
+        assert(BitsetOperations::find_prev<false>(b, i) == prev_unset[i]);
     }
 }
 
 void test_circular_find_next() {
     std::bitset<8> b{"01010111"};
-    static constexpr int _next_set[] = {1, 2, 4, 4, 6, 6, 0, 0, 0, 0};
-    static constexpr int _next_unset[] = {3, 3, 3, 5, 5, 7, 7, 3, 3, 3};
+    static constexpr int next_set[] = {1, 2, 4, 4, 6, 6, 0, 0, 0, 0};
+    static constexpr int next_unset[] = {3, 3, 3, 5, 5, 7, 7, 3, 3, 3};
 
-    for (std::size_t i = 0; i < std::size(_next_set); ++i) {
-        assert(jc::circular_find_next<true>(b, i) == _next_set[i]);
-        assert(jc::circular_find_next<false>(b, i) == _next_unset[i]);
+    for (std::size_t i = 0; i < std::size(next_set); ++i) {
+        assert(BitsetOperations::circular_find_next<true>(b, i) == next_set[i]);
+        assert(BitsetOperations::circular_find_next<false>(b, i) ==
+               next_unset[i]);
     }
 }
 
 void test_circular_find_prev() {
     std::bitset<8> b{"10011001"};
-    static constexpr int _prev_set[] = {7, 0, 0, 0, 3, 4, 4, 4, 7, 7};
-    static constexpr int _prev_unset[] = {6, 6, 1, 2, 2, 2, 5, 6, 6, 6};
+    static constexpr int prev_set[] = {7, 0, 0, 0, 3, 4, 4, 4, 7, 7};
+    static constexpr int prev_unset[] = {6, 6, 1, 2, 2, 2, 5, 6, 6, 6};
 
-    for (std::size_t i = 0; i < std::size(_prev_set); ++i) {
-        assert(jc::circular_find_prev<true>(b, i) == _prev_set[i]);
-        assert(jc::circular_find_prev<false>(b, i) == _prev_unset[i]);
+    for (std::size_t i = 0; i < std::size(prev_set); ++i) {
+        assert(BitsetOperations::circular_find_prev<true>(b, i) == prev_set[i]);
+        assert(BitsetOperations::circular_find_prev<false>(b, i) ==
+               prev_unset[i]);
     }
 }
 
@@ -112,97 +122,3 @@ int main() {
     test_circular_find_next();
     test_circular_find_prev();
 }
-
-// #include <cassert>
-
-// namespace jc {
-
-//     template <typename>
-//     struct get_class;
-
-//     template <typename ClassType, typename MemberType>
-//     struct get_class<MemberType ClassType::*> {
-//         using type = ClassType;
-//     };
-
-//     template <typename T>
-//     using get_class_t = typename get_class<T>::type;
-
-//     template <auto ClassMember>
-//     class Wrapper {
-//       public:
-//         Wrapper(get_class_t<decltype(ClassMember)>& obj) : obj_(obj) {}
-
-//         void increase() { ++(obj_.*ClassMember); }
-
-//       private:
-//         get_class_t<decltype(ClassMember)>& obj_;
-//     };
-
-//     struct A {
-//         int i = 0;
-//     };
-
-// }  // namespace jc
-
-// int main() {
-//     jc::A a;
-//     jc::Wrapper<&jc::A::i>{a}.increase();
-//     assert(a.i == 1);
-// }
-
-// namespace jc {
-
-// template <const char* s>
-// struct A {};
-
-// }  // namespace jc
-
-// constexpr const char* s1 = "hello";  // 内链接对象的指针
-// extern const char s2[] = "world";    // 外链接
-// const char s3[] = "down";            // 内链接
-
-// int main() {
-//   static const char s4[] = "demo";  // 无链接
-//   jc::A<"downdemo">{};              // 错误
-//   jc::A<s1>{};                      // 错误
-//   jc::A<s2>{};                      // C++11 允许
-//   jc::A<s3>{};                      // C++14 允许
-//   jc::A<s4>{};                      // C++17 允许}
-// ```
-
-// * 函数和数组类型作为非类型模板参数会退化为指针类型
-
-// ```cpp
-// namespace jc {
-
-// template <int buf[5]>
-// struct Lexer {};
-
-// // template <int* buf>
-// // struct Lexer {};  // 错误：重定义
-
-// template <int fun()>
-// struct FuncWrap {};
-
-// // template <int (*)()>
-// // struct FuncWrap {};  // 错误：重定义
-
-// }  // namespace jc
-
-// int main() {}
-// ```
-
-// * 如果模板实参的表达式有大于号，必须用小括号包裹表达式，否则大于号会被编译器视为表示参数列表终止的右尖括号，导致编译错误
-
-// ```cpp
-// namespace jc {
-
-// template <bool b>
-// struct A {
-//   inline static constexpr bool value = b;
-// };
-
-// }  // namespace jc
-
-// int main() { static_assert(jc::A<(sizeof(int) > 0)>::value); }

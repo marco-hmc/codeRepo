@@ -1,5 +1,5 @@
 /*
-  教学示例：模板参数中的常见错误
+  ## 模板参数中的常见错误
 
   1. 字符串字面值不能直接作为模板参数：
      C++ 标准不允许字符串字面值直接作为模板参数传递，因为它们的地址在编译时是未知的。
@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-namespace _1_1 {
+namespace StringLiteralAsTemplateParameter {
 
     const char str[] = "abc";
     template <const char *s>
@@ -21,32 +21,29 @@ namespace _1_1 {
         void print() { std::cout << s << std::endl; }
     };
 
-    void foo2() {
+    void test() {
         // 错误示例：字符串字面值不能直接作为模板参数
         // S<"abc"> i;  // 错误：字符串字面值不能直接作为模板参数
 
         S<str> i;
         i.print();
     }
-}  // namespace _1_1
+}  // namespace StringLiteralAsTemplateParameter
 
-namespace _1_2 {
-
-    // 模板类 ClassB 接受未定义的类型作为指针
+namespace UndefinedTypeAsTemplateParameter {
     template <typename T>
     class ClassB {
-        T *a;  // 指针类型可以接受未定义的类型
+        T *a;
     };
 
-    // 模板类 ClassC 需要知道类型的定义
     template <typename T>
     class ClassC {
-        T a;  // 对象类型不能接受未定义的类型
+        T a;
     };
 
-    struct StructA;  // 声明 StructA
+    struct StructA;
 
-    void foo() {
+    void test() {
         // 正确示例：指针类型可以接受未定义的类型
         ClassB<StructA> d;
 
@@ -58,10 +55,10 @@ namespace _1_2 {
         ClassC<StructA> e;  // 正确：StructA 已定义
     }
 
-}  // namespace _1_2
+}  // namespace UndefinedTypeAsTemplateParameter
 
 int main() {
-    _1_1::foo2();
-    _1_2::foo();
+    StringLiteralAsTemplateParameter::test();
+    UndefinedTypeAsTemplateParameter::test();
     return 0;
 }

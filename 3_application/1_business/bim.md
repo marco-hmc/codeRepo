@@ -1,3 +1,13 @@
+- bim 的架构
+- bim 的命令调度
+- 模型数据
+  - viewItem
+  - docItem
+  - ctp
+    https://confluence.zwcad.com/pages/viewpage.action?pageId=60720467
+* undo 实现
+
+
 ## BIM
 
 在BIM建模软件中处理模型零件的耦合关系、模型数据转换成显示数据以及图形显示所需数据的问题，可以按照以下步骤进行梳理：

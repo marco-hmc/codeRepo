@@ -1,6 +1,6 @@
 ## 类型擦除（Type Erasure）
 
-* 类型擦除即将不同类型抽象为相同的表示，但使用时仍可以还原出原有类型的行为，[std::any](https://en.cppreference.com/w/cpp/utility/any) 和 [std::function](https://en.cppreference.com/w/cpp/utility/functional/function) 就使用了类型擦除的手法。比起函数指针，[std::function](https://en.cppreference.com/w/cpp/utility/functional/function) 在编译期擦除掉了不需要关心的原有类型，用同一种表示抽象了所有函数类型，并且能存储 lambda 或函数对象，使用时又能像调用函数一样使用原有类型
+### 类型擦除即将不同类型抽象为相同的表示，但使用时仍可以还原出原有类型的行为，[std::any](https://en.cppreference.com/w/cpp/utility/any) 和 [std::function](https://en.cppreference.com/w/cpp/utility/functional/function) 就使用了类型擦除的手法。比起函数指针，[std::function](https://en.cppreference.com/w/cpp/utility/functional/function) 在编译期擦除掉了不需要关心的原有类型，用同一种表示抽象了所有函数类型，并且能存储 lambda 或函数对象，使用时又能像调用函数一样使用原有类型
 
 ```cpp
 #include <any>

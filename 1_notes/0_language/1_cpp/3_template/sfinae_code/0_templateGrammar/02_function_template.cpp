@@ -1,7 +1,14 @@
-
 #include <cstddef>
 
-namespace jc {
+/*
+  ## 模板参数中的常见用法
+
+  1. 模板参数如何接受一个带入参的模板类？
+     通过模板模板参数的方式，可以接受一个带入参的模板类。
+     例如，下面的 f 函数接受一个容器类，其中的元素类型为 T。
+*/
+
+namespace TemplateSpecialization {
 
     template <typename T>
     struct A;
@@ -43,14 +50,14 @@ namespace jc {
         static_assert(A<decltype(x3)>::value == 4);  // A<T(&)[]>
     }
 
-}  // namespace jc
+}  // namespace TemplateSpecialization
 
 int main() {
     int a[42];
-    static_assert(jc::A<decltype(a)>::value == 1);
+    static_assert(TemplateSpecialization::A<decltype(a)>::value == 1);
     extern int x[];  // 传引用时将变为 int(&)[]
-    static_assert(jc::A<decltype(x)>::value == 3);  // A<T[]>
-    jc::test(a, a, a, x, x, x, x);
+    static_assert(TemplateSpecialization::A<decltype(x)>::value ==
+                  3);  // A<T[]>
+    TemplateSpecialization::test(a, a, a, x, x, x, x);
+    return 0;
 }
-
-int x[] = {1, 2, 3};  // 定义前置声明的数组
