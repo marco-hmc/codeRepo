@@ -153,3 +153,8 @@
 - [Paypal Developer Blog](https://medium.com/paypal-engineering)
 - [Twitter Engineering](https://blog.twitter.com/engineering)
 
+* 大话设计模式
+  * 本书并没有局限于那种分布式框架，而是着重讲解分布式整体架构设计理念和基础知识。
+    **作者水平非常高，本书广度非常大**（诚然并不是很深，要在一本书里将那么多知识深度讲解也是不可能的），深入浅出，大家不用担心晦涩难懂（在这里更加推荐英文基础好的话直接读英文原版）。
+## design patterns
+https://github.com/FengJungle/DesignPattern

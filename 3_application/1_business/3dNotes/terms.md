@@ -85,24 +85,25 @@
 
 ## 前缀
 
-- vs
-- vx:
-- om：
-  - feature manager
-- vg:
-  - vx 概念下的全局变量
 - ftr/ft:
   - feature
-- klass:
-  - klass 通常是 class 的变体拼写，用来避免与 C++ 关键字 class 冲突。其含义需要结合上下文解释，但一般有以下几种可能：
+- dst:
+  - data structure:
+  - destination
 - gfx:
   - graphics 缩写
 - guiw:
   - graphics user interface windows
+- klass:
+  - klass 通常是 class 的变体拼写，用来避免与 C++ 关键字 class 冲突。其含义需要结合上下文解释，但一般有以下几种可能：
+- om：
+  - feature manager
 - prt:
   - part零件
-- dst:
-  - data structure:
-  - destination
 - sgl:
   - single
+- vs
+- vx:
+- ve:
+- vg:
+  - vx 概念下的全局变量

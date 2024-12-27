@@ -1,6 +1,6 @@
 ## 1. doing
-
-##  2. todo
+  * notes:
+    * qt子事件循环
   * **project**
     * template
       * 
