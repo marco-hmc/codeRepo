@@ -207,7 +207,7 @@ int main() {
 }
 ```
 
-##### 2.3.6 Concepts（C++20）
+### 3. Concepts（C++20）
 
 C++20 引入了 Concepts，为模板提供了类型约束的机制。Concepts 允许我们在模板参数上直接指定要求的特性，从而简化模板编程，提升代码的可读性和可维护性。
 
@@ -225,7 +225,101 @@ int main() {
 }
 ```
 
-### 3. 
+```cpp
+namespace SFINAE_METHODS{
+    template <typename ArgT>
+    void foo(ArgT&& a, typename std::enable_if<std::is_same<std::decay_t<ArgT>, float>::value>::type* = nullptr);
+}
+
+namespace CONCEPT_METHODS{
+    template <typename ArgT>
+    requires std::same_as<std::remove_cvref_t<ArgT>, float>
+    void foo(ArgT&& a);
+}
+```
+
+#### 3.1 概念的应用：直接描述类型需求
+
+概念不仅能用于函数模板的约束，还能直接用于类模板和其他类型的模板。通过概念，我们可以明确告知编译器，某个类型参数必须满足特定的要求。
+
+例如，假设我们希望约束一个类型 `T` 必须支持自增操作（即 `++T`），可以定义一个概念 `Incrementable`：
+
+```cpp
+template <typename T>
+concept Incrementable = requires(T t) {
+    ++t;  // 要求T支持自增操作
+};
+
+template <Incrementable T>
+void inc_counter(T& counter) {
+    ++counter;  // 使用自增操作
+}
+```
+
+这段代码明确要求 `T` 类型必须支持 `++` 操作。如果我们尝试将一个不支持自增的类型传递给 `inc_counter`，编译器会报错。
+
+#### 3.2 语法与约束的组合
+
+尽管概念使得模板参数约束变得更加清晰，但我们仍然需要遵循一些规则。例如，概念的约束不能直接写为如下形式：
+
+```cpp
+template <typename T> requires (T t) { ++t; }
+void inc_counter(T& cnt);
+```
+
+这是不合法的，原因在于 `requires` 关键字在不同的上下文中有不同的含义：
+
+- 在函数模板或类模板声明中，`requires` 后面必须跟着一个**概念表达式**，即类型约束的具体内容；
+- 在定义概念时，`requires` 是一个保留字，用于定义一个“要求”的表达式。
+
+因此，为了表达一个模板参数必须满足某种行为（例如 `++` 操作），我们需要使用更复杂的写法，例如：
+
+```cpp
+template <typename T> requires (requires(T t) { ++t; })
+void inc_counter(T& cnt);
+```
+
+在这段代码中，`requires (requires(T t) { ++t; })` 实际上定义了一个匿名的概念，表示类型 `T` 必须支持 `++` 操作。
+
+#### 3.3 概念带来的错误信息改进
+
+概念不仅简化了模板的写法，也改善了模板编译时的错误提示。在没有概念的情况下，SFINAE 可能会导致模糊且难以理解的错误提示：
+
+```cpp
+// 使用 SFINAE 的错误提示
+<source>:23:5: error: no matching function for call to 'Inc'
+    Inc(y);
+    ^~~
+<source>:5:6: note: candidate template ignored: substitution failure [with T = X]: cannot increment value of type 'X'
+void Inc(T& v, std::decay_t<decltype(++v)>* = nullptr)
+     ^                               ~~
+```
+
+而使用概念后，错误提示更加清晰，直接指明了模板参数未能满足约束条件：
+
+```cpp
+// 使用 Concept 的错误提示
+<source>:25:5: error: no matching function for call to 'Inc_Concept'
+    Inc_Concept(y);
+    ^~~~~~~~~~~
+<source>:13:6: note: candidate template ignored: constraints not satisfied [with T = X]
+void Inc_Concept(T& v)
+     ^
+<source>:12:11: note: because 'X' does not satisfy 'Incrementable'
+template <Incrementable T>
+          ^
+<source>:10:41: note: because '++t' would be invalid: cannot increment value of type 'X'
+concept Incrementable = requires(T t) { ++t; };
+```
+
+通过概念带来的错误信息，编译器明确指出了 `X` 类型不满足 `Incrementable` 概念，无法进行自增操作。这种错误提示更具可读性，帮助开发者更快地定位问题。
+
+#### 3.4 总结
+
+概念（Concept）是 C++20 引入的一个重要特性，旨在简化模板编程中的类型约束，使得模板参数的需求更加直观和易懂。它通过简洁的语法替代了传统的 SFINAE 技巧，使得模板代码更加易读，同时也改进了编译时错误提示，提升了开发体验。
+
+尽管概念并不能解决 C++ 类型系统本身的复杂性问题，但它极大地改善了模板编程的可用性和开发效率。在复杂类型的模板约束中，概念提供了比 SFINAE 更清晰的错误信息，使得开发者能够更快速地发现问题并加以解决。
+
 ### 4. 总结
 
 从数学的角度出发，可以将编程中函数理解为给定一个输入，返回一个输出的行为，输入一定，输出也不一定一定，因为这个函数可以有一些内部状态变量。但这个抽象是没问题的。
@@ -274,3 +368,70 @@ int main() {
 T::value_type 无法编译通过（由于缺乏 typename 前缀，用 typename T::value_type 即可）
 
 
+
+#### 7. 将与参数无关的代码抽离模板（Factor Parameter-Independent Code Out of Templates）
+
+在 C++ 模板编程中，模板参数的多样化可能导致生成冗余的二进制代码。为避免这种情况，可以将与模板参数无关的代码提取到模板外部。
+
+* **原始代码**
+
+```cpp
+template<typename T, std::size_t n>
+class SquareMatrix {
+public:
+    void invert(); // 求逆矩阵
+};
+
+SquareMatrix<double, 5> sm1;
+SquareMatrix<double, 10> sm2;
+sm1.invert();  // 编译器会为这两个调用生成两个完全不同的 invert 实现
+sm2.invert();
+```
+
+* **改进后的代码**
+
+将与模板参数 `n` 无关的代码提取到基类 `SquareMatrixBase` 中：
+
+```cpp
+template<typename T>
+class SquareMatrixBase {
+protected:
+    void invert(std::size_t matrixSize);  // 在基类中实现实际的求逆算法
+};
+
+template<typename T, std::size_t n>
+class SquareMatrix : private SquareMatrixBase<T> {
+private:
+    using SquareMatrixBase<T>::invert;  // 避免遮蔽基类的 invert 函数
+
+public:
+    void invert() {
+        this->invert(n);  // 使用一个 inline 调用来调用基类的 invert
+    }
+};
+```
+
+* **增加矩阵数据存储**
+
+使用指针存储矩阵数据，并在构造函数中传递给基类：
+
+```cpp
+template<typename T, std::size_t n>
+class SquareMatrix : private SquareMatrixBase<T> {
+public:
+    SquareMatrix() : SquareMatrixBase<T>(n, 0), pData(new T[n * n]) {
+        this->setDataPtr(pData.get());  // 设置矩阵数据指针
+    }
+
+private:
+    std::unique_ptr<T[]> pData;  // 存储在堆上的矩阵数据
+};
+```
+
+* **总结**
+    1. **避免模板参数依赖：** 将与模板参数无关的代码抽离到基类中，减少冗余代码。
+    2. **使用基类共享实现：** 通过基类共享实现，避免因模板实例化导致的代码膨胀。
+    3. **通过成员变量替代模板参数：** 将非类型模板参数作为类成员变量传递，减少二进制膨胀。
+    4. **使用指针和动态内存：** 动态分配存储数据，进一步减少代码膨胀。
+
+通过这些技巧，可以有效减少模板参数导致的代码膨胀，优化编译时间和生成的二进制文件。

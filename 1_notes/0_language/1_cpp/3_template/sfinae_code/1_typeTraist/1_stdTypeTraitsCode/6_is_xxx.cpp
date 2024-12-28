@@ -11,6 +11,11 @@
     std::is_convertible 用于检查一个类型是否可以转换为另一个类型。
     如果类型 From 可以隐式转换为类型 To，则 std::is_convertible<From, To>::value 为 true；
     否则为 false。
+
+3. std::is_same 怎么用？
+    std::is_same 用于检查两个类型是否相同。
+    如果类型 T 和 U 相同，则 std::is_same<T, U>::value 为 true；
+    否则为 false。
 */
 
 namespace is_base_ofUsage {
@@ -58,6 +63,20 @@ namespace is_convertibleUsage {
     }
 }  // namespace is_convertibleUsage
 
+namespace is_sameUsage {
+    // 使用 std::is_same 检查类型是否相同
+    static_assert(std::is_same<int, int>::value, "int 应该与 int 相同");
+    static_assert(!std::is_same<int, double>::value,
+                  "int 不应该与 double 相同");
+
+    void test() {
+        std::cout << "std::is_same<int, int>::value: "
+                  << std::is_same<int, int>::value << std::endl;
+        std::cout << "std::is_same<int, double>::value: "
+                  << std::is_same<int, double>::value << std::endl;
+    }
+}  // namespace is_sameUsage
+
 ////////////////////////////////////////////////////////////////////
 namespace is_base_ofImpl {
     // std::is_base_of 的实现
@@ -75,8 +94,17 @@ namespace is_convertibleImpl {
     };
 }  // namespace is_convertibleImpl
 
+namespace is_sameImpl {
+    // std::is_same 的实现
+    template <typename T, typename U>
+    struct is_same {
+        static constexpr bool value = std::is_same<T, U>::value;
+    };
+}  // namespace is_sameImpl
+
 int main() {
     is_base_ofUsage::test();
     is_convertibleUsage::test();
+    is_sameUsage::test();
     return 0;
 }
