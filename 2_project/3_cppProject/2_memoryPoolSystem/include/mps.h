@@ -1,21 +1,31 @@
 #pragma once
 
 #define mem_size_t unsigned long long
+#define KB (mem_size_t)(1 << 10)
+#define MB (mem_size_t)(1 << 20)
+#define GB (mem_size_t)(1 << 30)
 
-struct MemPoolChunk {
-    mem_size_t alloc_mem;
-    struct MemPoolChunk *prev, *next;
-    int is_free;
-};
+class MemoryPool;
 
 class MemoryPoolList {
+  public:
+    struct MemPoolChunk {
+        mem_size_t alloc_mem;
+        struct MemPoolChunk *prev, *next;
+        int is_free;
+    };
+
+  public:
+    MemoryPoolList(void *start, mem_size_t mempool_size);
+
+  public:
     char *m_start;
     unsigned int m_id;
     mem_size_t m_mempool_size;  // 固定值 每个内存池最大内存
     mem_size_t m_alloc_mem;  // 统计值 当前池内已分配的内存总大小
     mem_size_t
         m_alloc_prog_mem;  // 统计值 当前池内实际分配给应用程序的内存总大小(减去内存管理元信息)
-    MemPoolChunk *free_list, *m_alloc_list;
+    MemPoolChunk *m_free_list, *m_alloc_list;
     struct MemPoolList *m_next;
 };
 

@@ -10,11 +10,11 @@
 #define MB (mem_size_t)(1 << 20)
 #define GB (mem_size_t)(1 << 30)
 
-typedef struct MemPoolChunk {
+using _MP_Chunk = struct MemPoolChunk {
     mem_size_t alloc_mem;
     struct MemPoolChunk *prev, *next;
     int is_free;
-} _MP_Chunk;
+};
 
 using _MP_Memory = struct MemPoolList {
     char* start;

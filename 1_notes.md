@@ -1,4 +1,8 @@
 ## 1. doing
+  * mps:
+  * cmake tools:
+    * 静态检查-输出报告
+    * 
   * notes:
     * qt子事件循环
   * **project**

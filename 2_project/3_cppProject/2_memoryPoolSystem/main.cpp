@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../include/mps.h"
+#include "include/mps.h"
 
 struct Data {
     int dataValue;
@@ -9,9 +9,10 @@ struct Data {
 void test(int xxx) {}
 
 int main() {
-    MemPool *mp = new MemPool(2 * GB + 1000 * MB + 1000 * KB,
+    auto *mp = new MemoryPool(2 * GB + 1000 * MB + 1000 * KB,
                               1 * GB + 500 * MB + 500 * KB);
-    struct Data *data = (struct Data *)mp->MemoryPoolAlloc(sizeof(struct Data));
+
+    auto *data = (struct Data *)mp->MemoryPoolAlloc(sizeof(struct Data));
     data->dataValue = 2333;
     std::cout << data->dataValue << std::endl;
     mp->MemoryPoolFree(data);
