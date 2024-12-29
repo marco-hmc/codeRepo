@@ -1,7 +1,9 @@
 ## 1. doing
   * mps:
+    * memory-notes
   * cmake tools:
     * 静态检查-输出报告
+  * threadPool:
     * 
   * notes:
     * qt子事件循环
