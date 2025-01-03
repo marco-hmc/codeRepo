@@ -33,12 +33,7 @@ set(PINE_CLANG_SEARCH_PATH "/usr/local/bin" "/usr/bin" "/usr/local/opt/llvm/bin"
 # enable_testing()
 
 # clang-format
-if (NOT DEFINED CLANG_FORMAT_BIN)
-    # attempt to find the binary if user did not specify
-    find_program(CLANG_FORMAT_BIN
-            NAMES clang-format clang-format-8
-            HINTS ${PINE_CLANG_SEARCH_PATH})
-endif ()
+set(CLANG_FORMAT_BIN "/usr/bin/clang-format")
 if ("${CLANG_FORMAT_BIN}" STREQUAL "CLANG_FORMAT_BIN-NOTFOUND")
     message(WARNING "Pine/main couldn't find clang-format.")
 else ()
@@ -46,28 +41,13 @@ else ()
 endif ()
 
 # clang-tidy
-if (NOT DEFINED CLANG_TIDY_BIN)
-    # attempt to find the binary if user did not specify
-    find_program(CLANG_TIDY_BIN
-            NAMES clang-tidy clang-fidy-8
-            HINTS ${PINE_CLANG_SEARCH_PATH})
-endif ()
+set(CLANG_TIDY_BIN "/usr/bin/clang-tidy")
 if ("${CLANG_TIDY_BIN}" STREQUAL "CLANG_TIDY_BIN-NOTFOUND")
     message(WARNING "Pine/main couldn't find clang-tidy.")
 else ()
     # Output compile_commands.json
     set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-    message(STATUS "Pine/main found clang-fidy at ${CLANG_TIDY_BIN}")
-endif ()
-
-# cpplint
-find_program(CPPLINT_BIN
-        NAMES cpplint cpplint.py
-        HINTS ${PINE_BUILD_SUPPORT_DIR})
-if ("${CPPLINT_BIN}" STREQUAL "CPPLINT_BIN-NOTFOUND")
-    message(WARNING "Pine/main couldn't find cpplint.")
-else ()
-    message(STATUS "Pine/main found cpplint at ${CPPLINT_BIN}")
+    message(STATUS "Pine/main found clang-tidy at ${CLANG_TIDY_BIN}")
 endif ()
 
 ######################################################################################################################

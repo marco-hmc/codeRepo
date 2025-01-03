@@ -52,7 +52,7 @@ namespace UndefinedTypeAsTemplateParameter {
 
         // 正确示例：定义 StructA 后使用对象类型
         struct StructA {};  // 定义 StructA
-        ClassC<StructA> e;  // 正确：StructA 已定义
+        ClassC<StructA> f;  // 正确：StructA 已定义
     }
 
 }  // namespace UndefinedTypeAsTemplateParameter

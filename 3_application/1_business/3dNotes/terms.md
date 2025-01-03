@@ -82,6 +82,7 @@
 | 变量             | Variable                     | Var       |
 | 向量             | Vector                       | Vec       |
 | 可见性           | Visible                      | Vis       |
+| 单个             | Single                       | sgl       |
 
 ## 前缀
 
@@ -95,15 +96,29 @@
 - guiw:
   - graphics user interface windows
 - klass:
-  - klass 通常是 class 的变体拼写，用来避免与 C++ 关键字 class 冲突。其含义需要结合上下文解释，但一般有以下几种可能：
+  - klass 通常是 class 的变体拼写，用来避免与 C++ 关键字 class 冲突。
 - om：
-  - feature manager
+  - object manager
 - prt:
   - part零件
-- sgl:
-  - single
-- vs
-- vx:
-- ve:
+- vs: 
+  structure
+- ve: 
+  - enum
 - vg:
   - vx 概念下的全局变量
+- vx: 
+  ?
+- qm
+  - (folder name)
+- qa
+  - quality assurance. 质量保证
+  - macro
+- Cc
+  - ZsCc--namespace
+- 文件前缀
+  - Di
+  - Cs
+- pri
+- cvx
+  c language 

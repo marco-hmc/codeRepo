@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin python
 
 """
 A helper class, to suppress execution of clang-tidy.

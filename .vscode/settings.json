@@ -5,6 +5,7 @@
     "cmake.configureOnOpen": false,
     "cSpell.words": [
         "ansicolor",
+        "Deferenceable",
         "nullmutex",
         "Systemstatus"
     ],
