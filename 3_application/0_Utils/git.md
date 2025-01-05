@@ -1,23 +1,8 @@
-
-* [Git Internals-eng]
-* [Pro Git - eng]
-* [Pro Git - 中文版]
-* [git - 简易指南](http://rogerdudler.github.io/git-guide/index.zh.html)
-* [Git 参考手册](http://gitref.justjavac.com)
-* [Pro Git](http://git-scm.com/book/zh)
-* [Git Magic](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/zh_cn/)
-* [GotGitHub](http://www.worldhello.net/gotgithub/index.html)
-* [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
-* [Mercurial 使用教程](http://mercurial.selenic.com/wiki/ChineseTutorial)
-* [HgInit (中文版)](http://bucunzai.net/hginit/)
-
-
 ## git操作
 
 > marco
 
 [toc]
-
 
 `git push --force-with-lease`
 
@@ -28,7 +13,6 @@
   * `git config --global https.proxy https://127.0.0.1:7890`
 * 查看设置
   * `git config --global -l`
-gitjk
 
 ### 1. git基本操作
 
@@ -73,23 +57,18 @@ gitjk
 * `git branch`
 
   * `git branch -r`
-
     查看远端分支
 
   * `git branch --show-current`
-
     查看当前分支
 
   * `git branch -a`
-
     查看本地和远端分支
 
   * `git branch -d [NAME]`
-
     删除指定分支
 
   * `git branch -f A B`
-
     是 Git 中用于移动分支指针的命令.具体含义如下:
 
     - `A` 是目标分支名,代表你想要移动的目标分支.
@@ -98,11 +77,9 @@ gitjk
     该命令的作用是将目标分支 `A` 的指针强制移动到指定的位置 `B`,忽略目标分支当前的位置.
 
   * `git branch [NAME]`
-
     新建分支
 
   * `git switch [NAME]`
-
     切换分支
 
 #### 1.7 更新本地代码
@@ -299,3 +276,15 @@ git config --global https.proxy 'socks5://127.0.0.1:7890'
 
 
 ![alt text](_imgs/git_image.png)
+
+* [Git Internals-eng]
+* [Pro Git - eng]
+* [Pro Git - 中文版]
+* [git - 简易指南](http://rogerdudler.github.io/git-guide/index.zh.html)
+* [Git 参考手册](http://gitref.justjavac.com)
+* [Pro Git](http://git-scm.com/book/zh)
+* [Git Magic](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/zh_cn/)
+* [GotGitHub](http://www.worldhello.net/gotgithub/index.html)
+* [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
+* [Mercurial 使用教程](http://mercurial.selenic.com/wiki/ChineseTutorial)
+* [HgInit (中文版)](http://bucunzai.net/hginit/)

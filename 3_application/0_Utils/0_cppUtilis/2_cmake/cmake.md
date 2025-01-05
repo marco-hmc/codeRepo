@@ -7,24 +7,21 @@
 * **如何指定头文件路径**
 
   ```cmake
-  target_include_directories(hello_headers
-      PRIVATE 
-          ${PROJECT_SOURCE_DIR}/include
+  # 指定头文件路径
+  target_include_directories(hello_headers PRIVATE ${PROJECT_SOURCE_DIR}/include ...
   )
-  ```
 
-* **如何指令库路径**
+  # 指令库文件
+  target_link_libraries(target_name [PRIVATE|PUBLIC|INTERFACE] library_name1 ...)
 
-  ```cmake
-  target_link_libraries(target_name [PRIVATE|PUBLIC|INTERFACE] library_name1 library_name2 ...)
-  
+  # 指定找库路径
+  link_directories(/path/to/xxx.lib)
   ```
 
   等价于 `g++` 里面的`-I`指定include路径
 
 #### 1.2 编译器设置
 * **`ADD_DEFINITIONS`有什么用?**
-
   它用于将预定义的宏定义添加到编译器的编译选项中.
 
 * **什么是编译器的编译选项?**
@@ -46,8 +43,18 @@
   #endif
   ```
 
+```cmake
+target_compile_definitions(cmake_examples_compile_flags
+    PRIVATE EX3
+)
+  set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+```
+
+
 #### 1.3 cmake脚本语法
 
+* file
+  file(GLOB SOURCES "src/*.cpp")
 * **SET**
   ```cmake
   SET(ZS_NAME "${AB}")
@@ -84,43 +91,57 @@
 
 #### 1.4 生成
 
-cmake中的目标是什么意思？
-  目标（Target）是构建系统中的一个基本概念，表示一个可以构建的实体，如可执行文件、库文件。也可以特殊地表示一个自定义命令。
+* **cmake中的目标是什么意思？**
+    目标（Target）是构建系统中的一个基本概念，表示一个可以构建的实体，如可执行文件、库文件。也可以特殊地表示一个自定义命令。
 
-如何理解CMakePredefinedTargets?
-* **`all_build`**
-  - **描述**：`all_build` 目标用于构建项目中的所有目标。
-  - **用途**：这是默认的构建目标，通常在执行 `make` 或 `cmake --build .` 时被调用。
-* **`install`**
-  - **描述**：`install` 目标用于将构建生成的文件安装到指定的安装目录。
-  - **用途**：执行安装步骤，将可执行文件、库文件、头文件等复制到预定义的安装路径。
-  ```
-* **`package`**
-  - **描述**：`package` 目标用于创建项目的分发包（如 `.tar.gz`、`.zip`、`.deb`、`.rpm` 等）。
-  - **用途**：生成可分发的安装包，便于发布和分发项目。
-* **`zero_check`**
-  - **描述**：`zero_check` 目标用于确保生成的构建系统是最新的。
-  - **用途**：在每次构建之前检查 CMakeLists.txt 文件和其他配置文件是否有变化，如果有变化，则重新运行 CMake 以更新构建
-
-
+* 如何理解CMakePredefinedTargets?
+  * **`all_build`**
+    - **描述**：`all_build` 目标用于构建项目中的所有目标。
+    - **用途**：这是默认的构建目标，通常在执行 `make` 或 `cmake --build .` 时被调用。
+  * **`install`**
+    - **描述**：`install` 目标用于将构建生成的文件安装到指定的安装目录。
+    - **用途**：执行安装步骤，将可执行文件、库文件、头文件等复制到预定义的安装路径。
+    ```
+  * **`package`**
+    - **描述**：`package` 目标用于创建项目的分发包（如 `.tar.gz`、`.zip`、`.deb`、`.rpm` 等）。
+    - **用途**：生成可分发的安装包，便于发布和分发项目。
+  * **`zero_check`**
+    - **描述**：`zero_check` 目标用于确保生成的构建系统是最新的。
+    - **用途**：在每次构建之前检查 CMakeLists.txt 文件和其他配置文件是否有变化，如果有变化，则重新运行 CMake 以更新构建
 
 * **如何生成静态库和动态库?**
 
   ```cmake
-  # 定义静态库
-  add_library(my_static_lib STATIC
-    source1.cpp
-    source2.cpp
-  )
-  
-  # 定义动态库
-  add_library(my_shared_lib SHARED
-    source1.cpp
-    source2.cpp
-  )
-  
+  add_library(my_static_lib STATIC source1.cpp) # 定义静态库
+  add_library(my_shared_lib SHARED source1.cpp) # 定义动态库
+  add_executable(${PROJECT_NAME} main.cpp)
   ```
 
+#### 1.6 安装
+```cmake
+install (TARGETS cmake_examples_inst_bin
+    DESTINATION bin)
+
+install (TARGETS cmake_examples_inst
+    LIBRARY DESTINATION lib)
+
+install (TARGETS cmake_examples_inst
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin)
+
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ 
+    DESTINATION include)
+
+install (FILES cmake-examples.conf
+    DESTINATION etc)
+
+# As mentioned the default install location is set from the +CMAKE_INSTALL_PREFIX+,
+which defaults to `/usr/local/`
+
+If you want to change this default location for all users you can add the
+following code to your top level CMakeLists.txt before adding any binaries or
+libraries.
+```
 
 #### 1.5 杂项
 
@@ -134,25 +155,21 @@ cmake中的目标是什么意思？
   ```
 
   这个`PRIVATE`是可见性属性,可见性属性总共有3个.
-
   1. `PRIVATE`
      include目录仅应用于目标自身.
-
   2. `PUBLIC`
      include目录将应用于目标自身,以及使用目标自己的其他目标
-
   3. `INTERFACE`
      include目录仅应用于使用目标的其他目标,不应用于目标自身.
 
-  * **`PUBLIC`的使用场景是什么?**
-    * ```cmake
-      add_library(my_library)
-      target_include_directories(my_library PUBLIC include)
-      ```
+* **`PUBLIC`的使用场景是什么?**
+ * ```cmake
+   add_library(my_library)
+   target_include_directories(my_library PUBLIC include)
+   ```
 
-      在上述示例中,将`include`目录添加到`my_library`库的公共接口中.这意味着任何使用`my_library`的目标都可以访问`include`目录中的头文件,而无需显式设置包含目录.
+   在上述示例中,将`include`目录添加到`my_library`库的公共接口中.这意味着任何使用`my_library`的目标都可以访问`include`目录中的头文件,而无需显式设置包含目录.
     
-
 * **什么是`add_subdirectory()`?**
 
   它的作用是将名为`subdir`的子目录添加到当前项目的构建过程中.
@@ -166,6 +183,71 @@ cmake中的目标是什么意思？
     * 构建和测试工具:
 
 
+#### 1.7 第三方库
+* 系统自带的,apt
+* vendoring方式
+  * git sub-module
+  * git sub-tree
+* 外部库
+  * include(ExternalProject)
+  ExternalProject_Add(googletest
+    URL    https://github.com/google/googletest/archive/bfc0ffc8a698072c794ae7299db9cb6866f4c0bc.tar.gz_
+  )
+* conan
+
+`find_package()`
+```cmake
+find_package(Boost 1.46.1 REQUIRED COMPONENTS filesystem system)
+# Most included packages will set a variable `XXX_FOUND`, which can be used to check
+if the package is available on the system.
+
+# After a package is found it will often export variables which can inform the user
+where to find the library, header, or executable files. Similar to the `XXX_FOUND`
+variable, these are package specific and are typically documented at the top of the
+`FindXXX.cmake` file.
+
+## Alias / Imported targets
+
+Most modern CMake libraries link:https://cmake.org/cmake/help/v3.6/prop_tgt/IMPORTED.html#prop_tgt:IMPORTED[export] +ALIAS+ targets in their module files. 
+The benefit of imported targets are that they can also populate include directories and linked libraries.
+
+For example, starting from v3.5+ of CMake, the
+Boost module supports this. Similar to using your own ALIAS target for libraires, an +ALIAS+ in a module can make referencing found targets easier.
+
+In the case of Boost, all targets are exported using the `Boost::` identifier and then the name 
+of the subsystem. For example you can use:
+
+  * `Boost::boost` for header only libraries
+  * `Boost::system` for the boost system library.
+  * `Boost::filesystem` for filesystem library.
+
+As with your own targets, these targets include their dependencies, so linking against
+`Boost::filesystem` will automatically add `Boost::boost` and `Boost::system` dependencies.
+
+To link against an imported target you can use the following:
+
+While most modern libraries use imported targets, not all modules have been updated. In the
+case where a library hasn't been updated you will often find the following variables available:
+
+  * xxx_INCLUDE_DIRS - A variable pointing to the include directory for the library.
+  * xxx_LIBRARY - A variable pointing to the library path.
+
+These can then be added to your +target_include_directories+ and +target_link_libraries+ as:
+
+[source,cmake]
+----
+# Include the boost headers
+target_include_directories( third_party_include
+    PRIVATE ${Boost_INCLUDE_DIRS}
+)
+
+# link against the boost libraries
+target_link_libraries( third_party_include
+    PRIVATE
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+)
+```
 
 ### 2. 文件结构说明
 
@@ -261,3 +343,29 @@ cmake中的目标是什么意思？
 我设置了 set(CMAKE_CXX_FLAGS "-O3") 但是没有效果（谁让你这样设置开关优化的？我课上说了多少遍要用 set(CMAKE_BUILD_TYPE Release) 知道吗？你那个东西有概率会被覆盖根本不跨平台！CMAKE_BUILD_TYPE 才是标准做法，Release 开优化，Debug 关优化，RelWithDebInfo 会开优化但保留调试信息，如果要让 Release 从默认的 -O3 变成 -O2 应该用 set(CMAKE_CXX_FLAGS_RELEASE "-O2") 同理还有 CMAKE_CXX_FLAGS_DEBUG 可以设）
 
 我想要链接某某库，能不能把他做成 subdir 方便我链接？（只有官方支持 CMake subdir 邪教的那些库，如 fmt, spdlog 等可以，否则必须先 make install 那个库到系统中去，然后 find_package 他，subdir 是邪教，不是官方推荐的方法，小彭老师能在 Zeno 里大量用是因为他是 CMake 专家，他有那个本事，如果希望实现完美的“自包含”也可以尝试一下 CMake 自带的 FetchContent 功能，指定一个 URL，他会自动帮你从网上下载依赖项的源码并构建，并使你的主项目能够找到他
+
+
+### 100. 常用变量
+* **CMAKE_SOURCE_DIR**
+    顶级`CMakeLists.txt`所在目录。
+* **CMAKE_CURRENT_SOURCE_DIR**
+    当前`CMakeLists.txt`所在目录。多用于子目录的情况
+* **PROJECT_SOURCE_DIR**
+    最近的定义`project()`的那个`CMakeLists.txt`所在的目录。
+* **CMAKE_BINARY_DIR**
+    根的二进制/构建目录，即运行 cmake 命令的目录
+* **CMAKE_CURRENT_BINARY_DIR**
+    在根目录下的当前构建目录。
+* **PROJECT_BINARY_DIR**
+    当前项目的构建目录。
+* `cmake_prefix_path`
+  用于告诉 CMake 去哪里查找一些外部的项目、库或者工具链等相关文件。
+* `cmake_library_path`
+* 
+    
+
+### 101. quiz
+#### 1. 生成器概念
+
+#### 2. unsorted
+target_link_libraries(imported_targets PRIVATE Boost::filesystem)

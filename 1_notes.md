@@ -1,4 +1,3 @@
-Linux环境编程
 Windows核心编程
 
 rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
@@ -15,6 +14,9 @@ rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
 ## 1. doing
   * mps:
     * memory-notes
+  * 机组笔记
+  * 内存笔记
+  * cmake工程
   * 买衣服
   * 画图
     * graphViz

@@ -1,20 +1,3 @@
-= Basic Sub-Project
-:toc:
-:toc-placement!:
-
-toc::[]
-
-# Introduction
-
-This example shows how to setup a CMake project that includes sub-projects. The
-top level CMakeLists.txt calls the CMakeLists.txt in the sub directories to
-create the following:
-
-  * sublibrary1 - A static library
-  * sublibrary2 - A header only library
-  * subbinary - An executable
-
-The files included in this example are:
 
 ```
 $ tree

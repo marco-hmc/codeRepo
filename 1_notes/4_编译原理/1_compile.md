@@ -281,3 +281,8 @@ gcc 编译器驱动程序读取源文件hello.c和main.c，经过预处理、编
     // 这个函数不会被导出
     __attribute__((visibility("hidden"))) void MyFunction2();
     ```
+
+
+cmake干嘛用的？make干嘛用的？
+msbuild,ninja,make是同一生态位的吗？还有哪些？
+gradle
