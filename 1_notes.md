@@ -12,12 +12,14 @@ rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
 即内存和缓存如何关联上，
 
 ## 1. doing
+  * rx-codeRepo
+  * csapp
+  * cmake-codeRepo
   * mps:
     * memory-notes
   * 机组笔记
   * 内存笔记
   * 单测笔记
-  * cmake工程
   * 买衣服
   * 画图
     * graphViz
@@ -223,4 +225,3 @@ dom 解析和流式解析两种
    - 请解释设备驱动的开发和调试方法。
    - 请解释音频视频的处理和编解码技术。
    - 请解释 AI 底层的算法和实现。
-
