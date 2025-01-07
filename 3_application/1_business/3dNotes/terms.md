@@ -115,10 +115,14 @@
   - quality assurance. 质量保证
   - macro
 - Cc
-  - ZsCc--namespace
+  - common-control
+  - 
 - 文件前缀
   - Di
   - Cs
 - pri
 - cvx
   c language 
+
+func: CdAtChkFile
+  cmd->attr->check file

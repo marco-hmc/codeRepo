@@ -37,6 +37,10 @@
 * `git init`
 * `git clone`
 
+![alt text](_imgs/git_image-1.png)
+git-commands.png
+git-merge-git-rebase.jpeg
+
 #### 1.4 提交代码推送代码
 
 * `git commit`

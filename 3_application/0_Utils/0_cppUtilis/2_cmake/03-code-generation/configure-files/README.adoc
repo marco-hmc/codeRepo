@@ -1,16 +1,3 @@
-= Configure Files Generation
-:toc:
-:toc-placement!:
-
-toc::[]
-
-# Introduction
-
-During the call to cmake it is possible to create files that use variables from
-the CMakeLists.txt and cmake cache. During CMake generation the file is copied to a
-new location and any cmake variables are replaced.
-
-The files in this tutorial are below:
 
 ```
 $ tree

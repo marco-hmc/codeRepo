@@ -198,15 +198,12 @@
   ```
 
   * a表(入职工资表)
-
     ![practice4_1](imgs/sql/practice4_1.png)
 
   * b表(现在工资表)
-
     ![practice4_2](imgs/sql/practice4_2.png)
 
   * a、b表连接
-
     ![practice4_3](imgs/sql/practice4_3.png)
 
 
