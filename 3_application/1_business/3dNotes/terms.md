@@ -123,6 +123,7 @@
 - pri
 - cvx
   c language 
-
+- apz
+  - array pointers prefix
 func: CdAtChkFile
   cmd->attr->check file
