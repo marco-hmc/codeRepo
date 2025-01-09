@@ -1,15 +1,13 @@
 #include <exception>
 #include <memory>
 
-struct empty_stack: std::exception
-{
+struct empty_stack : std::exception {
     const char* what() const throw();
 };
 
-template<typename T>
-class threadsafe_stack
-{
-public:
+template <typename T>
+class threadsafe_stack {
+  public:
     threadsafe_stack();
     threadsafe_stack(const threadsafe_stack&);
     threadsafe_stack& operator=(const threadsafe_stack&) = delete;
@@ -20,5 +18,4 @@ public:
     bool empty() const;
 };
 
-int main()
-{}
+int main() {}

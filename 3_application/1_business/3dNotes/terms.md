@@ -124,6 +124,6 @@
 - cvx
   c language 
 - apz
-  - array pointers prefix
+  - array pointers structure
 func: CdAtChkFile
   cmd->attr->check file

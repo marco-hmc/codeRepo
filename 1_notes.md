@@ -12,6 +12,9 @@ rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
 即内存和缓存如何关联上，
 
 ## 1. doing
+  * vs工程
+    - debug
+  * 3D笔记
   * rx-codeRepo
   * 指针
   * csapp
