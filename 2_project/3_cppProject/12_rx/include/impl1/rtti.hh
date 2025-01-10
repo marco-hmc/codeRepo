@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+/* https://github.com/royvandam/rtti/tree/cf0dee6fb3999573f45b0726a8d5739022e3dacf */
 #pragma once
 
 #include <algorithm>

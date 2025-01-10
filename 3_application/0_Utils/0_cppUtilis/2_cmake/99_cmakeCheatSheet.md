@@ -1,3 +1,22 @@
+
+- **CMAKE_SOURCE_DIR**
+  顶级`CMakeLists.txt`所在目录。
+- **CMAKE_CURRENT_SOURCE_DIR**
+  当前`CMakeLists.txt`所在目录。多用于子目录的情况
+- **PROJECT_SOURCE_DIR**
+  最近的定义`project()`的那个`CMakeLists.txt`所在的目录。
+- **CMAKE_BINARY_DIR**
+  根的二进制/构建目录，即运行 cmake 命令的目录
+- **CMAKE_CURRENT_BINARY_DIR**
+  在根目录下的当前构建目录。
+- **PROJECT_BINARY_DIR**
+  当前项目的构建目录。
+- `cmake_prefix_path`
+  用于告诉 CMake 去哪里查找一些外部的项目、库或者工具链等相关文件。
+- `cmake_library_path`
+
+
+
 ### 3. 常用的变量
 
 #### 3.1 与源文件和目录相关的变量

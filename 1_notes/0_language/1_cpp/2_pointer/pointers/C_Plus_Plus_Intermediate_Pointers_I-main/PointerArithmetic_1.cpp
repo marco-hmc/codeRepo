@@ -1,21 +1,25 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
-int main()
-{
-    int *p,*q, *s, *d;
-    int num = 10, k = 2, x= 2, y = 2;
-    p = &num;   // p points to num
+
+int main() {
+    int *p, *q, *s, *d;
+    int num = 10, k = 2, x = 2, y = 2;
+    p = &num;  // p points to num
     q = &k;
-    s = &x; 
-    d = &y;   
-    //Valid Pointer Arithmetic  
-    cout<<"Address Value of p in integer before operation is(1): "<<(int)p<<endl;
-    cout<<"Address Value of p in hexadecimal before operation is(1): "<<p<<endl;
+    s = &x;
+    d = &y;
+    //Valid Pointer Arithmetic
+    cout << "Address Value of p in integer before operation is(1): " << (int)p
+         << endl;
+    cout << "Address Value of p in hexadecimal before operation is(1): " << p
+         << endl;
 
-    p = p-2;
+    p = p - 2;
 
-    cout<<"Address Value of p in integer  after operation(1): "<<(int)p<<endl;
-    cout<<"Address Value of p in hexadecimal  after operation(1): "<<p<<endl;
+    cout << "Address Value of p in integer  after operation(1): " << (int)p
+         << endl;
+    cout << "Address Value of p in hexadecimal  after operation(1): " << p
+         << endl;
     //OPERATION***//
     /*****************************
      * initial integer address of p was 6422276
@@ -27,10 +31,12 @@ int main()
      * And we get their corresponding hexadecimal values if we remove typecast (int)
      * ************************/
 
-    p = p -k;
+    p = p - k;
 
-    cout<<"Address Value of p in integer  after operation(2): "<<(int)p<<endl;
-    cout<<"Address Value of p in hexadecimal  after operation(2): "<<p<<endl;
+    cout << "Address Value of p in integer  after operation(2): " << (int)p
+         << endl;
+    cout << "Address Value of p in hexadecimal  after operation(2): " << p
+         << endl;
     //OPERATION***//
     /*****************************
      * p = p - k
@@ -39,13 +45,17 @@ int main()
      * AND next shift will be : 6422264-4 = 6422260
      * And we get their corresponding hexadecimal values if we remove typecast (int)
      * **************************/
-    cout<<"Address Value of s in integer before operation is: "<<(int)s<<endl;
-    cout<<"Address Value of s in hexadecimal before operation is: "<<s<<endl;
+    cout << "Address Value of s in integer before operation is: " << (int)s
+         << endl;
+    cout << "Address Value of s in hexadecimal before operation is: " << s
+         << endl;
 
     s = (int *)(p - s);
 
-    cout<<"Address Value of s in integer after operation is :"<<(int)s<<endl;
-    cout<<"Address Value of s in hexadecimal after operation is :"<<s<<endl;
+    cout << "Address Value of s in integer after operation is :" << (int)s
+         << endl;
+    cout << "Address Value of s in hexadecimal after operation is :" << s
+         << endl;
     //OPERATION***//
     /*****************************
      * s = (int *)(p - s);
@@ -59,9 +69,11 @@ int main()
      * q = 6422264/4 = 1605566
      * Now substract : 1605564 - 1605566 = -2 
      * **************************/
-    d= (int *)(p - s)+k;
-    cout<<"Address Value of d in integer after operation is :"<<(int)d<<endl;
-     cout<<"Address Value of d in hexadecimal after operation is :"<<d<<endl;
+    d = (int *)(p - s) + k;
+    cout << "Address Value of d in integer after operation is :" << (int)d
+         << endl;
+    cout << "Address Value of d in hexadecimal after operation is :" << d
+         << endl;
     //OPERATION***//
     /*****************************
      * d = (int *)(p - s)+k;

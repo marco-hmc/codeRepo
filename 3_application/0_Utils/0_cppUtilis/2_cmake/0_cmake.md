@@ -113,6 +113,7 @@
   add_library(my_shared_lib SHARED source1.cpp) # 定义动态库
   add_executable(${PROJECT_NAME} main.cpp)
   add_custom_target()
+  add_dependencies(<target> <dependency> [<dependency>...])
   ```
 
 - **cmake 中的目标是什么意思？**
@@ -289,17 +290,16 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
 - **.cmake 是什么文件?**
   `.cmake`文件是一种常见的文件扩展名,用于存储 CMake 相关的配置/宏定义/函数或其他辅助功能.
 
+
 ### 99. quiz
 
 #### 1. CMakeLists 是大小写敏感的吗?
 
 不完全是,CMake 的语法和关键词是大小写不敏感的.但是变量和函数名是大小写敏感的
 
-- `find_package`
-
 - **`set`变量的作用域有多大?**
 
-  - 在 CMakeLists.txt 文件中使用`set`命令设置的变量默认情况下是全局变量,对整个项目都是可见的.
+  - 在根目录的CMakeLists.txt 文件中使用`set`命令设置的变量默认情况下是全局变量,对整个项目都是可见的.
   - 在子目录的 CMakeLists.txt 文件中设置的变量将在该子目录及其子目录中生效,但不会影响父目录或其他兄弟目录中的变量.
   - 在函数或宏中使用`set`命令设置的变量的作用域仅限于该函数或宏内部,不会影响调用它们的上下文.这意味着这些变量在函数或宏之外是不可见的.
 
@@ -307,42 +307,21 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
 
 - **`SET(A ${A})`和`SET(A "${A}")`的区别是什么?**
 
-- **`SET(A "${A}" CACHE PATH "xxx")`的意义是什么?**
+#### 2. cmake 的顺序问题和依赖问题
 
-#### 3. cmake 的顺序问题
+* cmake顺序
+  一般是先生成 target，再设置 target 的条件，例如 include 目录，属性等等。
+* cmake依赖
+  * add_dependencies() 显式指定
+  * target_link_libraries() 隐式指定
+  * find_package() 隐式指定
 
-一般是先生成 target，再设置 target 的条件，例如 include 目录，属性等等。
-
-#### 1.宏和函数在 CMake 的区别是什么？
+#### 3.宏和函数在 CMake 的区别是什么？
   1. 参数传递方式:宏和函数在参数传递方式上有所不同.在 CMake 中,宏的参数是通过简单的文本替换来传递的,而函数的参数则是通过变量的赋值和引用传递的.
   2. 变量作用域:宏和函数在变量作用域上有所不同.宏的定义和调用是在同一个变量作用域内进行的,宏内部的变量对于调用宏的上下文没有影响.而函数具有独立的变量作用域,函数内部的变量只在函数内部有效,不会影响调用函数的上下文.
   3. 返回值:宏没有返回值的概念,而函数可以使用`return()`命令来显式返回一个结果.
 
-### 100. 未整理
-
-我设置了 set(CMAKE_CXX_FLAGS "-std=c++17") 但是没有效果（谁让你这样设置版本的？我课上说了多少遍要用 set(CMAKE_CXX_STANDARD 17) 知道吗？你那个东西有概率会被覆盖而且不跨平台！CMAKE_CXX_STANDARD 才是标准做法）
-
-我设置了 set(CMAKE_CXX_FLAGS "-O3") 但是没有效果（谁让你这样设置开关优化的？我课上说了多少遍要用 set(CMAKE_BUILD_TYPE Release) 知道吗？你那个东西有概率会被覆盖根本不跨平台！CMAKE_BUILD_TYPE 才是标准做法，Release 开优化，Debug 关优化，RelWithDebInfo 会开优化但保留调试信息，如果要让 Release 从默认的 -O3 变成 -O2 应该用 set(CMAKE_CXX_FLAGS_RELEASE "-O2") 同理还有 CMAKE_CXX_FLAGS_DEBUG 可以设）
-
-我想要链接某某库，能不能把他做成 subdir 方便我链接？（只有官方支持 CMake subdir 邪教的那些库，如 fmt, spdlog 等可以，否则必须先 make install 那个库到系统中去，然后 find_package 他，subdir 是邪教，不是官方推荐的方法，小彭老师能在 Zeno 里大量用是因为他是 CMake 专家，他有那个本事，如果希望实现完美的“自包含”也可以尝试一下 CMake 自带的 FetchContent 功能，指定一个 URL，他会自动帮你从网上下载依赖项的源码并构建，并使你的主项目能够找到他
-
-target_link_libraries(imported_targets PRIVATE Boost::filesystem)
-
-### 100. 常用变量
-
-- **CMAKE_SOURCE_DIR**
-  顶级`CMakeLists.txt`所在目录。
-- **CMAKE_CURRENT_SOURCE_DIR**
-  当前`CMakeLists.txt`所在目录。多用于子目录的情况
-- **PROJECT_SOURCE_DIR**
-  最近的定义`project()`的那个`CMakeLists.txt`所在的目录。
-- **CMAKE_BINARY_DIR**
-  根的二进制/构建目录，即运行 cmake 命令的目录
-- **CMAKE_CURRENT_BINARY_DIR**
-  在根目录下的当前构建目录。
-- **PROJECT_BINARY_DIR**
-  当前项目的构建目录。
-- `cmake_prefix_path`
-  用于告诉 CMake 去哪里查找一些外部的项目、库或者工具链等相关文件。
-- `cmake_library_path`
-
+#### 4. 注意事项
+* 不要设置`CMAKE_CXX_FLAGS`，会被覆盖
+  * `set(CMAKE_CXX_FLAGS "-std=c++17") ` -> `set(CMAKE_CXX_STANDARD 17)`
+  * `set(CMAKE_CXX_FLAGS "-O3") ` -> `set(CMAKE_BUILD_TYPE Release)`

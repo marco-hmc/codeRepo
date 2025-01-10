@@ -1,10 +1,13 @@
 /*********
  * Print Number from 1 to range
  * ****************************************************************/
+
 #include <iostream>
 using namespace std;
+
 void printNumber(int **);
-int main(){
+
+int main() {
     int range;
     cout << "Enter a range: ";
     cin >> range;
@@ -13,12 +16,12 @@ int main(){
     printNumber(ptrptr);
     return 0;
 }
-void printNumber(int **n){
-   
-    if(**n == 0){
+
+void printNumber(int **n) {
+    if (**n == 0) {
         return;
     }
     cout << **n << "\n";
-    **n = **n-1;
+    **n = **n - 1;
     printNumber(n);
 }
