@@ -1,5 +1,4 @@
 # rtti
-A try to add runtime reflection to C++ language.
 
 Implemented meta namespaces, classes, methods, constructors, properties and enums.
 

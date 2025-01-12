@@ -1,8 +1,5 @@
 # Open-hierarchy custom RTTI framework for C++17 and up.
 
-If you have ever attempted to use the C++'s build in RTTI on a resource constrained (embedded) system you will most likely have noticed it is massively inefficient.
-
-Hence this implementation of a hand-rolled form of RTTI which is much more efficient and flexible, although it requires a bit more work from you as a class author. The current implementation supports the following features:
 
 - Compiletime (stable) ID generation based on the FNV1a hash of the type signature
 - Multiple inheritance, including virtual
@@ -17,8 +14,6 @@ Hence this implementation of a hand-rolled form of RTTI which is much more effic
 Note: This project was initially inspired by open-hierarchy examples in the guidelines defined for RTTI by the LLVM project<sup>[1]</sup>. However this solution has one major drawback which is that the parent constructors are no longer accessible given that RTTI classes are injected in between the parent and child. An initial implementation of the RTTI library was based on this design and is still available for reference under git tag `llvm-style-inheritance`.
 
 [1] https://llvm.org/docs/HowToSetUpLLVMStyleRTTI.html
-
----
 
 ## How to use
 

@@ -1,9 +1,6 @@
 https://github.com/elohim-meth/rtti
-
 Windows核心编程
-
 rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
-
 给一个内存碎片概念的章节目录，或者结构图。能够囊括主要知识点和内容
 
 ## 1. doing

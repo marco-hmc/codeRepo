@@ -11,6 +11,7 @@ tab = table[0] = table[0][0] = 0x7ffc5c78b530
 tab + 1 = table[1] = table[1][0] = 0x7ffc5c78b538
 *(tab + 1) = 0x7ffc5c78b538
 **(tab + 1) = table[1][0] = 3
+
 */
 
 #include <stdio.h>
