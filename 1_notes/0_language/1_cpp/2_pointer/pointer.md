@@ -1,70 +1,49 @@
-```c++
-/*
-             tab + 0        tab + 1
-   Address  0x7ffc5c78b530  0x7ffc5c78b538  0x7ffc5c78b530  0x7ffc5c78b534  0x7ffc5c78b538  0x7ffc5c78b53c
-     Value  0x7ffc5c78b530  0x7ffc5c78b538  1  				2  				3  				4
-                 [0]           [1]         [0][0]          [0][1]          [1][0]          [1][1]
+## pointers技巧
 
-tab = table[0] = table[0][0] = 0x7ffc5c78b530
-*tab = 0x7ffc5c78b530
-**tab = table[0][0] = 1
+* **指针的理解**
+指针的本质确实可以归结为类型和地址。
 
-tab + 1 = table[1] = table[1][0] = 0x7ffc5c78b538
-*(tab + 1) = 0x7ffc5c78b538
-**(tab + 1) = table[1][0] = 3
+首先地址的意义可以根据字面意思理解，但需要注意的是，在内存层面，内存的最小可寻址单元大小是 1 字节。这相当于一个 char 类型所占的空间大小；
+至于类型的意义，则在于让编译器知晓该按照何种格式去读取相应地址处的数据。
 
-*/
+当涉及到像 int 这样需要多个字节（通常为 4 字节）来存储的数值时，可以通过4个地址表示，但也可以基于内存分配必定连续的先验条件，通过一个类型长度+首地址的方式表示。显然后者更方便，这是为什么指针是类型和地址的意思了。
 
-#include <stdio.h>
+特别要注意的是，在使用指针时，最好将硬件亲和性纳入考量范围。内存访问并非是简单地逐个地址去获取数据，实际上，内存访问往往是按照一定的 “行” 来进行操作的，例如当通过指针访问 int 类型数据时，并不是分四次去访问对应的四个字节地址，而是一次性访问包含这四个字节的一 “行” 内存空间，字节对齐就是基于这样的内存访问机制而存在的。字节对齐能够确保数据在内存中的存放符合硬件高效访问的要求，从而提升整体的访问效率，让基于指针的内存操作更加顺畅高效。
 
-int main() {
-    int tab[2][2] = {{1, 2}, {3, 4}};
+进一步的，内存访问是查高速缓存再查内存的。这个行的大小长度，实际上应该交由缓存决定更为友好。而缓存行的大小一般为64字节，8个地址长度，16个int型数据。
 
-    // 输出*tab, **tab, *(tab + 1), **(tab + 1)的值
-    printf("tab = %p\n", tab);
-    printf("*tab = %p\n", *tab);
-    printf("**tab = %d\n", **tab);
+上面的讨论，意在明确基本概念，提升相关认识。平台差和硬件导致的差异不讨论。
 
-    printf("tab + 1 = %p\n", tab + 1);
-    printf("*(tab + 1) = %p\n", *(tab + 1));
-    printf("***(tab + 1) = %d\n", **(tab + 1));
-    return 0;
-}
-```
+### 1. 数组和指针
 
-```c++
-struct Foo{
-    int a;
-    int b;
-};
+`int arr[] = {1,2,3};`
+当强调`{1,2,3}`的时候，arr是一个数组。当使用arr进行传递的时候，arr是数组名。
 
-Foo *(*bar) = nullptr;
-Foo **bar = nullptr;
-```
+* 指针和数组的关系与区别
 
-```c++
-void bubble(int a[], int N) {
-    int i, j, t;
-    for (i = N - 1; i >= 0; i--) {
-        for (j = 1; j <= i; j++) {
-            if (a[j - 1] > a[j]) {
-                t = a[j - 1];
-                a[j - 1] = a[j];
-                a[j] = t;
-            }
-        }
-    }
-}
+简单来说，数组是一种基于指针概念的封装和抽象。
+> 其实细究下来，数组其实不能简单说是指针概念的封装和抽象。因为汇编语言提供了数组的概念，但汇编没有指针的概念。那么对于编译器来说，数组大概率不是简单通过指针概念的封装得到的一个概念。
+> 但是从计算机模型的角度出发，数组是可以理解为指针概念的抽象的。只是这个抽象指的是能力上，而非实现上的。
+> 也就是说，数组和指针的所有对外能力的差异，都可以通过经过封装之后的指针进行补足，实现一样的效果。
+> 也就是说封装过后的指针，对外就是和数组就是一样的。
 
-```
+那么指针需要怎样的封装，才能表现出数组的形式呢？
+* 数组是一种指针常量，即指向不可被修改。
+* 数组是连续相同类型元素的集合，这些内存分配一定是连续的。
+* 数组的下标访问和指针运算等效，在本质上，使用数组下标访问元素（如 `arr[i]`）和通过指针运算来访问元素（如 `*(p + i)`，`p` 指向数组首元素）是等效的操作方式，编译器在底层进行处理时，都会转化为相应的地址计算，最终实现对内存中对应元素的访问。
+* 数组的大小
 
-```c++
-void func(int a[][3], int rows) {
-    // 使用 a[i][j] 访问数组元素
-}
-int arr[2][3] = {{1, 2, 3}, {4, 5, 6}};
-func(arr, 2);
-```
+因此，指针的理解，数组的理解上面都解释完了。
+
+* 数组退化为指针
+
+* 数组名作为形参和指针作为形参的区别
+
+* 
+
+### 2. 代码例子
+
+#### 2.1 数组的内存分布
 
 ```plaintext
 Stack:
@@ -78,68 +57,4 @@ Stack:
 |                |    |...                                      |    | ...                              |
 |                |    | int *[nrows - 1] (rowptr[nrows - 1])    |    | int[ncols] (rowptr[nrows - 1])   |
 |                |    |---------------------------              |    |-----------------------           |
-```
-
-```c++
-#include <stdio.h>
-#include <stdlib.h>
-
-#define COLS 5
-
-typedef int RowArray[COLS];
-
-int main(void) {
-    int nrows = 10;
-    RowArray *rptr;
-    rptr = malloc(nrows * COLS * sizeof(int));
-    for (int row = 0; row < nrows; row++) {
-        for (int col = 0; col < COLS; col++) {
-            rptr[row][col] = 17;
-        }
-    }
-
-    return 0;
-}
-
-```
-
-```c++
-    int *aptr = malloc(nrows * ncols * sizeof(int));
-    int **rptr = malloc(nrows * sizeof(int *));
-    for (int k = 0; k < nrows; k++) {
-        rptr[k] = aptr + (k * ncols);
-    }
-```
-
-```c++
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-const int X_DIM = 16;
-const int Y_DIM = 5;
-const int Z_DIM = 3;
-
-int main(void) {
-    char *space = malloc(X_DIM * Y_DIM * Z_DIM * sizeof(char));
-    char ***Arr3D = malloc(Z_DIM * sizeof(char **));
-    for (int z = 0; z < Z_DIM; z++) {
-        Arr3D[z] = malloc(Y_DIM * sizeof(char *));
-        for (int y = 0; y < Y_DIM; y++) {
-            Arr3D[z][y] = space + (z * (X_DIM * Y_DIM) + y * X_DIM);
-        }
-    }
-
-    ptrdiff_t diff;
-    for (int z = 0; z < Z_DIM; z++) {
-        printf("Location of array %d is %p\n", z, *Arr3D[z]);
-        for (int y = 0; y < Y_DIM; y++) {
-            printf("  Array %d and Row %d starts at %p", z, y, Arr3D[z][y]);
-            diff = Arr3D[z][y] - space;
-            printf("    diff = %ld  ", diff);
-            printf(" z = %d  y = %d\n", z, y);
-        }
-    }
-    return 0;
-}
 ```
