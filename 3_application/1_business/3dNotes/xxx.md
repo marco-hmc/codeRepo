@@ -83,35 +83,18 @@ QEventLoop(QObject *parent = nullptr): 创建一个事件循环。parent 参数�
 
 作用
 
-
-
-
 void exec(QEventLoop::ProcessEventsFlags flags = AllEvents)
-
-	
 
 开始事件循环。flags 参数指定事件循环应该如何处理事件
 
 
-
-
 void exit(int returnCode = 0)
-
-	
 
 使事件循环退出。returnCode 参数指定事件循环返回的值
 
-
-
-
 bool isRunning() const
 
-	
-
 返回事件循环是否正在运行
-
-
-
 
 void processEvents(QEventLoop::ProcessEventsFlags flags = AllEvents)
 

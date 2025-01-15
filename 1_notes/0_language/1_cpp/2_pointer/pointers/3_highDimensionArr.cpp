@@ -1,7 +1,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace arrPtr {
+namespace Arr2DPtr {
     void example1() {
         int actualArray[2][3] = {{1, 2, 3}, {4, 5, 6}};
         static_assert(sizeof(actualArray) == 24);  // 24
@@ -19,9 +19,9 @@ namespace arrPtr {
         }
     }
 
-}  // namespace arrPtr
+}  // namespace Arr2DPtr
 
-namespace decayToPrt {
+namespace Arr2DDecayToPrt {
     void func(int a[][3], int rows) {
         static_assert(sizeof(a) == 8);    // 8
         static_assert(sizeof(*a) == 12);  // 12
@@ -39,6 +39,10 @@ namespace decayToPrt {
         func(arr, 2);
     }
 
-}  // namespace decayToPrt
+}  // namespace Arr2DDecayToPrt
 
-int main() { return 0; }
+int main() {
+    Arr2DPtr::example1();
+    Arr2DDecayToPrt::example1();
+    return 0;
+}

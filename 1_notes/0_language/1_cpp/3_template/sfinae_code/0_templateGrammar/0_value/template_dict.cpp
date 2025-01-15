@@ -33,9 +33,9 @@ namespace dict_meta {
 }  // namespace dict_meta
 
 int main() {
-    using namespace dict_meta;
-    dictionary<pair<int, std::string>, pair<double, std::string>> dict = {
-        {1, "one"}, {2.0, "two"}};
+    dict_meta::dictionary<dict_meta::pair<int, std::string>,
+                          dict_meta::pair<double, std::string>>
+        dict = {{1, "one"}, {{2.0, "two"}}};
 
     std::cout << "Key 1: " << dict[1] << std::endl;
     std::cout << "Key 2.0: " << dict[2.0] << std::endl;

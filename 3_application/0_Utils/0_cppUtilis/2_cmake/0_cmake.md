@@ -1,9 +1,47 @@
 ## cmake
 
+### cheat-sheet
+
+* **与源文件和目录相关的变量**
+  - **${CMAKE_CURRENT_SOURCE_DIR}**：
+    表示当前处理的 CMakeLists.txt 文件所在的源文件目录。
+  - **${CMAKE_CURRENT_BINARY_DIR}**：
+    对应于当前 CMakeLists.txt 文件对应的构建目录，也就是编译生成目标文件、中间文件等所在的目录。
+  - **${CMAKE_SOURCE_DIR}**：
+    整个项目最顶层的源文件目录，是所有源文件目录的根目录，对于定位项目中全局的一些公共源文件、资源文件等非常有用。
+  - **${CMAKE_BINARY_DIR}**：
+    整个项目的构建根目录，所有的构建产物最终都会放置在这个目录或者其下的子目录中，类似构建过程中生成的库文件、可执行文件等都会在这个目录结构下，并且可以利用它来设置一些全局的输出布局。
+  - **${PROJECT_SOURCE_DIR}**
+    最近的定义`project()`的那个`CMakeLists.txt`所在的目录。
+  - **${PROJECT_BINARY_DIR}**
+    当前项目的构建目录。
+  - **${CMAKE_PREFIX_PATH}**
+    用于告诉 CMake 去哪里查找一些外部的项目、库或者工具链等相关文件。
+  - **${CMAKE_LIBRARY_PATH}**
+    指定 CMake 查找库文件的路径。
+  - **${CMAKE_FIND_ROOT_PATH}**：
+    在跨平台交叉编译或者查找特定路径下的依赖库时很有用，它定义了一个搜索路径的根路径，CMake 会基于这个根路径去查找库文件、头文件等，比如在嵌入式开发中，指定交叉编译工具链对应的系统根目录路径，通过 `set(CMAKE_FIND_ROOT_PATH /path/to/embedded/root)` 来辅助查找相关的库和头文件。
+  
+* **与编译选项相关的变量**
+  - **${CMAKE_C_FLAGS}**：
+    用于设置 C 语言编译器的编译选项，比如可以添加优化级别选项 `-O2` ，调试相关选项 `-g` 等，像 `set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -g")`。
+  - **${CMAKE_CXX_FLAGS}**：
+    和上面类似，不过是针对 C++ 语言编译器的编译选项，同样可以添加诸如优化、调试、警告处理等相关的参数。  
+  - **${CMAKE_BUILD_TYPE}**：
+    表示当前的构建类型，常见的值有 `Debug`、`Release`、`RelWithDebInfo`（发布版本带调试信息）、`MinSizeRel`（最小化大小发布版）等，不同的构建类型会应用不同的编译选项，例如在 `Debug` 类型下会默认开启更多的调试相关的编译参数，方便调试程序，而 `Release` 类型则侧重于优化生成的二进制文件性能和减小文件大小等，可以通过 `set(CMAKE_BUILD_TYPE Release)` 来显式指定构建类型。    
+    
+* **与目标属性相关的变量**
+  - **${PROJECT_NAME}**：
+    代表当前项目的名称，这个名称通常是通过 `project()` 命令在 CMakeLists.txt 中定义的，在后续指定生成的目标文件（如库文件、可执行文件）的名称、安装目录等场景中会经常用到，比如 `add_library(${PROJECT_NAME}_lib mylib.cpp)` ，就会以项目名称结合后缀的形式来命名生成的库文件。
+  - **${CMAKE_INSTALL_PREFIX}**：
+    用于指定项目安装的根目录，当执行 `make install` 命令时，生成的可执行文件、库文件、头文件等会按照设定的安装规则安装到这个指定的目录及其子目录下，例如 `set(CMAKE_INSTALL_PREFIX /usr/local)` ，那么最终的安装产物就会放置到 `/usr/local` 对应的合适位置（可执行文件到 `bin` 目录、库文件到 `lib` 目录等）。
+
+
 ### 0. 基本概念
 
 - **什么是构建工具？**
-  根据构建文件，调用编译器，连接器完成生成目标对象`target`，生成目标对象`target`可以是静态库、动态库和可执行文件（甚至进一步的，生成对象可以为空，用于表示执行脚本。比如比如 make 工具中的 make clean，资源化，代码检查等等）。
+  根据构建文件，调用编译器，连接器完成生成目标对象`target`就是构建工具，cmake就是构建工具。
+  而生成目标对象`target`可以是静态库、动态库和可执行文件（甚至进一步的，生成对象可以为空，用于表示执行脚本。比如比如 make 工具中的 make clean，资源化，代码检查等等）。
 
 - **构建工具和文件的生态位置**
   - **Make**：Make 是一个构建工具，它根据 Makefile 调用编译器和链接器来构建项目。
@@ -15,88 +53,72 @@
   - **Ninja**：Ninja 是一个高效的构建工具，它根据 build.ninja 文件调用编译器和链接器来构建项目。
   - **build.ninja**：build.ninja 文件是 Ninja 使用的构建文件，用于描述如何构建项目。Ninja 读取 build.ninja 文件，并根据其中定义的规则调用编译器和链接器。
 
-- **生成工具**
-  用于生成构建文件的。
-
-  - **CMakeLists.txt**：CMakeLists.txt 是 CMake 使用的配置文件，用于描述项目的构建过程。CMake 读取 CMakeLists.txt 文件，并生成适用于不同构建工具的构建文件，如 Makefile、build.ninja、.vcxproj 等。
-
 - **发展演化的描述**
   我未经考察地做一些发展演化的描述，以便串起这些工具和文件的关系。一开始，构建工具主要是 Make，它使用 Makefile 来描述构建过程。然而，Makefile 的语法和功能有限，针对大型工程非常吃力。于是出现了 CMake，它通过 CMakeLists.txt 文件生成 Makefile。
-
   与此同时，微软通过 Visual Studio IDE 提供了项目管理功能，允许用户通过 GUI 操作指定哪些文件属于同一个模块，并生成静态库、动态库或可执行文件。相应的数据存储在 `.vcxproj` 文件中。
-
   CMake 的设计目标是生成构建文件描述，因此它不仅可以生成 Makefile，还可以生成 .vcxproj 文件。CMake 支持.vcxproj 也只是顺手之举。
-
   后来，Google 推出了 Ninja 构建工具，旨在提高构建效率。其实就是改进 make 的。但是 make 的所有权又不是 Goole 的。便直接另起炉灶了。
 
 - **总结**
-
-  构建文件描述的生成有三种方式：手工写、gui 操作、脚本生成。三种方式都可以，但是脚本生成更灵活，更适合大型工程。CMake 是一个跨平台的构建系统生成工具，可以生成适用于不同构建工具的构建文件。通过理解这些工具和文件在构建生态系统中的位置和作用，可以更好地管理和构建项目。
-  因此 cmake 已经成为了 C++构建工具的标准。但是与此同时，cmake 的学习曲线也是很陡的。特别是兼容了很多历史写法，一个功能可以有很多种写法，灵活性很高，但是也容易让人迷失。学习成本也高。
+  需要有一个文件指定编译路径，怎么调用编译器，生成什么对象（库还是可执行文件）等等，这个文件叫构建文件。解析这个构建文件实际调用编译器、链接器的就是构建工具了。
+  > 构建工具： make-makefile, MSBuild-.vcxproj, Ninja-build.ninja，就是c++下常见构建工具和构建文件。
+  构建文件描述的生成有三种方式：手工写、gui 操作、脚本生成。在早期没有ninja，对于makefile都是手写；而.vcxproj则是gui点击操作。
+  后来出现了cmake，cmake可以理解为一种专门用于生成构建文件的脚本语言吧。因此可以生成makefile文件，从而避免手写；同时也方便了跨平台，一个vs工程如果支持cmake，迁移到linux也方便了。
+  至于ninja可以理解为是make的补丁版本，解决make编译速度太慢的问题。为什么不直接在make上改呢？那是因为make的背后是unix团队，MSBuild的背后是google团队。而ninja是google推出来的。是社会工程学的问题。而make也在迭代，新版本有没有解决编译速度慢的问题则不好说了。
 
 
 ### 1. cmake 脚本语法
 
-* **条件操作**
+#### 1.1 设置变量-set
+  - **SET**
+    ```cmake
+    SET(ZS_NAME "${AB}") # 第一种写法
+    SET(ZS_NAME ${CD}) # 第二种写法
+    set(ENV{MY_ENV_VARIABLE} "Hello!")
+    set(ENV{MY_ENV_VARIABLE}_xxx "Hello!") # 可拼接
+    # 使用的时候，要使用${VAR_NAME}
+    ```
+
+    第一种写法和第二种写法是等价的，都是用来设置变量的值。区别在于第一种写法使用了双引号将变量的值括起来，而第二种写法没有使用双引号。使用双引号可以确保变量的值被视为一个整体，而不会被解释为多个独立的字符串。在这个例子中，由于 `${AB}` 和 `${CD}` 是变量，它们的值将被替换为实际的值，然后赋给 `ZS_NAME` 变量。所以在这种情况下，这两种写法是等效的。
+
+#### 1.2 条件操作-if
   - **IF**
     ```cmake
     IF(CONDITION)
-      # 条件为真时执行的操作
+      # ...
     ELSE()
-      # 条件为假时执行的操作
+      # ...
     ENDIF()
     ```
 
-* **循环操作**
+#### 1.3 循环操作-while-foreach
   - **while**
     ```cmake
     WHILE(CONDITION)
-      # 循环体，条件为真时执行的操作
+      # ...
     ENDWHILE()
     ```
 
   - **foreach**
     ```cmake
     FOREACH(item IN LISTS list)
-      # 循环体，遍历列表中的每个元素
+      # ...
     ENDFOREACH()
     ```
 
-* **设置变量**
-  - **SET**
-    ```cmake
-    SET(ZS_NAME "${AB}") # 第一种写法
-    SET(ZS_NAME ${CD}) # 第二种写法
-    set(ENV{MY_ENV_VARIABLE} "Hello!")
-    ```
-
-    第一种写法和第二种写法是等价的，都是用来设置变量的值。区别在于第一种写法使用了双引号将变量的值括起来，而第二种写法没有使用双引号。使用双引号可以确保变量的值被视为一个整体，而不会被解释为多个独立的字符串。在这个例子中，由于 `${AB}` 和 `${CD}` 是变量，它们的值将被替换为实际的值，然后赋给 `ZS_NAME` 变量。所以在这种情况下，这两种写法是等效的。
-
-* **宏**
+#### 1.4 宏和函数-macro-func
     ```cmake
     macro(MacroName arg1 arg2 ...)
       # 宏的操作和命令
     endmacro()
-    ```
 
-    - `macro` 关键字用于定义一个宏。
-    - `MacroName` 是宏的名称，可以根据需要自定义。
-    - `arg1, arg2, ...` 是宏的参数列表，可以根据需要定义和使用参数。
-
-* **函数**
-    ```cmake
     function(FunctionName arg1 arg2 ...)
-      # 函数的操作和命令
+      # ...
       # return() 可选，用于返回结果
     endfunction()
     ```
 
-    - `function` 关键字用于定义一个函数。
-    - `FunctionName` 是函数的名称，可以根据需要自定义。
-    - `arg1, arg2, ...` 是函数的参数列表，可以根据需要定义和使用参数。
-    - `return()` 是可选的命令，用于在函数中返回结果。
-
-* **文件操作**
+#### 1.5 其他-file
   - **file**
     ```cmake
     file(GLOB SOURCES "src/*.cpp")
@@ -106,12 +128,12 @@
 
 ### 2. 生成
 
-- **如何生目标?**
+#### 2.1 如何生目标？
 
   ```cmake
   add_library(my_static_lib STATIC source1.cpp) # 定义静态库
   add_library(my_shared_lib SHARED source1.cpp) # 定义动态库
-  add_executable(${PROJECT_NAME} main.cpp)
+  add_executable(EXECUTABLE_NAME main.cpp)
   add_custom_target()
   add_dependencies(<target> <dependency> [<dependency>...])
   ```
@@ -120,7 +142,6 @@
   目标（Target）是构建系统中的一个基本概念，表示一个可以构建的实体，如可执行文件、库文件。也可以特殊地表示一个自定义命令。
 
 - 如何理解 CMakePredefinedTargets?
-
   - **`all_build`**
     - **描述**：`all_build` 目标用于构建项目中的所有目标。
     - **用途**：这是默认的构建目标，通常在执行 `make` 或 `cmake --build .` 时被调用。
@@ -133,7 +154,6 @@
   - **`zero_check`**
     - **描述**：`zero_check` 目标用于确保生成的构建系统是最新的。
     - **用途**：在每次构建之前检查 CMakeLists.txt 文件和其他配置文件是否有变化，如果有变化，则重新运行 CMake 以更新构建
-
 
 ### 3. 路径指定
 
@@ -150,8 +170,7 @@
   find_package(LIBRARY_NAME)
   find_library(MYLIBRARY_LIB NAMES mylibrary PATHS /path/to/mylibrary)
   link_directories(/path/to/libDir)
-  CMAKE_PREFIX_PATH 变量用于设置库和头文件的搜索路径。通常用于设置多个库和头文件的搜索路径。
-
+  # CMAKE_PREFIX_PATH 变量用于设置库和头文件的搜索路径。通常用于设置多个库和头文件的搜索路径。
   ```
 
 ### 4. 安装
@@ -225,13 +244,23 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
 #### 5.4 conan方式
 - conan
 
-### 6. 杂项
+### 6. 打包
 
-#### 6.1 编译器设置
+#### 6.1 cpack
+
+### 7. 杂项
+
+#### 7.1 编译器设置
 
   ```cmake
   add_definitions(-DDEBUG) # 添加全局宏定义
   target_compile_definitions(TARGET_OBJECT PRIVATE DEBUG) # 为特定目标添加宏定义
+  ```
+
+  ```cmake
+  set(CMAKE_CXX_STANDARD 17)  # 设置 C++ 标准为 C++17
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)  # 要求必须支持该标准，否则报错
+  set(CMAKE_BUILD_TYPE Debug)  # 设置构建类型为 Debug，也可以是 Release、RelWithDebInfo 等
   ```
 
 - **什么是编译器的编译选项?**
@@ -248,7 +277,7 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
   #endif
   ```
 
-#### 6.2 什么是可见性？
+#### 7.2 什么是可见性？
 这个`[PUBLIC|PRIVATE|INTERFACE]`是可见性属性
 1. `PRIVATE`
     include 目录仅应用于目标自身.
@@ -273,7 +302,7 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
   * 接口库，我给了头文件，我不负责实现。
   * 传递编译选项。
 
-#### 6.3 什么是`add_subdirectory()`？
+#### 7.3 什么是`add_subdirectory()`？
 
 它的作用是将名为`subdir`的子目录添加到当前项目的构建过程中.
 - **`add_subdirectory()`的使用场景是什么?**
@@ -283,12 +312,16 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
   - 第三方库或模块:共享功能库:如果你有一些通用的功能或工具代码,你可以将其封装为一个独立的库,并将其作为子目录添加到不同的项目中.
   - 构建和测试工具:
 
-#### 6.4 cmake的build文件说明
+#### 7.4 cmake的build文件说明
 - **CMake 中的 cache 有什么用?**
   首先 cache 中存储的变量是全局的，父目录子目录都可以查看。
 
 - **.cmake 是什么文件?**
   `.cmake`文件是一种常见的文件扩展名,用于存储 CMake 相关的配置/宏定义/函数或其他辅助功能.
+
+#### 7.5 .cmake文件的使用
+
+#### 7.6 cmakePresets.json使用
 
 
 ### 99. quiz

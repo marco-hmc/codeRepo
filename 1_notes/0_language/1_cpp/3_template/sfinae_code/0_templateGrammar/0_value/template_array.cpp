@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace array_meta {
+namespace Array_Meta {
     template <typename T, size_t N>
     struct array {
         T data[N];
@@ -20,11 +20,15 @@ namespace array_meta {
             return max_val;
         }
     };
-}  // namespace array_meta
+
+    void test() {
+        array<int, 5> arr = {1, 2, 3, 4, 5};
+        std::cout << "Array size: " << arr.size() << std::endl;
+        std::cout << "Max value: " << arr.max() << std::endl;
+    }
+}  // namespace Array_Meta
 
 int main() {
-    array_meta::array<int, 5> arr = {1, 2, 3, 4, 5};
-    std::cout << "Array size: " << arr.size() << std::endl;
-    std::cout << "Max value: " << arr.max() << std::endl;
+    Array_Meta::test();
     return 0;
 }

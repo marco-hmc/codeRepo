@@ -28,12 +28,6 @@ ES6 语法智能提示，支持快速输入。
 
 ![](http://img.smyhvae.com/20200618_2100.png)
 
-### 29、Local History 【荐】
-
-维护文件的本地历史记录，强烈建议安装。代码意外丢失时，有时可以救命。
-
-![](http://img.smyhvae.com/20200618_2246.png)
-
 ### 32、Auto Close Tag、Auto Rename Tag
 
 自动闭合标签、自动对标签重命名。
@@ -100,20 +94,6 @@ CSS Peek 对 Vue 没有支持，该插件提供了对 Vue 文件的支持。
 }
 ```
 
-
-### vscode-fileheader：添加顶部注释模板(签名)
-
-（1）安装插件vscode -fileheader，并重启。
-
-（2）在首选项-》设置-》中搜索fileheader，找到头部模板修改。
-
-默认的快捷键是：「Ctrl + option + I」。
-
-参考链接：
-
-- <https://www.zhihu.com/question/62385647>
-
-
 ### Express
 
 在本地开启Node服务器：
@@ -121,19 +101,6 @@ CSS Peek 对 Vue 没有支持，该插件提供了对 Vue 文件的支持。
 ![](http://img.smyhvae.com/20180611_2230.png)
 
 然后在浏览器的地址栏输入`http://localhost/` + 文件的相对路径，就可以通过服务器的形式打开这个文件。
-
-### Copy Relative Path
-
-> 这个插件很有用，使用频率很高。
-
-复制文件的相对路径：（相对于根路径而言）
-
-![](http://img.smyhvae.com/20180611_2235.png)
-
-### Project Manager
-
-项目管理，让我们方便的在命令面板中切换项目文件夹，当然，你也可以直接打开包含多个项目的父级文件夹，但这样可能会让 VSCode 变慢。
-
 
 ## Vue 相关的插件
 
@@ -149,28 +116,5 @@ CSS Peek 对 Vue 没有支持，该插件提供了对 Vue 文件的支持。
 ```
 
 参考链接：
-
 - <https://www.clarencep.com/2017/03/18/edit-vue-file-via-vscode/>
-
-
 - <https://github.com/varHarrie/varharrie.github.io/issues/10>
-
-
-### 参考链接
-
-- <https://www.jianshu.com/p/0724921285d4>
-
-- <https://www.cnblogs.com/AmosLee94/p/8338013.html>
-
-
-## 问题
-
-问题1
-
-解决；You can kill the Microsoft.VSCode.Cpp.IntelliSense.Msvc process to save the file successfully. 也就是 IntelliSense 这个进程。
-
-
-## 参考链接
-
-- [能让你开发效率翻倍的 VSCode 插件配置（上）](https://zhuanlan.zhihu.com/p/30976584)
-

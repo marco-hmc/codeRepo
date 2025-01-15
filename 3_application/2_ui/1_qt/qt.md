@@ -5,3 +5,17 @@
 * ActionPool 干嘛用的？
     管理Action的，其实更多是一个manager的
 
+
+
+qt的QGraphicsScene什么概念
+QPainter什么概念？
+
+如果
+```c++
+QPainter painter;
+painter.begin(device);
+scene()->render(&painter);
+painter.end();
+```
+
+在调用`scene()->render(&painter);`的时候出现了QGLContext::current == nullptr的错误，是什么原因导致的？

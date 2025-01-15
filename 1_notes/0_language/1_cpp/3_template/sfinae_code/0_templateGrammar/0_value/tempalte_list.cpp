@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace tl {
+namespace Type_List {
     template <typename... Types>
     struct type_list {};
 
@@ -14,11 +14,12 @@ namespace tl {
     struct length<type_list<Types...>> {
         static constexpr size_t value = sizeof...(Types);
     };
-}  // namespace tl
+}  // namespace Type_List
 
 int main() {
-    std::cout << "Length of type list: "
-              << tl::length<tl::type_list<int, double, char>>::value
-              << std::endl;
+    std::cout
+        << "Length of type list: "
+        << Type_List::length<Type_List::type_list<int, double, char>>::value
+        << std::endl;
     return 0;
 }
