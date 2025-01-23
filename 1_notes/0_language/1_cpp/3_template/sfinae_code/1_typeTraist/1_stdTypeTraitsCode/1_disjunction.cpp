@@ -27,15 +27,12 @@ namespace disjunctionUsage {
 
 ////////////////////////////////////////////////////////////////////
 namespace disjunctionImpl {
-    // 基本模板：当没有类型特征时，结果为 false
     template <typename...>
     struct disjunction : std::false_type {};
 
-    // 特化版本：当至少有一个类型特征时，结果为 true
     template <typename B1>
     struct disjunction<B1> : B1 {};
 
-    // 递归版本：如果第一个类型特征为 true，则结果为 true；否则继续检查下一个类型特征
     template <typename B1, typename... Bn>
     struct disjunction<B1, Bn...>
         : std::conditional_t<bool(B1::value), B1, disjunction<Bn...>> {};

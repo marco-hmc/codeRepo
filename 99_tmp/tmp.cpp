@@ -1,25 +1,38 @@
-#include <cassert>
-#include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
-using namespace std;
+struct Pnt {
+    double x, y, z;
+};
 
-void poorSon1(double *value) {
-    cout << &value << endl;
-    *value = *value + 1;
-}
+struct Axis {
+    Pnt pt;
+    Pnt dir;
+    double len;
+};
 
-void fater(double *value) {
-    cout << &value << endl;
-    *value = *value + 1;
-    poorSon1(value);
-}
+typedef double Matrix3[4][4];
 
-void poorSon2(double **value) { *value = *value + 1; }
+struct CSYS {
+    Pnt origin_pnt;
+    Axis x_axis;
+    Axis y_axis;
+    Axis z_axis;
+    Matrix3 xoy;
+    Matrix3 yoz;
+    Matrix3 xoz;
+};
 
 int main() {
-    double value = 0.0;
-    cout << &value << endl;
-    fater(&value);
-    cout << value << endl;
-    return 0;
+    Matrix3 xoy = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+    Matrix3 yoz = {{0, 0, 1, 0}, {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 1}};
+    Matrix3 xoz = {{1, 0, 0, 0}, {0, 0, -1, 0}, {0, 1, 0, 0}, {0, 0, 0, 1}};
+    CSYS c{{0, 0, 0},
+           {{0, 0, 0}, {1, 0, 0}, 1},
+           {{0, 0, 0}, {0, 1, 0}, 1},
+           {{0, 0, 0}, {0, 0, 1}, 1},
+           {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}},
+           {{0, 0, 1, 0}, {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 1}},
+           {{1, 0, 0, 0}, {0, 0, -1, 0}, {0, 1, 0, 0}, {0, 0, 0, 1}}};
 }

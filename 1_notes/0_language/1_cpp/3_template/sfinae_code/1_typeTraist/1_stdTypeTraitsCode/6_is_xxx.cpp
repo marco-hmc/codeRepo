@@ -19,12 +19,10 @@
 */
 
 namespace is_base_ofUsage {
-    // 示例类
     struct Base {};
     struct Derived : Base {};
     struct Unrelated {};
 
-    // 使用 std::is_base_of 检查基类关系
     static_assert(std::is_base_of<Base, Derived>::value,
                   "Base 应该是 Derived 的基类");
     static_assert(!std::is_base_of<Derived, Base>::value,
@@ -43,12 +41,10 @@ namespace is_base_ofUsage {
 }  // namespace is_base_ofUsage
 
 namespace is_convertibleUsage {
-    // 示例类
     struct A {};
     struct B : A {};
     struct C {};
 
-    // 使用 std::is_convertible 检查类型转换
     static_assert(std::is_convertible<B, A>::value, "B 应该可以转换为 A");
     static_assert(!std::is_convertible<A, B>::value, "A 不应该可以转换为 B");
     static_assert(!std::is_convertible<C, A>::value, "C 不应该可以转换为 A");
@@ -64,7 +60,7 @@ namespace is_convertibleUsage {
 }  // namespace is_convertibleUsage
 
 namespace is_sameUsage {
-    // 使用 std::is_same 检查类型是否相同
+
     static_assert(std::is_same<int, int>::value, "int 应该与 int 相同");
     static_assert(!std::is_same<int, double>::value,
                   "int 不应该与 double 相同");
@@ -77,9 +73,8 @@ namespace is_sameUsage {
     }
 }  // namespace is_sameUsage
 
-////////////////////////////////////////////////////////////////////
 namespace is_base_ofImpl {
-    // std::is_base_of 的实现
+
     template <typename Base, typename Derived>
     struct is_base_of {
         static constexpr bool value = std::is_base_of<Base, Derived>::value;
@@ -87,7 +82,7 @@ namespace is_base_ofImpl {
 }  // namespace is_base_ofImpl
 
 namespace is_convertibleImpl {
-    // std::is_convertible 的实现
+
     template <typename From, typename To>
     struct is_convertible {
         static constexpr bool value = std::is_convertible<From, To>::value;
@@ -95,7 +90,7 @@ namespace is_convertibleImpl {
 }  // namespace is_convertibleImpl
 
 namespace is_sameImpl {
-    // std::is_same 的实现
+
     template <typename T, typename U>
     struct is_same {
         static constexpr bool value = std::is_same<T, U>::value;

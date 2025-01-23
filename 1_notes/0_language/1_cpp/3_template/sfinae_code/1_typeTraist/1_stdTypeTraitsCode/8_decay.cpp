@@ -8,11 +8,10 @@
 */
 
 namespace decayUsage {
-    // 定义一个模板结构体 decay_type，用于获取类型的衰减类型
+
     template <typename T>
     using decay_t = typename std::decay<T>::type;
 
-    // 静态断言测试
     static_assert(std::is_same<decay_t<int>, int>::value, "int 应该是 int");
     static_assert(std::is_same<decay_t<int&>, int>::value, "int& 应该是 int");
     static_assert(std::is_same<decay_t<const int>, int>::value,
@@ -36,9 +35,8 @@ namespace decayUsage {
     }
 }  // namespace decayUsage
 
-////////////////////////////////////////////////////////////////////
 namespace decayImpl {
-    // std::decay 的实现
+
     template <typename T>
     struct decay {
         using U = typename std::remove_reference<T>::type;
@@ -49,11 +47,9 @@ namespace decayImpl {
                 typename std::remove_cv<U>::type>::type>::type;
     };
 
-    // 定义一个模板结构体 decay_type，用于获取类型的衰减类型
     template <typename T>
     using decay_t = typename decay<T>::type;
 
-    // 静态断言测试
     static_assert(std::is_same<decay_t<int>, int>::value, "int 应该是 int");
     static_assert(std::is_same<decay_t<int&>, int>::value, "int& 应该是 int");
     static_assert(std::is_same<decay_t<const int>, int>::value,

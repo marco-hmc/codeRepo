@@ -10,8 +10,7 @@ rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
     - 整一个cmake-template，能够支持vs，支持vsc
     - vsc能够使用llvm-debugger
   * 3D笔记
-    - topoTable
-    - B-rep
+
   * rx-codeRepo
   * csapp
   * cmake-codeRepo
@@ -23,6 +22,7 @@ rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
   * 画图
     * graphViz
     * plantUml
+      https://plantuml.com/zh/
   * threadPool:
   * notes:
     * qt子事件循环
@@ -50,8 +50,6 @@ rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
       * https://zsyyblog.com/3b9abd4f.html
     * game
       * tetris-AI-server-clint
-
-dom 解析和流式解析两种
     - [downDemo github](https://github.com/downdemo?tab=repositories)
 
 ## c++ todo notes
@@ -164,7 +162,7 @@ dom 解析和流式解析两种
 
 
 ### 其他技术领域
-s
+
 #### 1. 图形学
 - **图形学**：研究计算机生成和处理图像的技术，包括渲染、光照、纹理映射等。
 

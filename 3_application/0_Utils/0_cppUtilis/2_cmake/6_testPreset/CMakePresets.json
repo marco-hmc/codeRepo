@@ -1,0 +1,264 @@
+{
+    "version": 2,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 19,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "cmake-pedantic",
+            "hidden": true,
+            "warnings": {
+              "dev": true,
+              "deprecated": true,
+              "uninitialized": true,
+              "unusedCli": true,
+              "systemVars": false
+            },
+            "errors": {
+              "dev": false,
+              "deprecated": false
+            }
+        },
+        {
+            "name": "cxx-std-20",
+            "description": "This preset makes sure the project actually builds with at least the specified standard",
+            "hidden": true,
+            "cacheVariables": {
+              "CMAKE_CXX_EXTENSIONS": "OFF",
+              "CMAKE_CXX_STANDARD": "20",
+              "CMAKE_CXX_STANDARD_REQUIRED": "ON"
+            }
+        },
+        {
+            "name": "clang-tidy",
+            "hidden": true,
+            "cacheVariables": {
+              "CXX_CLANG_TIDY": "clang-tidy;-header-filter=${sourceDir}/*"
+            }
+        },
+        {
+            "name": "cppcheck",
+            "hidden": true,
+            "cacheVariables": {
+              "CXX_CPPCHECK": "cppcheck;--inline-suppr;--enable=all;--suppress=missingIncludeSystem"
+            }
+        },
+        {
+            "name": "iwyu",
+            "hidden": true,
+            "cacheVariables": {
+              "CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
+            }
+        },
+        {
+            "name": "asan",
+            "hidden": true,
+            "environment": {
+                "ASAN": "-fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize-address-use-after-scope -O1"
+            }
+        },
+        {
+            "name": "lsan",
+            "hidden": true,
+            "environment": {
+                "LSAN": "-fsanitize=leak -O1"
+            }
+        },
+        {
+            "name": "msan",
+            "hidden": true,
+            "environment": {
+                "MSAN": "-fsanitize=memory -fno-omit-frame-pointer -fno-optimize-sibling-calls -O1"
+            }
+        },
+        {
+            "name": "ubsan",
+            "hidden": true,
+            "environment": {
+                "UBSAN": "-fsanitize=undefined -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -O1"
+            }
+        },
+        {
+            "name": "gcc",
+            "description": "Base build options for GCC",
+            "hidden": true,
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            },
+            "environment": {
+                "BUILD_COMPILER": "gcc",
+                "CXX_WARNINGS": "-Wall -Wextra -Wextra-semi -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Wimplicit-fallthrough -Wmisleading-indentation -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast"
+            }
+        },
+        {
+            "name": "clang",
+            "description": "Base build options for Clang",
+            "hidden": true,
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            },
+            "environment": {
+                "BUILD_COMPILER": "clang",
+                "CXX_WARNINGS": "-Wall -Wextra -Wextra-semi -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2 -Wimplicit-fallthrough",
+                "CXX_STDLIB": "-stdlib=libc++ "
+            }
+        },
+        {
+            "name": "debug",
+            "description": "Debug build options",
+            "hidden": true,
+            "environment": {
+                "BUILD_TYPE": "debug"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "description": "Release build options",
+            "hidden": true,
+            "environment": {
+                "BUILD_TYPE": "release"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "dev-clang",
+            "displayName": "Dev - Clang ",
+            "description": "Debug - Clang - (CppCheck | ClangTidy | Iwyu)",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}",
+            "inherits": ["debug", "clang", "cxx-std-20", "cppcheck", "clang-tidy", "iwyu", "cmake-pedantic"],
+            "cacheVariables": {
+                "CXX_COMPILE_FLAGS": "$env{CXX_WARNINGS}"
+            }
+        },
+        {
+            "name": "dev-gcc",
+            "displayName": "Dev - GCC ",
+            "description": "Debug - GCC - (CppCheck | ClangTidy | Iwyu)",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}",
+            "inherits": ["debug", "gcc", "cxx-std-20", "cppcheck", "clang-tidy", "iwyu", "cmake-pedantic"],
+            "cacheVariables": {
+                "CXX_COMPILE_FLAGS": "$env{CXX_WARNINGS}"
+            }
+        },
+        {
+            "name": "dev-clang-fast-unsafe",
+            "displayName": "Dev - Clang - FAST UNSAFE",
+            "description": "Debug - Clang | No warnings and sanitizers",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}",
+            "inherits": ["debug", "clang", "cxx-std-20", "cmake-pedantic"]
+        },
+        {
+            "name": "dev-gcc-fast-unsafe",
+            "displayName": "Dev - GCC - FAST UNSAFE",
+            "description": "Debug - GCC | No warnings and sanitizers",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}",
+            "inherits": ["debug", "gcc", "cxx-std-20", "cmake-pedantic"]            
+        },
+        {
+            "name": "sanitizer-clang-alubsan",
+            "displayName": "Sanitizers - Clang - ASAN/LSAN/UBSAN",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}/alubsan",
+            "inherits": ["debug", "clang", "cxx-std-20", "asan", "lsan", "ubsan"],
+            "cacheVariables": {
+                "SANITIZER_FLAGS": "$env{ASAN} $env{LSAN} $env{UBSAN}"
+            }
+        },
+        {
+            "name": "sanitizer-gcc-alubsan",
+            "displayName": "Sanitizers - GCC - ASAN/LSAN/UBSAN",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}/alubsan",
+            "inherits": ["debug", "gcc", "cxx-std-20", "asan", "lsan", "ubsan"],
+            "cacheVariables": {
+                "SANITIZER_FLAGS": "$env{ASAN} $env{LSAN} $env{UBSAN}"
+            }
+        },
+        {
+            "name": "sanitizer-clang-msan",
+            "displayName": "Sanitizers - Clang - MSAN",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}/msan",
+            "inherits": ["debug", "clang", "cxx-std-20", "msan"],
+            "cacheVariables": {
+                "SANITIZER_FLAGS": "$env{MSAN}"
+            }
+        },
+        {
+            "name": "release-clang",
+            "displayName": "Release - Clang",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}/prod",
+            "inherits": ["release", "clang", "cxx-std-20"]
+        },
+        {
+            "name": "release-gcc",
+            "displayName": "Release - GCC",
+            "binaryDir": "${sourceDir}/build/$env{BUILD_COMPILER}/$env{BUILD_TYPE}/prod",
+            "inherits": ["release", "gcc", "cxx-std-20"]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "dev-clang-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "dev-clang",
+            "verbose": true
+        },
+        {
+            "name": "dev-gcc-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "dev-gcc",
+            "verbose": true
+        },
+        {
+            "name": "dev-clang-fast-unsafe-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "dev-clang-fast-unsafe",
+            "verbose": true
+        },
+        {
+            "name": "dev-gcc-fast-unsafe-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "dev-gcc-fast-unsafe",
+            "verbose": true
+        },
+        {
+            "name": "sanitizer-clang-alubsan-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "sanitizer-clang-alubsan",
+            "verbose": true
+        },
+        {
+            "name": "sanitizer-gcc-alubsan-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "sanitizer-gcc-alubsan",
+            "verbose": true
+        },
+        {
+            "name": "sanitizer-clang-msan-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "sanitizer-clang-msan",
+            "verbose": true
+        },
+        {
+            "name": "release_clang-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "release-clang",
+            "verbose": true
+        },
+        {
+            "name": "release-gcc-verbose",
+            "displayName": "Verbose",
+            "configurePreset": "release-gcc",
+            "verbose": true
+        }
+    ]
+}

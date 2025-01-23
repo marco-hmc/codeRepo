@@ -136,6 +136,7 @@
   add_executable(EXECUTABLE_NAME main.cpp)
   add_custom_target()
   add_dependencies(<target> <dependency> [<dependency>...])
+  add_test()
   ```
 
 - **cmake 中的目标是什么意思？**
@@ -173,7 +174,33 @@
   # CMAKE_PREFIX_PATH 变量用于设置库和头文件的搜索路径。通常用于设置多个库和头文件的搜索路径。
   ```
 
-### 4. 安装
+### 4. 脚本引用
+#### 4.1 ctest.cmake
+搭配add_executable(), add_test()和include(ctest)使用。
+
+### 5. 第三方库
+第三方库的介绍说明都比较长，因此都单独展开细说。
+
+#### 5.1 系统自带方式
+- find_package
+- find_library
+
+#### 5.2 vendoring方式
+- git sub-module
+- git sub-tree
+
+#### 5.3 url下载方式
+- ExternalProject_Add
+- fetchContent
+
+#### 5.4 conan方式
+- conan
+
+### 6. 打包
+
+#### 6.1 cpack
+
+### 7. 安装
 CMake 提供了一系列的 `install` 指令，用于将构建生成的目标文件、库文件、目录和配置文件安装到指定的目标位置。以下是对常用 `install` 指令的总结：
 
 * **1. 安装目标文件**
@@ -226,31 +253,10 @@ CMake 提供了一系列的 `install` 指令，用于将构建生成的目标文
 set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Directory" FORCE)
 ```
 
-### 5. 第三方库
-第三方库的介绍说明都比较长，因此都单独展开细说。
 
-#### 5.1 系统自带方式
-- find_package
-- find_library
+### 8. 杂项
 
-#### 5.2 vendoring方式
-- git sub-module
-- git sub-tree
-
-#### 5.3 url下载方式
-- ExternalProject_Add
-- fetchContent
-
-#### 5.4 conan方式
-- conan
-
-### 6. 打包
-
-#### 6.1 cpack
-
-### 7. 杂项
-
-#### 7.1 编译器设置
+#### 8.1 编译器设置
 
   ```cmake
   add_definitions(-DDEBUG) # 添加全局宏定义
@@ -277,7 +283,7 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
   #endif
   ```
 
-#### 7.2 什么是可见性？
+#### 8.2 什么是可见性？
 这个`[PUBLIC|PRIVATE|INTERFACE]`是可见性属性
 1. `PRIVATE`
     include 目录仅应用于目标自身.
@@ -302,7 +308,7 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
   * 接口库，我给了头文件，我不负责实现。
   * 传递编译选项。
 
-#### 7.3 什么是`add_subdirectory()`？
+#### 8.3 什么是`add_subdirectory()`？
 
 它的作用是将名为`subdir`的子目录添加到当前项目的构建过程中.
 - **`add_subdirectory()`的使用场景是什么?**
@@ -312,16 +318,16 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
   - 第三方库或模块:共享功能库:如果你有一些通用的功能或工具代码,你可以将其封装为一个独立的库,并将其作为子目录添加到不同的项目中.
   - 构建和测试工具:
 
-#### 7.4 cmake的build文件说明
+#### 8.4 cmake的build文件说明
 - **CMake 中的 cache 有什么用?**
   首先 cache 中存储的变量是全局的，父目录子目录都可以查看。
 
 - **.cmake 是什么文件?**
   `.cmake`文件是一种常见的文件扩展名,用于存储 CMake 相关的配置/宏定义/函数或其他辅助功能.
 
-#### 7.5 .cmake文件的使用
+#### 8.5 .cmake文件的使用
 
-#### 7.6 cmakePresets.json使用
+#### 8.6 cmakePresets.json使用
 
 
 ### 99. quiz
@@ -358,3 +364,30 @@ set(CMAKE_INSTALL_PREFIX "/desired/install/path" CACHE PATH "Installation Direct
 * 不要设置`CMAKE_CXX_FLAGS`，会被覆盖
   * `set(CMAKE_CXX_FLAGS "-std=c++17") ` -> `set(CMAKE_CXX_STANDARD 17)`
   * `set(CMAKE_CXX_FLAGS "-O3") ` -> `set(CMAKE_BUILD_TYPE Release)`
+
+#### 5. ccache
+ccache是一个用来加速build阶段的工具。但用处不大。cache是作为build过程的前处理阶段，判断是否有无cache，有就用上的。那这个阶段为什么不是内置到make里面，而是单独作为一个工具呢？如果有用，make打个补丁加上去不就好了吗。
+
+
+
+cmake/gmake and ccache are not exclusive to each other. They are typically used together.
+
+ccache comes into play when the entire source tree needs to be rebuilt for some reason. cmake/gmake rebuilds only changed files, but there are situations where the entire source tree needs to be recompiled. And if this happens repeatedly, ccache will wake up and short-circuit the compiler. C++ compilers are notorious for being slow, and this often helps quite a bit.
+
+Just a couple of examples: when you need to repeatedly switch between building with and without optimizations, repeatedly. cmake/gmake won't help you when you edit the makefile and adjust the compilation flags. None of the source files actually changed, so cmake/gmake doesn't think there's anything to do, so you must explicitly make clean and recompile from scratch.
+
+If you are doing it repeatedly, ccache will avoid having to run the compiler on the entire source code, and will simply fetch out the appropriate object module instead of compiling the source from scratch.
+
+Another common situation is when you're running a script to prepare an installable package for your code. This typically involves using an implementation-specific tool to rebuild the source code, from scratch, into an installable package.
+
+
+
+Consider the case where you switch to some older branch of your project - that you did compile in the past and that ccache has cached, but CMake sees as "almost all files have changed and must be recompiled" - that's where you see a massive gain.
+
+Another situation is where you have deleted your build directory (for some good reason) and now have to rebuild everything. ccache is also a huge help there.
+
+Also; ccache is trivial to set up and is thenceforth completely invisible / transparent, so there really is no reason to not use it. When it helps it usually helps a lot, when it does not help it doesn't hurt.
+
+
+
+#### 6. cmake生成的build目录说明

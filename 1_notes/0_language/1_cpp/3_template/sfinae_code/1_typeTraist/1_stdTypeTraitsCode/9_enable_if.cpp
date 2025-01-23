@@ -8,7 +8,7 @@
 */
 
 namespace enableIfUsage {
-    // 使用 std::enable_if 实现一个条件函数
+
     template <typename T>
     typename std::enable_if<std::is_integral<T>::value, T>::type
     conditionalFunction(T value) {
@@ -23,15 +23,14 @@ namespace enableIfUsage {
 
     void test() {
         std::cout << "conditionalFunction(10): " << conditionalFunction(10)
-                  << std::endl;  // 整数，输出 20
+                  << std::endl;
         std::cout << "conditionalFunction(10.5): " << conditionalFunction(10.5)
-                  << std::endl;  // 浮点数，输出 11
+                  << std::endl;
     }
 }  // namespace enableIfUsage
 
-////////////////////////////////////////////////////////////////////
 namespace enableIfImpl {
-    // std::enable_if 的实现
+
     template <bool B, typename T = void>
     struct enable_if {};
 
@@ -40,7 +39,6 @@ namespace enableIfImpl {
         using type = T;
     };
 
-    // 使用自定义的 enable_if 实现一个条件函数
     template <typename T>
     typename enableIfImpl::enable_if<std::is_integral<T>::value, T>::type
     conditionalFunction(T value) {
@@ -55,9 +53,9 @@ namespace enableIfImpl {
 
     void test() {
         std::cout << "conditionalFunction(10): " << conditionalFunction(10)
-                  << std::endl;  // 整数，输出 20
+                  << std::endl;
         std::cout << "conditionalFunction(10.5): " << conditionalFunction(10.5)
-                  << std::endl;  // 浮点数，输出 11
+                  << std::endl;
     }
 }  // namespace enableIfImpl
 

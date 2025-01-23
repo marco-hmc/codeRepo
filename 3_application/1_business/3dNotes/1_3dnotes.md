@@ -4,7 +4,6 @@
 - 编译
 - vs2019 + va
 
-
 ### 2. 工程开发须知
 https://zwiki.zwcax.com/pages/viewpage.action?pageId=137928869
 
@@ -23,78 +22,74 @@ https://zwiki.zwcax.com/pages/viewpage.action?pageId=137928869
 
 #### 3.1 framework
 * framework
-  - Application
-    - 仿真、cam、plm
-  - Zw3DAPI
-  - Modeling
-    - part：零件
-    - Profile：？
-    - Assembly：装配
-    - Sheet：
-  - Components
-    - Geometry
-    - Parametric：参数化
-    - Data Exchange：数据交换，导入导出？
-    - Constraint：约束
-    - UI：user interface，图形和交互等
-    - Command：命令
-    - Render：渲染
-    - Pick：选择
   - Base
-    - OM：object manager
-    - Math：/
-    - tools： 
-
-- Third Party
-  - qt
-  - boost
-  - zip
-  - freeType
-  - eigen
-  - catch2
-  - repaidXml
-  - ffmpeg
-  - openSSL
-
-- OM 概念
-  - containers
-  - global ID
-  - 跨文件引用？
-  - 通知、观察者
-  - 事务
-  - 序列化
-  - 压缩
-  - migration?
-  - bin
-  - segment？
-  -
-
-- Tool 概念
-  - multithread
-  - expressParser
-  - file IO
-  - string
-  - logging
-  - network
-  - profiling
-  - cross platform
-  - memory pool
-  - raii
-  - command 
-  ![alt text](_imgs/framework_image-1.png)
-
-- 参数化概念
-  - vdata, wire, profile, expression, dimension
-  - beep, attributes
-  - udf, pattern, reference, copy/paste
-  - defeature, static entity
-  - rolling
-  - dependency, selective regen, suppress
-  - labeling, regen
-
-- render概念
-  ![alt text](_imgs/framework_image-2.png)
-  - app
+      - OM/db：object manager
+        - containers
+        - global ID
+        - 跨文件引用？
+        - 通知、观察者
+        - 事务
+        - 序列化
+        - 压缩
+        - migration?
+        - bin
+        - segment？
+      - Math：
+      - tools：
+        - multithread
+        - expressParser
+        - file IO
+        - string
+        - logging
+        - network
+        - profiling
+        - cross platform
+        - memory pool
+        - raii
+        - command 
+        ![alt text](_imgs/framework_image-1.png)
+  - render概念
+    ![alt text](_imgs/framework_image-2.png)
+  - Application
+    - cad
+      - Modeling
+          - detailed-task
+            - part：零件
+            - Profile：草图
+            - Assembly：装配
+            - Sheet：钣金
+          - concepts:
+            - vdata, wire, profile, expression, dimension
+            - beep, attributes
+            - udf, pattern, reference, copy/paste
+            - defeature, static entity
+            - rolling
+            - dependency, selective regen, suppress
+            - labeling, regen
+      - Components
+        - Geometry
+        - Parametric：参数化
+        - Data Exchange：数据交换，导入导出？
+        - Constraint：约束
+        - UI：user interface，图形和交互等
+        - Command：命令
+        - Render：渲染
+        - Pick：选择
+    - cam
+    - plm
+    - 仿真
+  - Zw3D_API
+    - 二次开发 
+  - Third Party
+    - qt
+    - boost
+    - zip
+    - freeType
+    - eigen
+    - catch2
+    - repaidXml
+    - ffmpeg
+    - openSSL
 
 ##### 3.1.2 software tools
 ##### 3.1.3 om
@@ -117,8 +112,6 @@ https://zwiki.zwcax.com/pages/viewpage.action?pageId=110329859
     * driver/text
     * 存放资源文件
 * vs
-    Parallel Stacks窗口
-    显示所有线程的调用栈
     debug->windows有宝藏
     * 全局变量输出打印？
     * 内存破坏-https://zwiki.zwcax.com/pages/viewpage.action?pageId=52658797

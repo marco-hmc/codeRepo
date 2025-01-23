@@ -1,3 +1,5 @@
+## nui
+
 - nui 模块定义：
   负责软件 UI 框架和命令框架的设计和维护，并提供良好的平台交互设计方案。
 
@@ -10,7 +12,58 @@
   介绍下目前 UI 组负责的一些代码模块范围，主要是 Source 源码目录下的 nui、in、gfx/gui、gfx/guiw 等文件夹。
   当然，由于目前模块化做的不是很好，这些文件夹下面的内容也可能有其他模块的内容，后续我们会将模块边界定义更加清晰，实现模块化。
 
-### nui
+### 1. nui
+- nui
+  - CommandSystem
+    - qaction, command, 命令模板template, escaper
+  - CommonControls
+  - CommonControlsPlugin
+  - DocumentSystem
+  - DrawingInstance
+  - GraphicsSystem
+  - NuiShared
+  - ProcessManager
+  - QtnRibbon
+  - QtnRibbonDsgn
+  - QtnStylePlugin
+  - ResourceCompiler
+  - ResourceSystem
+  - UserInterface
+
+### in
+
+- in
+  - 命令模块
+    - 命令及参数相关接口 （ZsInCmd.cpp、ZsInParm.cpp、ZsInTpl.cpp）
+    - 参数激活管理器 、命令派发器、命令对象、命令参数基类（in/src/cmd）
+    - 命令参数 （in/src/parm）
+    - 命令及参数相关接口 （in/src/class）
+    - 命令执行相关接口 （InEval.cpp）
+    - Gui 命令相关相关接口 （InGui.cpp）
+    - 新命令执行相关接口 （InNew.cpp）
+    - 模板命令界面相关接口 （InOpt.cpp）
+  - 模板命令 form 相关接口 （InForm.cpp）
+  - 显示窗口光标线绘制 （InCursorStateImp.cpp）
+  - 事件相关
+    - 显示窗口事件操作 （InImpMask.c、InDyn.cpp）
+    - 事件循环相关接口 （InEvent.cpp）
+    - 事件 handle 相关接口 （InEvt.c）
+    - 事件操作及管理相关接口 （InMgr.cpp）
+    - VxInput 相关 （VxInput.cpp）
+  - vdata 数据相关
+    - 数据编辑、Pick、显示等接口 （InFormData.cpp）
+    - log/get vadata 数据相关接口 （InInp.cpp、InData.cpp）
+  - tools 工具类
+    - 字符串不同编码解析接口 （InAsc.cpp）
+    - 命令文件浏览器界面（InBrowser.cpp）
+    - 文件对话框（InGuiDirSB.cpp、InGuiFileSB.cpp）
+    - 文字编辑器（InTextEditor.cpp）
+    - Message 对话框（InGuiGetOpt.cpp、InGuiGetReply.cpp、InGuiShowMsg.cpp、InGuiShowOpt.cpp）
+    - 多列树属性管理器（InTreeAttrColumnMgr.cpp）
+  - 指令字符解析业务逻辑 （InUtils.cpp）
+  - 事物相关接口 （InXn.cpp）
+  - 参数激活相关业务功能（in/src/wid）
+
 
 - nui
   - CommandSystem
@@ -122,7 +175,6 @@
   - 参数激活相关业务功能（in/src/wid）
 
 ### gfx
-
 - gfx
   - gui
     - 事件接口 （uiEvt.cpp）

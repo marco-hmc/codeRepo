@@ -8,11 +8,9 @@
 */
 
 namespace conditionalUsage {
-    // 定义一个模板结构体 select_type，用于根据布尔常量选择类型
     template <bool B, typename T, typename F>
     using select_type = typename std::conditional<B, T, F>::type;
 
-    // 示例类型
     struct TrueType {
         static constexpr const char* name = "TrueType";
     };
@@ -21,11 +19,9 @@ namespace conditionalUsage {
         static constexpr const char* name = "FalseType";
     };
 
-    // 使用 std::conditional 选择类型
     using SelectedType1 = select_type<true, TrueType, FalseType>;
     using SelectedType2 = select_type<false, TrueType, FalseType>;
 
-    // 静态断言测试
     static_assert(std::is_same<SelectedType1, TrueType>::value,
                   "SelectedType1 应该是 TrueType");
     static_assert(std::is_same<SelectedType2, FalseType>::value,
@@ -37,9 +33,8 @@ namespace conditionalUsage {
     }
 }  // namespace conditionalUsage
 
-////////////////////////////////////////////////////////////////////
 namespace conditionalImpl {
-    // std::conditional 的实现
+
     template <bool B, typename T, typename F>
     struct conditional {
         using type = T;
@@ -50,11 +45,9 @@ namespace conditionalImpl {
         using type = F;
     };
 
-    // 定义一个模板结构体 select_type，用于根据布尔常量选择类型
     template <bool B, typename T, typename F>
     using select_type = typename conditional<B, T, F>::type;
 
-    // 示例类型
     struct TrueType {
         static constexpr const char* name = "TrueType";
     };
@@ -63,11 +56,9 @@ namespace conditionalImpl {
         static constexpr const char* name = "FalseType";
     };
 
-    // 使用自定义的 conditional 选择类型
     using SelectedType1 = select_type<true, TrueType, FalseType>;
     using SelectedType2 = select_type<false, TrueType, FalseType>;
 
-    // 静态断言测试
     static_assert(std::is_same<SelectedType1, TrueType>::value,
                   "SelectedType1 应该是 TrueType");
     static_assert(std::is_same<SelectedType2, FalseType>::value,

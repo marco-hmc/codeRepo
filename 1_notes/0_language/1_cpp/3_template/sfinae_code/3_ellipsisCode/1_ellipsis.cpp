@@ -1,109 +1,230 @@
-#include <iostream>
-#include <numeric>
 #include <stdarg.h>
 #include <stdio.h>
 
-// --1. fold expression c17-standard
-template<typename... Args>
-auto sum(Args... args) {
-    return (args + ...);
-}
+#include <cassert>
+#include <iostream>
+#include <numeric>
+#include <tuple>
 
-// --2. variadic template c11-standard
-int sum2() {
-    return 0;
-}
-template<typename T, typename... Args>
-T sum2(T first, Args... args) {
-    return first + sum(args...);
-}
+namespace Cpp17FoldExpressionForSum {
+    namespace example_1 {
+        template <typename... Args>
+        auto sum(Args... args) {
+            return (args + ...);
+        }
+    }  // namespace example_1
 
-// --3. others c11-standard
-template <typename First, typename... Args>
-auto sum3(const First first, const Args... args) -> decltype(first) {
-  const auto values = {first, args...};
-  return std::accumulate(values.begin(), values.end(), First{0});
-}
+    namespace example_2 {
+        template <typename... Args>
+        auto sum(Args &&...args) {
+            auto a = (... + std::forward<Args>(args));  // (((1 + 2) + 3) + 4)
+            auto b = (std::forward<Args>(args) + ...);  // (1 + (2 + (3 + 4)))
+            auto c = (5 + ... +
+                      std::forward<Args>(args));  // ((((5 + 1) + 2) + 3) + 4)
+            auto d = (std::forward<Args>(args) + ... +
+                      5);  // (1 + (2 + (3 + (4 + 5))))
+            return std::make_tuple(a, b, c, d);
+        }
 
-void test_sum() {
-  {
-    int result = sum(1, 2, 3, 4, 5);
-    std::cout << "Sum: " << result << '\n';
-  }
-  {
-    int result = sum2(1, 2, 3, 4, 5);
-    std::cout << "Sum: " << result << '\n';
-  }
-  {
-    int result = sum3(1, 2, 3, 4, 5);
-    std::cout << "Sum: " << result << '\n';
-  }
-}
+    }  // namespace example_2
 
-// 1. recursive parameter unpack
-template <typename T0> void printf1(T0 value) { std::cout << value << '\n'; }
-template <typename T, typename... Ts> void printf1(T value, Ts... args) {
-  std::cout << value << '\n';
-  printf1(args...);
-}
+    namespace example_3 {
+        auto print1 = [](auto &&...args) {
+            // operator<< 左折叠，std::cout 是初始值
+            (std::cout << ... << std::forward<decltype(args)>(args));
+        };
 
-// 2. variadic template parameter unfold
-template <typename T0, typename... T> void printf2(T0 t0, T... t) {
-  std::cout << t0 << '\n';
-  if constexpr (sizeof...(t) > 0)
-    printf2(t...);
-}
+        auto print2 = [](auto &&...args) {
+            // operator, 左折叠
+            ((std::cout << std::forward<decltype(args)>(args) << ","), ...);
+        };
 
-// 3. parameter unpack using initializer_list
-template <typename T, typename... Ts> auto printf3(T value, Ts... args) {
-  std::cout << value << '\n';
-  (void)std::initializer_list<T>{
-      ([&args] { std::cout << args << '\n'; }(), value)...};
-}
+    }  // namespace example_3
 
-// 4. args
-void printNumbers(int count, ...)
-{
-// 下面三个都是和va_list搭配使用的宏
-// `va_start`: 该宏用于初始化`va_list`类型的变量,以便访问不定长参数列表中的参数.
-//             它接受两个参数,第一个参数是一个`va_list`类型的变量,第二个参数是最后一个已知的固定参数.这个宏必须在访问不定长参数之前调用.
-// `va_arg`: 该宏用于从不定长参数列表中获取下一个参数的值.
-//             它接受两个参数,第一个参数是一个`va_list`类型的变量,第二个参数是要获取的参数的类型.这个宏可以多次调用,每次调用都会返回下一个参数的值.
-// `va_end`: 该宏用于清理`va_list`类型的变量.
-//             它接受一个参数,即要清理的`va_list`类型的变量.这个宏必须在不定长参数处理完毕后调用.
+    namespace example_4 {
 
-    va_list args;
-    va_start(args, count);
+        template <typename T>
+        void print1(const T &t) {
+            std::cout << t << '\n';  // 基本情况
+        }
 
-    for (int i = 0; i < count; i++) {
-        int num = va_arg(args, int);
-        printf("%d ", num);
+        template <typename T, typename... Args>
+        void print1(const T &t, const Args &...args) {
+            std::cout << t << ", ";
+            print1(args...);  // 递归调用
+        }
+
+        template <typename... Args>
+        void print2(Args &&...args) {
+            (std::cout << ... << args) << '\n';  // 右折叠打印所有参数
+        }
+
+        template <typename... Args>
+        void print3(Args &&...args) {
+            auto dummy = {(std::cout << args << ", ", 0)...};
+            (void)dummy;  // 避免未使用变量警告
+        }
+
+        template <typename... Args>
+        void countArgs(Args &&...args) {
+            std::cout << "Number of arguments: " << sizeof...(args) << '\n';
+        }
+
+        template <typename... Args>
+        void f(const Args &...args) {
+            // print(args + 1...);  // ERROR：1... 是带多个小数点的字面值，不合法
+            print1(args + 1 ...);   // OK
+            print1((args + 1)...);  // OK
+        }
+
+        void test() {
+            print1(1, 2, 3, 4, 5);     // 1, 2, 3, 4, 5,
+            print2(1, 2, 3, 4, 5);     // 12345
+            countArgs(1, 2, 3, 4, 5);  // Number of arguments: 5
+            f(1, 2, 3, 4, 5);          // 2, 3, 4, 5, 6,
+        }
+    }  // namespace example_4
+
+    void test() {
+        assert(example_1::sum(1, 2, 3, 4, 5) == 15);
+        auto [a, b, c, d] = example_2::sum(1, 2, 3, 4);
+        example_3::print1(a, b, c, d);  // 10101515
+        example_3::print2(a, b, c, d);  // 10,10,15,15,
+        example_4::test();
+    }
+}  // namespace Cpp17FoldExpressionForSum
+
+namespace Cpp11VariadicTemplateForSum {
+    namespace example_1 {
+
+        int sum() { return 0; }
+        template <typename T, typename... Args>
+        T sum(T first, Args... args) {
+            return first + sum(args...);
+        }
+    }  // namespace example_1
+
+    namespace example_2 {
+
+        template <typename T, typename... Args>
+        void myPrint(const T &t, Args &&...args) {
+            std::cout << t << std::endl;
+            if constexpr (sizeof...(args) > 0) {
+                myPrint(std::forward<Args>(args)...);
+            }
+        }
+    }  // namespace example_2
+
+    namespace example_3 {
+
+        void print() {}  // 参数包展开到零参数时调用
+
+        template <typename T, typename... Args>
+        void print(const T &t, Args &&...args) {
+            std::cout << t << ",";
+            print(std::forward<Args>(args)...);
+        }
+
+        template <int... Index>
+        struct A {};
+
+        template <typename... List, int... Index>
+        void test1(const std::tuple<List...> &t, A<Index...>) {
+            print(std::get<Index>(
+                t)...);  // print(std::get<2>(t), std::get<3>(t));
+        }
+
+        template <typename... List, int... Index>
+        void test2(const std::tuple<List...> &t, A<Index...>) {
+            print((std::get<Index>(t) + std::get<Index>(t))...);
+        }
+
+        void test() {
+            auto t = std::make_tuple(3.14, 42, std::string{"hello"}, "world");
+            test1(t, A<2, 3>{});     // hello,world
+            test2(t, A<0, 1, 2>{});  // 6.28,84,hellohello,
+        }
+    }  // namespace example_3
+
+    void test() {
+        assert(example_1::sum(1, 2, 3, 4, 5) == 15);
+        example_2::myPrint(3.14, 42, std::string{"hello"}, "world");
+    }
+}  // namespace Cpp11VariadicTemplateForSum
+
+namespace Cpp11VariadicTemplatePrint {
+    // 1. recursive parameter unpack
+    template <typename T0>
+    void printf1(T0 value) {
+        std::cout << value << '\n';
+    }
+    template <typename T, typename... Ts>
+    void printf1(T value, Ts... args) {
+        std::cout << value << '\n';
+        printf1(args...);
     }
 
-    va_end(args);
-}
+}  // namespace Cpp11VariadicTemplatePrint
 
-void test_print() {
-  printf1(3, 1, 2, 3);
-  printf2(3, 1, 2, 3);
-  printf3(3, 1, 2, 3);
-  printNumbers(3, 1, 2, 3);
-}
+namespace Cpp11OthersForSum {
+    template <typename First, typename... Args>
+    auto sum(const First first, const Args... args) -> decltype(first) {
+        const auto values = {first, args...};
+        return std::accumulate(values.begin(), values.end(), First{0});
+    }
 
-// sizeof...
-template <typename... Ts> void magic(Ts... args) {
-  std::cout << sizeof...(args) << '\n';
-}
+    void test() { assert(sum(1, 2, 3, 4, 5) == 15); }
+}  // namespace Cpp11OthersForSum
 
-void test_magic() {
-  magic();
-  magic(1);
-  magic(1, "");
-}
+namespace Cpp11VariadicTemplateUnfold {
+    // 2. variadic template parameter unfold
+    template <typename T0, typename... T>
+    void printf2(T0 t0, T... t) {
+        std::cout << t0 << '\n';
+        if constexpr (sizeof...(t) > 0) printf2(t...);
+    }
 
-int main() {
-  test_sum();
-  test_print();
-  test_magic();
-  return 0;
-}
+}  // namespace Cpp11VariadicTemplateUnfold
+
+namespace Cpp11VariadicTemplateInitializerList {
+    // 3. parameter unpack using initializer_list
+    template <typename T, typename... Ts>
+    auto printf3(T value, Ts... args) {
+        std::cout << value << '\n';
+        (void)std::initializer_list<T>{
+            ([&args] { std::cout << args << '\n'; }(), value)...};
+    }
+
+}  // namespace Cpp11VariadicTemplateInitializerList
+
+namespace OldStyleVariadicFunction {
+    // 4. args
+    void printNumbers(int count, ...) {
+        va_list args;
+        va_start(args, count);
+
+        for (int i = 0; i < count; i++) {
+            int num = va_arg(args, int);
+            printf("%d ", num);
+        }
+
+        va_end(args);
+    }
+
+}  // namespace OldStyleVariadicFunction
+
+namespace Cpp11VariadicTemplateMagic {
+    // sizeof...
+    template <typename... Ts>
+    void magic(Ts... args) {
+        std::cout << sizeof...(args) << '\n';
+    }
+
+    void test() {
+        magic();
+        magic(1);
+        magic(1, "");
+    }
+}  // namespace Cpp11VariadicTemplateMagic
+
+int main() { return 0; }

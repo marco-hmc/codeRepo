@@ -8,20 +8,17 @@
 */
 
 namespace declvalUsage {
-    // 示例类
+
     class MyClass {
       public:
         int myFunction() const { return 42; }
     };
 
-    // 用于在编译时推断成员函数的返回类型
     template <typename T>
     auto testFunctionReturnType() -> decltype(std::declval<T>().myFunction()) {
-        // 注意：这里不会实际调用 T::myFunction，因此可以用于不可默认构造的类型
         return std::declval<T>().myFunction();
     }
 
-    // 验证推断的类型是否为 int
     static_assert(
         std::is_same<decltype(testFunctionReturnType<MyClass>()), int>::value,
         "返回类型应为 int");
@@ -29,26 +26,21 @@ namespace declvalUsage {
     void test() { std::cout << "推断的返回类型为 int" << std::endl; }
 }  // namespace declvalUsage
 
-////////////////////////////////////////////////////////////////////
 namespace declvalImpl {
-    // std::declval 的实现
-    template <class T>
-    std::add_rvalue_reference_t<T> declval() noexcept;  // 仅声明，无需定义
 
-    // 示例类
+    template <class T>
+    std::add_rvalue_reference_t<T> declval() noexcept;
+
     class MyClass {
       public:
         int myFunction() const { return 42; }
     };
 
-    // 用于在编译时推断成员函数的返回类型
     template <typename T>
     auto testFunctionReturnType() -> decltype(declval<T>().myFunction()) {
-        // 注意：这里不会实际调用 T::myFunction，因此可以用于不可默认构造的类型
         return declval<T>().myFunction();
     }
 
-    // 验证推断的类型是否为 int
     static_assert(
         std::is_same<decltype(testFunctionReturnType<MyClass>()), int>::value,
         "返回类型应为 int");

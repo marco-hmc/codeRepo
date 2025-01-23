@@ -323,3 +323,44 @@ int result = curriedAdd(2)(3); // result = 5
 
 4. **支持函数式编程范式**：
    - 柯里化是函数式编程的重要特性之一，它使得函数式编程中的高阶函数、函数组合等技术更加容易实现。
+
+
+计算机是一个工程发展远远领先学科发展的领域，很多概念定义出来之后，工程会基于原始概念不停发展，甚至会和原来初衷不太一样。
+lambda演算是函数式编程的理论基础。
+首先lambda演算是一种计算形式，定义了三种基本元素：定义函数，变量，函数计算。
+这三种基本元素
+lambda演算
+
+
+https://www.lumin.tech/articles/lambda-calculus/
+
+https://yhj.me/posts/introduction-to-lambda-calculus
+
+https://blog.csdn.net/sinat_35576477/article/details/122031649
+
+https://www.shuzhiduo.com/A/Vx5MOX07zN/
+
+https://site.douban.com/145723/widget/notes/192785890/note/611560272/
+
+https://openhome.cc/Gossip/CodeData/JavaLambdaTutorial/LambdaCalculus.html
+
+https://zhuanlan.zhihu.com/p/30510749
+
+https://learnxinyminutes.com/zh-cn/lambda-calculus/
+
+https://cgnail.github.io/academic/lambda-2/
+
+https://cgnail.github.io/academic/lambda-2/
+
+函数式编程，和面向过程式编程以及面向对象编程一样，都是一种范式。在实际编程中，使用哪一种范式，其实还是相当依赖于语言自身提供的能力的。
+比如说C语言，封装了struct，强行按照面向对象的感觉来写，可以吗？也是可以的，在相当多的大型C项目是有面向对象影子的。但是，多少会有一些蹩脚。
+而函数式编程则是在haskell，lisp以及js等语言更流行。特别是随着js影响力的提升，其他编程语言也逐步吸收了函数式编程的概念。
+比如说c++中的lambda函数，自然是可以理解为是一种函数声明的语法糖；但更恰当地理解应该是引入函数式编程的一个起点，这是函数式编程的基本概念。
+
+函数式编程发展的理论基础源于lambda演算，这是一种记号系统。
+> 什么是记号系统，类似于中小学做过的自定义运算符号题目把。给一些记号定义一些规则，基于若干规则进行演化。
+那是怎么样的记号系统呢？是用于研究函数的。函数在一般认知里面，就是一种给定输入，给出输出的过程。但是这里进一步，把函数看成一种变量，看成一种输入，即给定函数，我的输出也还是函数。
+
+这种把函数视为一个变量，对函数进行操作，组合的特性，在某些数据处理对象的场景下会更好用。下面给出一个从面向过程逐步转向函数式编程的写法。
+
+函数式编程有什么好处呢？易于测试，修改方便，利于并行。

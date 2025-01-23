@@ -10,7 +10,7 @@
 */
 
 namespace isClassUsage {
-    // is_class 的实现
+
     template <typename T, typename = std::void_t<>>
     struct is_class : std::false_type {};
 
@@ -20,7 +20,6 @@ namespace isClassUsage {
     template <typename T>
     constexpr bool is_class_v = is_class<T>::value;
 
-    // 静态断言测试
     static_assert(is_class_v<std::string>, "std::string 应该是类类型");
     static_assert(is_class_v<std::vector<int>>,
                   "std::vector<int> 应该是类类型");
@@ -44,9 +43,8 @@ namespace isClassUsage {
     }
 }  // namespace isClassUsage
 
-////////////////////////////////////////////////////////////////////
 namespace isClassImpl {
-    // is_class 的实现
+
     template <typename T, typename = std::void_t<>>
     struct is_class : std::false_type {};
 
@@ -56,7 +54,6 @@ namespace isClassImpl {
     template <typename T>
     constexpr bool is_class_v = is_class<T>::value;
 
-    // 静态断言测试
     static_assert(is_class_v<std::string>, "std::string 应该是类类型");
     static_assert(is_class_v<std::vector<int>>,
                   "std::vector<int> 应该是类类型");

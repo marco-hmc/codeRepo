@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.14)
+
+# 项目名称和版本
+project(FileSystemViewer VERSION 1.0 LANGUAGES CXX)
+
+# 设置 C++ 标准
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 设置 Qt 安装路径
+set(Qt5_DIR "C:/path/to/your/qt5/cmake")
+
+# 查找 Qt 包
+find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
+
+# 添加源文件
+set(SOURCES
+    tmp.cpp
+)
+
+# 添加可执行文件
+add_executable(FileSystemViewer ${SOURCES})
+
+# 链接 Qt 库
+target_link_libraries(FileSystemViewer Qt5::Core Qt5::Gui Qt5::Widgets)
+
+# 设置编译器标志
+if (MSVC)
+    target_compile_options(FileSystemViewer PRIVATE /W4 /WX)
+else()
+    target_compile_options(FileSystemViewer PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()

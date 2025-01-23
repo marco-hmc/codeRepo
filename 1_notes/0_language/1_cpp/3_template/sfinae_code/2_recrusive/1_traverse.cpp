@@ -3,9 +3,7 @@
 #include <tuple>
 #include <type_traits>
 
-namespace print {
-
-    // 递归打印元组的实现
+namespace PrintAll {
     template <std::size_t Index, std::size_t N, typename... List>
     struct PrintImpl {
         static void impl(const std::tuple<List...>& t) {
@@ -24,11 +22,14 @@ namespace print {
         PrintImpl<0, sizeof...(List), List...>::impl(t);
     }
 
-}  // namespace print
+    void test() {
+        auto t = std::make_tuple(3.14, 42, "hello world");
+        Print(t);  // 输出: 3.14 42 hello world
+        std::cout << std::endl;
+    }
+}  // namespace PrintAll
 
-namespace factorial {
-
-    // 递归计算阶乘的实现
+namespace TemplateCalcFactorial {
     template <std::size_t N>
     struct Factorial {
         static constexpr std::size_t value = N * Factorial<N - 1>::value;
@@ -39,11 +40,13 @@ namespace factorial {
         static constexpr std::size_t value = 1;
     };
 
-}  // namespace factorial
+    void test() {
+        std::cout << "Factorial<5>::value: " << Factorial<5>::value
+                  << std::endl;  // 输出: 120
+    }
+}  // namespace TemplateCalcFactorial
 
-namespace fibonacci {
-
-    // 递归计算斐波那契数列的实现
+namespace TemplateCalcFibonacci {
     template <std::size_t N>
     struct Fibonacci {
         static constexpr std::size_t value =
@@ -61,16 +64,23 @@ namespace fibonacci {
     };
 
     constexpr std::size_t fibonacci(std::size_t n) {
-        if (n == 0) return 0;
-        if (n == 1) return 1;
+        if (n == 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
         return fibonacci(n - 1) + fibonacci(n - 2);
     }
 
-}  // namespace fibonacci
+    void test() {
+        std::cout << "Fibonacci<10>::value: " << Fibonacci<10>::value
+                  << std::endl;  // 输出: 55
+    }
 
-namespace gcd {
+}  // namespace TemplateCalcFibonacci
 
-    // 递归计算最大公约数的实现
+namespace TemplateCalcGCD {
     template <std::size_t A, std::size_t B>
     struct GCD {
         static constexpr std::size_t value = GCD<B, A % B>::value;
@@ -81,25 +91,92 @@ namespace gcd {
         static constexpr std::size_t value = A;
     };
 
-}  // namespace gcd
+    void test() {
+        std::cout << "GCD<48, 18>::value: " << GCD<48, 18>::value
+                  << std::endl;  // 输出: 6
+    }
+
+}  // namespace TemplateCalcGCD
+
+namespace TemplateCalcMax {
+
+    template <int N, int... Ns>
+    struct max;
+
+    template <int N>
+    struct max<N> : std::integral_constant<int, N> {};
+
+    template <int N1, int N2, int... Ns>
+    struct max<N1, N2, Ns...>
+        : std::integral_constant<int, (N1 < N2) ? max<N2, Ns...>::value
+                                                : max<N1, Ns...>::value> {};
+
+    template <int... Ns>
+    inline constexpr auto max_v = max<Ns...>::value;
+
+    void test() { static_assert(TemplateCalcMax::max_v<3, 2, 1, 5, 4> == 5); }
+
+}  // namespace TemplateCalcMax
+
+namespace TemplateCalcSqrt {
+
+    template <int N, int L = 1, int R = N>
+    struct sqrt {
+        static constexpr auto M = L + (R - L) / 2;
+        static constexpr auto T = N / M;
+        static constexpr auto value =  // 避免递归实例化所有分支
+            std::conditional_t<(T < M), sqrt<N, L, M>,
+                               sqrt<N, M + 1, R>>::value;
+    };
+
+    template <int N, int M>
+    struct sqrt<N, M, M> {
+        static constexpr auto value = M - 1;
+    };
+
+    template <int N>
+    inline constexpr auto sqrt_v = sqrt<N, 1, N>::value;
+
+    void test() { static_assert(sqrt_v<10000> == 100); }
+}  // namespace TemplateCalcSqrt
+
+namespace TemplateCalcSqrt2 {
+
+    template <int N>
+    constexpr int sqrt() {
+        if constexpr (N <= 1) {
+            return N;
+        }
+        int l = 1;
+        int r = N;
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            int t = N / m;
+            if (m == t) {
+                return m;
+            }
+
+            if (m > t) {
+                r = m;
+            } else {
+                l = m + 1;
+            }
+        }
+        return l - 1;
+    }
+
+    void test() { static_assert(TemplateCalcSqrt2::sqrt<10000>() == 100); }
+
+}  // namespace TemplateCalcSqrt2
 
 int main() {
-    // print::Print 测试
-    auto t = std::make_tuple(3.14, 42, "hello world");
-    print::Print(t);  // 输出: 3.14 42 hello world
-    std::cout << std::endl;
+    PrintAll::test();
+    TemplateCalcFactorial::test();
+    TemplateCalcFibonacci::test();
+    TemplateCalcGCD::test();
 
-    // factorial::Factorial 测试
-    std::cout << "Factorial<5>::value: " << factorial::Factorial<5>::value
-              << std::endl;  // 输出: 120
-
-    // fibonacci::Fibonacci 测试
-    std::cout << "Fibonacci<10>::value: " << fibonacci::Fibonacci<10>::value
-              << std::endl;  // 输出: 55
-
-    // gcd::GCD 测试
-    std::cout << "GCD<48, 18>::value: " << gcd::GCD<48, 18>::value
-              << std::endl;  // 输出: 6
-
+    TemplateCalcMax::test();
+    TemplateCalcSqrt::test();
+    TemplateCalcSqrt2::test();
     return 0;
 }

@@ -8,15 +8,13 @@
 */
 
 namespace integralConstantUsage {
-    // 定义一个模板别名 true_type 和 false_type
+
     using true_type = std::integral_constant<bool, true>;
     using false_type = std::integral_constant<bool, false>;
 
-    // 使用 std::integral_constant 定义常量
     constexpr int value1 = std::integral_constant<int, 42>::value;
     constexpr bool value2 = std::integral_constant<bool, true>::value;
 
-    // 静态断言测试
     static_assert(value1 == 42, "value1 应该是 42");
     static_assert(value2 == true, "value2 应该是 true");
 
@@ -26,26 +24,22 @@ namespace integralConstantUsage {
     }
 }  // namespace integralConstantUsage
 
-////////////////////////////////////////////////////////////////////
 namespace integralConstantImpl {
-    // std::integral_constant 的实现
+
     template <class T, T v>
     struct integral_constant {
         static constexpr T value = v;
         using value_type = T;
-        using type = integral_constant;  // 使用 typedef 以便于访问
+        using type = integral_constant;
         constexpr operator value_type() const noexcept { return value; }
     };
 
-    // 定义一个模板别名 true_type 和 false_type
     using true_type = integral_constant<bool, true>;
     using false_type = integral_constant<bool, false>;
 
-    // 使用自定义的 integral_constant 定义常量
     constexpr int value1 = integral_constant<int, 42>::value;
     constexpr bool value2 = integral_constant<bool, true>::value;
 
-    // 静态断言测试
     static_assert(value1 == 42, "value1 应该是 42");
     static_assert(value2 == true, "value2 应该是 true");
 

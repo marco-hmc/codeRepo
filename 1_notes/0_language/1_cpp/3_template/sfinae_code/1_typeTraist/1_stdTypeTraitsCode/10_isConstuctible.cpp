@@ -8,11 +8,9 @@
 */
 
 namespace isConstructibleUsage {
-    // 使用 std::is_constructible 实现一个条件检查
     template <typename T, typename... Args>
     using is_constructible_t = typename std::is_constructible<T, Args...>::type;
 
-    // 静态断言测试
     static_assert(std::is_constructible<int>::value, "int 应该是可默认构造的");
     static_assert(std::is_constructible<int, int>::value,
                   "int 应该是可用 int 构造的");
@@ -43,9 +41,8 @@ namespace isConstructibleUsage {
     }
 }  // namespace isConstructibleUsage
 
-////////////////////////////////////////////////////////////////////
 namespace isConstructibleImpl {
-    // std::is_constructible 的实现
+
     template <typename T, typename... Args>
     struct is_constructible {
       private:
@@ -62,7 +59,6 @@ namespace isConstructibleImpl {
     template <typename T, typename... Args>
     constexpr bool is_constructible_v = is_constructible<T, Args...>::value;
 
-    // 静态断言测试
     static_assert(is_constructible_v<int>, "int 应该是可默认构造的");
     static_assert(is_constructible_v<int, int>, "int 应该是可用 int 构造的");
     static_assert(!is_constructible_v<int, double*>,

@@ -12,11 +12,10 @@
 */
 
 namespace removeReferenceUsage {
-    // 定义一个模板别名 remove_reference_t，用于简化 std::remove_reference 的使用
+
     template <typename T>
     using remove_reference_t = typename std::remove_reference<T>::type;
 
-    // 静态断言测试
     static_assert(std::is_same<remove_reference_t<int>, int>::value,
                   "int 应该是 int");
     static_assert(std::is_same<remove_reference_t<int&>, int>::value,
@@ -35,11 +34,10 @@ namespace removeReferenceUsage {
 }  // namespace removeReferenceUsage
 
 namespace removeConstUsage {
-    // 定义一个模板别名 remove_const_t，用于简化 std::remove_const 的使用
+
     template <typename T>
     using remove_const_t = typename std::remove_const<T>::type;
 
-    // 静态断言测试
     static_assert(std::is_same<remove_const_t<int>, int>::value,
                   "int 应该是 int");
     static_assert(std::is_same<remove_const_t<const int>, int>::value,
@@ -57,9 +55,8 @@ namespace removeConstUsage {
     }
 }  // namespace removeConstUsage
 
-////////////////////////////////////////////////////////////////////
 namespace removeReferenceImpl {
-    // std::remove_reference 的实现
+
     template <typename T>
     struct remove_reference {
         using type = T;
@@ -75,11 +72,9 @@ namespace removeReferenceImpl {
         using type = T;
     };
 
-    // 定义一个模板别名 remove_reference_t，用于简化 remove_reference 的使用
     template <typename T>
     using remove_reference_t = typename remove_reference<T>::type;
 
-    // 静态断言测试
     static_assert(std::is_same<remove_reference_t<int>, int>::value,
                   "int 应该是 int");
     static_assert(std::is_same<remove_reference_t<int&>, int>::value,
@@ -98,7 +93,7 @@ namespace removeReferenceImpl {
 }  // namespace removeReferenceImpl
 
 namespace removeConstImpl {
-    // std::remove_const 的实现
+
     template <typename T>
     struct remove_const {
         using type = T;
@@ -109,11 +104,9 @@ namespace removeConstImpl {
         using type = T;
     };
 
-    // 定义一个模板别名 remove_const_t，用于简化 remove_const 的使用
     template <typename T>
     using remove_const_t = typename remove_const<T>::type;
 
-    // 静态断言测试
     static_assert(std::is_same<remove_const_t<int>, int>::value,
                   "int 应该是 int");
     static_assert(std::is_same<remove_const_t<const int>, int>::value,

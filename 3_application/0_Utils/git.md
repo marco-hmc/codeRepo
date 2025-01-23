@@ -1,4 +1,6 @@
-## git操作
+## git 操作
+
+git remote set-url origin git@github.com/marco-hmc/codeRepo.git
 
 > marco
 
@@ -6,36 +8,39 @@
 
 `git push --force-with-lease`
 
-### 0. 常用git指令
+### 0. 常用 git 指令
 
-* 代理设置
-  * `git config --global http.proxy http://127.0.0.1:7890`
-  * `git config --global https.proxy https://127.0.0.1:7890`
+git config --global --unset http.proxy
+git config --global --unset https.proxy
 * 查看设置
   * `git config --global -l`
 
-### 1. git基本操作
+git remote set-url origin https://github.com/marco-hmc/codeRepo.git
 
-#### 1.1 git的工程区域和工作状态
+git remote set-url origin git@github.com:marco-hmc/codeRepo.git
 
-* **工程区域**
+### 1. git 基本操作
 
-  * **版本库(repository)**
+#### 1.1 git 的工程区域和工作状态
 
-    在工作区中有一个隐藏目录.git,这个文件夹就是git的版本库,里面存放了git用来管理该工程的所有版本数据,也可以叫本地仓库.
+- **工程区域**
 
-  * **工作区(working directory)**
+  - **版本库(repository)**
+
+    在工作区中有一个隐藏目录.git,这个文件夹就是 git 的版本库,里面存放了 git 用来管理该工程的所有版本数据,也可以叫本地仓库.
+
+  - **工作区(working directory)**
 
     日常工作的代码文件或文档所在的文件夹
 
-  * **暂存区(stage)**
+  - **暂存区(stage)**
 
-    一般存放在工程根目录.git/index文件中,暂存区亦可称为索引(index)
+    一般存放在工程根目录.git/index 文件中,暂存区亦可称为索引(index)
 
 #### 1.2 工程准备/工程下载
 
-* `git init`
-* `git clone`
+- `git init`
+- `git clone`
 
 ![alt text](_imgs/git_image-1.png)
 git-commands.png
@@ -43,36 +48,36 @@ git-merge-git-rebase.jpeg
 
 #### 1.4 提交代码推送代码
 
-* `git commit`
-* `git push [远端仓库名][本地分支名]`
+- `git commit`
+- `git push [远端仓库名][本地分支名]`
 
 #### 1.5 撤销操作
 
-* `git reset`
+- `git reset`
 
-  * `git reset [commit_id]` 用于撤销当前工作区中某些git add/commit操作,可以将工作区内容回退到历史提交节点(貌似只回退了历史节点没回退代码)
+  - `git reset [commit_id]` 用于撤销当前工作区中某些 git add/commit 操作,可以将工作区内容回退到历史提交节点(貌似只回退了历史节点没回退代码)
 
-  * `git reset --hard [commit_id]` 强制回退历史节点及工作区代码
+  - `git reset --hard [commit_id]` 强制回退历史节点及工作区代码
 
-  * `git reset --soft [commit_id]` 强制回退历史节点及工作区代码
+  - `git reset --soft [commit_id]` 强制回退历史节点及工作区代码
 
 #### 1.6 分支管理
 
-* `git branch`
+- `git branch`
 
-  * `git branch -r`
+  - `git branch -r`
     查看远端分支
 
-  * `git branch --show-current`
+  - `git branch --show-current`
     查看当前分支
 
-  * `git branch -a`
+  - `git branch -a`
     查看本地和远端分支
 
-  * `git branch -d [NAME]`
+  - `git branch -d [NAME]`
     删除指定分支
 
-  * `git branch -f A B`
+  - `git branch -f A B`
     是 Git 中用于移动分支指针的命令.具体含义如下:
 
     - `A` 是目标分支名,代表你想要移动的目标分支.
@@ -80,37 +85,37 @@ git-merge-git-rebase.jpeg
 
     该命令的作用是将目标分支 `A` 的指针强制移动到指定的位置 `B`,忽略目标分支当前的位置.
 
-  * `git branch [NAME]`
+  - `git branch [NAME]`
     新建分支
 
-  * `git switch [NAME]`
+  - `git switch [NAME]`
     切换分支
 
 #### 1.7 更新本地代码
 
-* `git pull`
-  * `git pull origin remote_branch:local_branch` 更新远端代码到本地
-  * `git pull origin remote_branch` 远程指定分支与本地指定分支相同
-* `git fetch`
+- `git pull`
+  - `git pull origin remote_branch:local_branch` 更新远端代码到本地
+  - `git pull origin remote_branch` 远程指定分支与本地指定分支相同
+- `git fetch`
   - `git fetch origin remote_branch:local_branch` 获取远端更新(分支名不同)
   - `git fetch origin remote_branch` 获取远端更新(分支名相同)
 
 #### 1.8 合并代码
 
-* `git merge branch_name` 将指定分支合并到当前分支
-* `git rebase branch_name` 将指定分支合并到当前分支
+- `git merge branch_name` 将指定分支合并到当前分支
+- `git rebase branch_name` 将指定分支合并到当前分支
 
-### 2. commit点处理
+### 2. commit 点处理
 
-#### 2.1 commit点信息修改
+#### 2.1 commit 点信息修改
 
-* `git commit --amend`
+- `git commit --amend`
 
   是用于修改最近一次提交的命令.它可以用于修改提交的消息/添加漏掉的文件或修改文件的内容.
 
-#### 2.2 commit点移动
+#### 2.2 commit 点移动
 
-* `git cherry-pick`
+- `git cherry-pick`
 
   cherry-pick 可以将提交树上任何地方的提交记录取过来追加到 HEAD 上(只要不是 HEAD 上游的提交就没问题).
 
@@ -118,19 +123,20 @@ git-merge-git-rebase.jpeg
 
 ### 3. config
 
-* git config
-    配置被写在~/.git/config
-    可以通过git config --list 查看
+git config --global --add safe.directory '%(prefix)///wsl.localhost/Ubuntu-22.04/home/marco/gitRepo/codeRepo'
+
+- git config
+  配置被写在~/.git/config
+  可以通过 git config --list 查看
 
 git config --global http.proxy 'socks5://127.0.0.1:7890'
 git config --global https.proxy 'socks5://127.0.0.1:7890'
-
 
 ### 3. config
 
 #### 3.1 .gitattributes
 
-.gitattributes怎么用?
+.gitattributes 怎么用?
 `.gitattributes` 文件是一个文本文件,放在 Git 仓库的根目录或其子目录中,用于定义文件的属性.每一行都是一个模式(pattern)和一个或多个属性,模式和属性之间用空格分隔.
 
 以下是一些常见的 `.gitattributes` 文件的用法:
@@ -171,33 +177,31 @@ git config --global https.proxy 'socks5://127.0.0.1:7890'
 
 #### 4.1 版本号
 
-
 #### 4.2 stash
 
-* `git stash save [MSG]`
+- `git stash save [MSG]`
 
   存储代码或者将代码从存储中取出
 
-  使用git stash save 'label' 就是将修改的代码存储起来
+  使用 git stash save 'label' 就是将修改的代码存储起来
 
-  使用git stash pop 就是将存储起来的代码取出来,不加任何的参数就说取出栈顶的那个,可以使用git stash list 查看存储的列表
+  使用 git stash pop 就是将存储起来的代码取出来,不加任何的参数就说取出栈顶的那个,可以使用 git stash list 查看存储的列表
 
-* `git stash list` 
+- `git stash list`
 
   查看存储区的内容
 
-* `git stash drop index `
+- `git stash drop index `
 
-  删除第index条内容,不指定就是最近一条
+  删除第 index 条内容,不指定就是最近一条
 
-* `git stash pop `
+- `git stash pop `
 
   将最近的一条内容从存储区取出,存储区里就没有了
 
-
 #### 3.3 squash
 
-* **`squash`的使用**
+- **`squash`的使用**
 
   在 Git 中,`squash` 是一种合并提交(commit)的方式,它允许将多个连续的提交合并为一个新的提交,并将这个新的提交添加到当前分支的提交历史中.这样可以使提交历史更加整洁和易于阅读,特别是当你在开发过程中有多个较小的提交,但希望将它们合并为一个有意义的提交时.
 
@@ -218,7 +222,7 @@ git config --global https.proxy 'socks5://127.0.0.1:7890'
      graphqlCopy codepick abc123 Commit message 1
      pick def456 Commit message 2
      pick ghi789 Commit message 3
-     
+
      # Rebase xxxxx onto yyyyy
      #
      # Commands:
@@ -254,20 +258,20 @@ git config --global https.proxy 'socks5://127.0.0.1:7890'
 
   需要注意的是,使用 `squash` 会改写提交历史,因此谨慎使用,特别是在与其他人共享代码时.如果提交已经被推送(push)到远程仓库,应避免对这些提交使用 `squash`,以免导致冲突和混乱的提交历史.
 
-### 99. git问答
+### 99. git 问答
 
-* **commit点能够被删除吗?**
+- **commit 点能够被删除吗?**
 
   你无法直接删除已提交的 commit.提交的历史记录在 Git 中被视为不可更改的.
 
-  因此,一般是通过`git revert`和`git reset`修改commit点.
+  因此,一般是通过`git revert`和`git reset`修改 commit 点.
 
-* **如何删除服务器远端分支?**
+- **如何删除服务器远端分支?**
 
-  1. `git branch -d -r branch_name` // branch_name为本地分支名
+  1. `git branch -d -r branch_name` // branch_name 为本地分支名
   2. `git push origin branch_name` // 将删除推送远端
 
-* **git merge和git rebase,是谁合并了谁?**
+- **git merge 和 git rebase,是谁合并了谁?**
 
   例如,如果你当前在 `main` 分支上,想要将 `feature` 分支的更改合并到 `main` 分支上,可以执行以下命令:
 
@@ -276,19 +280,18 @@ git config --global https.proxy 'socks5://127.0.0.1:7890'
   git merge feature
   ```
 
-  使用git merge和git rebase一般不显式指定两个分支,可能是怕谁合并谁带来太大的心智负担,因此一般都是切换到要保留的分支,然后合并其他分支.
-
+  使用 git merge 和 git rebase 一般不显式指定两个分支,可能是怕谁合并谁带来太大的心智负担,因此一般都是切换到要保留的分支,然后合并其他分支.
 
 ![alt text](_imgs/git_image.png)
 
-* [Git Internals-eng]
-* [Pro Git - eng]
-* [Pro Git - 中文版]
-* [git - 简易指南](http://rogerdudler.github.io/git-guide/index.zh.html)
-* [Git 参考手册](http://gitref.justjavac.com)
-* [Pro Git](http://git-scm.com/book/zh)
-* [Git Magic](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/zh_cn/)
-* [GotGitHub](http://www.worldhello.net/gotgithub/index.html)
-* [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
-* [Mercurial 使用教程](http://mercurial.selenic.com/wiki/ChineseTutorial)
-* [HgInit (中文版)](http://bucunzai.net/hginit/)
+- [Git Internals-eng]
+- [Pro Git - eng]
+- [Pro Git - 中文版]
+- [git - 简易指南](http://rogerdudler.github.io/git-guide/index.zh.html)
+- [Git 参考手册](http://gitref.justjavac.com)
+- [Pro Git](http://git-scm.com/book/zh)
+- [Git Magic](http://www-cs-students.stanford.edu/~blynn/gitmagic/intl/zh_cn/)
+- [GotGitHub](http://www.worldhello.net/gotgithub/index.html)
+- [Git Community Book 中文版](http://gitbook.liuhui998.com/index.html)
+- [Mercurial 使用教程](http://mercurial.selenic.com/wiki/ChineseTutorial)
+- [HgInit (中文版)](http://bucunzai.net/hginit/)
