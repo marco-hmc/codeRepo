@@ -183,6 +183,63 @@ namespace ParamUndefinedType {
 
 }  // namespace ParamUndefinedType
 
+namespace ParamOtherExample {
+
+    constexpr const char* s1 = "hello";  // 内链接对象的指针
+    extern const char s2[] = "world";    // 外链接
+    const char s3[] = "down";            // 内链接
+
+    template <const char* s>
+    struct A {};
+
+    // TemplateArg::A 测试
+    void run() {
+        static const char s4[] = "demo";  // 无链接
+        // TemplateArg::A<"downdemo">{};              // 错误
+        // TemplateArg::A<s1>{};                      // 错误
+        // TemplateArg::A<s2>{};                      // C++11 允许
+        // TemplateArg::A<s3>{};                      // C++14 允许
+        // TemplateArg::A<s4>{};                      // C++17 允许
+        std::cout << "TemplateArg::A test passed (commented out invalid cases)."
+                  << std::endl;
+    }
+}  // namespace ParamOtherExample
+
+namespace ParamIsPointerFailCase {
+    template <int buf[5]>
+    struct ArrPtr {};
+
+    template <int fun()>
+    struct FuncPtr {};
+
+    void run() {
+        int buffer[5] = {1, 2, 3, 4, 5};
+        auto func = []() -> int { return 42; };
+
+        // 错误：数组类型退化为指针类型
+        // LexerAndFuncWrap::Lexer<buffer> lexer;
+        // LexerAndFuncWrap::FuncWrap<func> funcWrap;
+    }
+}  // namespace ParamIsPointerFailCase
+
+namespace ParamIsPointerOkCase {
+    template <int* buf>
+    struct ArrPtr {};
+
+    template <int (*fun)()>
+    struct FuncPtr {};
+
+    void run() {
+        static int buffer[5] = {1, 2, 3, 4, 5};
+        // not ok
+        // int buffer[5] = {1, 2, 3, 4, 5};
+        auto func = []() -> int { return 42; };
+
+        ParamIsPointerOkCase::ArrPtr<buffer> arrPtr;
+        ParamIsPointerOkCase::FuncPtr<func> funcPtr;
+    }
+}  // namespace ParamIsPointerOkCase
+
 int main() {
     ParamIsTemplate::test();
     ParamIsTemplate_complexVersion::test();

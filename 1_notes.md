@@ -1,7 +1,8 @@
 https://github.com/elohim-meth/rtti
 Windows核心编程
-rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
+
 给一个内存碎片概念的章节目录，或者结构图。能够囊括主要知识点和内容
+https://www.bilibili.com/video/BV1j8cLeaELc/?spm_id_from=333.1007.tianma.1-2-2.click&vd_source=8215bf938da2fb524fa6ffc652bb3c53
 
 ## 1. doing
   * vs工程
@@ -10,10 +11,7 @@ rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
     - 整一个cmake-template，能够支持vs，支持vsc
     - vsc能够使用llvm-debugger
   * 3D笔记
-
-  * rx-codeRepo
   * csapp
-  * cmake-codeRepo
   * mps:
     * memory-notes
   * 内存笔记
@@ -214,3 +212,5 @@ rtti性能比较实现，写一个benchmark，比较msvc,gcc,clang
    - 请解释设备驱动的开发和调试方法。
    - 请解释音频视频的处理和编解码技术。
    - 请解释 AI 底层的算法和实现。
+
+山那边的人-海这边的人

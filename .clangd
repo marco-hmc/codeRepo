@@ -3,7 +3,7 @@ Index:
   Background: Build
 
 CompileFlags:
-  Add: [-xc++, -Wall, -std=c++17]
+  Add: [-xc++, -Wall, -std=c++20, -Wno-parentheses]
   Compiler: clang++
 
 Diagnostics:
