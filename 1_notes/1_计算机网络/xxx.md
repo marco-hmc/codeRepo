@@ -37,6 +37,7 @@ sessionStorage.clear( );
 localStorage.key( index ); 
 sessionStorage.key( index );
 ```
+
 ##### 监听Storage事件
 可以通过监听window对象的storage事件并指定其事件处理函数，当页面中对localStorage或sessionStorage进行修改时，会触发对应的处理函数
 ```js

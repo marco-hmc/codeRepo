@@ -4,6 +4,58 @@ Windows核心编程
 给一个内存碎片概念的章节目录，或者结构图。能够囊括主要知识点和内容
 https://www.bilibili.com/video/BV1j8cLeaELc/?spm_id_from=333.1007.tianma.1-2-2.click&vd_source=8215bf938da2fb524fa6ffc652bb3c53
 
+## 1. spring festival task
+
+* task: cmake-template
+  * purpose: Enhance C ++ engineering construction capabilities
+  * date: 0128
+  * procedure
+    * simple-project
+    * ctest
+    * thirdParty
+    * vs-debug
+    * lldb-debug
+
+* task: cs144
+  * purpose: To get a comprehensive understanding of network.
+  * date: 0128-
+  * procedure
+    * lab1-2
+    * lab3
+    * lab4
+    * lab5
+
+* task: re-start blog
+  * purpose: for cv.
+  * date: 
+  * procedure:
+    * study-notes: 
+      * network
+      * os
+      * cpp
+        * grammar
+        * multithread
+        * std
+        * functionalProgramming
+        * template
+      * thirdParty
+        * openmp
+
+* task: new job
+  * purpose: 
+  * date: 
+  * procedure
+    * update-cv
+    * update-blog
+    * lab3
+
+* optional
+  * threadPool
+  * memoryPool
+  * simple: dataBase
+  * operator optimize
+
+
 ## 1. doing
   * vs工程
     - debug

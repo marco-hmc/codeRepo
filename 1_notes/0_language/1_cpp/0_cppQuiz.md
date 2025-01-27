@@ -241,11 +241,11 @@ BSS段和数据段被分开主要是出于以下几个原因:
 
 ```c++
 int main() {
-int a[2][5] = { {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5} };
-cout << a << endl;
-cout << *a << endl;
-cout << *a[0] << endl;
-return 0;
+    int a[2][5] = { {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5} };
+    cout << a << endl;
+    cout << *a << endl;
+    cout << *a[0] << endl;
+    return 0;
 }
 ```
 
